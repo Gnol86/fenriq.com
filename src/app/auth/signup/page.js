@@ -1,4 +1,3 @@
-"use client";
 import FormSignup from "./form";
 import {
     Card,
