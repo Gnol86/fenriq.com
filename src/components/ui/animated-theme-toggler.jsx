@@ -1,6 +1,6 @@
 "use client";
 import { Moon, SunDim } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,11 @@ import { cn } from "@/lib/utils";
 export const AnimatedThemeToggler = ({ className }) => {
     const { theme, setTheme } = useTheme();
     const buttonRef = useRef(null);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const changeTheme = async () => {
         if (!buttonRef.current) return;
@@ -43,6 +48,14 @@ export const AnimatedThemeToggler = ({ className }) => {
             }
         );
     };
+
+    if (!mounted) {
+        return (
+            <button className={cn(className)} disabled>
+                <SunDim size={20} />
+            </button>
+        );
+    }
 
     return (
         <button ref={buttonRef} onClick={changeTheme} className={cn(className)}>
