@@ -48,23 +48,14 @@ export const auth = betterAuth({
     emailVerification: {
         sendVerificationEmail: async ({ user, url }) => {
             try {
-                const response = await fetch(`${getServerUrl()}/api/send`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: user.email,
-                        subject: "Vérifiez votre adresse email - PolGPT",
-                        name: user.name,
-                        message: "Pour terminer la création de votre compte PolGPT, veuillez vérifier votre adresse email en cliquant sur le lien ci-dessous :",
-                        url: url
-                    })
+                const { sendEmail } = await import("@/actions/email.action");
+                await sendEmail({
+                    email: user.email,
+                    subject: "Vérifiez votre adresse email - PolGPT",
+                    name: user.name,
+                    message: "Pour terminer la création de votre compte PolGPT, veuillez vérifier votre adresse email en cliquant sur le lien ci-dessous :",
+                    url: url
                 });
-
-                if (!response.ok) {
-                    console.error('Failed to send verification email:', await response.text());
-                }
             } catch (error) {
                 console.error('Error sending verification email:', error);
             }
