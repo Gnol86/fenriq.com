@@ -53,7 +53,6 @@ export default function FormSignin() {
                     onError: (ctx) => {
                         if (ctx.error.status === 403) {
                             // Rediriger vers la page de vérification avec l'email
-                            console.log(ctx);
                             toast.error(
                                 "Votre adresse email n'est pas vérifiée."
                             );

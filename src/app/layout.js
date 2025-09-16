@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
             >
                 <Provider>
                     {children}
-                    <footer className="absolute bottom-0 left-0 right-0 p-4 flex gap-2 justify-between text-sm">
+                    <footer className="absolute bottom-0 left-0 right-0 p-4 flex gap-2 justify-between items-center text-sm">
                         PolGPT est un bot de langage qui utilise OpenAI et GPT4.
                         <div className="flex gap-2 items-center">
                             <AnimatedThemeToggler />
