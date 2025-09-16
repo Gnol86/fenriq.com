@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -16,8 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import FormButton from "@/components/ui/form-button";
 
 const formSchema = z
     .object({
@@ -64,6 +64,7 @@ const formSchema = z
     });
 
 export default function FormSignup() {
+    const router = useRouter();
     const searchParams = useSearchParams();
     const email = searchParams.get("email");
     const form = useForm({
@@ -83,11 +84,14 @@ export default function FormSignup() {
                     email: values.email,
                     password: values.password,
                     name: values.name,
-                    callbackURL: "/",
+                    callbackURL: "/auth/email-verified",
                 },
                 {
-                    onSuccess: (ctx) => {
-                        toast.success("Compte créé avec succès");
+                    onSuccess: () => {
+                        toast.success(
+                            "Compte créé avec succès. Un email de vérification a été envoyé."
+                        );
+                        router.push("/auth/verify-email?email=" + values.email);
                     },
                     onError: (ctx) => {
                         toast.error(
@@ -113,7 +117,11 @@ export default function FormSignup() {
                         <FormItem>
                             <FormLabel>Nom</FormLabel>
                             <FormControl>
-                                <Input placeholder="" type="text" {...field} />
+                                <Input
+                                    disabled={form.formState.isSubmitting}
+                                    type="text"
+                                    {...field}
+                                />
                             </FormControl>
 
                             <FormMessage />
@@ -128,7 +136,11 @@ export default function FormSignup() {
                         <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                                <Input placeholder="" type="email" {...field} />
+                                <Input
+                                    disabled={form.formState.isSubmitting}
+                                    type="email"
+                                    {...field}
+                                />
                             </FormControl>
 
                             <FormMessage />
@@ -143,7 +155,10 @@ export default function FormSignup() {
                         <FormItem>
                             <FormLabel>Mot de passe</FormLabel>
                             <FormControl>
-                                <PasswordInput placeholder="" {...field} />
+                                <PasswordInput
+                                    disabled={form.formState.isSubmitting}
+                                    {...field}
+                                />
                             </FormControl>
 
                             <FormMessage />
@@ -158,7 +173,10 @@ export default function FormSignup() {
                         <FormItem>
                             <FormLabel>Confirmer le mot de passe</FormLabel>
                             <FormControl>
-                                <PasswordInput placeholder="" {...field} />
+                                <PasswordInput
+                                    disabled={form.formState.isSubmitting}
+                                    {...field}
+                                />
                             </FormControl>
 
                             <FormMessage />
@@ -166,9 +184,13 @@ export default function FormSignup() {
                     )}
                 />
                 <div className="flex gap-2">
-                    <Button type="submit" className="flex-1">
+                    <FormButton
+                        type="submit"
+                        loading={form.formState.isSubmitting}
+                        className="flex-1"
+                    >
                         S'inscrire
-                    </Button>
+                    </FormButton>
                     <Link href="/">
                         <Button variant="ghost">Annuler</Button>
                     </Link>

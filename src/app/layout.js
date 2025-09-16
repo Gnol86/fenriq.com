@@ -3,6 +3,9 @@ import "./globals.css";
 import { Provider } from "@/components/provider";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Toaster } from "@/components/ui/sonner";
+import SignUpButton from "@/components/auth/SignUpButton";
+import SignInButton from "@/components/auth/SignInButton";
+import SignOutButton from "@/components/auth/SignOutButton";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -19,7 +22,7 @@ export const metadata = {
     description: "PolGPT est un bot de langage qui utilise OpenAI et GPT4",
 };
 
-export default function RootLayout({ children, modal }) {
+export default function RootLayout({ children }) {
     return (
         <html lang="fr" suppressHydrationWarning>
             <body
@@ -27,10 +30,14 @@ export default function RootLayout({ children, modal }) {
             >
                 <Provider>
                     {children}
-                    {modal /* rendu conditionnel de la slot @modal */}
                     <footer className="absolute bottom-0 left-0 right-0 p-4 flex gap-2 justify-between text-sm">
                         PolGPT est un bot de langage qui utilise OpenAI et GPT4.
-                        <AnimatedThemeToggler />
+                        <div className="flex gap-2 items-center">
+                            <AnimatedThemeToggler />
+                            <SignUpButton />
+                            <SignInButton />
+                            <SignOutButton />
+                        </div>
                     </footer>
                 </Provider>
                 <Toaster />

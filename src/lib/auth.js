@@ -4,6 +4,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, organization } from "better-auth/plugins";
 import { getServerUrl } from "./server-url";
 import { SiteConfig } from "@/site-config";
+import { headers } from "next/headers";
 
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
@@ -45,22 +46,37 @@ export const auth = betterAuth({
         requireEmailVerification: true,
     },
     emailVerification: {
-        sendVerificationEmail: async ({ user, url, token }, request) => {
-            // TODO: Implement email sending with your preferred provider (Resend, NodeMailer, etc.)
-            console.log("Verification email should be sent to:", user.email);
-            console.log("Verification URL:", url);
-            console.log("Verification token:", token);
-            
-            // Example with console log for now
-            // You need to replace this with actual email sending logic
-            // await sendEmail({
-            //     to: user.email,
-            //     subject: "Vérifiez votre adresse email",
-            //     html: `<p>Cliquez <a href="${url}">ici</a> pour vérifier votre email.</p>`
-            // });
+        sendVerificationEmail: async ({ user, url }) => {
+            try {
+                const response = await fetch(`${getServerUrl()}/api/send`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: user.email,
+                        subject: "Vérifiez votre adresse email - PolGPT",
+                        name: user.name,
+                        message: "Pour terminer la création de votre compte PolGPT, veuillez vérifier votre adresse email en cliquant sur le lien ci-dessous :",
+                        url: url
+                    })
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to send verification email:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error sending verification email:', error);
+            }
         },
         sendOnSignUp: true,
         autoSignInAfterVerification: true,
     },
     plugins: [admin(), organization()],
 });
+
+export const getUser = async () => {
+    return await auth.api.getSession({
+        headers: await headers(),
+    }).user;
+};

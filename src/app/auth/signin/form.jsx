@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -16,8 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import FormButton from "@/components/ui/form-button";
 
 const formSchema = z.object({
     email: z.email("Veuillez entrer une adresse email valide"),
@@ -28,6 +28,7 @@ const formSchema = z.object({
 
 export default function FormSignin() {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const email = searchParams.get("email");
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -43,19 +44,25 @@ export default function FormSignin() {
                 {
                     email: values.email,
                     password: values.password,
-                    callbackURL: "/",
+                    callbackURL: "/app",
                 },
                 {
-                    onSuccess: (ctx) => {
+                    onSuccess: () => {
                         toast.success("Connexion réussie");
                     },
                     onError: (ctx) => {
                         if (ctx.error.status === 403) {
-                            toast.error("Veuillez vérifier votre adresse email");
+                            // Rediriger vers la page de vérification avec l'email
+                            console.log(ctx);
+                            toast.error(
+                                "Votre adresse email n'est pas vérifiée."
+                            );
+                            router.push(
+                                `/auth/verify-email?email=${encodeURIComponent(values.email)}`
+                            );
                         } else {
                             toast.error(
-                                ctx.error.message ||
-                                    "Échec de la connexion"
+                                ctx.error.message || "Échec de la connexion"
                             );
                         }
                     },
@@ -77,7 +84,11 @@ export default function FormSignin() {
                         <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                                <Input placeholder="" type="email" {...field} />
+                                <Input
+                                    disabled={form.formState.isSubmitting}
+                                    type="email"
+                                    {...field}
+                                />
                             </FormControl>
 
                             <FormMessage />
@@ -92,7 +103,10 @@ export default function FormSignin() {
                         <FormItem>
                             <FormLabel>Mot de passe</FormLabel>
                             <FormControl>
-                                <PasswordInput placeholder="" {...field} />
+                                <PasswordInput
+                                    disabled={form.formState.isSubmitting}
+                                    {...field}
+                                />
                             </FormControl>
 
                             <FormMessage />
@@ -100,9 +114,13 @@ export default function FormSignin() {
                     )}
                 />
                 <div className="flex gap-2">
-                    <Button type="submit" className="flex-1">
+                    <FormButton
+                        type="submit"
+                        loading={form.formState.isSubmitting}
+                        className="flex-1"
+                    >
                         Se connecter
-                    </Button>
+                    </FormButton>
                     <Link href="/">
                         <Button variant="ghost">Annuler</Button>
                     </Link>
