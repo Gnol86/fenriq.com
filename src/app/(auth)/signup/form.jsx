@@ -13,16 +13,17 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
+import { PasswordStrengthInput } from "@/components/ui/password-strength-input";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import FormButton from "@/components/ui/form-button";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const formSchema = z
     .object({
         name: z
-            .string("Veuillez entrer un nom valide")
+            .string()
             .min(2, "Le nom doit contenir au moins 2 caractères")
             .max(50, "Le nom ne peut pas dépasser 50 caractères"),
         email: z.email("Veuillez entrer une adresse email valide").refine(
@@ -40,7 +41,7 @@ const formSchema = z
             }
         ),
         password: z
-            .string("Veuillez entrer un mot de passe valide")
+            .string()
             .min(8, "Le mot de passe doit contenir au moins 8 caractères")
             .regex(
                 /(?=.*[a-z])/,
@@ -55,7 +56,7 @@ const formSchema = z
                 "Le mot de passe doit contenir au moins un chiffre"
             ),
         password_confirm: z
-            .string("Veuillez confirmer votre mot de passe")
+            .string()
             .min(1, "Veuillez confirmer votre mot de passe"),
     })
     .refine((data) => data.password === data.password_confirm, {
@@ -155,7 +156,7 @@ export default function FormSignup() {
                         <FormItem>
                             <FormLabel>Mot de passe</FormLabel>
                             <FormControl>
-                                <PasswordInput
+                                <PasswordStrengthInput
                                     disabled={form.formState.isSubmitting}
                                     {...field}
                                 />
