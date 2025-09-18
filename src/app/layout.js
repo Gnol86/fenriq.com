@@ -1,11 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Provider } from "@/components/provider";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Toaster } from "@/components/ui/sonner";
-import SignUpButton from "@/components/auth/SignUpButton";
-import SignInButton from "@/components/auth/SignInButton";
-import SignOutButton from "@/components/auth/SignOutButton";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -28,18 +24,7 @@ export default function RootLayout({ children }) {
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                <Provider>
-                    {children}
-                    <footer className="absolute bottom-0 left-0 right-0 p-4 flex gap-2 justify-between items-center text-sm">
-                        PolGPT est un bot de langage qui utilise OpenAI et GPT4.
-                        <div className="flex gap-2 items-center">
-                            <AnimatedThemeToggler />
-                            <SignUpButton />
-                            <SignInButton />
-                            <SignOutButton />
-                        </div>
-                    </footer>
-                </Provider>
+                <Provider>{children}</Provider>
                 <Toaster />
             </body>
         </html>

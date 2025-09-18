@@ -5,6 +5,7 @@ import { admin, organization } from "better-auth/plugins";
 import { getServerUrl } from "./server-url";
 import { SiteConfig } from "@/site-config";
 import { headers } from "next/headers";
+import { unauthorized } from "next/navigation";
 
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
@@ -53,11 +54,12 @@ export const auth = betterAuth({
                     email: user.email,
                     subject: "Vérifiez votre adresse email - PolGPT",
                     name: user.name,
-                    message: "Pour terminer la création de votre compte PolGPT, veuillez vérifier votre adresse email en cliquant sur le lien ci-dessous :",
-                    url: url
+                    message:
+                        "Pour terminer la création de votre compte PolGPT, veuillez vérifier votre adresse email en cliquant sur le lien ci-dessous :",
+                    url: url,
                 });
             } catch (error) {
-                console.error('Error sending verification email:', error);
+                console.error("Error sending verification email:", error);
             }
         },
         sendOnSignUp: true,
@@ -67,7 +69,16 @@ export const auth = betterAuth({
 });
 
 export const getUser = async () => {
-    return await auth.api.getSession({
+    const session = await auth.api.getSession({
         headers: await headers(),
-    }).user;
+    });
+    return session?.user;
+};
+
+export const needUser = async () => {
+    const user = await getUser();
+    if (!user) {
+        unauthorized();
+    }
+    return user;
 };

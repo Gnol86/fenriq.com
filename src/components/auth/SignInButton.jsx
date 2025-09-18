@@ -1,18 +1,11 @@
-"use client";
-import { useSession } from "@/lib/auth-client";
-import { usePathname } from "next/navigation";
+import { getUser } from "@/lib/auth";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
-export default function SignInButton() {
-    const { data: session } = useSession();
-    const pathname = usePathname();
+export default async function SignInButton() {
+    const user = await getUser();
 
-    if (session?.user) {
-        return null;
-    }
-
-    if (pathname.includes("/auth/signin")) {
+    if (user) {
         return null;
     }
 

@@ -1,21 +1,19 @@
-"use client";
-import { useSession, signOut } from "@/lib/auth-client";
+import { getUser } from "@/lib/auth";
+import { signOutAction } from "@/actions/auth.action";
 import { Button } from "../ui/button";
 
-export default function SignOutButton() {
-    const { data: session } = useSession();
+export default async function SignOutButton() {
+    const user = await getUser();
     
-    if (!session?.user) {
+    if (!user) {
         return null;
     }
     
-    const handleSignOut = async () => {
-        await signOut();
-    };
-    
     return (
-        <Button variant="outline" onClick={handleSignOut}>
-            Se déconnecter
-        </Button>
+        <form action={signOutAction}>
+            <Button type="submit" variant="outline">
+                Se déconnecter
+            </Button>
+        </form>
     );
 }
