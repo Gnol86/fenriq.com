@@ -8,7 +8,7 @@ export default async function Layout({ children, sidebar }) {
         <SidebarProvider>
             {sidebar}
             <main className="relative p-10 w-full h-dvh">
-                <SidebarTrigger className="absolute top-2 left-2" />
+                <SidebarTrigger className="absolute top-2 left-2 block lg:hidden" />
                 {children}
             </main>
         </SidebarProvider>
