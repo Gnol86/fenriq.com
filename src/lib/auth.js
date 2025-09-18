@@ -1,35 +1,33 @@
+// src/lib/auth.js
 import { betterAuth } from "better-auth";
 import { createAuthMiddleware, APIError } from "better-auth/api";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, organization } from "better-auth/plugins";
 import { getServerUrl } from "./server-url";
 import { SiteConfig } from "@/site-config";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
 export const auth = betterAuth({
-    database: prismaAdapter(prisma, {
-        provider: "postgres",
-    }),
+    database: prismaAdapter(prisma, { provider: "postgres" }),
     baseURL: getServerUrl(),
+    // Optionnel mais fortement recommandé pour limiter les hits DB
+    session: {
+        cookieCache: { enabled: true, maxAge: 60 }, // 60s "gratos" sans DB
+    },
     hooks: {
         before: createAuthMiddleware(async (ctx) => {
-            // Email restriction for sign-up
             if (ctx.path === "/sign-up/email") {
-                // Only apply email restriction in production
                 const isProduction = process.env.VERCEL_ENV === "production";
-                if (!isProduction) {
-                    return;
-                }
-
+                if (!isProduction) return;
                 const email = ctx.body?.email;
                 const isAuthorized =
                     email === "arnaud.marchot@icloud.com" ||
                     email?.endsWith("@police.belgium.eu");
-
                 if (!isAuthorized) {
                     throw new APIError("BAD_REQUEST", {
                         message:
@@ -56,7 +54,7 @@ export const auth = betterAuth({
                     name: user.name,
                     message:
                         "Pour terminer la création de votre compte PolGPT, veuillez vérifier votre adresse email en cliquant sur le lien ci-dessous :",
-                    url: url,
+                    url,
                 });
             } catch (error) {
                 console.error("Error sending verification email:", error);
@@ -68,17 +66,26 @@ export const auth = betterAuth({
     plugins: [admin(), organization()],
 });
 
-export const getUser = async () => {
+/**
+ * Mémoïsation PAR REQUÊTE:
+ * - on clé le cache sur le header Cookie pour éviter toute fuite cross-user.
+ * - tous les appels dans le même rendu/req RSC partagent le résultat.
+ */
+const _getUserCached = cache(async (cookieHeader) => {
     const session = await auth.api.getSession({
-        headers: await headers(),
+        headers: { cookie: cookieHeader },
     });
-    return session?.user;
+    return session?.user ?? null;
+});
+
+export const getUser = async () => {
+    // Le cookie varie à chaque requête; c'est ta clé de cache.
+    const cookieHeader = (await headers()).get("cookie") || "";
+    return _getUserCached(cookieHeader);
 };
 
 export const needUser = async () => {
     const user = await getUser();
-    if (!user) {
-        redirect("/signin");
-    }
+    if (!user) redirect("/signin");
     return user;
 };
