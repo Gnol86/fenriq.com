@@ -37,7 +37,7 @@ export default function FormResendVerification() {
         try {
             await authClient.sendVerificationEmail({
                 email: values.email,
-                callbackURL: "/auth/email-verified",
+                callbackURL: "/email-verified",
             });
 
             toast.success(
@@ -80,7 +80,7 @@ export default function FormResendVerification() {
                     >
                         Renvoyer l'email
                     </FormButton>
-                    <Link href="/auth/signin">
+                    <Link href="/signin">
                         <Button variant="ghost">Retour</Button>
                     </Link>
                 </div>
@@ -88,7 +88,7 @@ export default function FormResendVerification() {
                 <div className="text-xs flex gap-2 justify-center items-center">
                     Déjà vérifié ?
                     <Link
-                        href="/auth/signin"
+                        href="/signin"
                         className="text-primary hover:underline"
                     >
                         Se connecter

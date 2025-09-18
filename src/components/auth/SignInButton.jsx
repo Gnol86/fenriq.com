@@ -10,7 +10,7 @@ export default async function SignInButton() {
     }
 
     return (
-        <Link href="/auth/signin">
+        <Link href="/signin">
             <Button>Se connecter</Button>
         </Link>
     );

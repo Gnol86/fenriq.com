@@ -84,14 +84,14 @@ export default function FormSignup() {
                     email: values.email,
                     password: values.password,
                     name: values.name,
-                    callbackURL: "/auth/email-verified",
+                    callbackURL: "/email-verified",
                 },
                 {
                     onSuccess: () => {
                         toast.success(
                             "Compte créé avec succès. Un email de vérification a été envoyé."
                         );
-                        router.push("/auth/verify-email?email=" + values.email);
+                        router.push("/verify-email?email=" + values.email);
                     },
                     onError: (ctx) => {
                         toast.error(
@@ -200,8 +200,8 @@ export default function FormSignup() {
                     <Link
                         href={
                             form.watch("email")
-                                ? "/auth/signin?email=" + form.watch("email")
-                                : "/auth/signin"
+                                ? "/signin?email=" + form.watch("email")
+                                : "/signin"
                         }
                         className="text-primary hover:underline"
                     >

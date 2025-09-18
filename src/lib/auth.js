@@ -5,7 +5,7 @@ import { admin, organization } from "better-auth/plugins";
 import { getServerUrl } from "./server-url";
 import { SiteConfig } from "@/site-config";
 import { headers } from "next/headers";
-import { unauthorized } from "next/navigation";
+import { redirect } from "next/navigation";
 
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
@@ -78,7 +78,7 @@ export const getUser = async () => {
 export const needUser = async () => {
     const user = await getUser();
     if (!user) {
-        unauthorized();
+        redirect("/signin");
     }
     return user;
 };

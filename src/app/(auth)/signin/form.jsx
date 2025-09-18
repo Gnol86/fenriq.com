@@ -57,7 +57,7 @@ export default function FormSignin() {
                                 "Votre adresse email n'est pas vérifiée."
                             );
                             router.push(
-                                `/auth/verify-email?email=${encodeURIComponent(values.email)}`
+                                `/verify-email?email=${encodeURIComponent(values.email)}`
                             );
                         } else {
                             toast.error(
@@ -129,8 +129,8 @@ export default function FormSignin() {
                     <Link
                         href={
                             form.watch("email")
-                                ? "/auth/signup?email=" + form.watch("email")
-                                : "/auth/signup"
+                                ? "/signup?email=" + form.watch("email")
+                                : "/signup"
                         }
                         className="text-primary hover:underline"
                     >

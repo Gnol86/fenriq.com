@@ -10,7 +10,7 @@ export default async function SignUpButton() {
     }
 
     return (
-        <Link href="/auth/signup">
+        <Link href="/signup">
             <Button variant="outline">S'inscrire</Button>
         </Link>
     );
