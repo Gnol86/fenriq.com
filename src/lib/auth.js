@@ -75,7 +75,17 @@ const _getUserCached = cache(async (cookieHeader) => {
     const session = await auth.api.getSession({
         headers: { cookie: cookieHeader },
     });
-    return session?.user ?? null;
+
+    const user = session?.user;
+
+    const listOrganizations = await auth.api.listOrganizations({
+        // This endpoint requires session cookies.
+        headers: await headers(),
+    });
+
+    user.organizations = listOrganizations;
+
+    return user ?? null;
 });
 
 export const getUser = async () => {

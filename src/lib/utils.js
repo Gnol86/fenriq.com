@@ -13,3 +13,13 @@ export function getInitials(name) {
         .join("")
         .toUpperCase();
 }
+
+export function nameToSlug(name) {
+    return name
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[^\w\s-]/g, "")
+        .replace(/[\s_-]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 80);
+}

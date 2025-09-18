@@ -1,4 +1,4 @@
-import NewOrganizationForm from "./form";
+import ManageOrganizationForm from "./form";
 import {
     Card,
     CardContent,
@@ -7,19 +7,19 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
-export default function Page() {
+export default function ManageOrganizationPage() {
     return (
         <div className="min-h-dvh flex flex-col gap-6 justify-center items-center">
             <Card>
                 <CardHeader>
-                    <CardTitle>Créer une organisation</CardTitle>
+                    <CardTitle>Gérer l&apos;organisation</CardTitle>
                     <CardDescription>
-                        Donnez un nom à votre organisation pour commencer à
-                        collaborer avec votre équipe.
+                        Modifiez les informations principales de votre
+                        organisation.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <NewOrganizationForm />
+                    <ManageOrganizationForm />
                 </CardContent>
             </Card>
         </div>

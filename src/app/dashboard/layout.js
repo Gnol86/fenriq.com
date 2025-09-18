@@ -9,8 +9,10 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Plus } from "lucide-react";
+import { Plus, Settings, AlertTriangle } from "lucide-react";
 import Link from "next/link";
+import ActiveOrgLabel from "@/components/active-org-label";
+import HasActiveOrg from "@/components/has-active-org";
 
 export default async function Layout({ children }) {
     const user = await needUser();
@@ -19,17 +21,42 @@ export default async function Layout({ children }) {
         <SidebarProvider>
             <AppSidebar>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Organisation</SidebarGroupLabel>
+                    <SidebarGroupLabel>
+                        <ActiveOrgLabel />
+                    </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild>
-                                    <Link href="/dashboard/orgs/new">
-                                        <Plus className="opacity-60" />
-                                        Créer une organisation
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
+                            <HasActiveOrg reverse>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link href="/dashboard/orgs/new">
+                                            <Plus className="opacity-60" />
+                                            Créer une organisation
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            </HasActiveOrg>
+                            <HasActiveOrg>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link href="/dashboard/orgs/manage">
+                                            <Settings className="opacity-60" />
+                                            Gérer l'organisation
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link
+                                            href="/dashboard/orgs/danger-zone"
+                                            className="text-destructive"
+                                        >
+                                            <AlertTriangle className="opacity-60" />
+                                            Danger
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            </HasActiveOrg>
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>

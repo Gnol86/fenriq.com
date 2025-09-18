@@ -129,16 +129,6 @@ export default function OrgButton({ user }) {
                             </DropdownMenuItem>
                         );
                     })}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                    onSelect={(event) => {
-                        router.push("/dashboard/orgs/new");
-                    }}
-                    className="flex items-center gap-2"
-                >
-                    <Plus size={16} className="opacity-60" aria-hidden="true" />
-                    Créer une organisation
-                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );
