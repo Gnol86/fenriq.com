@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function AppPage() {
     return (
         <div className="flex flex-col gap-6">

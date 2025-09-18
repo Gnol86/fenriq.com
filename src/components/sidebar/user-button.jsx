@@ -13,6 +13,7 @@ import { signOut } from "@/lib/auth-client";
 import { usePathname, useRouter } from "next/navigation";
 import { FileText } from "lucide-react";
 import { Shield } from "lucide-react";
+import { getInitials } from "@/lib/utils";
 
 export default function UserButton({ user }) {
     const router = useRouter();
@@ -30,12 +31,7 @@ export default function UserButton({ user }) {
             <DropdownMenuTrigger className="flex items-center gap-2 p-2 cursor-pointer">
                 <Avatar className="h-10 w-10 shadow-sm">
                     <AvatarFallback className="bg-background">
-                        {user.name
-                            .split(" ")
-                            .slice(0, 2)
-                            .map((word) => word.charAt(0))
-                            .join("")
-                            .toUpperCase()}
+                        {getInitials(user.name)}
                     </AvatarFallback>
                     <AvatarImage
                         src={user.image}
