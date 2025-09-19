@@ -12,10 +12,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Loader2, MoreHorizontal } from "lucide-react";
-import {
-    inviteMemberAction,
-    cancelInvitationAction,
-} from "@/actions/organization.action";
 
 function copyLink(invitationId) {
     try {
@@ -58,16 +54,16 @@ export default function InvitationsActionMenu({ invitation, organizationId }) {
         setResendingId(invitation.id);
         (async () => {
             try {
-                const response = await inviteMemberAction({
-                    email: invitation.email,
-                    role: invitation.role ?? "member",
-                    organizationId,
-                    resend: true,
-                });
+                // const response = await inviteMemberAction({
+                //     email: invitation.email,
+                //     role: invitation.role ?? "member",
+                //     organizationId,
+                //     resend: true,
+                // });
 
-                if (!response?.success) {
-                    throw new Error(response?.error);
-                }
+                // if (!response?.success) {
+                //     throw new Error(response?.error);
+                // }
 
                 toast.success("Invitation renvoyée");
                 router.refresh();
@@ -92,14 +88,14 @@ export default function InvitationsActionMenu({ invitation, organizationId }) {
         setCancelingId(invitation.id);
         (async () => {
             try {
-                const result = await cancelInvitationAction({
-                    organizationId,
-                    invitationId: invitation.id,
-                });
+                // const result = await cancelInvitationAction({
+                //     organizationId,
+                //     invitationId: invitation.id,
+                // });
 
-                if (!result?.success) {
-                    throw new Error(result?.error);
-                }
+                // if (!result?.success) {
+                //     throw new Error(result?.error);
+                // }
 
                 toast.success("Invitation annulée");
                 router.refresh();

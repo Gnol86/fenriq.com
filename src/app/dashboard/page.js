@@ -1,4 +1,4 @@
-import { requireUser } from "@/lib/data-access";
+import { requireUser } from "@/lib/auth-access";
 
 export default async function DashboardPage() {
     const user = await requireUser();

@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/lib/data-access";
+import { getCurrentUser } from "@/lib/auth-access";
 import { signOutAction } from "@/actions/auth.action";
 import { Button } from "../ui/button";
 

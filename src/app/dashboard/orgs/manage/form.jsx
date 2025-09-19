@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
-import { updateOrganizationAction } from "@/actions/organization.action";
 
 const formSchema = z.object({
     name: z
@@ -55,17 +54,17 @@ export default function ManageOrganizationForm({ organization }) {
         }
 
         try {
-            const result = await updateOrganizationAction({
-                organizationId: organization.id,
-                name: values.name,
-            });
+            // const result = await updateOrganizationAction({
+            //     organizationId: organization.id,
+            //     name: values.name,
+            // });
 
-            if (!result?.success) {
-                throw new Error(
-                    result?.error ||
-                        "Impossible de mettre à jour l\'organisation pour le moment"
-                );
-            }
+            // if (!result?.success) {
+            //     throw new Error(
+            //         result?.error ||
+            //             "Impossible de mettre à jour l\'organisation pour le moment"
+            //     );
+            // }
 
             toast.success("Organisation mise à jour avec succès");
             router.refresh();
@@ -78,8 +77,7 @@ export default function ManageOrganizationForm({ organization }) {
         }
     };
 
-    return (
-        organization ? (
+    return organization ? (
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -143,14 +141,13 @@ export default function ManageOrganizationForm({ organization }) {
                 </div>
             </form>
         </Form>
-        ) : (
-            <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-                <p>Aucune organisation active n&apos;a été trouvée.</p>
-                <p>
-                    Sélectionnez une organisation dans le menu latéral pour
-                    pouvoir modifier ses informations.
-                </p>
-            </div>
-        )
+    ) : (
+        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+            <p>Aucune organisation active n&apos;a été trouvée.</p>
+            <p>
+                Sélectionnez une organisation dans le menu latéral pour pouvoir
+                modifier ses informations.
+            </p>
+        </div>
     );
 }

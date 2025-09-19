@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
-import { createOrganizationAction } from "@/actions/organization.action";
 
 const formSchema = z.object({
     name: z
@@ -46,17 +45,17 @@ export default function NewOrganizationForm({ hasActiveOrganization = false }) {
 
     const onSubmit = async values => {
         try {
-            const result = await createOrganizationAction({
-                name: values.name,
-                keepCurrentActiveOrganization: hasActiveOrganization,
-            });
+            // const result = await createOrganizationAction({
+            //     name: values.name,
+            //     keepCurrentActiveOrganization: hasActiveOrganization,
+            // });
 
-            if (!result?.success) {
-                throw new Error(
-                    result?.error ||
-                        "Impossible de créer l'organisation pour le moment"
-                );
-            }
+            // if (!result?.success) {
+            //     throw new Error(
+            //         result?.error ||
+            //             "Impossible de créer l'organisation pour le moment"
+            //     );
+            // }
 
             toast.success("Organisation créée avec succès");
             router.push("/dashboard");

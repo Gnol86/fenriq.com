@@ -5,7 +5,7 @@ import {
     SidebarHeader,
 } from "@/components/ui/sidebar";
 import UserButton from "./user-button";
-import { requireUser } from "@/lib/data-access";
+import { requireUser } from "@/lib/auth-access";
 import OrgButton from "./org-button";
 
 export async function AppSidebar({

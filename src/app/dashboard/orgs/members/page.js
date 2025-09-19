@@ -6,7 +6,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { requireUser, requireOrganization } from "@/lib/data-access";
+import { requireUser, requireOrganization } from "@/lib/auth-access";
 import MembersTable from "./components/members-table";
 import InvitationsTable from "./components/invitations-table";
 
@@ -21,7 +21,7 @@ export default async function OrganizationMembersPage() {
     ).length;
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 p-10 max-w-4xl mx-auto">
             <Card>
                 <CardHeader>
                     <CardTitle>Membres de l&apos;organisation</CardTitle>

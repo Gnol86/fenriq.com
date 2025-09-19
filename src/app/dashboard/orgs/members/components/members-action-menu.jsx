@@ -17,10 +17,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import RemoveMemberDialog from "./remove-member-dialog";
 import { defaultRoleLabels } from "./constants";
-import {
-    removeMemberAction,
-    updateMemberRoleAction,
-} from "@/actions/organization.action";
 
 export default function MembersActionMenu({
     member,
@@ -46,15 +42,15 @@ export default function MembersActionMenu({
 
             setIsUpdatingMemberId(member.id);
             try {
-                const result = await updateMemberRoleAction({
-                    memberId: member.id,
-                    role,
-                    organizationId,
-                });
+                // const result = await updateMemberRoleAction({
+                //     memberId: member.id,
+                //     role,
+                //     organizationId,
+                // });
 
-                if (!result?.success) {
-                    throw new Error(result?.error);
-                }
+                // if (!result?.success) {
+                //     throw new Error(result?.error);
+                // }
 
                 toast.success("Rôle mis à jour");
                 router.refresh();
@@ -79,14 +75,14 @@ export default function MembersActionMenu({
         setIsRemovingMember(true);
         (async () => {
             try {
-                const result = await removeMemberAction({
-                    memberIdOrEmail: member.id,
-                    organizationId,
-                });
+                // const result = await removeMemberAction({
+                //     memberIdOrEmail: member.id,
+                //     organizationId,
+                // });
 
-                if (!result?.success) {
-                    throw new Error(result?.error);
-                }
+                // if (!result?.success) {
+                //     throw new Error(result?.error);
+                // }
 
                 toast.success("Membre supprimé de l'organisation");
                 router.refresh();
@@ -123,7 +119,10 @@ export default function MembersActionMenu({
                         aria-label="Actions du membre"
                         disabled={isSelf}
                     >
-                        <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
+                        <MoreHorizontal
+                            className="h-4 w-4"
+                            aria-hidden="true"
+                        />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -140,7 +139,8 @@ export default function MembersActionMenu({
                                         handleRoleChange(role);
                                     }}
                                     disabled={
-                                        roleChangeDisabled || memberRole === role
+                                        roleChangeDisabled ||
+                                        memberRole === role
                                     }
                                 >
                                     <span className="text-sm">{label}</span>

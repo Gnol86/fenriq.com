@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import {
     SidebarProvider,
     SidebarTrigger,
@@ -9,7 +10,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { requireUser, getCurrentOrganization } from "@/lib/data-access";
+import { requireUser, getCurrentOrganization } from "@/lib/auth-access";
 import { Plus, Settings, AlertTriangle, Users } from "lucide-react";
 import Link from "next/link";
 
@@ -77,9 +78,10 @@ export default async function Layout({ children }) {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </AppSidebar>
-            <main className="relative p-10 w-full h-dvh">
+            <main className="relative p-0 w-full h-dvh">
                 <SidebarTrigger className="absolute top-2 left-2 block lg:hidden" />
                 {children}
+                <AnimatedThemeToggler className="fixed bottom-4 right-4" />
             </main>
         </SidebarProvider>
     );

@@ -4,6 +4,12 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, organization } from "better-auth/plugins";
 import { getServerUrl } from "./server-url";
 import { SiteConfig } from "@/site-config";
+import {
+    ac,
+    ownerPermissions,
+    adminPermissions,
+    memberPermissions,
+} from "./organization-permissions.js";
 
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
@@ -54,8 +60,17 @@ export const auth = betterAuth({
         autoSignInAfterVerification: true,
     },
     plugins: [
-        admin(),
+        admin({
+            defaultRole: "user",
+        }),
         organization({
+            creatorRole: "owner",
+            ac: ac,
+            roles: {
+                owner: ownerPermissions,
+                admin: adminPermissions,
+                member: memberPermissions,
+            },
             invitationExpiresIn: 60 * 60 * 24 * 30,
             sendInvitationEmail: async ({
                 email,

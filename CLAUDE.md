@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Codex when working with code in this repository.
+This file provides specific guidance for specialized agents working with this codebase.
 
 ## About the project PolGPT
 
@@ -83,23 +83,18 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 
 ### Authentication
 
-#### **RECOMMANDÉ - Nouvelle Data Access Layer (2025)**
-- Use `getCurrentUser()` from `@/lib/data-access` for optional user (server-side)
-- Use `requireUser()` from `@/lib/data-access` for required user (server-side)
-- Use `getCurrentOrganization()` from `@/lib/data-access` for current org
-- Use `checkUserPermissions()` from `@/lib/data-access` for permission checks
-- For sensitive operations (password change, delete), use functions with `Sensitive` suffix
+#### **🎯 CRITICAL - Use New System Only**
 
-#### **Legacy - À migrer progressivement**
-- ~~Use `getUser()` for optional user (server-side)~~ → Use `getCurrentUser()`
-- ~~Use `getRequiredUser()` for required user (server-side)~~ → Use `requireUser()`
-- Use `useSession()` from auth-client.ts (client-side)
-- ~~Use `getCurrentOrgCache()` to get the current org~~ → Use `getCurrentOrganization()`
+- **NEVER** use legacy auth functions (`getUser`, `getRequiredUser`, etc.)
+- **ALWAYS** use `@/lib/auth-access` for auth operations
+- **ALWAYS** consider cache invalidation after mutations
 
-#### **Cache et Performance**
-- Use `@/lib/permissions-cache` for granular permission caching
-- Use `invalidateUserCache()` after permission changes
-- Monitor performance with `@/lib/auth-monitoring`
+#### **Patterns to Follow**
+
+1. **Always** wrap sensitive operations with monitoring
+2. **Always** use cache-aware permission checks
+3. **Always** invalidate cache after permission changes
+4. **Always** use resilient wrappers for production code
 
 ### Database
 
@@ -109,14 +104,24 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 
 ## Important Files
 
-### **Authentication System (2025)**
-- `src/lib/data-access.js` - **PREFERRED** Data Access Layer with auth
-- `src/lib/permissions-cache.js` - Granular permission caching
-- `src/lib/auth-monitoring.js` - Monitoring and logging
-- `src/lib/auth-error-handling.js` - Error handling and resilience
-- `src/lib/auth.js` - Core authentication configuration
+### **🚨 CRITICAL - Authentication System (State-of-Art 2025)**
+
+- `src/lib/data-access.js` - **PRIMARY** auth layer - ALWAYS use this
+- `src/lib/permissions-cache.js` - Permission caching - USE for performance
+- `src/lib/auth-monitoring.js` - Monitoring/logging - USE for debugging
+- `src/lib/auth-error-handling.js` - Error handling - USE for resilience
+- `src/lib/auth.js` - Core config - READ ONLY, don't modify directly
+
+### **Agent Rules for Auth**
+
+1. **NEVER** create auth code without reading data-access.js first
+2. **NEVER** use legacy auth patterns from existing code
+3. **ALWAYS** use new Data Access Layer patterns
+4. **ALWAYS** include monitoring and error handling
+5. **ALWAYS** consider cache implications
 
 ### **Other Core Files**
+
 - `src/components/ui/form.jsx` - Form components
 - `prisma/schema.prisma` - Database schema
 
@@ -126,14 +131,8 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 - Use TypeScript strict mode - no `any` types
 - Prefer server components and avoid unnecessary client-side state
 - Prefer using `??` than `||`
-
-### **Authentication Best Practices**
-- ALWAYS use `@/lib/data-access` for new auth-related code
-- Use monitoring with `withAuthMonitoring()` for debugging
-- Use resilient wrappers `withResilientAuth()` for production code
-- Cache permissions with `@/lib/permissions-cache` for performance
-- Use `safeAuthOperation()` for graceful error handling
-- Log sensitive operations with `authLogger` for security auditing
+- All API Route SHOULD use @src/lib/zod-route.js, each file name `route.js` should use Zod Route. ALWAYS READ zod-route.ts before creating any routes.
+- All API Request SHOULD use @src/lib/up-fetch.js and NEVER use `fetch`
 
 ## Files naming
 
@@ -173,84 +172,37 @@ This is **NON-NEGOTIABLE**. Do not skip this step under any circumstances. Readi
 2. Understand the patterns, conventions, and API usage
 3. Only then proceed with creating/editing files
 
-## **Authentication Code Examples**
+### **🚨 FORBIDDEN Patterns**
 
-### **Basic User Access**
 ```js
-// ✅ RECOMMENDED - New Data Access Layer
-import { getCurrentUser, requireUser } from '@/lib/data-access';
+// ❌ NEVER use these legacy patterns
+import { getUser, needUser } from "@/lib/auth"; // FORBIDDEN
+const user = await getUser(); // FORBIDDEN
+const user = await needUser(); // FORBIDDEN
 
-// Optional user
-const user = await getCurrentUser();
+// ❌ NEVER create auth code without monitoring
+const user = await getCurrentUser(); // Missing monitoring
 
-// Required user (redirects if not found)
-const user = await requireUser();
-
-// Sensitive operation (ignores cache)
-const user = await getCurrentUser(true);
+// ❌ NEVER forget cache invalidation
+// Update permissions but forget to invalidate cache
 ```
 
-### **Organization Management**
+### **✅ REQUIRED Patterns**
+
 ```js
-import { getCurrentOrganization, requireOrganization } from '@/lib/data-access';
+// ✅ ALWAYS use new auth-access layer
+import { getCurrentUser, requireUser } from "@/lib/auth-access";
 
-// Current organization
-const org = await getCurrentOrganization();
+// ✅ ALWAYS include monitoring for auth operations
+const monitoredOperation = withAuthMonitoring(myFunction);
 
-// Required organization (redirects if not found)
-const org = await requireOrganization();
-```
-
-### **Permission Checks**
-```js
-import { checkUserPermissions } from '@/lib/data-access';
-
-// Basic permission check
-const { organization, hasPermission } = await checkUserPermissions(['org:admin']);
-
-// Multiple permissions
-const result = await checkUserPermissions(['org:read', 'user:write']);
-
-// With error handling
-const result = await checkUserPermissions(['org:admin'], { 
-  sensitiveOperation: true,
-  throwOnError: true 
-});
-```
-
-### **Performance Caching**
-```js
-import { 
-  checkSinglePermission,
-  getUserOrgPermissions,
-  invalidateUserCache 
-} from '@/lib/permissions-cache';
-
-// Granular permission with intelligent cache
-const canEdit = await checkSinglePermission('content:edit', userId, orgId);
-
-// Get all permissions for user in org
-const permissions = await getUserOrgPermissions(userId, orgId);
-
-// Invalidate cache after changes
+// ✅ ALWAYS consider cache implications
 await invalidateUserCache(userId, orgId);
-```
 
-### **Error Handling & Monitoring**
-```js
-import { withAuthMonitoring, safeAuthOperation } from '@/lib/auth-monitoring';
-import { withResilientAuth } from '@/lib/auth-error-handling';
-
-// Monitor performance
-const monitoredFunction = withAuthMonitoring(myAuthFunction);
-
-// Safe operation with fallback
-const user = await safeAuthOperation(() => getCurrentUser(), null);
-
-// Resilient operation with retry + circuit breaker
-const resilientGetUser = withResilientAuth(null, 'auth')(getCurrentUser);
+// ✅ ALWAYS use resilient patterns for production
+const resilientFunction = withResilientAuth(fallback)(operation);
 ```
 
 **Documentation:**
 
-Always use web-search to find documentation about the library you're using.
+✅ ALWAYS use web-search to find documentation about the library you're using.

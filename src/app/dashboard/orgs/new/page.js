@@ -6,13 +6,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { requireUser, getCurrentOrganization } from "@/lib/data-access";
+import { getCurrentOrganization } from "@/lib/auth-access";
 
 export default async function Page() {
-    await requireUser();
     const activeOrganization = await getCurrentOrganization();
     return (
-        <div className="min-h-dvh flex flex-col gap-6 justify-center items-center">
+        <div className="flex flex-col gap-6 p-10 max-w-4xl mx-auto">
             <Card>
                 <CardHeader>
                     <CardTitle>Créer une organisation</CardTitle>

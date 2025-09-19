@@ -84,37 +84,13 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 ### Authentication
 
 #### **🎯 CRITICAL - Use New System Only**
+
 - **NEVER** use legacy auth functions (`getUser`, `getRequiredUser`, etc.)
-- **ALWAYS** use `@/lib/data-access` for auth operations
-- **ALWAYS** use monitoring and error handling wrappers
+- **ALWAYS** use `@/lib/auth-access` for auth operations
 - **ALWAYS** consider cache invalidation after mutations
 
-#### **Required Imports for Auth**
-```js
-// Primary auth operations
-import { 
-  getCurrentUser, 
-  requireUser, 
-  getCurrentOrganization,
-  checkUserPermissions 
-} from '@/lib/data-access';
-
-// Performance caching
-import { 
-  checkSinglePermission,
-  invalidateUserCache,
-  getUserOrgPermissions 
-} from '@/lib/permissions-cache';
-
-// Monitoring & error handling
-import { 
-  authLogger, 
-  withAuthMonitoring,
-  safeAuthOperation 
-} from '@/lib/auth-monitoring';
-```
-
 #### **Patterns to Follow**
+
 1. **Always** wrap sensitive operations with monitoring
 2. **Always** use cache-aware permission checks
 3. **Always** invalidate cache after permission changes
@@ -129,6 +105,7 @@ import {
 ## Important Files
 
 ### **🚨 CRITICAL - Authentication System (State-of-Art 2025)**
+
 - `src/lib/data-access.js` - **PRIMARY** auth layer - ALWAYS use this
 - `src/lib/permissions-cache.js` - Permission caching - USE for performance
 - `src/lib/auth-monitoring.js` - Monitoring/logging - USE for debugging
@@ -136,6 +113,7 @@ import {
 - `src/lib/auth.js` - Core config - READ ONLY, don't modify directly
 
 ### **Agent Rules for Auth**
+
 1. **NEVER** create auth code without reading data-access.js first
 2. **NEVER** use legacy auth patterns from existing code
 3. **ALWAYS** use new Data Access Layer patterns
@@ -143,6 +121,7 @@ import {
 5. **ALWAYS** consider cache implications
 
 ### **Other Core Files**
+
 - `src/components/ui/form.jsx` - Form components
 - `prisma/schema.prisma` - Database schema
 
@@ -193,57 +172,11 @@ This is **NON-NEGOTIABLE**. Do not skip this step under any circumstances. Readi
 2. Understand the patterns, conventions, and API usage
 3. Only then proceed with creating/editing files
 
-## **🎯 Agent Authentication Workflow**
-
-### **Step 1: Always Read First**
-Before any auth-related task:
-```bash
-# Required reading order:
-1. /src/lib/data-access.js - Understand the primary patterns
-2. /src/lib/permissions-cache.js - Understand caching strategies  
-3. /src/lib/auth-monitoring.js - Understand monitoring patterns
-```
-
-### **Step 2: Implementation Template**
-```js
-// 1. Import the new system
-import { getCurrentUser, checkUserPermissions } from '@/lib/data-access';
-import { authLogger, withAuthMonitoring } from '@/lib/auth-monitoring';
-import { invalidateUserCache } from '@/lib/permissions-cache';
-
-// 2. Wrap operations with monitoring
-const myAuthFunction = withAuthMonitoring(async () => {
-  // 3. Use data-access layer
-  const user = await getCurrentUser();
-  
-  // 4. Check permissions with new system
-  const { hasPermission } = await checkUserPermissions(['required:permission']);
-  
-  // 5. Log important events
-  authLogger.info('Operation completed', { userId: user?.id });
-  
-  // 6. Invalidate cache if needed
-  if (dataChanged) {
-    await invalidateUserCache(user.id, orgId);
-  }
-});
-```
-
-### **Step 3: Error Handling Pattern**
-```js
-import { safeAuthOperation, withResilientAuth } from '@/lib/auth-error-handling';
-
-// Safe operation with fallback
-const user = await safeAuthOperation(() => getCurrentUser(), null);
-
-// Resilient operation with retry + circuit breaker  
-const resilientAuth = withResilientAuth(null, 'auth')(getCurrentUser);
-```
-
 ### **🚨 FORBIDDEN Patterns**
+
 ```js
 // ❌ NEVER use these legacy patterns
-import { getUser, needUser } from '@/lib/auth'; // FORBIDDEN
+import { getUser, needUser } from "@/lib/auth"; // FORBIDDEN
 const user = await getUser(); // FORBIDDEN
 const user = await needUser(); // FORBIDDEN
 
@@ -255,9 +188,10 @@ const user = await getCurrentUser(); // Missing monitoring
 ```
 
 ### **✅ REQUIRED Patterns**
+
 ```js
-// ✅ ALWAYS use new data-access layer
-import { getCurrentUser, requireUser } from '@/lib/data-access';
+// ✅ ALWAYS use new auth-access layer
+import { getCurrentUser, requireUser } from "@/lib/auth-access";
 
 // ✅ ALWAYS include monitoring for auth operations
 const monitoredOperation = withAuthMonitoring(myFunction);
@@ -271,4 +205,4 @@ const resilientFunction = withResilientAuth(fallback)(operation);
 
 **Documentation:**
 
-Always use web-search to find documentation about the library you're using.
+✅ ALWAYS use web-search to find documentation about the library you're using.
