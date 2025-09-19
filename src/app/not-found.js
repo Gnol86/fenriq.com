@@ -7,11 +7,11 @@ export default function NotFound() {
             <div className="flex gap-2 justify-center items-center">
                 <div className="text-2xl font-bold">404</div>
                 <div className="text-sm">
-                    La page que vous recherchez n'existe pas.
+                    La page que vous recherchez n&apos;existe pas.
                 </div>
             </div>
             <Link href="/">
-                <Button>Retour à l'accueil</Button>
+                <Button>Retour à l&apos;accueil</Button>
             </Link>
         </main>
     );

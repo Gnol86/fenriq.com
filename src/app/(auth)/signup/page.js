@@ -11,9 +11,9 @@ export default function Page() {
     return (
         <Card className="w-sm">
             <CardHeader>
-                <CardTitle className="text-xl">S'inscrire</CardTitle>
+                <CardTitle className="text-xl">S&apos;inscrire</CardTitle>
                 <CardDescription>
-                    Inscrivez-vous pour obtenir un accès à l'application
+                    Inscrivez-vous pour obtenir un accès à l&apos;application
                 </CardDescription>
             </CardHeader>
             <CardContent>

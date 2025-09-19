@@ -24,7 +24,7 @@ export default function Page() {
                 <div className="flex gap-2">
                     <Link href="/app" className="flex-1">
                         <Button className="w-full">
-                            Accèder à l'application
+                            Accèder à l&apos;application
                         </Button>
                     </Link>
                 </div>

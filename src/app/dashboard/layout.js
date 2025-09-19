@@ -42,7 +42,7 @@ export default async function Layout({ children }) {
                                     <SidebarMenuButton asChild>
                                         <Link href="/dashboard/orgs/manage">
                                             <Settings className="opacity-60" />
-                                            Gérer l'organisation
+                                            Gérer l&apos;organisation
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>

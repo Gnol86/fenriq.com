@@ -13,7 +13,7 @@ export default function Error({ error, reset }) {
             <div className="flex gap-2 justify-center items-center">
                 <div className="text-2xl font-bold">500</div>
                 <div className="text-sm">
-                    Une erreur s'est produite lors du traitement de votre
+                    Une erreur s&apos;est produite lors du traitement de votre
                     demande.
                 </div>
             </div>
@@ -22,7 +22,7 @@ export default function Error({ error, reset }) {
                     Réessayer
                 </Button>
                 <Link href="/">
-                    <Button variant="outline">Retour à l'accueil</Button>
+                    <Button variant="outline">Retour à l&apos;accueil</Button>
                 </Link>
             </div>
             {process.env.VERCEL_ENV !== "production" && (

@@ -13,7 +13,7 @@ export default function Page() {
             <CardHeader>
                 <CardTitle className="text-xl">Se connecter</CardTitle>
                 <CardDescription>
-                    Connectez-vous à votre compte pour accéder à l'application
+                    Connectez-vous à votre compte pour accéder à l&apos;application
                 </CardDescription>
             </CardHeader>
             <CardContent>
