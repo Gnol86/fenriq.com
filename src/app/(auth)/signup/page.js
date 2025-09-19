@@ -1,24 +1,24 @@
 import FormSignup from "./form";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 
 export default function Page() {
-  return (
-    <Card className="w-sm">
-      <CardHeader>
-        <CardTitle className="text-xl">S&apos;inscrire</CardTitle>
-        <CardDescription>
-          Inscrivez-vous pour obtenir un accès à l&apos;application
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <FormSignup />
-      </CardContent>
-    </Card>
-  );
+    return (
+        <Card className="w-sm">
+            <CardHeader>
+                <CardTitle className="text-xl">S&apos;inscrire</CardTitle>
+                <CardDescription>
+                    Inscrivez-vous pour obtenir un accès à l&apos;application
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <FormSignup />
+            </CardContent>
+        </Card>
+    );
 }

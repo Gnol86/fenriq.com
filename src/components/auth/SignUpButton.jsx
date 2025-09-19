@@ -3,15 +3,15 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 
 export default async function SignUpButton() {
-  const user = await getUser();
+    const user = await getUser();
 
-  if (user) {
-    return null;
-  }
+    if (user) {
+        return null;
+    }
 
-  return (
-    <Link href="/signup">
-      <Button variant="outline">S'inscrire</Button>
-    </Link>
-  );
+    return (
+        <Link href="/signup">
+            <Button variant="outline">S'inscrire</Button>
+        </Link>
+    );
 }
