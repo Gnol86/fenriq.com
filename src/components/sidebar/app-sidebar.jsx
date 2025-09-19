@@ -8,12 +8,22 @@ import UserButton from "./user-button";
 import { requireUser } from "@/lib/data-access";
 import OrgButton from "./org-button";
 
-export async function AppSidebar({ children }) {
-    const user = await requireUser();
+export async function AppSidebar({
+    children,
+    user: userProp,
+    organizations: organizationsProp,
+    activeOrganization,
+}) {
+    const user = userProp ?? (await requireUser());
+    const organizations = organizationsProp ?? user?.organizations ?? [];
+
     return (
         <Sidebar>
             <SidebarHeader>
-                <OrgButton user={user} />
+                <OrgButton
+                    organizations={organizations}
+                    activeOrganization={activeOrganization}
+                />
             </SidebarHeader>
             <SidebarContent>{children}</SidebarContent>
             <SidebarFooter>

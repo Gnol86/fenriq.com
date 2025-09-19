@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { authClient } from "@/lib/auth-client";
 import {
     Form,
     FormControl,
@@ -19,8 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2 } from "lucide-react";
-import { getInitials, nameToSlug } from "@/lib/utils";
+import { getInitials } from "@/lib/utils";
+import { updateOrganizationAction } from "@/actions/organization.action";
 
 const formSchema = z.object({
     name: z
@@ -38,29 +36,18 @@ const formSchema = z.object({
         }, "Le nom doit contenir au minimum deux caractères alphanumériques"),
 });
 
-export default function ManageOrganizationForm() {
+export default function ManageOrganizationForm({ organization }) {
     const router = useRouter();
-    const {
-        data: activeOrganization,
-        isPending: isLoadingActiveOrganization,
-        refetch: refetchActiveOrganization,
-    } = authClient.useActiveOrganization();
-
+    const organizationName = organization?.name ?? "";
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "",
+            name: organizationName,
         },
     });
 
-    useEffect(() => {
-        if (activeOrganization?.name) {
-            form.reset({ name: activeOrganization.name });
-        }
-    }, [activeOrganization, form]);
-
     const onSubmit = async values => {
-        if (!activeOrganization?.id) {
+        if (!organization?.id) {
             toast.error(
                 "Aucune organisation active n\'a été trouvée. Veuillez en sélectionner une."
             );
@@ -68,19 +55,18 @@ export default function ManageOrganizationForm() {
         }
 
         try {
-            const result = await authClient.organization.update({
-                organizationId: activeOrganization.id,
-                data: {
-                    name: values.name,
-                    slug: nameToSlug(values.name),
-                },
+            const result = await updateOrganizationAction({
+                organizationId: organization.id,
+                name: values.name,
             });
 
-            if (result.error) {
-                throw result.error;
+            if (!result?.success) {
+                throw new Error(
+                    result?.error ||
+                        "Impossible de mettre à jour l\'organisation pour le moment"
+                );
             }
 
-            refetchActiveOrganization();
             toast.success("Organisation mise à jour avec succès");
             router.refresh();
         } catch (error) {
@@ -92,28 +78,8 @@ export default function ManageOrganizationForm() {
         }
     };
 
-    if (isLoadingActiveOrganization) {
-        return (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                Chargement de l&apos;organisation...
-            </div>
-        );
-    }
-
-    if (!activeOrganization) {
-        return (
-            <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-                <p>Aucune organisation active n&apos;a été trouvée.</p>
-                <p>
-                    Sélectionnez une organisation dans le menu latéral pour
-                    pouvoir modifier ses informations.
-                </p>
-            </div>
-        );
-    }
-
     return (
+        organization ? (
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -126,11 +92,11 @@ export default function ManageOrganizationForm() {
                     <div className="flex items-center gap-4">
                         <Avatar className="h-16 w-16">
                             <AvatarFallback className="bg-muted text-lg">
-                                {getInitials(activeOrganization.name)}
+                                {getInitials(organizationName)}
                             </AvatarFallback>
                             <AvatarImage
-                                src={activeOrganization.image ?? undefined}
-                                alt={`Avatar de ${activeOrganization.name}`}
+                                src={organization?.image ?? undefined}
+                                alt={`Avatar de ${organizationName}`}
                             />
                         </Avatar>
                         <div className="flex flex-col text-sm text-muted-foreground">
@@ -177,5 +143,14 @@ export default function ManageOrganizationForm() {
                 </div>
             </form>
         </Form>
+        ) : (
+            <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+                <p>Aucune organisation active n&apos;a été trouvée.</p>
+                <p>
+                    Sélectionnez une organisation dans le menu latéral pour
+                    pouvoir modifier ses informations.
+                </p>
+            </div>
+        )
     );
 }

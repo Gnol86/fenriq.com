@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,23 +14,25 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { getInitials } from "@/lib/utils";
 
-export default function OrgButton({ user }) {
+export default function OrgButton({ organizations = [], activeOrganization }) {
     const router = useRouter();
-
-    const { data: organizations = [], isPending: isLoadingOrganizations } =
-        authClient.useListOrganizations();
-    const { data: activeOrganization } = authClient.useActiveOrganization();
     const [switchingOrgId, setSwitchingOrgId] = useState(null);
+    const [currentActiveOrg, setCurrentActiveOrg] = useState(
+        activeOrganization ?? null
+    );
+
+    useEffect(() => {
+        setCurrentActiveOrg(activeOrganization ?? null);
+    }, [activeOrganization]);
 
     const sortedOrganizations = useMemo(() => {
-        if (!organizations) {
-            return [];
-        }
-        return [...organizations].sort((a, b) => a.name.localeCompare(b.name));
+        return [...organizations].sort((a, b) =>
+            a.name.localeCompare(b.name, "fr", { sensitivity: "accent" })
+        );
     }, [organizations]);
 
     const handleSwitchOrganization = async organizationId => {
-        if (!organizationId || organizationId === activeOrganization?.id) {
+        if (!organizationId || organizationId === currentActiveOrg?.id) {
             return;
         }
 
@@ -39,6 +41,11 @@ export default function OrgButton({ user }) {
             await authClient.organization.setActive({
                 organizationId,
             });
+
+            const nextOrg =
+                sortedOrganizations.find(org => org.id === organizationId) ??
+                null;
+            setCurrentActiveOrg(nextOrg);
             router.refresh();
         } catch (error) {
             console.error("Failed to switch organization", error);
@@ -47,25 +54,28 @@ export default function OrgButton({ user }) {
         }
     };
 
+    const displayOrganization = currentActiveOrg ?? null;
+    const hasOrganizations = sortedOrganizations.length > 0;
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 p-2 cursor-pointer">
                 <Avatar className="h-10 w-10">
                     <AvatarFallback className="bg-background">
-                        {getInitials(activeOrganization?.name || "P")}
+                        {getInitials(displayOrganization?.name || "P")}
                     </AvatarFallback>
                     <AvatarImage
                         src={
-                            activeOrganization?.image ||
+                            displayOrganization?.image ||
                             "/images/logo_noborder.png"
                         }
-                        alt={`Avatar of ${activeOrganization?.name || "PolGPT"}`}
+                        alt={`Avatar of ${displayOrganization?.name || "PolGPT"}`}
                     />
                 </Avatar>
                 <div className="flex flex-col justify-start items-start flex-1 text-left overflow-hidden min-w-0">
                     <span className="font-bold truncate w-full">PolGPT</span>
                     <span className="text-xs font-medium text-muted-foreground -mt-1 truncate w-full">
-                        {activeOrganization?.name || "Aucune organisation"}
+                        {displayOrganization?.name || "Aucune organisation"}
                     </span>
                 </div>
             </DropdownMenuTrigger>
@@ -76,25 +86,15 @@ export default function OrgButton({ user }) {
                 <DropdownMenuLabel className="text-xs text-muted-foreground">
                     Mes organisations
                 </DropdownMenuLabel>
-                {isLoadingOrganizations && (
-                    <DropdownMenuItem
-                        disabled
-                        className="flex items-center gap-2"
-                    >
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Chargement...
+                {!hasOrganizations && (
+                    <DropdownMenuItem disabled>
+                        Aucune organisation
                     </DropdownMenuItem>
                 )}
-                {!isLoadingOrganizations &&
-                    sortedOrganizations.length === 0 && (
-                        <DropdownMenuItem disabled>
-                            Aucune organisation
-                        </DropdownMenuItem>
-                    )}
-                {!isLoadingOrganizations &&
+                {hasOrganizations &&
                     sortedOrganizations.map(organization => {
                         const isActive =
-                            organization.id === activeOrganization?.id;
+                            organization.id === currentActiveOrg?.id;
                         const isSwitching = switchingOrgId === organization.id;
 
                         return (
@@ -129,6 +129,25 @@ export default function OrgButton({ user }) {
                             </DropdownMenuItem>
                         );
                     })}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                    onSelect={event => {
+                        event.preventDefault();
+                        router.push("/dashboard/orgs/new");
+                    }}
+                >
+                    <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
+                    Créer une organisation
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                    onSelect={event => {
+                        event.preventDefault();
+                        router.push("/dashboard/orgs/manage");
+                    }}
+                    disabled={!displayOrganization}
+                >
+                    Paramètres de l&apos;organisation
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

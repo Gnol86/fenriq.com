@@ -1,7 +1,7 @@
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { requireUser } from "@/lib/data-access";
 import {
+    SidebarProvider,
+    SidebarTrigger,
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
@@ -9,25 +9,31 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Plus, Settings, AlertTriangle } from "lucide-react";
+import { requireUser, getCurrentOrganization } from "@/lib/data-access";
+import { Plus, Settings, AlertTriangle, Users } from "lucide-react";
 import Link from "next/link";
-import ActiveOrgLabel from "@/components/active-org-label";
-import HasActiveOrg from "@/components/has-active-org";
-import { Users } from "lucide-react";
 
 export default async function Layout({ children }) {
     const user = await requireUser();
+    const activeOrganization = await getCurrentOrganization();
+    const hasOrganization = Boolean(activeOrganization);
+    const organizationLabel = activeOrganization?.name ?? "Organisation";
+    const organizations = user?.organizations ?? [];
 
     return (
         <SidebarProvider>
-            <AppSidebar>
+            <AppSidebar
+                user={user}
+                activeOrganization={activeOrganization}
+                organizations={organizations}
+            >
                 <SidebarGroup>
                     <SidebarGroupLabel>
-                        <ActiveOrgLabel />
+                        <span>{organizationLabel}</span>
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            <HasActiveOrg reverse>
+                            {!hasOrganization ? (
                                 <SidebarMenuItem>
                                     <SidebarMenuButton asChild>
                                         <Link href="/dashboard/orgs/new">
@@ -36,36 +42,37 @@ export default async function Layout({ children }) {
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
-                            </HasActiveOrg>
-                            <HasActiveOrg>
-                                <SidebarMenuItem>
-                                    <SidebarMenuButton asChild>
-                                        <Link href="/dashboard/orgs/manage">
-                                            <Settings className="opacity-60" />
-                                            Gérer l&apos;organisation
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                                <SidebarMenuItem>
-                                    <SidebarMenuButton asChild>
-                                        <Link href="/dashboard/orgs/members">
-                                            <Users className="opacity-60" />
-                                            Membres
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                                <SidebarMenuItem>
-                                    <SidebarMenuButton asChild>
-                                        <Link
-                                            href="/dashboard/orgs/danger-zone"
-                                            className="text-destructive"
-                                        >
-                                            <AlertTriangle className="opacity-60" />
-                                            Danger
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            </HasActiveOrg>
+                            ) : (
+                                <>
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link href="/dashboard/orgs/manage">
+                                                <Settings className="opacity-60" />
+                                                Gérer l&apos;organisation
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link href="/dashboard/orgs/members">
+                                                <Users className="opacity-60" />
+                                                Membres
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link
+                                                href="/dashboard/orgs/danger-zone"
+                                                className="text-destructive"
+                                            >
+                                                <AlertTriangle className="opacity-60" />
+                                                Danger
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                </>
+                            )}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>

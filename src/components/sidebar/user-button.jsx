@@ -1,4 +1,7 @@
 "use client";
+import { useTransition } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -8,16 +11,15 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Settings2, LogOut } from "lucide-react";
+import { Settings2, LogOut, FileText, Shield, Loader2 } from "lucide-react";
 import { signOut } from "@/lib/auth-client";
-import { usePathname, useRouter } from "next/navigation";
-import { FileText } from "lucide-react";
-import { Shield } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 
 export default function UserButton({ user }) {
     const router = useRouter();
     const pathname = usePathname();
+    const [isSigningOut, startSignOut] = useTransition();
+
     if (!user) {
         return null;
     }
@@ -26,24 +28,41 @@ export default function UserButton({ user }) {
     const isOnDashboard = pathname?.startsWith("/dashboard");
     const isOnAdmin = pathname?.startsWith("/admin");
 
+    const handleSignOut = () => {
+        startSignOut(async () => {
+            await signOut({
+                fetchOptions: {
+                    onSuccess: () => {
+                        router.push("/");
+                    },
+                },
+            });
+        });
+    };
+
+    const userInitials = getInitials(user.name || user.email || "Utilisateur");
+    const compactName = (user.name || "Utilisateur")
+        .split(" ")
+        .slice(0, 2)
+        .map(part => part.charAt(0))
+        .join("")
+        .toUpperCase();
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 p-2 cursor-pointer">
                 <Avatar className="h-10 w-10 shadow-sm">
                     <AvatarFallback className="bg-background">
-                        {getInitials(user.name)}
+                        {userInitials}
                     </AvatarFallback>
-                    <AvatarImage
-                        src={user.image}
-                        alt={`Avatar of ${user.name}`}
-                    />
+                    <AvatarImage src={user.image ?? undefined} alt={user.name} />
                 </Avatar>
                 <div className="flex flex-col justify-start items-start flex-1 text-left overflow-hidden min-w-0">
                     <span className="font-medium truncate w-full">
-                        {user.name}
+                        {user.name || "Utilisateur"}
                     </span>
                     <span className="text-xs font-medium text-muted-foreground -mt-1 truncate w-full">
-                        {user.email}
+                        {user.email || ""}
                     </span>
                 </div>
             </DropdownMenuTrigger>
@@ -54,80 +73,82 @@ export default function UserButton({ user }) {
                 <DropdownMenuLabel className="flex items-center gap-2 truncate">
                     <Avatar className="h-5 w-5 shadow-sm">
                         <AvatarFallback className="bg-background text-xs">
-                            {user.name
-                                .split(" ")
-                                .slice(0, 2)
-                                .map(word => word.charAt(0))
-                                .join("")
-                                .toUpperCase()}
+                            {compactName || userInitials}
                         </AvatarFallback>
                         <AvatarImage
-                            src={user.image}
-                            alt={`Avatar of ${user.name}`}
+                            src={user.image ?? undefined}
+                            alt={user.name || "Utilisateur"}
                         />
                     </Avatar>
-                    {user.name}
+                    {user.name || "Utilisateur"}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {!isOnApp && (
-                    <DropdownMenuItem
-                        onSelect={() => {
-                            router.push("/app");
-                        }}
-                    >
-                        <FileText
-                            size={16}
-                            className="opacity-60"
-                            aria-hidden="true"
-                        />
-                        Retour à l'application
+                    <DropdownMenuItem asChild>
+                        <Link href="/app" className="flex items-center gap-2">
+                            <FileText
+                                size={16}
+                                className="opacity-60"
+                                aria-hidden="true"
+                            />
+                            Retour à l'application
+                        </Link>
                     </DropdownMenuItem>
                 )}
                 {!isOnDashboard && (
-                    <DropdownMenuItem
-                        onSelect={() => {
-                            router.push("/dashboard");
-                        }}
-                    >
-                        <Settings2
-                            size={16}
-                            className="opacity-60"
-                            aria-hidden="true"
-                        />
-                        Parramètres
+                    <DropdownMenuItem asChild>
+                        <Link
+                            href="/dashboard"
+                            className="flex items-center gap-2"
+                        >
+                            <Settings2
+                                size={16}
+                                className="opacity-60"
+                                aria-hidden="true"
+                            />
+                            Paramètres
+                        </Link>
                     </DropdownMenuItem>
                 )}
                 {!isOnAdmin && user.role === "admin" && (
-                    <DropdownMenuItem
-                        onSelect={() => {
-                            router.push("/admin");
-                        }}
-                    >
-                        <Shield
-                            size={16}
-                            className="opacity-60"
-                            aria-hidden="true"
-                        />
-                        Administration
+                    <DropdownMenuItem asChild>
+                        <Link
+                            href="/admin"
+                            className="flex items-center gap-2"
+                        >
+                            <Shield
+                                size={16}
+                                className="opacity-60"
+                                aria-hidden="true"
+                            />
+                            Administration
+                        </Link>
                     </DropdownMenuItem>
                 )}
                 <DropdownMenuItem
                     variant="destructive"
-                    onSelect={() => {
-                        signOut({
-                            fetchOptions: {
-                                onSuccess: () => {
-                                    router.push("/");
-                                },
-                            },
-                        });
+                    onSelect={event => {
+                        event.preventDefault();
+                        if (!isSigningOut) {
+                            handleSignOut();
+                        }
                     }}
+                    disabled={isSigningOut}
+                    className="flex items-center gap-2"
                 >
-                    <LogOut
-                        size={16}
-                        className="opacity-60"
-                        aria-hidden="true"
-                    />
+                    {isSigningOut ? (
+                        <Loader2
+                            size={16}
+                            className="opacity-60 animate-spin"
+                            aria-hidden="true"
+                        />
+                    ) : (
+                        <LogOut
+                            size={16}
+                            className="opacity-60"
+                            aria-hidden="true"
+                        />
+                    )}
                     Se déconnecter
                 </DropdownMenuItem>
             </DropdownMenuContent>

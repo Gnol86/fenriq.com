@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
 import {
     Form,
     FormControl,
@@ -17,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
-import { nameToSlug } from "@/lib/utils";
+import { createOrganizationAction } from "@/actions/organization.action";
 
 const formSchema = z.object({
     name: z
@@ -35,7 +34,7 @@ const formSchema = z.object({
         }, "Le nom doit contenir au minimum deux caractères alphanumériques"),
 });
 
-export default function NewOrganizationForm() {
+export default function NewOrganizationForm({ hasActiveOrganization = false }) {
     const router = useRouter();
 
     const form = useForm({
@@ -47,30 +46,16 @@ export default function NewOrganizationForm() {
 
     const onSubmit = async values => {
         try {
-            const result = await authClient.organization.create({
+            const result = await createOrganizationAction({
                 name: values.name,
-                slug: nameToSlug(values.name),
+                keepCurrentActiveOrganization: hasActiveOrganization,
             });
 
-            if (result.error) {
-                throw result.error;
-            }
-
-            const createdOrganizationId = result.data?.id;
-            if (createdOrganizationId) {
-                try {
-                    await authClient.organization.setActive({
-                        organizationId: createdOrganizationId,
-                    });
-                } catch (switchError) {
-                    console.error(
-                        "Failed to switch to the newly created organization",
-                        switchError
-                    );
-                    toast.error(
-                        "Organisation créée, mais le changement automatique a échoué."
-                    );
-                }
+            if (!result?.success) {
+                throw new Error(
+                    result?.error ||
+                        "Impossible de créer l'organisation pour le moment"
+                );
             }
 
             toast.success("Organisation créée avec succès");
@@ -91,6 +76,12 @@ export default function NewOrganizationForm() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="flex flex-col gap-6"
             >
+                {hasActiveOrganization ? (
+                    <p className="text-sm text-muted-foreground">
+                        Vous avez déjà une organisation active. La nouvelle
+                        organisation sera ajoutée à votre compte.
+                    </p>
+                ) : null}
                 <FormField
                     control={form.control}
                     name="name"

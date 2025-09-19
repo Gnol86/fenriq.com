@@ -6,10 +6,11 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { requireUser } from "@/lib/data-access";
+import { requireUser, requireOrganization } from "@/lib/data-access";
 
 export default async function OrganizationMembersPage() {
     const user = await requireUser();
+    const organization = await requireOrganization();
     return (
         <div className="flex flex-col gap-6">
             <Card>
@@ -21,7 +22,10 @@ export default async function OrganizationMembersPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <MembersManager />
+                    <MembersManager
+                        organization={organization}
+                        currentUserId={user?.id ?? null}
+                    />
                 </CardContent>
             </Card>
         </div>
