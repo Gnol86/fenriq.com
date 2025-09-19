@@ -12,16 +12,14 @@ export function OrganizationInvitationTemplate({
                 <h1 style={{ fontSize: "20px", marginBottom: "16px" }}>
                     Invitation à rejoindre {organizationName}
                 </h1>
-                <p style={{ marginBottom: "12px" }}>
-                    Bonjour,
-                </p>
+                <p style={{ marginBottom: "12px" }}>Bonjour,</p>
                 <p style={{ marginBottom: "12px" }}>
                     {inviterName} vous invite à rejoindre l&apos;organisation
                     <strong> {organizationName}</strong> sur PolGPT.
                 </p>
                 <p style={{ marginBottom: "12px" }}>
-                    Cliquez sur le bouton ci-dessous pour accepter l&apos;invitation
-                    et accéder à l&apos;espace partagé.
+                    Cliquez sur le bouton ci-dessous pour accepter
+                    l&apos;invitation et accéder à l&apos;espace partagé.
                 </p>
                 <p style={{ marginBottom: "16px" }}>
                     <a

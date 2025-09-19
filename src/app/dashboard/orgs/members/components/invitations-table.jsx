@@ -90,10 +90,8 @@ export default function InvitationsTable({
             <TableBody>
                 {invitations.map(invitation => {
                     const statusLabel = formatInvitationStatus(invitation);
-                    const isResending =
-                        resendingInvitationId === invitation.id;
-                    const isCanceling =
-                        cancelingInvitationId === invitation.id;
+                    const isResending = resendingInvitationId === invitation.id;
+                    const isCanceling = cancelingInvitationId === invitation.id;
                     return (
                         <TableRow key={invitation.id}>
                             <TableCell>
@@ -155,7 +153,9 @@ export default function InvitationsTable({
                                                 event.preventDefault();
                                                 onResend?.(invitation);
                                             }}
-                                            disabled={isResending || isCanceling}
+                                            disabled={
+                                                isResending || isCanceling
+                                            }
                                         >
                                             {isResending && (
                                                 <Loader2

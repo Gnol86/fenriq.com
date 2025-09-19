@@ -23,11 +23,34 @@ export default function AcceptInvitationClient({ invitationId }) {
             });
 
             if (result?.error) {
-                throw new Error(result.error.message || "Échec de l'acceptation");
+                throw new Error(
+                    result.error.message || "Échec de l'acceptation"
+                );
+            }
+
+            const newOrganizationId = result?.data?.member?.organizationId;
+            let organizationActivated = false;
+
+            if (newOrganizationId) {
+                try {
+                    await authClient.organization.setActive({
+                        organizationId: newOrganizationId,
+                    });
+                    organizationActivated = true;
+                } catch (switchError) {
+                    console.error(
+                        "Failed to activate organization after invitation acceptance",
+                        switchError
+                    );
+                }
             }
 
             setStatus("accepted");
-            toast.success("Invitation acceptée. Bienvenue !");
+            toast.success(
+                organizationActivated
+                    ? "Invitation acceptée. Bienvenue !"
+                    : "Invitation acceptée. Activez l'organisation depuis le menu si nécessaire."
+            );
             router.push("/dashboard/orgs/members");
             router.refresh();
         } catch (error) {
@@ -77,9 +100,7 @@ export default function AcceptInvitationClient({ invitationId }) {
     if (!session?.user) {
         return (
             <div className="flex flex-col gap-4 text-sm text-muted-foreground">
-                <p>
-                    Vous devez être connecté pour accepter cette invitation.
-                </p>
+                <p>Vous devez être connecté pour accepter cette invitation.</p>
                 <div className="flex gap-2">
                     <Button asChild>
                         <Link
@@ -89,7 +110,9 @@ export default function AcceptInvitationClient({ invitationId }) {
                         </Link>
                     </Button>
                     <Button asChild variant="outline">
-                        <Link href={`/signup?redirect=/invitations/${invitationId}`}>
+                        <Link
+                            href={`/signup?redirect=/invitations/${invitationId}`}
+                        >
                             Créer un compte
                         </Link>
                     </Button>
@@ -105,7 +128,9 @@ export default function AcceptInvitationClient({ invitationId }) {
                     <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                     <span>Invitation acceptée. Redirection en cours...</span>
                 </div>
-                <Button onClick={() => router.push("/dashboard/orgs/members")}>Voir les membres</Button>
+                <Button onClick={() => router.push("/dashboard/orgs/members")}>
+                    Voir les membres
+                </Button>
             </div>
         );
     }
@@ -117,7 +142,12 @@ export default function AcceptInvitationClient({ invitationId }) {
                     <ShieldOff className="h-4 w-4" aria-hidden="true" />
                     <span>Invitation refusée.</span>
                 </div>
-                <Button variant="outline" onClick={() => router.push("/dashboard")}>Retour au tableau de bord</Button>
+                <Button
+                    variant="outline"
+                    onClick={() => router.push("/dashboard")}
+                >
+                    Retour au tableau de bord
+                </Button>
             </div>
         );
     }
@@ -125,8 +155,8 @@ export default function AcceptInvitationClient({ invitationId }) {
     return (
         <div className="flex flex-col gap-4">
             <p className="text-sm text-muted-foreground">
-                Vous êtes sur le point de rejoindre l&apos;organisation. Confirmez
-                votre choix.
+                Vous êtes sur le point de rejoindre l&apos;organisation.
+                Confirmez votre choix.
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
                 <Button

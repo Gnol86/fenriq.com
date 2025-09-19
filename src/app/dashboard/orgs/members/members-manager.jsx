@@ -47,10 +47,29 @@ export default function MembersManager() {
         () => activeOrganization?.members ?? [],
         [activeOrganization?.members]
     );
-    const invitations = useMemo(
-        () => activeOrganization?.invitations ?? [],
-        [activeOrganization?.invitations]
-    );
+    const invitations = useMemo(() => {
+        if (!activeOrganization?.invitations?.length) {
+            return [];
+        }
+
+        const statusOrder = {
+            pending: 0,
+            accepted: 1,
+            rejected: 2,
+            canceled: 3,
+        };
+
+        return [...activeOrganization.invitations].sort((a, b) => {
+            const orderA = statusOrder[a.status] ?? Number.MAX_SAFE_INTEGER;
+            const orderB = statusOrder[b.status] ?? Number.MAX_SAFE_INTEGER;
+
+            if (orderA !== orderB) {
+                return orderA - orderB;
+            }
+
+            return 0;
+        });
+    }, [activeOrganization?.invitations]);
     const currentUserId = session?.user?.id;
 
     const handleInvite = useCallback(
@@ -88,7 +107,7 @@ export default function MembersManager() {
     );
 
     const handleResendInvitation = useCallback(
-        async (invitation) => {
+        async invitation => {
             if (!invitation?.email || !activeOrganization?.id) {
                 toast.error("Impossible de renvoyer cette invitation");
                 return;
@@ -122,7 +141,7 @@ export default function MembersManager() {
     );
 
     const handleCancelInvitation = useCallback(
-        async (invitation) => {
+        async invitation => {
             if (!invitation?.id) {
                 toast.error("Invitation introuvable");
                 return;
@@ -152,7 +171,7 @@ export default function MembersManager() {
         [refetch]
     );
 
-    const handleCopyInvitationLink = useCallback((invitation) => {
+    const handleCopyInvitationLink = useCallback(invitation => {
         if (!invitation?.id) {
             toast.error("Invitation introuvable");
             return;

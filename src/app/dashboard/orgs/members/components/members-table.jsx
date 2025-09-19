@@ -45,7 +45,6 @@ export default function MembersTable({
             <TableHeader>
                 <TableRow>
                     <TableHead>Utilisateur</TableHead>
-                    <TableHead>Email</TableHead>
                     <TableHead>Rôle</TableHead>
                     <TableHead>Depuis</TableHead>
                     <TableHead className="text-right">Action</TableHead>
@@ -53,7 +52,6 @@ export default function MembersTable({
             </TableHeader>
             <TableBody>
                 {members.map(member => {
-                    const emailVerified = member?.user?.emailVerified ?? false;
                     const memberRole = member?.role ?? "member";
                     const memberUserId = member?.user?.id ?? member?.userId;
                     const isSelf = Boolean(
@@ -87,28 +85,11 @@ export default function MembersTable({
                                         </span>
                                         {member?.id ? (
                                             <span className="text-xs text-muted-foreground">
-                                                ID: {member.id.slice(0, 8)}…
+                                                {member?.user?.email || "-"}
                                             </span>
                                         ) : null}
                                     </div>
                                 </div>
-                            </TableCell>
-                            <TableCell>
-                                <span
-                                    className={cn(
-                                        "text-sm",
-                                        emailVerified
-                                            ? "text-foreground"
-                                            : "text-destructive"
-                                    )}
-                                >
-                                    {member?.user?.email || "-"}
-                                </span>
-                                {!emailVerified && (
-                                    <span className="block text-xs text-muted-foreground">
-                                        Email non vérifiée
-                                    </span>
-                                )}
                             </TableCell>
                             <TableCell>
                                 <span className="text-sm font-medium text-foreground">

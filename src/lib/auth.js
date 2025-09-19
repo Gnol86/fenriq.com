@@ -74,7 +74,10 @@ export const auth = betterAuth({
                         expiresAt: invitation.expiresAt,
                     });
                 } catch (error) {
-                    console.error("Error sending organization invitation email:", error);
+                    console.error(
+                        "Error sending organization invitation email:",
+                        error
+                    );
                 }
             },
         }),
