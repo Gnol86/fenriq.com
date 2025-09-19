@@ -1,5 +1,5 @@
 export const defaultRoleLabels = {
-    owner: "Propriétaire",
-    admin: "Admin",
-    member: "Membre",
+  owner: "Propriétaire",
+  admin: "Admin",
+  member: "Membre",
 };

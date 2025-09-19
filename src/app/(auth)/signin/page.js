@@ -1,24 +1,24 @@
 import FormSignin from "./form";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 
 export default function Page() {
-    return (
-        <Card className="w-sm">
-            <CardHeader>
-                <CardTitle className="text-xl">Se connecter</CardTitle>
-                <CardDescription>
-                    Connectez-vous à votre compte pour accéder à l&apos;application
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <FormSignin />
-            </CardContent>
-        </Card>
-    );
+  return (
+    <Card className="w-sm">
+      <CardHeader>
+        <CardTitle className="text-xl">Se connecter</CardTitle>
+        <CardDescription>
+          Connectez-vous à votre compte pour accéder à l&apos;application
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <FormSignin />
+      </CardContent>
+    </Card>
+  );
 }
