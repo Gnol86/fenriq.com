@@ -1,10 +1,10 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Codex when working with code in this repository.
 
 ## About the project PolGPT
 
-If you read this, ask question about the project to fill this part. You need to describe what is the purpose of the project, main feature and goals.
+Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS, Shadcn, lucide-react, React-Hook-Form, zod, Next-Themes, and more.
 
 ## Development Commands
 
@@ -13,6 +13,8 @@ If you read this, ask question about the project to fill this part. You need to 
 - `pnpm dev` - Start development server with Turbopack
 - `pnpm build` - Build the application
 - `pnpm start` - Start production server
+- `pnpm lint` - Lint the code
+- `pnpm format` - Format the code
 
 ## Architecture Overview
 
@@ -55,6 +57,7 @@ If you read this, ask question about the project to fill this part. You need to 
 - Use `"use client"` only for small components
 - Wrap client components in `Suspense` with fallback
 - Use dynamic loading for non-critical components
+- Split components into smaller components
 
 ### Styling
 
@@ -65,7 +68,7 @@ If you read this, ask question about the project to fill this part. You need to 
 ### Styling preferences
 
 - For spacing, prefer utility layouts like `flex flex-col gap-4` for vertical spacing and `flex gap-4` for horizontal spacing (instead of `space-y-4`).
-- Prefer the card container `@src/components/ui/card.tsx` for styled wrappers rather than adding custom styles directly to `<div>` elements.
+- Prefer the card container `@src/components/ui/card.jsx` for styled wrappers rather than adding custom styles directly to `<div>` elements.
 
 ### State Management
 
@@ -93,11 +96,11 @@ If you read this, ask question about the project to fill this part. You need to 
 
 ## Important Files
 
-- `src/lib/auth.ts` - Authentication configuration
-- `src/components/ui/form.tsx` - Form components
+- `src/lib/auth.js` - Authentication configuration
+- `src/components/ui/form.jsx` - Form components
 - `prisma/schema.prisma` - Database schema
-- `src/lib/actions/safe-actions.ts` - All Server Action SHOULD use this logic
-- `src/lib/zod-route.ts` - All Next.js route (inside the folder `/app/api` and name `route.ts`) SHOULD use this logic
+- `src/lib/actions/safe-actions.js` - All Server Action SHOULD use this logic
+- `src/lib/zod-route.js` - All Next.js route (inside the folder `/app/api` and name `route.js`) SHOULD use this logic
 
 ## Development Notes
 
@@ -105,12 +108,12 @@ If you read this, ask question about the project to fill this part. You need to 
 - Use TypeScript strict mode - no `any` types
 - Prefer server components and avoid unnecessary client-side state
 - Prefer using `??` than `||`
-- All API Route SHOULD use @src/lib/zod-route.ts, each file name `route.ts` should use Zod Route. ALWAYS READ zod-route.ts before creating any routes.
-- All API Request SHOULD use @src/lib/up-fetch.ts and NEVER use `fetch`
+- All API Route SHOULD use @src/lib/zod-route.js, each file name `route.js` should use Zod Route. ALWAYS READ zod-route.ts before creating any routes.
+- All API Request SHOULD use @src/lib/up-fetch.js and NEVER use `fetch`
 
 ## Files naming
 
-- All server actions should be suffix by `.action.ts` eg. `user.action.ts`, `dashboard.action.ts`
+- All server actions should be suffix by `.action.js` eg. `user.action.js`, `dashboard.action.js`
 
 ## Debugging and complexe tasks
 
@@ -121,8 +124,6 @@ If you read this, ask question about the project to fill this part. You need to 
 Important, when you import thing try to always use TypeScript paths :
 
 - `@/*` is link to @src
-- `@email/*` is link to @emails
-- `@app/*` is link to @app
 
 ## Workflow modification
 
@@ -147,3 +148,7 @@ This is **NON-NEGOTIABLE**. Do not skip this step under any circumstances. Readi
 1. Read at least 3 relevant existing files (similar functionality + imported dependencies)
 2. Understand the patterns, conventions, and API usage
 3. Only then proceed with creating/editing files
+
+**Documentation:**
+
+Always use web-search to find documentation about the library you're using.

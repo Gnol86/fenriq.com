@@ -6,12 +6,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import InviteMemberDialog from "./components/invite-member-dialog";
 import MembersTable from "./components/members-table";
 import InvitationsTable from "./components/invitations-table";
 import RemoveMemberDialog from "./components/remove-member-dialog";
+import { inviteMemberAction } from "@/actions/organization.action";
 
 const inviteSchema = z.object({
     email: z
@@ -27,11 +28,13 @@ export default function MembersManager() {
         isPending,
         refetch,
     } = authClient.useActiveOrganization();
-    const { data: session } = authClient.useSession();
+    const { data: session } = useSession();
     const [inviteOpen, setInviteOpen] = useState(false);
     const [removalTarget, setRemovalTarget] = useState(null);
     const [isUpdatingMemberId, setIsUpdatingMemberId] = useState(null);
     const [isRemovingMemberId, setIsRemovingMemberId] = useState(null);
+    const [resendingInvitationId, setResendingInvitationId] = useState(null);
+    const [cancelingInvitationId, setCancelingInvitationId] = useState(null);
 
     const inviteForm = useForm({
         resolver: zodResolver(inviteSchema),
@@ -59,14 +62,14 @@ export default function MembersManager() {
                 return;
             }
             try {
-                const result = await authClient.organization.createInvitation({
+                const response = await inviteMemberAction({
                     email: values.email,
                     role: "member",
                     organizationId: activeOrganization.id,
                 });
 
-                if (result.error) {
-                    throw result.error;
+                if (!response?.success) {
+                    throw new Error(response?.error);
                 }
 
                 toast.success("Invitation envoyée avec succès");
@@ -83,6 +86,100 @@ export default function MembersManager() {
         },
         [activeOrganization?.id, inviteForm, refetch]
     );
+
+    const handleResendInvitation = useCallback(
+        async (invitation) => {
+            if (!invitation?.email || !activeOrganization?.id) {
+                toast.error("Impossible de renvoyer cette invitation");
+                return;
+            }
+            setResendingInvitationId(invitation.id);
+            try {
+                const response = await inviteMemberAction({
+                    email: invitation.email,
+                    role: invitation.role ?? "member",
+                    organizationId: activeOrganization.id,
+                    resend: true,
+                });
+
+                if (!response?.success) {
+                    throw new Error(response?.error);
+                }
+
+                toast.success("Invitation renvoyée");
+                refetch();
+            } catch (error) {
+                console.error("Failed to resend invitation", error);
+                toast.error(
+                    error?.message ||
+                        "Impossible de renvoyer cette invitation pour le moment"
+                );
+            } finally {
+                setResendingInvitationId(null);
+            }
+        },
+        [activeOrganization?.id, refetch]
+    );
+
+    const handleCancelInvitation = useCallback(
+        async (invitation) => {
+            if (!invitation?.id) {
+                toast.error("Invitation introuvable");
+                return;
+            }
+            setCancelingInvitationId(invitation.id);
+            try {
+                const result = await authClient.organization.cancelInvitation({
+                    invitationId: invitation.id,
+                });
+
+                if (result?.error) {
+                    throw new Error(result.error?.message);
+                }
+
+                toast.success("Invitation annulée");
+                refetch();
+            } catch (error) {
+                console.error("Failed to cancel invitation", error);
+                toast.error(
+                    error?.message ||
+                        "Impossible d'annuler cette invitation pour le moment"
+                );
+            } finally {
+                setCancelingInvitationId(null);
+            }
+        },
+        [refetch]
+    );
+
+    const handleCopyInvitationLink = useCallback((invitation) => {
+        if (!invitation?.id) {
+            toast.error("Invitation introuvable");
+            return;
+        }
+
+        try {
+            const origin =
+                typeof window !== "undefined" && window.location?.origin
+                    ? window.location.origin
+                    : "";
+            const link = `${origin}/invitations/${invitation.id}`;
+            if (navigator?.clipboard?.writeText) {
+                navigator.clipboard.writeText(link);
+            } else {
+                const textarea = document.createElement("textarea");
+                textarea.value = link;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textarea);
+            }
+            toast.success("Lien d'invitation copié");
+        } catch (error) {
+            console.error("Failed to copy invitation link", error);
+            toast.error("Impossible de copier le lien d'invitation");
+        }
+    }, []);
 
     const handleRoleChange = useCallback(
         async (memberId, role, currentRole) => {
@@ -226,7 +323,14 @@ export default function MembersManager() {
                         value="invitations"
                         className="flex flex-col gap-4"
                     >
-                        <InvitationsTable invitations={invitations} />
+                        <InvitationsTable
+                            invitations={invitations}
+                            onCopyLink={handleCopyInvitationLink}
+                            onResend={handleResendInvitation}
+                            onCancel={handleCancelInvitation}
+                            resendingInvitationId={resendingInvitationId}
+                            cancelingInvitationId={cancelingInvitationId}
+                        />
                     </TabsContent>
                 </Tabs>
             </div>

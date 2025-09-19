@@ -48,7 +48,37 @@ export const auth = betterAuth({
         sendOnSignUp: true,
         autoSignInAfterVerification: true,
     },
-    plugins: [admin(), organization()],
+    plugins: [
+        admin(),
+        organization({
+            invitationExpiresIn: 60 * 60 * 24 * 30,
+            sendInvitationEmail: async ({
+                email,
+                organization,
+                inviter,
+                invitation,
+            }) => {
+                try {
+                    const { sendOrganizationInvitationEmail } = await import(
+                        "@/actions/email.action"
+                    );
+                    const invitationUrl = `${getServerUrl()}/invitations/${invitation.id}`;
+                    await sendOrganizationInvitationEmail({
+                        email,
+                        organizationName: organization.name,
+                        inviterName:
+                            inviter?.user?.name ||
+                            inviter?.user?.email ||
+                            "Un membre de votre organisation",
+                        invitationUrl,
+                        expiresAt: invitation.expiresAt,
+                    });
+                } catch (error) {
+                    console.error("Error sending organization invitation email:", error);
+                }
+            },
+        }),
+    ],
 });
 
 /**
