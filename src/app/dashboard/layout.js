@@ -13,6 +13,7 @@ import { Plus, Settings, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import ActiveOrgLabel from "@/components/active-org-label";
 import HasActiveOrg from "@/components/has-active-org";
+import { Users } from "lucide-react";
 
 export default async function Layout({ children }) {
     const user = await needUser();
@@ -42,6 +43,14 @@ export default async function Layout({ children }) {
                                         <Link href="/dashboard/orgs/manage">
                                             <Settings className="opacity-60" />
                                             Gérer l'organisation
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link href="/dashboard/orgs/members">
+                                            <Users className="opacity-60" />
+                                            Membres
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
