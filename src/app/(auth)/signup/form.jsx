@@ -26,20 +26,7 @@ const formSchema = z
             .string()
             .min(2, "Le nom doit contenir au moins 2 caractères")
             .max(50, "Le nom ne peut pas dépasser 50 caractères"),
-        email: z.email("Veuillez entrer une adresse email valide").refine(
-            (email) => {
-                if (process.env.VERCEL_ENV === "production") {
-                    return (
-                        email.endsWith("@police.belgium.eu") ||
-                        email === "arnaud.marchot@icloud.com"
-                    );
-                }
-                return true;
-            },
-            {
-                message: "L'email doit être une adresse @police.belgium.eu",
-            }
-        ),
+        email: z.email("Veuillez entrer une adresse email valide"),
         password: z
             .string()
             .min(8, "Le mot de passe doit contenir au moins 8 caractères")

@@ -20,22 +20,7 @@ export const auth = betterAuth({
         cookieCache: { enabled: true, maxAge: 60 }, // 60s "gratos" sans DB
     },
     hooks: {
-        before: createAuthMiddleware(async (ctx) => {
-            if (ctx.path === "/sign-up/email") {
-                const isProduction = process.env.VERCEL_ENV === "production";
-                if (!isProduction) return;
-                const email = ctx.body?.email;
-                const isAuthorized =
-                    email === "arnaud.marchot@icloud.com" ||
-                    email?.endsWith("@police.belgium.eu");
-                if (!isAuthorized) {
-                    throw new APIError("BAD_REQUEST", {
-                        message:
-                            "Seules les adresses @police.belgium.eu sont autorisées",
-                    });
-                }
-            }
-        }),
+        before: createAuthMiddleware(async (ctx) => {}),
     },
     advanced: {
         cookiePrefix: SiteConfig.appId,
