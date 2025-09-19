@@ -1,6 +1,6 @@
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { needUser } from "@/lib/auth";
+import { requireUser } from "@/lib/data-access";
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -16,7 +16,7 @@ import HasActiveOrg from "@/components/has-active-org";
 import { Users } from "lucide-react";
 
 export default async function Layout({ children }) {
-    const user = await needUser();
+    const user = await requireUser();
 
     return (
         <SidebarProvider>

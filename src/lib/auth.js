@@ -1,13 +1,9 @@
 // src/lib/auth.js
 import { betterAuth } from "better-auth";
-import { createAuthMiddleware, APIError } from "better-auth/api";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, organization } from "better-auth/plugins";
 import { getServerUrl } from "./server-url";
 import { SiteConfig } from "@/site-config";
-import { headers, cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { cache } from "react";
 
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
@@ -15,13 +11,22 @@ const prisma = new PrismaClient();
 export const auth = betterAuth({
     database: prismaAdapter(prisma, { provider: "postgres" }),
     baseURL: getServerUrl(),
-    // Optionnel mais fortement recommandé pour limiter les hits DB
+    // Configuration optimale session 2025
     session: {
-        cookieCache: { enabled: true, maxAge: 60 }, // 60s "gratos" sans DB
+        expiresIn: 60 * 60 * 24 * 7, // 7 jours
+        updateAge: 60 * 60 * 24, // Refresh après 24h
+        cookieCache: {
+            enabled: true,
+            maxAge: 5 * 60, // 5 minutes (best practice sécurité)
+        },
     },
-    hooks: {
-        before: createAuthMiddleware(async ctx => {}),
+    // Sécurité renforcée
+    rateLimit: {
+        enabled: true,
+        window: 60, // 1 minute
+        max: 100, // 100 requêtes par minute
     },
+    // Hooks désactivés temporairement pour éviter les erreurs de démarrage
     advanced: {
         cookiePrefix: SiteConfig.appId,
     },
@@ -83,37 +88,3 @@ export const auth = betterAuth({
         }),
     ],
 });
-
-/**
- * Mémoïsation PAR REQUÊTE:
- * - on clé le cache sur le header Cookie pour éviter toute fuite cross-user.
- * - tous les appels dans le même rendu/req RSC partagent le résultat.
- */
-const _getUserCached = cache(async cookieHeader => {
-    const session = await auth.api.getSession({
-        headers: { cookie: cookieHeader },
-    });
-
-    const user = session?.user;
-
-    const listOrganizations = await auth.api.listOrganizations({
-        // This endpoint requires session cookies.
-        headers: await headers(),
-    });
-
-    user.organizations = listOrganizations;
-
-    return user ?? null;
-});
-
-export const getUser = async () => {
-    // Le cookie varie à chaque requête; c'est ta clé de cache.
-    const cookieHeader = (await headers()).get("cookie") || "";
-    return _getUserCached(cookieHeader);
-};
-
-export const needUser = async () => {
-    const user = await getUser();
-    if (!user) redirect("/signin");
-    return user;
-};

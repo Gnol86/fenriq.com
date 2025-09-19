@@ -1,3 +1,4 @@
+import { requireUser } from "@/lib/data-access";
 import ManageOrganizationForm from "./form";
 import {
     Card,
@@ -8,7 +9,7 @@ import {
 } from "@/components/ui/card";
 
 export default async function OrganizationManagePage() {
-    const user = await needUser();
+    const user = await requireUser();
     return (
         <div className="min-h-dvh flex flex-col gap-6 justify-center items-center">
             <Card>

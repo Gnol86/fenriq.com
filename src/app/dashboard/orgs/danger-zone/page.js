@@ -6,9 +6,11 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { requireUser } from "@/lib/data-access";
 import { AlertTriangle } from "lucide-react";
 
-export default function DangerZonePage() {
+export default async function DangerZonePage() {
+    const user = await requireUser();
     return (
         <div className="min-h-dvh flex flex-col gap-6 justify-center items-center">
             <Card>

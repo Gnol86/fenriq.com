@@ -1,10 +1,10 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Codex when working with code in this repository.
 
 ## About the project PolGPT
 
-If you read this, ask question about the project to fill this part. You need to describe what is the purpose of the project, main feature and goals.
+Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS, Shadcn, lucide-react, React-Hook-Form, zod, Next-Themes, and more.
 
 ## Development Commands
 
@@ -13,6 +13,8 @@ If you read this, ask question about the project to fill this part. You need to 
 - `pnpm dev` - Start development server with Turbopack
 - `pnpm build` - Build the application
 - `pnpm start` - Start production server
+- `pnpm lint` - Lint the code
+- `pnpm format` - Format the code
 
 ## Architecture Overview
 
@@ -55,6 +57,7 @@ If you read this, ask question about the project to fill this part. You need to 
 - Use `"use client"` only for small components
 - Wrap client components in `Suspense` with fallback
 - Use dynamic loading for non-critical components
+- Split components into smaller components
 
 ### Styling
 
@@ -65,7 +68,7 @@ If you read this, ask question about the project to fill this part. You need to 
 ### Styling preferences
 
 - For spacing, prefer utility layouts like `flex flex-col gap-4` for vertical spacing and `flex gap-4` for horizontal spacing (instead of `space-y-4`).
-- Prefer the card container `@src/components/ui/card.tsx` for styled wrappers rather than adding custom styles directly to `<div>` elements.
+- Prefer the card container `@src/components/ui/card.jsx` for styled wrappers rather than adding custom styles directly to `<div>` elements.
 
 ### State Management
 
@@ -80,10 +83,23 @@ If you read this, ask question about the project to fill this part. You need to 
 
 ### Authentication
 
-- Use `getUser()` for optional user (server-side)
-- Use `getRequiredUser()` for required user (server-side)
+#### **RECOMMANDÉ - Nouvelle Data Access Layer (2025)**
+- Use `getCurrentUser()` from `@/lib/data-access` for optional user (server-side)
+- Use `requireUser()` from `@/lib/data-access` for required user (server-side)
+- Use `getCurrentOrganization()` from `@/lib/data-access` for current org
+- Use `checkUserPermissions()` from `@/lib/data-access` for permission checks
+- For sensitive operations (password change, delete), use functions with `Sensitive` suffix
+
+#### **Legacy - À migrer progressivement**
+- ~~Use `getUser()` for optional user (server-side)~~ → Use `getCurrentUser()`
+- ~~Use `getRequiredUser()` for required user (server-side)~~ → Use `requireUser()`
 - Use `useSession()` from auth-client.ts (client-side)
-- Use `getCurrentOrgCache()` to get the current org
+- ~~Use `getCurrentOrgCache()` to get the current org~~ → Use `getCurrentOrganization()`
+
+#### **Cache et Performance**
+- Use `@/lib/permissions-cache` for granular permission caching
+- Use `invalidateUserCache()` after permission changes
+- Monitor performance with `@/lib/auth-monitoring`
 
 ### Database
 
@@ -93,11 +109,16 @@ If you read this, ask question about the project to fill this part. You need to 
 
 ## Important Files
 
-- `src/lib/auth.ts` - Authentication configuration
-- `src/components/ui/form.tsx` - Form components
+### **Authentication System (2025)**
+- `src/lib/data-access.js` - **PREFERRED** Data Access Layer with auth
+- `src/lib/permissions-cache.js` - Granular permission caching
+- `src/lib/auth-monitoring.js` - Monitoring and logging
+- `src/lib/auth-error-handling.js` - Error handling and resilience
+- `src/lib/auth.js` - Core authentication configuration
+
+### **Other Core Files**
+- `src/components/ui/form.jsx` - Form components
 - `prisma/schema.prisma` - Database schema
-- `src/lib/actions/safe-actions.ts` - All Server Action SHOULD use this logic
-- `src/lib/zod-route.ts` - All Next.js route (inside the folder `/app/api` and name `route.ts`) SHOULD use this logic
 
 ## Development Notes
 
@@ -105,12 +126,18 @@ If you read this, ask question about the project to fill this part. You need to 
 - Use TypeScript strict mode - no `any` types
 - Prefer server components and avoid unnecessary client-side state
 - Prefer using `??` than `||`
-- All API Route SHOULD use @src/lib/zod-route.ts, each file name `route.ts` should use Zod Route. ALWAYS READ zod-route.ts before creating any routes.
-- All API Request SHOULD use @src/lib/up-fetch.ts and NEVER use `fetch`
+
+### **Authentication Best Practices**
+- ALWAYS use `@/lib/data-access` for new auth-related code
+- Use monitoring with `withAuthMonitoring()` for debugging
+- Use resilient wrappers `withResilientAuth()` for production code
+- Cache permissions with `@/lib/permissions-cache` for performance
+- Use `safeAuthOperation()` for graceful error handling
+- Log sensitive operations with `authLogger` for security auditing
 
 ## Files naming
 
-- All server actions should be suffix by `.action.ts` eg. `user.action.ts`, `dashboard.action.ts`
+- All server actions should be suffix by `.action.js` eg. `user.action.js`, `dashboard.action.js`
 
 ## Debugging and complexe tasks
 
@@ -121,8 +148,6 @@ If you read this, ask question about the project to fill this part. You need to 
 Important, when you import thing try to always use TypeScript paths :
 
 - `@/*` is link to @src
-- `@email/*` is link to @emails
-- `@app/*` is link to @app
 
 ## Workflow modification
 
@@ -147,3 +172,85 @@ This is **NON-NEGOTIABLE**. Do not skip this step under any circumstances. Readi
 1. Read at least 3 relevant existing files (similar functionality + imported dependencies)
 2. Understand the patterns, conventions, and API usage
 3. Only then proceed with creating/editing files
+
+## **Authentication Code Examples**
+
+### **Basic User Access**
+```js
+// ✅ RECOMMENDED - New Data Access Layer
+import { getCurrentUser, requireUser } from '@/lib/data-access';
+
+// Optional user
+const user = await getCurrentUser();
+
+// Required user (redirects if not found)
+const user = await requireUser();
+
+// Sensitive operation (ignores cache)
+const user = await getCurrentUser(true);
+```
+
+### **Organization Management**
+```js
+import { getCurrentOrganization, requireOrganization } from '@/lib/data-access';
+
+// Current organization
+const org = await getCurrentOrganization();
+
+// Required organization (redirects if not found)
+const org = await requireOrganization();
+```
+
+### **Permission Checks**
+```js
+import { checkUserPermissions } from '@/lib/data-access';
+
+// Basic permission check
+const { organization, hasPermission } = await checkUserPermissions(['org:admin']);
+
+// Multiple permissions
+const result = await checkUserPermissions(['org:read', 'user:write']);
+
+// With error handling
+const result = await checkUserPermissions(['org:admin'], { 
+  sensitiveOperation: true,
+  throwOnError: true 
+});
+```
+
+### **Performance Caching**
+```js
+import { 
+  checkSinglePermission,
+  getUserOrgPermissions,
+  invalidateUserCache 
+} from '@/lib/permissions-cache';
+
+// Granular permission with intelligent cache
+const canEdit = await checkSinglePermission('content:edit', userId, orgId);
+
+// Get all permissions for user in org
+const permissions = await getUserOrgPermissions(userId, orgId);
+
+// Invalidate cache after changes
+await invalidateUserCache(userId, orgId);
+```
+
+### **Error Handling & Monitoring**
+```js
+import { withAuthMonitoring, safeAuthOperation } from '@/lib/auth-monitoring';
+import { withResilientAuth } from '@/lib/auth-error-handling';
+
+// Monitor performance
+const monitoredFunction = withAuthMonitoring(myAuthFunction);
+
+// Safe operation with fallback
+const user = await safeAuthOperation(() => getCurrentUser(), null);
+
+// Resilient operation with retry + circuit breaker
+const resilientGetUser = withResilientAuth(null, 'auth')(getCurrentUser);
+```
+
+**Documentation:**
+
+Always use web-search to find documentation about the library you're using.

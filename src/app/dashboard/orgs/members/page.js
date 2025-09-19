@@ -1,4 +1,3 @@
-import { needUser } from "@/lib/auth";
 import MembersManager from "./members-manager";
 import {
     Card,
@@ -7,9 +6,10 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { requireUser } from "@/lib/data-access";
 
 export default async function OrganizationMembersPage() {
-    const user = await needUser();
+    const user = await requireUser();
     return (
         <div className="flex flex-col gap-6">
             <Card>
