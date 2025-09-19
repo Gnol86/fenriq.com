@@ -1,5 +1,4 @@
-"use client";
-
+import InvitationsActionMenu from "./invitations-action-menu";
 import {
     Table,
     TableBody,
@@ -8,18 +7,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { defaultRoleLabels } from "./constants";
 import { formatMemberSince } from "./utils";
-import { Loader2, MoreHorizontal } from "lucide-react";
 
 const invitationStatusLabels = {
     accepted: "Acceptée",
@@ -60,15 +50,30 @@ function getStatusBadgeClasses(statusLabel) {
     }
 }
 
-export default function InvitationsTable({
-    invitations,
-    onCopyLink,
-    onResend,
-    onCancel,
-    resendingInvitationId,
-    cancelingInvitationId,
-}) {
-    if (!invitations.length) {
+function sortInvitations(invitations) {
+    const statusOrder = {
+        pending: 0,
+        accepted: 1,
+        rejected: 2,
+        canceled: 3,
+    };
+
+    return [...invitations].sort((a, b) => {
+        const orderA = statusOrder[a.status] ?? Number.MAX_SAFE_INTEGER;
+        const orderB = statusOrder[b.status] ?? Number.MAX_SAFE_INTEGER;
+
+        if (orderA !== orderB) {
+            return orderA - orderB;
+        }
+
+        return 0;
+    });
+}
+
+export default function InvitationsTable({ invitations, organizationId }) {
+    const sortedInvitations = sortInvitations(invitations);
+
+    if (!sortedInvitations.length) {
         return (
             <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
                 Aucune invitation en cours.
@@ -88,10 +93,10 @@ export default function InvitationsTable({
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {invitations.map(invitation => {
+                {sortedInvitations.map(invitation => {
                     const statusLabel = formatInvitationStatus(invitation);
-                    const isResending = resendingInvitationId === invitation.id;
-                    const isCanceling = cancelingInvitationId === invitation.id;
+                    const invitationRole = invitation.role ?? "member";
+
                     return (
                         <TableRow key={invitation.id}>
                             <TableCell>
@@ -101,8 +106,8 @@ export default function InvitationsTable({
                             </TableCell>
                             <TableCell>
                                 <span className="text-sm font-medium text-foreground">
-                                    {defaultRoleLabels[invitation.role] ??
-                                        invitation.role}
+                                    {defaultRoleLabels[invitationRole] ??
+                                        invitationRole}
                                 </span>
                             </TableCell>
                             <TableCell>
@@ -125,65 +130,10 @@ export default function InvitationsTable({
                                 </span>
                             </TableCell>
                             <TableCell className="text-right">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-8 w-8"
-                                            aria-label="Actions sur l'invitation"
-                                        >
-                                            <MoreHorizontal
-                                                className="h-4 w-4"
-                                                aria-hidden="true"
-                                            />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem
-                                            onSelect={event => {
-                                                event.preventDefault();
-                                                onCopyLink?.(invitation);
-                                            }}
-                                        >
-                                            Copier le lien
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            onSelect={event => {
-                                                event.preventDefault();
-                                                onResend?.(invitation);
-                                            }}
-                                            disabled={
-                                                isResending || isCanceling
-                                            }
-                                        >
-                                            {isResending && (
-                                                <Loader2
-                                                    className="mr-2 h-4 w-4 animate-spin"
-                                                    aria-hidden="true"
-                                                />
-                                            )}
-                                            Renvoyer
-                                        </DropdownMenuItem>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem
-                                            variant="destructive"
-                                            onSelect={event => {
-                                                event.preventDefault();
-                                                onCancel?.(invitation);
-                                            }}
-                                            disabled={isCanceling}
-                                        >
-                                            {isCanceling && (
-                                                <Loader2
-                                                    className="mr-2 h-4 w-4 animate-spin"
-                                                    aria-hidden="true"
-                                                />
-                                            )}
-                                            Supprimer
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                                <InvitationsActionMenu
+                                    invitation={invitation}
+                                    organizationId={organizationId}
+                                />
                             </TableCell>
                         </TableRow>
                     );

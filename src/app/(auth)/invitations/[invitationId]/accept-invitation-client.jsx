@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Loader2, ShieldCheck, ShieldOff } from "lucide-react";
 import { authClient, useSession } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
+import FormButton from "@/components/ui/form-button";
 
 export default function AcceptInvitationClient({ invitationId }) {
     const router = useRouter();
@@ -159,9 +160,10 @@ export default function AcceptInvitationClient({ invitationId }) {
                 Confirmez votre choix.
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
-                <Button
+                <FormButton
                     onClick={handleAccept}
-                    disabled={isAccepting}
+                    disabled={isRejecting}
+                    loading={isAccepting}
                     className="sm:flex-1"
                 >
                     {isAccepting && (
@@ -171,11 +173,12 @@ export default function AcceptInvitationClient({ invitationId }) {
                         />
                     )}
                     Accepter l&apos;invitation
-                </Button>
-                <Button
+                </FormButton>
+                <FormButton
                     onClick={handleReject}
                     variant="outline"
-                    disabled={isRejecting}
+                    disabled={isAccepting}
+                    loading={isRejecting}
                     className="sm:flex-1"
                 >
                     {isRejecting && (
@@ -185,7 +188,7 @@ export default function AcceptInvitationClient({ invitationId }) {
                         />
                     )}
                     Refuser
-                </Button>
+                </FormButton>
             </div>
         </div>
     );

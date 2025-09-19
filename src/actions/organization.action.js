@@ -4,13 +4,11 @@ import { APIError } from "better-auth/api";
 import { z } from "zod";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
-import {
-    withAuthMonitoring,
-    authLogger,
-} from "@/lib/auth-monitoring";
+import { withAuthMonitoring, authLogger } from "@/lib/auth-monitoring";
 import { safeAuthOperation } from "@/lib/auth-error-handling";
 import {
     requireUser,
+    requireOrganization,
     checkUserPermissions,
 } from "@/lib/data-access";
 import {
@@ -23,14 +21,17 @@ const DEFAULT_MESSAGES = {
     invalidPayload: "Les données fournies sont invalides.",
     createOrganization: "Impossible de créer l'organisation pour le moment.",
     inviteMember: "Impossible d'envoyer l'invitation pour le moment.",
-    updateOrganization: "Impossible de mettre à jour l'organisation pour le moment.",
-    deleteOrganization: "Impossible de supprimer l'organisation pour le moment.",
+    updateOrganization:
+        "Impossible de mettre à jour l'organisation pour le moment.",
+    deleteOrganization:
+        "Impossible de supprimer l'organisation pour le moment.",
     updateMemberRole: "Impossible de mettre à jour le rôle pour le moment.",
     removeMember: "Impossible de supprimer ce membre pour le moment.",
     cancelInvitation: "Impossible d'annuler cette invitation pour le moment.",
     insufficientPermissions:
         "Vous n'avez pas les permissions nécessaires pour réaliser cette action.",
-    organizationMismatch: "L'organisation ciblée ne correspond pas à l'organisation active.",
+    organizationMismatch:
+        "L'organisation ciblée ne correspond pas à l'organisation active.",
 };
 
 const createOrganizationSchema = z.object({
@@ -74,10 +75,7 @@ const updateMemberRoleSchema = z.object({
 
 const removeMemberSchema = z.object({
     organizationId: z.string().trim().min(1, "Organisation invalide"),
-    memberIdOrEmail: z
-        .string()
-        .trim()
-        .min(1, "Identifiant membre invalide"),
+    memberIdOrEmail: z.string().trim().min(1, "Identifiant membre invalide"),
 });
 
 const cancelInvitationSchema = z.object({
@@ -113,7 +111,8 @@ const validateInput = (schema, input, fallbackMessage) => {
             ok: false,
             error:
                 parsed.error.issues?.[0]?.message ??
-                fallbackMessage ?? DEFAULT_MESSAGES.invalidPayload,
+                fallbackMessage ??
+                DEFAULT_MESSAGES.invalidPayload,
         };
     }
 
@@ -143,7 +142,9 @@ const createOrganizationOperation = withAuthMonitoring(async input => {
         });
 
         if (!organization?.id) {
-            throw new Error("Réponse inattendue lors de la création de l'organisation");
+            throw new Error(
+                "Réponse inattendue lors de la création de l'organisation"
+            );
         }
 
         // Sélectionne automatiquement la nouvelle organisation sauf indication contraire
@@ -190,8 +191,13 @@ const inviteMemberOperation = withAuthMonitoring(async input => {
     );
 
     if (!permissionContext?.organization || !permissionContext?.user) {
-        authLogger.warn("inviteMemberOperation: insufficient permissions context");
-        return { success: false, error: DEFAULT_MESSAGES.insufficientPermissions };
+        authLogger.warn(
+            "inviteMemberOperation: insufficient permissions context"
+        );
+        return {
+            success: false,
+            error: DEFAULT_MESSAGES.insufficientPermissions,
+        };
     }
 
     const { organization, user } = permissionContext;
@@ -250,8 +256,13 @@ const updateOrganizationOperation = withAuthMonitoring(async input => {
     );
 
     if (!permissionContext?.organization || !permissionContext?.user) {
-        authLogger.warn("updateOrganizationOperation: insufficient permissions context");
-        return { success: false, error: DEFAULT_MESSAGES.insufficientPermissions };
+        authLogger.warn(
+            "updateOrganizationOperation: insufficient permissions context"
+        );
+        return {
+            success: false,
+            error: DEFAULT_MESSAGES.insufficientPermissions,
+        };
     }
 
     const { organization, user } = permissionContext;
@@ -309,8 +320,13 @@ const deleteOrganizationOperation = withAuthMonitoring(async input => {
     );
 
     if (!permissionContext?.organization || !permissionContext?.user) {
-        authLogger.warn("deleteOrganizationOperation: insufficient permissions context");
-        return { success: false, error: DEFAULT_MESSAGES.insufficientPermissions };
+        authLogger.warn(
+            "deleteOrganizationOperation: insufficient permissions context"
+        );
+        return {
+            success: false,
+            error: DEFAULT_MESSAGES.insufficientPermissions,
+        };
     }
 
     const { organization, user } = permissionContext;
@@ -361,8 +377,13 @@ const updateMemberRoleOperation = withAuthMonitoring(async input => {
     );
 
     if (!permissionContext?.organization || !permissionContext?.user) {
-        authLogger.warn("updateMemberRoleOperation: insufficient permissions context");
-        return { success: false, error: DEFAULT_MESSAGES.insufficientPermissions };
+        authLogger.warn(
+            "updateMemberRoleOperation: insufficient permissions context"
+        );
+        return {
+            success: false,
+            error: DEFAULT_MESSAGES.insufficientPermissions,
+        };
     }
 
     const { organization } = permissionContext;
@@ -422,8 +443,13 @@ const removeMemberOperation = withAuthMonitoring(async input => {
     );
 
     if (!permissionContext?.organization || !permissionContext?.user) {
-        authLogger.warn("removeMemberOperation: insufficient permissions context");
-        return { success: false, error: DEFAULT_MESSAGES.insufficientPermissions };
+        authLogger.warn(
+            "removeMemberOperation: insufficient permissions context"
+        );
+        return {
+            success: false,
+            error: DEFAULT_MESSAGES.insufficientPermissions,
+        };
     }
 
     const { organization } = permissionContext;
@@ -482,8 +508,13 @@ const cancelInvitationOperation = withAuthMonitoring(async input => {
     );
 
     if (!permissionContext?.organization || !permissionContext?.user) {
-        authLogger.warn("cancelInvitationOperation: insufficient permissions context");
-        return { success: false, error: DEFAULT_MESSAGES.insufficientPermissions };
+        authLogger.warn(
+            "cancelInvitationOperation: insufficient permissions context"
+        );
+        return {
+            success: false,
+            error: DEFAULT_MESSAGES.insufficientPermissions,
+        };
     }
 
     const { organization } = permissionContext;
@@ -555,10 +586,10 @@ export const inviteMemberAction = async rawInput => {
         return { success: false, error: validation.error };
     }
 
-    return safeAuthOperation(
-        () => inviteMemberOperation(validation.value),
-        { success: false, error: DEFAULT_MESSAGES.inviteMember }
-    );
+    return safeAuthOperation(() => inviteMemberOperation(validation.value), {
+        success: false,
+        error: DEFAULT_MESSAGES.inviteMember,
+    });
 };
 
 export const updateOrganizationAction = async rawInput => {
@@ -619,10 +650,10 @@ export const removeMemberAction = async rawInput => {
         return { success: false, error: validation.error };
     }
 
-    return safeAuthOperation(
-        () => removeMemberOperation(validation.value),
-        { success: false, error: DEFAULT_MESSAGES.removeMember }
-    );
+    return safeAuthOperation(() => removeMemberOperation(validation.value), {
+        success: false,
+        error: DEFAULT_MESSAGES.removeMember,
+    });
 };
 
 export const cancelInvitationAction = async rawInput => {

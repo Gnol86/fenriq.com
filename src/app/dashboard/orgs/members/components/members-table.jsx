@@ -1,17 +1,4 @@
-"use client";
-
-import { MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import MembersActionMenu from "./members-action-menu";
 import {
     Table,
     TableBody,
@@ -21,18 +8,26 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn, getInitials } from "@/lib/utils";
+import { getInitials } from "@/lib/utils";
 import { defaultRoleLabels } from "./constants";
 import { formatMemberSince } from "./utils";
 
-export default function MembersTable({
-    members,
-    onRoleChange,
-    onRemove,
-    isUpdatingMemberId,
-    currentUserId,
-}) {
-    if (!members.length) {
+function sortMembers(members) {
+    return [...members].sort((a, b) => {
+        const nameA = (a?.user?.name || a?.user?.email || "").toLocaleLowerCase(
+            "fr"
+        );
+        const nameB = (b?.user?.name || b?.user?.email || "").toLocaleLowerCase(
+            "fr"
+        );
+        return nameA.localeCompare(nameB, "fr", { sensitivity: "accent" });
+    });
+}
+
+export default function MembersTable({ members, organizationId, currentUserId }) {
+    const sortedMembers = sortMembers(members);
+
+    if (!sortedMembers.length) {
         return (
             <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
                 Aucun membre actif pour le moment.
@@ -51,14 +46,9 @@ export default function MembersTable({
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {members.map(member => {
+                {sortedMembers.map(member => {
                     const memberRole = member?.role ?? "member";
-                    const memberUserId = member?.user?.id ?? member?.userId;
-                    const isSelf = Boolean(
-                        currentUserId && memberUserId === currentUserId
-                    );
-                    const roleChangeDisabled =
-                        isSelf || isUpdatingMemberId === member.id;
+
                     return (
                         <TableRow key={member.id}>
                             <TableCell>
@@ -80,12 +70,11 @@ export default function MembersTable({
                                     </Avatar>
                                     <div className="flex flex-col">
                                         <span className="text-sm font-medium text-foreground">
-                                            {member?.user?.name ||
-                                                "Utilisateur"}
+                                            {member?.user?.name || "Utilisateur"}
                                         </span>
-                                        {member?.id ? (
+                                        {member?.user?.email ? (
                                             <span className="text-xs text-muted-foreground">
-                                                {member?.user?.email || "-"}
+                                                {member.user.email}
                                             </span>
                                         ) : null}
                                     </div>
@@ -93,8 +82,7 @@ export default function MembersTable({
                             </TableCell>
                             <TableCell>
                                 <span className="text-sm font-medium text-foreground">
-                                    {defaultRoleLabels[memberRole] ??
-                                        memberRole}
+                                    {defaultRoleLabels[memberRole] ?? memberRole}
                                 </span>
                             </TableCell>
                             <TableCell>
@@ -103,67 +91,12 @@ export default function MembersTable({
                                 </span>
                             </TableCell>
                             <TableCell className="text-right">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-8 w-8"
-                                            aria-label="Actions du membre"
-                                            disabled={isSelf}
-                                        >
-                                            <MoreHorizontal
-                                                className="h-4 w-4"
-                                                aria-hidden="true"
-                                            />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuSub>
-                                            <DropdownMenuSubTrigger>
-                                                Modifier le rôle
-                                            </DropdownMenuSubTrigger>
-                                            <DropdownMenuSubContent>
-                                                {Object.entries(
-                                                    defaultRoleLabels
-                                                ).map(([role, label]) => (
-                                                    <DropdownMenuItem
-                                                        key={role}
-                                                        onSelect={event => {
-                                                            event.preventDefault();
-                                                            onRoleChange?.(
-                                                                member.id,
-                                                                role,
-                                                                memberRole
-                                                            );
-                                                        }}
-                                                        disabled={
-                                                            roleChangeDisabled ||
-                                                            memberRole === role
-                                                        }
-                                                    >
-                                                        <span className="text-sm">
-                                                            {label}
-                                                        </span>
-                                                    </DropdownMenuItem>
-                                                ))}
-                                            </DropdownMenuSubContent>
-                                        </DropdownMenuSub>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem
-                                            variant="destructive"
-                                            onSelect={event => {
-                                                event.preventDefault();
-                                                onRemove?.(member);
-                                            }}
-                                            disabled={
-                                                memberRole === "owner" || isSelf
-                                            }
-                                        >
-                                            Supprimer
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                                <MembersActionMenu
+                                    member={member}
+                                    memberRole={memberRole}
+                                    organizationId={organizationId}
+                                    currentUserId={currentUserId}
+                                />
                             </TableCell>
                         </TableRow>
                     );
