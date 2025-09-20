@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
+import { createOrganizationAction } from "@/actions/organisations.action";
 
 const formSchema = z.object({
     name: z
@@ -33,7 +34,7 @@ const formSchema = z.object({
         }, "Le nom doit contenir au minimum deux caractères alphanumériques"),
 });
 
-export default function NewOrganizationForm({ hasActiveOrganization = false }) {
+export default function NewOrganizationForm() {
     const router = useRouter();
 
     const form = useForm({
@@ -45,17 +46,16 @@ export default function NewOrganizationForm({ hasActiveOrganization = false }) {
 
     const onSubmit = async values => {
         try {
-            // const result = await createOrganizationAction({
-            //     name: values.name,
-            //     keepCurrentActiveOrganization: hasActiveOrganization,
-            // });
+            const result = await createOrganizationAction({
+                name: values.name,
+            });
 
-            // if (!result?.success) {
-            //     throw new Error(
-            //         result?.error ||
-            //             "Impossible de créer l'organisation pour le moment"
-            //     );
-            // }
+            if (!result?.success) {
+                throw new Error(
+                    result?.error ||
+                        "Impossible de créer l'organisation pour le moment"
+                );
+            }
 
             toast.success("Organisation créée avec succès");
             router.push("/dashboard");
@@ -75,12 +75,6 @@ export default function NewOrganizationForm({ hasActiveOrganization = false }) {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="flex flex-col gap-6"
             >
-                {hasActiveOrganization ? (
-                    <p className="text-sm text-muted-foreground">
-                        Vous avez déjà une organisation active. La nouvelle
-                        organisation sera ajoutée à votre compte.
-                    </p>
-                ) : null}
                 <FormField
                     control={form.control}
                     name="name"

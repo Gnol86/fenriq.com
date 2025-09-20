@@ -6,10 +6,8 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { getCurrentOrganization } from "@/lib/auth-access";
 
 export default async function Page() {
-    const activeOrganization = await getCurrentOrganization();
     return (
         <div className="flex flex-col gap-6 p-10 max-w-4xl mx-auto">
             <Card>
@@ -21,9 +19,7 @@ export default async function Page() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <NewOrganizationForm
-                        hasActiveOrganization={Boolean(activeOrganization)}
-                    />
+                    <NewOrganizationForm />
                 </CardContent>
             </Card>
         </div>

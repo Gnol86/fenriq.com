@@ -10,24 +10,19 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { requireUser, getCurrentOrganization } from "@/lib/auth-access";
+import { getCurrentOrganization, requireUser } from "@/lib/auth-access";
 import { Plus, Settings, AlertTriangle, Users } from "lucide-react";
 import Link from "next/link";
 
 export default async function Layout({ children }) {
-    const user = await requireUser();
+    await requireUser();
     const activeOrganization = await getCurrentOrganization();
     const hasOrganization = Boolean(activeOrganization);
     const organizationLabel = activeOrganization?.name ?? "Organisation";
-    const organizations = user?.organizations ?? [];
 
     return (
         <SidebarProvider>
-            <AppSidebar
-                user={user}
-                activeOrganization={activeOrganization}
-                organizations={organizations}
-            >
+            <AppSidebar>
                 <SidebarGroup>
                     <SidebarGroupLabel>
                         <span>{organizationLabel}</span>

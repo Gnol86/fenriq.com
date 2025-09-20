@@ -21,27 +21,39 @@ export const getCurrentUser = cache(async (critical = false, h) => {
     const user = session?.user;
     if (!user) return null;
 
-    // L’org active est stockée sur la session si tu l’as configurée (voir setActiveOrganization).
     const activeOrganizationId = session?.session?.activeOrganizationId ?? null;
 
     return { ...user, activeOrganizationId };
 });
 
-export const getCurrentOrganization = cache(async (critical = false, h) => {
+export const getListOrganizations = cache(async (critical = false, h) => {
     const head = h || (await nextHeaders());
-    const user = await getCurrentUser(critical, head);
-    if (!user?.activeOrganizationId) return null;
-
-    try {
-        return await auth.api.getFullOrganization({
-            headers: head,
-            query: { organizationId: user.activeOrganizationId },
-        });
-    } catch (error) {
-        if (error instanceof APIError) return null;
-        throw error;
-    }
+    const organisations = await auth.api.listOrganizations({
+        headers: head,
+    });
+    return organisations;
 });
+
+export const getCurrentOrganization = cache(
+    async (membersLimit = 0, critical = false, h) => {
+        const head = h || (await nextHeaders());
+        const user = await getCurrentUser(critical, head);
+        if (!user?.activeOrganizationId) return null;
+
+        try {
+            return await auth.api.getFullOrganization({
+                headers: head,
+                query: {
+                    organizationId: user.activeOrganizationId,
+                    membersLimit: membersLimit,
+                },
+            });
+        } catch (error) {
+            if (error instanceof APIError) return null;
+            throw error;
+        }
+    }
+);
 
 export const requireUser = async (critical = false, h) => {
     const head = h || (await nextHeaders());

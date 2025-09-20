@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
+import { deleteOrganizationAction } from "@/actions/organisations.action";
 
 const formSchema = z.object({
     confirmation: z
@@ -52,16 +53,16 @@ export default function DangerZoneForm({ organization }) {
         }
 
         try {
-            // const result = await deleteOrganizationAction({
-            //     organizationId: organization.id,
-            // });
+            const result = await deleteOrganizationAction({
+                organizationId: organization.id,
+            });
 
-            // if (!result?.success) {
-            //     throw new Error(
-            //         result?.error ||
-            //             "Impossible de supprimer l'organisation pour le moment"
-            //     );
-            // }
+            if (!result?.success) {
+                throw new Error(
+                    result?.error ||
+                        "Impossible de supprimer l'organisation pour le moment"
+                );
+            }
 
             toast.success("Organisation supprimée avec succès");
             router.push("/dashboard");

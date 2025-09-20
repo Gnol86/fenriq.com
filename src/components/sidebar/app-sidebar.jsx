@@ -5,23 +5,25 @@ import {
     SidebarHeader,
 } from "@/components/ui/sidebar";
 import UserButton from "./user-button";
-import { requireUser } from "@/lib/auth-access";
+import {
+    getCurrentOrganization,
+    getListOrganizations,
+    requireUser,
+} from "@/lib/auth-access";
 import OrgButton from "./org-button";
 
-export async function AppSidebar({
-    children,
-    user: userProp,
-    organizations: organizationsProp,
-    activeOrganization,
-}) {
-    const user = userProp ?? (await requireUser());
-    const organizations = organizationsProp ?? user?.organizations ?? [];
+export async function AppSidebar({ children }) {
+    const [user, organizations = [], activeOrganization] = await Promise.all([
+        requireUser(),
+        getListOrganizations(),
+        getCurrentOrganization(),
+    ]);
 
     return (
         <Sidebar>
             <SidebarHeader>
                 <OrgButton
-                    organizations={organizations}
+                    organizations={organizations ?? []}
                     activeOrganization={activeOrganization}
                 />
             </SidebarHeader>

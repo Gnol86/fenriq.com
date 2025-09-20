@@ -136,17 +136,8 @@ export default function OrgButton({ organizations = [], activeOrganization }) {
                         router.push("/dashboard/orgs/new");
                     }}
                 >
-                    <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
+                    <Plus className="" aria-hidden="true" />
                     Créer une organisation
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                    onSelect={event => {
-                        event.preventDefault();
-                        router.push("/dashboard/orgs/manage");
-                    }}
-                    disabled={!displayOrganization}
-                >
-                    Paramètres de l&apos;organisation
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
