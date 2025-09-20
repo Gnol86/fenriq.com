@@ -70,28 +70,33 @@ export const requireOrganization = async critical => {
     return organization;
 };
 
-// permission peut être un objet { resource: ["action"] } ou un tableau selon ton AC.
-// On passe toujours headers aux deux endpoints pour être propres.
-export const hasGlobalPermission = cache(
-    async (permission, critical = false, h) => {
-        const head = h || (await nextHeaders());
-        const user = await getCurrentUser(critical, head);
-        if (!user) return false;
+// Fonction interne partagée
+const _hasGlobalPermissionInternal = async (permission, critical = false, h) => {
+    const head = h || (await nextHeaders());
+    const user = await getCurrentUser(critical, head);
+    if (!user) return false;
 
-        const [orgaOk, adminOk] = await Promise.all([
-            auth.api.hasPermission({
-                headers: head,
-                body: { permissions: permission },
-            }),
-            auth.api.userHasPermission({
-                headers: head,
-                body: {
-                    userId: user.id,
-                    permissions: permission,
-                },
-            }),
-        ]);
+    const [orgaOk, adminOk] = await Promise.all([
+        auth.api.hasPermission({
+            headers: head,
+            body: { permissions: permission },
+        }),
+        auth.api.userHasPermission({
+            headers: head,
+            body: {
+                userId: user.id,
+                permissions: permission,
+            },
+        }),
+    ]);
 
-        return Boolean(orgaOk || adminOk);
-    }
-);
+    return Boolean(orgaOk?.success || adminOk?.success);
+};
+
+// Version sans cache pour les actions critiques
+export const hasGlobalPermissionCritical = (permission, h) => 
+    _hasGlobalPermissionInternal(permission, true, h);
+
+// Version avec cache pour l'UI
+export const hasGlobalPermission = cache((permission, h) => 
+    _hasGlobalPermissionInternal(permission, false, h));

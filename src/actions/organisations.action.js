@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { hasGlobalPermission } from "@/lib/auth-access";
+import { hasGlobalPermissionCritical } from "@/lib/auth-access";
 import { nameToSlug } from "@/lib/utils";
 import { headers } from "next/headers";
 
@@ -24,11 +24,16 @@ export async function createOrganizationAction({ name }) {
 }
 
 export async function deleteOrganizationAction({ organizationId }) {
-    if (!(await hasGlobalPermission({ resource: "organizations:delete" }))) {
+    const canDeleteOrganization = await hasGlobalPermissionCritical({
+        organization: ["delete"],
+    });
+
+    if (!canDeleteOrganization) {
         throw new Error(
             "Vous n'avez pas la permission d'effectuer cette action"
         );
     }
+
     try {
         await auth.api.deleteOrganization({
             body: {

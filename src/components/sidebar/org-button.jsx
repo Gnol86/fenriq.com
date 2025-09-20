@@ -75,7 +75,8 @@ export default function OrgButton({ organizations = [], activeOrganization }) {
                 <div className="flex flex-col justify-start items-start flex-1 text-left overflow-hidden min-w-0">
                     <span className="font-bold truncate w-full">PolGPT</span>
                     <span className="text-xs font-medium text-muted-foreground -mt-1 truncate w-full">
-                        {displayOrganization?.name || "Aucune organisation"}
+                        {displayOrganization?.name ||
+                            "Aucune organisation active"}
                     </span>
                 </div>
             </DropdownMenuTrigger>
