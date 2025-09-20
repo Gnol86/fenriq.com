@@ -48,3 +48,33 @@ export async function deleteOrganizationAction({ organizationId }) {
         throw new Error(error.message);
     }
 }
+
+export async function updateOrganizationAction({ organizationId, name }) {
+    const canDeleteOrganization = await hasGlobalPermissionCritical({
+        organization: ["update"],
+    });
+
+    if (!canDeleteOrganization) {
+        throw new Error(
+            "Vous n'avez pas la permission d'effectuer cette action"
+        );
+    }
+
+    try {
+        await auth.api.updateOrganization({
+            body: {
+                organizationId,
+                data: {
+                    name: name,
+                    slug: nameToSlug(name),
+                },
+            },
+            headers: await headers(),
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to update organization", error);
+        throw new Error(error.message);
+    }
+}

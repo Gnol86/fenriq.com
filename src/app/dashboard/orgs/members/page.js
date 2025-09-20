@@ -1,5 +1,6 @@
 import {
     Card,
+    CardAction,
     CardContent,
     CardDescription,
     CardHeader,
@@ -9,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { requireUser, requireOrganization } from "@/lib/auth-access";
 import MembersTable from "./components/members-table";
 import InvitationsTable from "./components/invitations-table";
+import InviteMemberDialog from "./components/invite-member-dialog";
 
 export default async function OrganizationMembersPage() {
     const user = await requireUser();
@@ -29,7 +31,14 @@ export default async function OrganizationMembersPage() {
                         Gérez les accès, invitez de nouveaux membres et suivez
                         les invitations en cours.
                     </CardDescription>
+                    <CardAction>
+                        <InviteMemberDialog
+                            organizationId={organization.id}
+                            organizationName={organization.name}
+                        />
+                    </CardAction>
                 </CardHeader>
+
                 <CardContent>
                     <Tabs
                         defaultValue="members"

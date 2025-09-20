@@ -71,32 +71,28 @@ export const requireOrganization = async critical => {
 };
 
 // Fonction interne partagée
-const _hasGlobalPermissionInternal = async (permission, critical = false, h) => {
+const _hasGlobalPermissionInternal = async (
+    permissions,
+    critical = false,
+    h
+) => {
     const head = h || (await nextHeaders());
     const user = await getCurrentUser(critical, head);
     if (!user) return false;
 
-    const [orgaOk, adminOk] = await Promise.all([
-        auth.api.hasPermission({
-            headers: head,
-            body: { permissions: permission },
-        }),
-        auth.api.userHasPermission({
-            headers: head,
-            body: {
-                userId: user.id,
-                permissions: permission,
-            },
-        }),
-    ]);
+    const orgaOk = await auth.api.hasPermission({
+        headers: head,
+        body: { permissions: permissions },
+    });
 
-    return Boolean(orgaOk?.success || adminOk?.success);
+    return Boolean(orgaOk?.success);
 };
 
 // Version sans cache pour les actions critiques
-export const hasGlobalPermissionCritical = (permission, h) => 
-    _hasGlobalPermissionInternal(permission, true, h);
+export const hasGlobalPermissionCritical = (permissions, h) =>
+    _hasGlobalPermissionInternal(permissions, true, h);
 
 // Version avec cache pour l'UI
-export const hasGlobalPermission = cache((permission, h) => 
-    _hasGlobalPermissionInternal(permission, false, h));
+export const hasGlobalPermission = cache((permissions, h) =>
+    _hasGlobalPermissionInternal(permissions, false, h)
+);

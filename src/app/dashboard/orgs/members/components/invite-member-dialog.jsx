@@ -26,7 +26,6 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { inviteMemberAction } from "@/actions/organization.action";
 
 const inviteSchema = z.object({
     email: z
@@ -36,7 +35,10 @@ const inviteSchema = z.object({
         .email("Adresse email invalide"),
 });
 
-export default function InviteMemberDialog({ organizationId, organizationName }) {
+export default function InviteMemberDialog({
+    organizationId,
+    organizationName,
+}) {
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const form = useForm({
@@ -53,15 +55,15 @@ export default function InviteMemberDialog({ organizationId, organizationName })
         }
 
         try {
-            const response = await inviteMemberAction({
-                email: values.email,
-                role: "member",
-                organizationId,
-            });
+            // const response = await inviteMemberAction({
+            //     email: values.email,
+            //     role: "member",
+            //     organizationId,
+            // });
 
-            if (!response?.success) {
-                throw new Error(response?.error);
-            }
+            // if (!response?.success) {
+            //     throw new Error(response?.error);
+            // }
 
             toast.success("Invitation envoyée avec succès");
             form.reset({ email: "" });
