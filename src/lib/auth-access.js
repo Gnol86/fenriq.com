@@ -55,7 +55,34 @@ export const getListMembersActiveOrganization = cache(
                     filterValue: options.filterValue ?? "",
                 },
             });
-            return members;
+            return members?.members;
+        } catch (error) {
+            if (error instanceof APIError) return null;
+            throw error;
+        }
+    }
+);
+
+export const getListContactsActiveOrganization = cache(
+    async (critical = false, h) => {
+        const head = h || (await nextHeaders());
+        const user = await getCurrentUser(critical, head);
+        if (!user?.activeOrganizationId) return null;
+
+        try {
+            const members = await auth.api.listMembers({
+                headers: head,
+                query: {
+                    organizationId: user.activeOrganizationId,
+                    limit: 100,
+                    sortBy: "createdAt",
+                    sortDirection: "asc",
+                    filterField: "role",
+                    filterOperator: "contains",
+                    filterValue: "owner",
+                },
+            });
+            return members?.members;
         } catch (error) {
             if (error instanceof APIError) return null;
             throw error;

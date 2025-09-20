@@ -1,3 +1,4 @@
+import Breadcrumb from "@/components/breadcrumb";
 import NewOrganizationForm from "./form";
 import {
     Card,
@@ -10,6 +11,16 @@ import {
 export default async function Page() {
     return (
         <div className="flex flex-col gap-6 p-10 max-w-4xl mx-auto">
+            <Breadcrumb
+                items={[
+                    { name: "Dashboard", href: "/dashboard" },
+                    { name: "Organisation" },
+                    {
+                        name: "Créer une organisation",
+                        href: "/dashboard/orgs/new",
+                    },
+                ]}
+            />
             <Card>
                 <CardHeader>
                     <CardTitle>Créer une organisation</CardTitle>

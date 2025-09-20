@@ -4,20 +4,20 @@ export const disabledPaths = [
     "/organization/create",
     "/organization/check-slug",
     "/organization/list",
-    "/organization/set-active",
+    // "/organization/set-active",
     "/organization/get-full-organization",
     "/organization/update",
     "/update-organization",
     "/organization/delete",
-    
+
     // Invitation routes
     "/organization/invite-member",
-    "/organization/accept-invitation",
+    // "/organization/accept-invitation",
     "/organization/cancel-invitation",
-    "/organization/reject-invitation",
+    // "/organization/reject-invitation",
     "/organization/get-invitation",
     "/organization/list-invitations",
-    
+
     // Member routes
     "/organization/list-members",
     "/organization/remove-member",
@@ -26,14 +26,14 @@ export const disabledPaths = [
     "/organization/get-active-member-role",
     "/organization/add-member",
     "/organization/leave",
-    
+
     // Dynamic Access Control routes
     "/organization/create-role",
     "/organization/delete-role",
     "/organization/list-roles",
     "/organization/get-role",
     "/organization/update-role",
-    
+
     // Team routes
     "/organization/create-team",
     "/organization/list-teams",
@@ -44,7 +44,7 @@ export const disabledPaths = [
     "/organization/list-team-members",
     "/organization/add-team-member",
     "/organization/remove-team-member",
-    
+
     // Admin routes
     "/admin/create-user",
     "/admin/list-users",

@@ -9,8 +9,10 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { getCurrentOrganization, requireUser } from "@/lib/auth-access";
+import { LayoutDashboard } from "lucide-react";
 import { Plus, Settings, AlertTriangle, Users } from "lucide-react";
 import Link from "next/link";
 
@@ -23,11 +25,24 @@ export default async function Layout({ children }) {
     return (
         <SidebarProvider>
             <AppSidebar>
-                <SidebarGroup>
-                    <SidebarGroupLabel>
-                        <span>{organizationLabel}</span>
-                    </SidebarGroupLabel>
+                <SidebarGroup className="gap-4">
                     <SidebarGroupContent>
+                        <SidebarMenu>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/dashboard">
+                                        <LayoutDashboard className="opacity-60" />
+                                        Dashboard
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+
+                    <SidebarGroupContent>
+                        <SidebarGroupLabel>
+                            <span>{organizationLabel}</span>
+                        </SidebarGroupLabel>
                         <SidebarMenu>
                             {!hasOrganization ? (
                                 <SidebarMenuItem>

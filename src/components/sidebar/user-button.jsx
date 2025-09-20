@@ -11,9 +11,11 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Settings2, LogOut, FileText, Shield, Loader2 } from "lucide-react";
+import { LogOut, Shield, Loader2 } from "lucide-react";
 import { signOut } from "@/lib/auth-client";
 import { getInitials } from "@/lib/utils";
+import { LayoutDashboard } from "lucide-react";
+import { AppWindow } from "lucide-react";
 
 export default function UserButton({ user }) {
     const router = useRouter();
@@ -55,7 +57,10 @@ export default function UserButton({ user }) {
                     <AvatarFallback className="bg-background">
                         {userInitials}
                     </AvatarFallback>
-                    <AvatarImage src={user.image ?? undefined} alt={user.name} />
+                    <AvatarImage
+                        src={user.image ?? undefined}
+                        alt={user.name}
+                    />
                 </Avatar>
                 <div className="flex flex-col justify-start items-start flex-1 text-left overflow-hidden min-w-0">
                     <span className="font-medium truncate w-full">
@@ -86,7 +91,7 @@ export default function UserButton({ user }) {
                 {!isOnApp && (
                     <DropdownMenuItem asChild>
                         <Link href="/app" className="flex items-center gap-2">
-                            <FileText
+                            <AppWindow
                                 size={16}
                                 className="opacity-60"
                                 aria-hidden="true"
@@ -101,21 +106,18 @@ export default function UserButton({ user }) {
                             href="/dashboard"
                             className="flex items-center gap-2"
                         >
-                            <Settings2
+                            <LayoutDashboard
                                 size={16}
                                 className="opacity-60"
                                 aria-hidden="true"
                             />
-                            Paramètres
+                            Dashboard
                         </Link>
                     </DropdownMenuItem>
                 )}
                 {!isOnAdmin && user.role === "admin" && (
                     <DropdownMenuItem asChild>
-                        <Link
-                            href="/admin"
-                            className="flex items-center gap-2"
-                        >
+                        <Link href="/admin" className="flex items-center gap-2">
                             <Shield
                                 size={16}
                                 className="opacity-60"

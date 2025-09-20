@@ -1,3 +1,4 @@
+import Breadcrumb from "@/components/breadcrumb";
 import DangerZoneForm from "./form";
 import {
     Card,
@@ -13,6 +14,16 @@ export default async function DangerZonePage() {
     const organization = await requireOrganization();
     return (
         <div className="flex flex-col gap-6 p-10 max-w-4xl mx-auto">
+            <Breadcrumb
+                items={[
+                    { name: "Dashboard", href: "/dashboard" },
+                    { name: "Organisation" },
+                    {
+                        name: "Zone dangereuse",
+                        href: "/dashboard/orgs/danger-zone",
+                    },
+                ]}
+            />
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-destructive">
