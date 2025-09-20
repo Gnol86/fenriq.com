@@ -133,6 +133,7 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 - Prefer using `??` than `||`
 - All API Route SHOULD use @src/lib/zod-route.js, each file name `route.js` should use Zod Route. ALWAYS READ zod-route.ts before creating any routes.
 - All API Request SHOULD use @src/lib/up-fetch.js and NEVER use `fetch`
+- After every file creation or modification, run `pnpm lint` before finishing the task
 
 ## Files naming
 

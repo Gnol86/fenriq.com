@@ -65,10 +65,7 @@ export default function OrgButton({ organizations = [], activeOrganization }) {
                         {getInitials(displayOrganization?.name || "P")}
                     </AvatarFallback>
                     <AvatarImage
-                        src={
-                            displayOrganization?.image ||
-                            "/images/logo_noborder.png"
-                        }
+                        src={displayOrganization?.image || "/images/logo.png"}
                         alt={`Avatar of ${displayOrganization?.name || "PolGPT"}`}
                     />
                 </Avatar>

@@ -1,3 +1,4 @@
+// src/lib/auth-client.js
 import { createAuthClient } from "better-auth/react";
 import { adminClient, organizationClient } from "better-auth/client/plugins";
 import { getServerUrl } from "./server-url";

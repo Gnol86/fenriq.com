@@ -26,6 +26,43 @@ export const getCurrentUser = cache(async (critical = false, h) => {
     return { ...user, activeOrganizationId };
 });
 
+export const getListMembersActiveOrganization = cache(
+    async (options = {}, critical = false, h) => {
+        const isPermitted = await hasGlobalPermissionCritical({
+            organization: ["read"],
+        });
+
+        if (!isPermitted) {
+            throw new Error(
+                "Vous n'avez pas la permission d'accéder à cette ressource"
+            );
+        }
+        const head = h || (await nextHeaders());
+        const user = await getCurrentUser(critical, head);
+        if (!user?.activeOrganizationId) return null;
+
+        try {
+            const members = await auth.api.listMembers({
+                headers: head,
+                query: {
+                    organizationId: user.activeOrganizationId,
+                    limit: options.limit ?? 10,
+                    offset: options.offset ?? 0,
+                    sortBy: options.sortBy ?? "createdAt",
+                    sortDirection: options.sortDirection ?? "asc",
+                    filterField: options.filterField ?? "name",
+                    filterOperator: options.filterOperator ?? "contains",
+                    filterValue: options.filterValue ?? "",
+                },
+            });
+            return members;
+        } catch (error) {
+            if (error instanceof APIError) return null;
+            throw error;
+        }
+    }
+);
+
 export const getListOrganizations = cache(async (critical = false, h) => {
     const head = h || (await nextHeaders());
     const organisations = await auth.api.listOrganizations({

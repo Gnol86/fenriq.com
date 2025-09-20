@@ -2,6 +2,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, organization } from "better-auth/plugins";
+import { localization } from "better-auth-localization";
 import { getServerUrl } from "./server-url";
 import { SiteConfig } from "@/site-config";
 import {
@@ -10,6 +11,8 @@ import {
     adminPermissions,
     memberPermissions,
 } from "./organization-permissions.js";
+import { disabledPaths } from "./auth-disabled-paths.js";
+import { translations } from "./auth-translations.js";
 
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
@@ -17,7 +20,19 @@ const prisma = new PrismaClient();
 export const auth = betterAuth({
     database: prismaAdapter(prisma, { provider: "postgres" }),
     baseURL: getServerUrl(),
-    // Configuration optimale session 2025
+    basePath: "/api/auth",
+    disabledPaths,
+    logger: {
+        level: "info",
+        log: (level, message, ...args) => {
+            console.log({
+                level,
+                message,
+                metadata: args,
+                timestamp: new Date().toISOString(),
+            });
+        },
+    },
     session: {
         expiresIn: 60 * 60 * 24 * 7, // 7 jours
         updateAge: 60 * 60 * 24, // Refresh après 24h
@@ -60,6 +75,11 @@ export const auth = betterAuth({
         autoSignInAfterVerification: true,
     },
     plugins: [
+        localization({
+            defaultLocale: "fr-FR",
+            fallbackLocale: "default",
+            translations,
+        }),
         admin({
             defaultRole: "user",
         }),

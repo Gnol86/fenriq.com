@@ -23,7 +23,7 @@ const formSchema = z.object({
         .string()
         .trim()
         .regex(
-            /^[A-Za-z0-9 -]+$/,
+            /^[\p{L}\p{N} -]+$/u,
             "Le nom ne peut contenir que des lettres, chiffres, espaces ou tirets"
         )
         .min(2, "Le nom doit contenir au moins 2 caractères")

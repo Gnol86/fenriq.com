@@ -2,6 +2,7 @@ import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import SignUpButton from "@/components/auth/SignUpButton";
 import SignInButton from "@/components/auth/SignInButton";
 import SignOutButton from "@/components/auth/SignOutButton";
+import GoAppButton from "@/components/auth/GoAppButton";
 
 export default function Home() {
     return (
@@ -24,6 +25,7 @@ export default function Home() {
                     <SignUpButton />
                     <SignInButton />
                     <SignOutButton />
+                    <GoAppButton />
                 </div>
             </footer>
         </>

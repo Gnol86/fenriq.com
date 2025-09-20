@@ -3,8 +3,8 @@ import { createAccessControl } from "better-auth/plugins/access";
 
 export const ORG_RESOURCES = {
     organization: ["update", "delete"],
-    member: ["list", "role_membre", "role_admin", "role_owner", "delete"],
-    invitation: ["list", "create", "cancel"],
+    member: ["create", "update", "delete", "read"],
+    invitation: ["read", "create", "cancel"],
 };
 
 const CUSTOM_RESOURCES = {
@@ -22,16 +22,16 @@ export const ac = createAccessControl(statements);
 export const ownerPermissions = ac.newRole({
     app: ["use"],
     organization: ["update", "delete"],
-    member: ["list", "role_membre", "role_admin", "role_owner", "delete"],
-    invitation: ["create", "cancel"],
+    member: ["create", "update", "delete", "read"],
+    invitation: ["read", "create", "cancel"],
     billing: ["read", "update"],
 });
 
 // ADMIN: presque tout, sauf delete org / changer owner
 export const adminPermissions = ac.newRole({
     app: ["use"],
-    member: ["list", "role_membre", "role_admin", "delete"],
-    invitation: ["create", "cancel"],
+    member: ["create", "update", "delete", "read"],
+    invitation: ["read", "create", "cancel"],
     billing: ["read"],
 });
 
