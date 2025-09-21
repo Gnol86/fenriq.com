@@ -32,12 +32,12 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 ### Project Structure
 
 - `app/` - Next.js App Router pages and layouts
-- `src/components/` - UI components (Shadcn/UI in `ui/`, custom in `nowts/`)
+- `src/components/` - UI components (Shadcn/UI in `src/components/ui/`, custom in `src/components/`)
 - `src/features/` - Feature-specific components and logic
 - `src/lib/` - Utilities, configurations, and services
 - `src/hooks/` - Custom React hooks
 - `src/actions/` - Actions server
-- `emails/` - Email templates using React Email
+- `src/components/email/` - Email templates using React Email
 - `prisma/` - Database schema and migrations
 
 ### Key Features
@@ -117,8 +117,7 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 1. **NEVER** create auth code without reading data-access.js first
 2. **NEVER** use legacy auth patterns from existing code
 3. **ALWAYS** use new Data Access Layer patterns
-4. **ALWAYS** include monitoring and error handling
-5. **ALWAYS** consider cache implications
+4. **ALWAYS** consider cache implications
 
 ### **Other Core Files**
 
@@ -131,8 +130,6 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 - Use TypeScript strict mode - no `any` types
 - Prefer server components and avoid unnecessary client-side state
 - Prefer using `??` than `||`
-- All API Route SHOULD use @src/lib/zod-route.js, each file name `route.js` should use Zod Route. ALWAYS READ zod-route.ts before creating any routes.
-- All API Request SHOULD use @src/lib/up-fetch.js and NEVER use `fetch`
 - After every file creation or modification, run `pnpm lint` before finishing the task
 
 ## Files naming
@@ -148,6 +145,12 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 Important, when you import thing try to always use TypeScript paths :
 
 - `@/*` is link to @src
+- `@app/*` is link to @src/app
+- `@components/*` is link to @src/components
+- `@lib/*` is link to @src/lib
+- `@hooks/*` is link to @src/hooks
+- `@actions/*` is link to @src/actions
+- `@email/*` is link to @src/components/email
 
 ## Workflow modification
 
@@ -194,9 +197,6 @@ const user = await getCurrentUser(); // Missing monitoring
 // ✅ ALWAYS use new auth-access layer
 import { getCurrentUser, requireUser } from "@/lib/auth-access";
 
-// ✅ ALWAYS include monitoring for auth operations
-const monitoredOperation = withAuthMonitoring(myFunction);
-
 // ✅ ALWAYS consider cache implications
 await invalidateUserCache(userId, orgId);
 
@@ -204,6 +204,6 @@ await invalidateUserCache(userId, orgId);
 const resilientFunction = withResilientAuth(fallback)(operation);
 ```
 
-**Documentation:**
+# **Documentation:**
 
 ✅ ALWAYS use web-search to find documentation about the library you're using.

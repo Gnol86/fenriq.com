@@ -13,9 +13,9 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import ImageProfile from "@/components/image-profile";
+import OrganizationSelectorButton from "@/components/organization-selector-button";
 
 export default async function DashboardPage() {
     const [user, organizationsRaw = [], activeOrganization, contacts] =
@@ -156,15 +156,11 @@ export default async function DashboardPage() {
                                                 "Organisation"}
                                         </span>
                                     </div>
-                                    {isActive ? (
-                                        <Badge variant="secondary">
-                                            Active
-                                        </Badge>
-                                    ) : (
-                                        <Badge variant="outline">
-                                            Disponible
-                                        </Badge>
-                                    )}
+                                    <OrganizationSelectorButton
+                                        organization={organization}
+                                        isActive={isActive}
+                                        activeOrganizationId={activeOrganizationId}
+                                    />
                                 </div>
                             );
                         })

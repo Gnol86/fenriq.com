@@ -56,7 +56,7 @@ export default function OrgButton({ organizations = [], activeOrganization }) {
             setCurrentActiveOrg(nextOrg);
 
             toast.success(
-                "Vous utilisez maintenant l'organisation " + nextOrg.name
+                `Organisation "${nextOrg.name}" sélectionnée avec succès`
             );
             router.push("/dashboard");
             router.refresh();
