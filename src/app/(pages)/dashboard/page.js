@@ -13,10 +13,9 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { getInitials } from "@/lib/utils";
 import Link from "next/link";
+import ImageProfile from "@/components/image-profile";
 
 export default async function DashboardPage() {
     const [user, organizationsRaw = [], activeOrganization, contacts] =
@@ -56,28 +55,14 @@ export default async function DashboardPage() {
                         {activeOrganization ? (
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center gap-3">
-                                    <Avatar className="h-12 w-12">
-                                        <AvatarFallback className="bg-muted text-base">
-                                            {getInitials(
-                                                activeOrganization?.name ?? ""
-                                            )}
-                                        </AvatarFallback>
-                                        <AvatarImage
-                                            src={
-                                                activeOrganization?.image ??
-                                                undefined
-                                            }
-                                            alt={`Avatar de ${activeOrganization?.name ?? "organisation"}`}
-                                        />
-                                    </Avatar>
-                                    <div className="flex flex-col gap-1 min-w-0">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-lg font-semibold text-foreground truncate">
-                                                {activeOrganization?.name ??
-                                                    "Organisation"}
-                                            </span>
-                                        </div>
-                                    </div>
+                                    <ImageProfile
+                                        user={activeOrganization}
+                                        size="lg"
+                                    />
+                                    <span className="font-semibold truncate">
+                                        {activeOrganization?.name ??
+                                            "Organisation"}
+                                    </span>
                                 </div>
                             </div>
                         ) : (
@@ -102,21 +87,10 @@ export default async function DashboardPage() {
                                             className="flex items-center justify-between"
                                         >
                                             <div className="flex items-center gap-3 min-w-0">
-                                                <Avatar className="h-10 w-10">
-                                                    <AvatarFallback className="bg-muted text-sm">
-                                                        {getInitials(
-                                                            contact?.user
-                                                                .name ?? ""
-                                                        )}
-                                                    </AvatarFallback>
-                                                    <AvatarImage
-                                                        src={
-                                                            contact?.image ??
-                                                            undefined
-                                                        }
-                                                        alt={`Avatar de ${contact?.user.name ?? "contact"}`}
-                                                    />
-                                                </Avatar>
+                                                <ImageProfile
+                                                    user={contact?.user}
+                                                    size="md"
+                                                />
                                                 <div className="flex flex-col gap-0.5 min-w-0">
                                                     <span className="text-sm font-medium text-foreground truncate">
                                                         {contact?.user.name ??
@@ -173,26 +147,14 @@ export default async function DashboardPage() {
                                     className="flex items-center justify-between gap-3 rounded-lg border px-4 py-3"
                                 >
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <Avatar className="h-10 w-10">
-                                            <AvatarFallback className="bg-muted text-sm">
-                                                {getInitials(
-                                                    organization?.name ?? ""
-                                                )}
-                                            </AvatarFallback>
-                                            <AvatarImage
-                                                src={
-                                                    organization?.image ??
-                                                    undefined
-                                                }
-                                                alt={`Avatar de ${organization?.name ?? "organisation"}`}
-                                            />
-                                        </Avatar>
-                                        <div className="flex flex-col gap-0.5 min-w-0">
-                                            <span className="text-sm font-bold text-foreground truncate">
-                                                {organization?.name ??
-                                                    "Organisation"}
-                                            </span>
-                                        </div>
+                                        <ImageProfile
+                                            user={organization}
+                                            size="md"
+                                        />
+                                        <span className="font-bold truncate">
+                                            {organization?.name ??
+                                                "Organisation"}
+                                        </span>
                                     </div>
                                     {isActive ? (
                                         <Badge variant="secondary">

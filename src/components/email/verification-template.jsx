@@ -1,12 +1,14 @@
+import { SiteConfig } from "@/site-config";
+
 export function VerificationEmailTemplate({ name, verificationUrl }) {
     return (
         <div>
             <h1>Vérifiez votre adresse email</h1>
             <p>Bonjour {name ?? "Utilisateur"},</p>
             <p>
-                Pour terminer la création de votre compte PolGPT, veuillez
-                vérifier votre adresse email en cliquant sur le lien ci-dessous
-                :
+                Pour terminer la création de votre compte {SiteConfig.title},
+                veuillez vérifier votre adresse email en cliquant sur le lien
+                ci-dessous :
             </p>
             <p>
                 <a
@@ -31,7 +33,7 @@ export function VerificationEmailTemplate({ name, verificationUrl }) {
             <p>Ce lien expirera dans 24 heures.</p>
             <p>Si vous n'avez pas créé de compte, ignorez cet email.</p>
             <p>Cordialement,</p>
-            <p>L'équipe PolGPT</p>
+            <p>{SiteConfig.mail.signature}</p>
         </div>
     );
 }

@@ -1,3 +1,4 @@
+import { SiteConfig } from "@/site-config";
 import { Html } from "@react-email/components";
 
 export function OrganizationInvitationTemplate({
@@ -15,7 +16,7 @@ export function OrganizationInvitationTemplate({
                 <p style={{ marginBottom: "12px" }}>Bonjour,</p>
                 <p style={{ marginBottom: "12px" }}>
                     {inviterName} vous invite à rejoindre l&apos;organisation
-                    <strong> {organizationName}</strong> sur PolGPT.
+                    <strong> {organizationName}</strong> sur {SiteConfig.title}.
                 </p>
                 <p style={{ marginBottom: "12px" }}>
                     Cliquez sur le bouton ci-dessous pour accepter
@@ -50,7 +51,7 @@ export function OrganizationInvitationTemplate({
                 <p style={{ marginBottom: "0" }}>
                     À très vite,
                     <br />
-                    L&apos;équipe PolGPT
+                    {SiteConfig.mail.signature}
                 </p>
             </div>
         </Html>

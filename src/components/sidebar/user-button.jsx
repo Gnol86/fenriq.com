@@ -10,12 +10,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, Shield, Loader2 } from "lucide-react";
 import { signOut } from "@/lib/auth-client";
-import { getInitials } from "@/lib/utils";
 import { LayoutDashboard } from "lucide-react";
 import { AppWindow } from "lucide-react";
+import ImageProfile from "../image-profile";
 
 export default function UserButton({ user }) {
     const router = useRouter();
@@ -42,26 +41,10 @@ export default function UserButton({ user }) {
         });
     };
 
-    const userInitials = getInitials(user.name || user.email || "Utilisateur");
-    const compactName = (user.name || "Utilisateur")
-        .split(" ")
-        .slice(0, 2)
-        .map(part => part.charAt(0))
-        .join("")
-        .toUpperCase();
-
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 p-2 cursor-pointer">
-                <Avatar className="h-10 w-10 shadow-sm">
-                    <AvatarFallback className="bg-background">
-                        {userInitials}
-                    </AvatarFallback>
-                    <AvatarImage
-                        src={user.image ?? undefined}
-                        alt={user.name}
-                    />
-                </Avatar>
+                <ImageProfile user={user} />
                 <div className="flex flex-col justify-start items-start flex-1 text-left overflow-hidden min-w-0">
                     <span className="font-medium truncate w-full">
                         {user.name || "Utilisateur"}
@@ -76,15 +59,7 @@ export default function UserButton({ user }) {
                 onCloseAutoFocus={event => event.preventDefault()}
             >
                 <DropdownMenuLabel className="flex items-center gap-2 truncate">
-                    <Avatar className="h-5 w-5 shadow-sm">
-                        <AvatarFallback className="bg-background text-xs">
-                            {compactName || userInitials}
-                        </AvatarFallback>
-                        <AvatarImage
-                            src={user.image ?? undefined}
-                            alt={user.name || "Utilisateur"}
-                        />
-                    </Avatar>
+                    <ImageProfile user={user} size="xs" />
                     {user.name || "Utilisateur"}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />

@@ -58,13 +58,12 @@ export const auth = betterAuth({
     emailVerification: {
         sendVerificationEmail: async ({ user, url }) => {
             try {
-                const { sendEmail } = await import("@/actions/email.action");
-                await sendEmail({
+                const { sendVerificationEmail } = await import(
+                    "@/actions/email.action"
+                );
+                await sendVerificationEmail({
                     email: user.email,
-                    subject: "Vérifiez votre adresse email - PolGPT",
                     name: user.name,
-                    message:
-                        "Pour terminer la création de votre compte PolGPT, veuillez vérifier votre adresse email en cliquant sur le lien ci-dessous :",
                     url,
                 });
             } catch (error) {

@@ -16,9 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getInitials } from "@/lib/utils";
 import { updateOrganizationAction } from "@/actions/organisations.action";
+import ImageProfile from "@/components/image-profile";
 
 const formSchema = z.object({
     name: z
@@ -89,15 +88,7 @@ export default function ManageOrganizationForm({ organization }) {
                         Image de profil
                     </p>
                     <div className="flex items-center gap-4">
-                        <Avatar className="h-16 w-16">
-                            <AvatarFallback className="bg-muted text-lg">
-                                {getInitials(organizationName)}
-                            </AvatarFallback>
-                            <AvatarImage
-                                src={organization?.image ?? undefined}
-                                alt={`Avatar de ${organizationName}`}
-                            />
-                        </Avatar>
+                        <ImageProfile user={organization} size="2xl" />
                         <div className="flex flex-col text-sm text-muted-foreground">
                             <span>
                                 Le téléchargement d&apos;une nouvelle image

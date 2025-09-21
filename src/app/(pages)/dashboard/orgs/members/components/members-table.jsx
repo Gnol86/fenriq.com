@@ -7,10 +7,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getInitials } from "@/lib/utils";
 import { defaultRoleLabels } from "./constants";
 import { formatMemberSince } from "./utils";
+import ImageProfile from "@/components/image-profile";
 
 function sortMembers(members) {
     return [...members].sort((a, b) => {
@@ -24,7 +23,11 @@ function sortMembers(members) {
     });
 }
 
-export default function MembersTable({ members, organizationId, currentUserId }) {
+export default function MembersTable({
+    members,
+    organizationId,
+    currentUserId,
+}) {
     const sortedMembers = sortMembers(members);
 
     if (!sortedMembers.length) {
@@ -53,24 +56,14 @@ export default function MembersTable({ members, organizationId, currentUserId })
                         <TableRow key={member.id}>
                             <TableCell>
                                 <div className="flex items-center gap-2">
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarFallback>
-                                            {getInitials(
-                                                member?.user?.name ||
-                                                    member?.user?.email ||
-                                                    "?"
-                                            )}
-                                        </AvatarFallback>
-                                        {member?.user?.image ? (
-                                            <AvatarImage
-                                                src={member.user.image}
-                                                alt={`Avatar de ${member?.user?.name || member?.user?.email}`}
-                                            />
-                                        ) : null}
-                                    </Avatar>
+                                    <ImageProfile
+                                        user={member?.user}
+                                        size="sm"
+                                    />
                                     <div className="flex flex-col">
                                         <span className="text-sm font-medium text-foreground">
-                                            {member?.user?.name || "Utilisateur"}
+                                            {member?.user?.name ||
+                                                "Utilisateur"}
                                         </span>
                                         {member?.user?.email ? (
                                             <span className="text-xs text-muted-foreground">
@@ -82,7 +75,8 @@ export default function MembersTable({ members, organizationId, currentUserId })
                             </TableCell>
                             <TableCell>
                                 <span className="text-sm font-medium text-foreground">
-                                    {defaultRoleLabels[memberRole] ?? memberRole}
+                                    {defaultRoleLabels[memberRole] ??
+                                        memberRole}
                                 </span>
                             </TableCell>
                             <TableCell>

@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Provider } from "@/components/provider";
 import { Toaster } from "@/components/ui/sonner";
+import { SiteConfig } from "@/site-config";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -14,8 +15,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-    title: "PolGPT",
-    description: "PolGPT est un bot de langage qui utilise OpenAI et GPT4",
+    title: SiteConfig.title,
+    description: SiteConfig.description,
+    icons: {
+        icon: "/images/logo_noborder.png",
+    },
 };
 
 export default function RootLayout({ children }) {

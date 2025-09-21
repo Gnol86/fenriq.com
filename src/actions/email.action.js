@@ -1,44 +1,33 @@
 "use server";
 
-import { EmailTemplate } from "@/components/email/template";
 import { VerificationEmailTemplate } from "@/components/email/verification-template";
 import { OrganizationInvitationTemplate } from "@/components/email/organization-invitation-template";
 import { Resend } from "resend";
+import { SiteConfig } from "@/site-config";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function sendEmail({ email, subject, name, message, url }) {
+export async function sendVerificationEmail({ email, name, url }) {
     try {
-        // Determine which template to use based on the content
-        const isVerificationEmail = subject?.includes(
-            "Vérifiez votre adresse email"
-        );
-
         const { data, error } = await resend.emails.send({
-            from: "PolGPT <noreply@polgpt.be>",
+            from: SiteConfig.mail.from,
             to: email,
-            subject: subject,
-            react: isVerificationEmail
-                ? VerificationEmailTemplate({
-                      name: name,
-                      verificationUrl: url,
-                  })
-                : EmailTemplate({
-                      name: name,
-                      message: message,
-                      url: url,
-                  }),
+            subject: `${SiteConfig.title} - Vérifiez votre adresse email`,
+            react: VerificationEmailTemplate({
+                name: name,
+                verificationUrl: url,
+            }),
         });
 
         if (error) {
             console.error("Resend error:", error);
-            throw new Error("Failed to send email");
+            throw new Error("Failed to send invitation email");
         }
 
         return { success: true, data };
     } catch (error) {
-        console.error("Email sending error:", error);
-        throw new Error("Failed to send email");
+        console.error("Invitation email sending error:", error);
+        throw new Error("Failed to send invitation email");
     }
 }
 
@@ -63,9 +52,9 @@ export async function sendOrganizationInvitationEmail({
                 : "bientôt";
 
         const { data, error } = await resend.emails.send({
-            from: "PolGPT <noreply@polgpt.be>",
+            from: SiteConfig.mail.from,
             to: email,
-            subject: `Invitation à rejoindre ${organizationName}`,
+            subject: `${SiteConfig.title} - Invitation à rejoindre ${organizationName}`,
             react: OrganizationInvitationTemplate({
                 organizationName,
                 inviterName,

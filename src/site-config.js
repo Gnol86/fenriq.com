@@ -1,6 +1,6 @@
 export const SiteConfig = {
     title: "PolGPT",
-    description: "Editeur de PV booster par l'IA",
+    description: "Editeur booster par l'IA",
     prodUrl: "https://polgpt.be",
     appId: "polgpt",
     domain: "polgpt.be",
@@ -12,5 +12,12 @@ export const SiteConfig = {
         website: "https://polgpt.be",
         name: "L'équipe",
         email: "info@polgpt.be",
+    },
+    mail: {
+        from: "PolGPT <noreply@polgpt.be>",
+        name: "PolGPT",
+        email: "noreply@polgpt.be",
+        replyTo: "info@polgpt.be",
+        signature: "L'équipe de PolGPT",
     },
 };
