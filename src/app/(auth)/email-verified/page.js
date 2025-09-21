@@ -7,18 +7,27 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function Page() {
     return (
         <Card className="w-sm">
-            <CardHeader>
-                <CardTitle className="text-xl text-green-600">
-                    Email vérifié ✓
-                </CardTitle>
-                <CardDescription>
-                    Votre adresse email a été vérifiée avec succès ! Vous pouvez
-                    maintenant vous connecter à votre compte.
-                </CardDescription>
+            <CardHeader className="flex items-start gap-4">
+                <Image
+                    src="/images/logo.png"
+                    alt="Logo"
+                    width={75}
+                    height={75}
+                />
+                <div className="flex flex-col gap-2">
+                    <CardTitle className="text-xl text-green-600">
+                        Email vérifié ✓
+                    </CardTitle>
+                    <CardDescription>
+                        Votre adresse email a été vérifiée avec succès ! Vous
+                        pouvez maintenant vous connecter à votre compte.
+                    </CardDescription>
+                </div>
             </CardHeader>
             <CardContent>
                 <div className="flex gap-2">
