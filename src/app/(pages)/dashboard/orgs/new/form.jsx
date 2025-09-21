@@ -3,8 +3,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import {
     Form,
     FormControl,
@@ -17,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
 import { createOrganizationAction } from "@/actions/organisations.action";
+import { useServerAction } from "@/hooks/use-server-action";
 
 const formSchema = z.object({
     name: z
@@ -35,7 +34,7 @@ const formSchema = z.object({
 });
 
 export default function NewOrganizationForm() {
-    const router = useRouter();
+    const { execute } = useServerAction();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -45,28 +44,17 @@ export default function NewOrganizationForm() {
     });
 
     const onSubmit = async values => {
-        try {
-            const result = await createOrganizationAction({
+        await execute(
+            () => createOrganizationAction({
                 name: values.name,
-            });
-
-            if (!result?.success) {
-                throw new Error(
-                    result?.error ||
-                        "Impossible de créer l'organisation pour le moment"
-                );
+            }),
+            {
+                loadingMessage: "Création de l'organisation...",
+                successMessage: "Organisation créée avec succès",
+                errorMessage: "Impossible de créer l'organisation pour le moment",
+                redirectOnSuccess: "/dashboard",
             }
-
-            toast.success("Organisation créée avec succès");
-            router.push("/dashboard");
-            router.refresh();
-        } catch (error) {
-            console.error("Failed to create organization", error);
-            const message =
-                error?.message ||
-                "Impossible de créer l'organisation pour le moment";
-            toast.error(message);
-        }
+        );
     };
 
     return (

@@ -3,8 +3,6 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import {
     Form,
     FormControl,
@@ -18,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
 import { updateOrganizationAction } from "@/actions/organisations.action";
 import ImageProfile from "@/components/image-profile";
+import { useServerAction } from "@/hooks/use-server-action";
 
 const formSchema = z.object({
     name: z
@@ -36,7 +35,7 @@ const formSchema = z.object({
 });
 
 export default function ManageOrganizationForm({ organization }) {
-    const router = useRouter();
+    const { execute } = useServerAction();
     const organizationName = organization?.name ?? "";
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -47,34 +46,27 @@ export default function ManageOrganizationForm({ organization }) {
 
     const onSubmit = async values => {
         if (!organization?.id) {
-            toast.error(
-                "Aucune organisation active n\'a été trouvée. Veuillez en sélectionner une."
+            await execute(
+                () => Promise.reject(new Error("Aucune organisation active n'a été trouvée. Veuillez en sélectionner une.")),
+                {
+                    showToast: true,
+                    refreshOnSuccess: false,
+                }
             );
             return;
         }
 
-        try {
-            const result = await updateOrganizationAction({
+        await execute(
+            () => updateOrganizationAction({
                 organizationId: organization.id,
                 name: values.name,
-            });
-
-            if (!result?.success) {
-                throw new Error(
-                    result?.error ||
-                        "Impossible de mettre à jour l\'organisation pour le moment"
-                );
+            }),
+            {
+                loadingMessage: "Mise à jour de l'organisation...",
+                successMessage: "Organisation mise à jour avec succès",
+                errorMessage: "Impossible de mettre à jour l'organisation pour le moment",
             }
-
-            toast.success("Organisation mise à jour avec succès");
-            router.refresh();
-        } catch (error) {
-            console.error("Failed to update organization", error);
-            const message =
-                error?.message ||
-                "Impossible de mettre à jour l\'organisation pour le moment";
-            toast.error(message);
-        }
+        );
     };
 
     return organization ? (

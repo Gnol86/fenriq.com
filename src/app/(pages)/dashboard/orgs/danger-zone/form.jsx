@@ -3,8 +3,6 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import {
     Form,
     FormControl,
@@ -16,17 +14,33 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { deleteOrganizationAction } from "@/actions/organisations.action";
-
-const formSchema = z.object({
-    confirmation: z
-        .string()
-        .trim()
-        .min(1, "Vous devez saisir le nom de l'organisation pour confirmer"),
-});
+import { useServerAction } from "@/hooks/use-server-action";
+import { TriangleAlert } from "lucide-react";
 
 export default function DangerZoneForm({ organization }) {
-    const router = useRouter();
+    const formSchema = z.object({
+        confirmation: z
+            .string()
+            .trim()
+            .min(1, "Vous devez saisir le nom de l'organisation pour confirmer")
+            .refine(value => value === organization.name, {
+                message:
+                    "Le nom saisi ne correspond pas à l'organisation active.",
+            }),
+    });
+    const { execute } = useServerAction();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -35,48 +49,28 @@ export default function DangerZoneForm({ organization }) {
         },
     });
 
-    const onSubmit = async values => {
-        if (!organization?.id || !organization?.name) {
-            toast.error(
-                "Aucune organisation active n'a été trouvée. Veuillez en sélectionner une."
-            );
-            return;
-        }
-
-        if (values.confirmation !== organization.name) {
-            form.setError("confirmation", {
-                type: "validate",
-                message:
-                    "Le nom saisi ne correspond pas à l'organisation active.",
-            });
-            return;
-        }
-
-        try {
-            const result = await deleteOrganizationAction({
-                organizationId: organization.id,
-            });
-
-            if (!result?.success) {
-                throw new Error(
-                    result?.error ||
-                        "Impossible de supprimer l'organisation pour le moment"
-                );
-            }
-
-            toast.success("Organisation supprimée avec succès");
-            router.push("/dashboard");
-            router.refresh();
-        } catch (error) {
-            console.error("Failed to delete organization", error);
-            const message =
-                error?.message ||
-                "Impossible de supprimer l'organisation pour le moment";
-            toast.error(message);
-        }
+    const onSubmit = async () => {
+        // Empêcher la soumission automatique du formulaire
+        return false; // Ne pas soumettre le formulaire
     };
 
-    return organization ? (
+    const handleDeleteConfirmation = async () => {
+        await execute(
+            () =>
+                deleteOrganizationAction({
+                    organizationId: organization.id,
+                }),
+            {
+                loadingMessage: "Suppression de l'organisation...",
+                successMessage: "Organisation supprimée avec succès",
+                errorMessage:
+                    "Impossible de supprimer l'organisation pour le moment",
+                redirectOnSuccess: "/dashboard",
+            }
+        );
+    };
+
+    return (
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -117,24 +111,44 @@ export default function DangerZoneForm({ organization }) {
                         </FormItem>
                     )}
                 />
-
-                <FormButton
-                    type="submit"
-                    loading={form.formState.isSubmitting}
-                    variant="destructive"
-                    className="self-end"
-                >
-                    Supprimer l'organisation
-                </FormButton>
+                {form.formState.isValid && (
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <FormButton
+                                type="button"
+                                variant="destructive"
+                                loading={form.formState.isSubmitting}
+                                disabled={!form.formState.isValid}
+                            >
+                                <TriangleAlert /> Supprimer l'organisation
+                                <TriangleAlert />
+                            </FormButton>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Êtes-vous absolument sûr ?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Cette action ne peut pas être annulée. Cela
+                                    supprimera définitivement l'organisation "
+                                    {organization.name}" et toutes ses données
+                                    associées.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                <AlertDialogAction
+                                    onClick={handleDeleteConfirmation}
+                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                    Supprimer définitivement
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                )}
             </form>
         </Form>
-    ) : (
-        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-            <p>Aucune organisation active n'a été trouvée.</p>
-            <p>
-                Sélectionnez une organisation dans le menu latéral pour accéder
-                à cette section.
-            </p>
-        </div>
     );
 }

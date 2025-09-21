@@ -1,52 +1,32 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import { setActiveOrganizationAction } from "@/actions/organisations.action";
-import { useRouter } from "next/navigation";
+import { useServerAction } from "@/hooks/use-server-action";
 
 export default function OrganizationSelectorButton({
     organization,
     isActive,
     activeOrganizationId,
 }) {
-    const router = useRouter();
-    const [isLoading, setIsLoading] = useState(false);
+    const { execute, isPending } = useServerAction();
 
     const handleSelectOrganization = async () => {
         if (!organization?.id || organization.id === activeOrganizationId) {
             return;
         }
 
-        setIsLoading(true);
-
-        try {
-            const result = await setActiveOrganizationAction({
+        await execute(
+            () => setActiveOrganizationAction({
                 organizationId: organization.id,
-            });
-
-            if (!result?.success) {
-                throw new Error(
-                    result?.error || "Impossible de sélectionner l'organisation"
-                );
+            }),
+            {
+                loadingMessage: "Sélection de l'organisation...",
+                successMessage: `Organisation "${organization.name}" sélectionnée avec succès`,
+                errorMessage: "Impossible de sélectionner l'organisation",
             }
-
-            toast.success(
-                `Organisation "${organization.name}" sélectionnée avec succès`
-            );
-            
-            router.refresh();
-        } catch (error) {
-            console.error("Failed to switch organization", error);
-            const message =
-                error?.message ||
-                "Impossible de changer d'organisation pour le moment";
-            toast.error(message);
-        } finally {
-            setIsLoading(false);
-        }
+        );
     };
 
     if (isActive) {
@@ -63,10 +43,10 @@ export default function OrganizationSelectorButton({
             variant="outline"
             size="sm"
             onClick={handleSelectOrganization}
-            disabled={isLoading}
+            disabled={isPending}
             className="flex items-center gap-2"
         >
-            {isLoading ? (
+            {isPending ? (
                 <>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Sélection...
