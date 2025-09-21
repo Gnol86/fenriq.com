@@ -3,6 +3,7 @@ import "./globals.css";
 import { Provider } from "@/components/provider";
 import { Toaster } from "@/components/ui/sonner";
 import { SiteConfig } from "@/site-config";
+import WindowSize from "@/components/dev/window-size";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
             >
                 <Provider>{children}</Provider>
                 <Toaster position="top-center" richColors closeButton />
+                {process.env.NODE_ENV === "development" && <WindowSize />}
             </body>
         </html>
     );

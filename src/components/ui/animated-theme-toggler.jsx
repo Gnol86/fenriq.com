@@ -50,16 +50,12 @@ export const AnimatedThemeToggler = ({ className }) => {
     };
 
     if (!mounted) {
-        return (
-            <button className={cn(className)} disabled>
-                <SunDim size={20} />
-            </button>
-        );
+        return null;
     }
 
     return (
         <button ref={buttonRef} onClick={changeTheme} className={cn(className)}>
-            {theme === "dark" ? <SunDim size={20} /> : <Moon size={20} />}
+            {theme === "dark" ? <Moon size={20} /> : <SunDim size={20} />}
         </button>
     );
 };

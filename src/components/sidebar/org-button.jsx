@@ -63,7 +63,7 @@ export default function OrgButton({ organizations = [], activeOrganization }) {
             <DropdownMenuTrigger className="flex items-center gap-2 p-2 cursor-pointer">
                 <ImageProfile
                     user={displayOrganization}
-                    size="lg"
+                    size="md"
                     defaultImage="/images/logo.png"
                 />
                 <div className="flex flex-col justify-start items-start flex-1 text-left overflow-hidden min-w-0">
