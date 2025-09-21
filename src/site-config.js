@@ -20,4 +20,7 @@ export const SiteConfig = {
         replyTo: "info@polgpt.be",
         signature: "L'équipe de PolGPT",
     },
+    brand: {
+        primary: "#6366F1",
+    },
 };
