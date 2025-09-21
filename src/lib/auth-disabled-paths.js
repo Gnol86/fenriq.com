@@ -4,10 +4,9 @@ export const disabledPaths = [
     "/organization/create",
     "/organization/check-slug",
     "/organization/list",
-    // "/organization/set-active",
+    "/organization/set-active",
     "/organization/get-full-organization",
     "/organization/update",
-    "/update-organization",
     "/organization/delete",
 
     // Invitation routes

@@ -9,11 +9,11 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Check, Loader2, Plus } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { getInitials } from "@/lib/utils";
 import ImageProfile from "../image-profile";
 import { SiteConfig } from "@/site-config";
+import { setActiveOrganizationAction } from "@/actions/organisations.action";
+import { toast } from "sonner";
 
 export default function OrgButton({ organizations = [], activeOrganization }) {
     const router = useRouter();
@@ -38,18 +38,34 @@ export default function OrgButton({ organizations = [], activeOrganization }) {
         }
 
         setSwitchingOrgId(organizationId);
+
         try {
-            await authClient.organization.setActive({
+            const result = await setActiveOrganizationAction({
                 organizationId,
             });
+
+            if (!result?.success) {
+                throw new Error(
+                    result?.error || "Impossible de selectionner l'organisation"
+                );
+            }
 
             const nextOrg =
                 sortedOrganizations.find(org => org.id === organizationId) ??
                 null;
             setCurrentActiveOrg(nextOrg);
+
+            toast.success(
+                "Vous utilisez maintenant l'organisation " + nextOrg.name
+            );
+            router.push("/dashboard");
             router.refresh();
         } catch (error) {
             console.error("Failed to switch organization", error);
+            const message =
+                error?.message ||
+                "Impossible de changer d'organisation pour le moment";
+            toast.error(message);
         } finally {
             setSwitchingOrgId(null);
         }

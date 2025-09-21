@@ -29,9 +29,9 @@ export default function ImageProfile({
             <AvatarFallback
                 className={`ring ring-inset ring-foreground/20 ${INITIAL_SIZES[size]}`}
             >
-                {getInitials(user.name || user.email || "Utilisateur")}
+                {getInitials(user?.name || user?.email || "-")}
             </AvatarFallback>
-            <AvatarImage src={user.image ?? defaultImage} alt={user.name} />
+            <AvatarImage src={user?.image ?? defaultImage} alt={user?.name} />
         </Avatar>
     );
 }

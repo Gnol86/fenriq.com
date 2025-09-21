@@ -78,3 +78,19 @@ export async function updateOrganizationAction({ organizationId, name }) {
         throw new Error(error.message);
     }
 }
+
+export async function setActiveOrganizationAction({ organizationId }) {
+    try {
+        await auth.api.setActiveOrganization({
+            body: {
+                organizationId,
+            },
+            headers: await headers(),
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to set organization", error);
+        throw new Error(error.message);
+    }
+}

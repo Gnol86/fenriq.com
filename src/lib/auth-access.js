@@ -126,10 +126,10 @@ export const requireUser = async (critical = false, h) => {
     return user;
 };
 
-export const requireOrganization = async critical => {
-    const head = await nextHeaders();
+export const requireOrganization = async (critical = false, h) => {
+    const head = h || (await nextHeaders());
     await requireUser(critical, head);
-    const organization = await getCurrentOrganization(critical, head);
+    const organization = await getCurrentOrganization(0, critical, head);
     if (!organization) redirect("/dashboard");
     return organization;
 };
