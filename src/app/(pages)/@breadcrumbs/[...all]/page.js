@@ -11,7 +11,8 @@ const LABELS = {
 };
 
 export default async function BreadcrumbSlot({ params }) {
-    const segments = params.all || [];
+    const resolvedParams = await params;
+    const segments = resolvedParams.all || [];
 
     let href = "";
     const items = segments.map(seg => {
