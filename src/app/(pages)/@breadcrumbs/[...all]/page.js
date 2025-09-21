@@ -1,6 +1,7 @@
 import Breadcrumb from "@/components/breadcrumb";
 
 const LABELS = {
+    app: "Documents",
     dashboard: "Dashboard",
     orgs: "Organisation",
     new: "Créer une organisation",

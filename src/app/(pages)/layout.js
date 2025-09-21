@@ -17,8 +17,8 @@ export default async function Layout({
         <SidebarProvider>
             <AppSidebar>{sidebarcontent}</AppSidebar>
             <main className="relative p-0 w-full h-dvh">
-                <div className="flex items-center gap-2 mt-4 mx-4">
-                    <SidebarTrigger className="block lg:hidden" />
+                <div className="inline-flex items-center gap-2 mt-4 mx-4">
+                    <SidebarTrigger className="lg:hidden" />
                     {breadcrumbs}
                 </div>
                 <div className="flex flex-col gap-6 p-6 max-w-4xl mx-auto">
