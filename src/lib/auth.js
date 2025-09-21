@@ -14,7 +14,7 @@ import {
 import { disabledPaths } from "./auth-disabled-paths.js";
 import { translations } from "./auth-translations.js";
 
-const { PrismaClient } = require("../generated/prisma");
+import { PrismaClient } from "../generated/prisma";
 const prisma = new PrismaClient();
 
 export const auth = betterAuth({
