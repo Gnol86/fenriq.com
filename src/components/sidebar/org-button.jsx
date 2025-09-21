@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,72 +13,25 @@ import { useRouter } from "next/navigation";
 import ImageProfile from "../image-profile";
 import { SiteConfig } from "@/site-config";
 import { setActiveOrganizationAction } from "@/actions/organisations.action";
-import { toast } from "sonner";
+import { useServerAction } from "@/hooks/use-server-action";
 
 export default function OrgButton({ organizations = [], activeOrganization }) {
     const router = useRouter();
-    const [switchingOrgId, setSwitchingOrgId] = useState(null);
-    const [currentActiveOrg, setCurrentActiveOrg] = useState(
-        activeOrganization ?? null
-    );
-
-    useEffect(() => {
-        setCurrentActiveOrg(activeOrganization ?? null);
-    }, [activeOrganization]);
-
-    const sortedOrganizations = useMemo(() => {
-        return [...organizations].sort((a, b) =>
-            a.name.localeCompare(b.name, "fr", { sensitivity: "accent" })
-        );
-    }, [organizations]);
+    const { execute, isPending } = useServerAction();
 
     const handleSwitchOrganization = async organizationId => {
-        if (!organizationId || organizationId === currentActiveOrg?.id) {
-            return;
-        }
-
-        setSwitchingOrgId(organizationId);
-
-        try {
-            const result = await setActiveOrganizationAction({
-                organizationId,
-            });
-
-            if (!result?.success) {
-                throw new Error(
-                    result?.error || "Impossible de selectionner l'organisation"
-                );
-            }
-
-            const nextOrg =
-                sortedOrganizations.find(org => org.id === organizationId) ??
-                null;
-            setCurrentActiveOrg(nextOrg);
-
-            toast.success(
-                `Organisation "${nextOrg.name}" sélectionnée avec succès`
-            );
-            router.push("/dashboard");
-            router.refresh();
-        } catch (error) {
-            console.error("Failed to switch organization", error);
-            const message =
-                error?.message ||
-                "Impossible de changer d'organisation pour le moment";
-            toast.error(message);
-        } finally {
-            setSwitchingOrgId(null);
-        }
+        await execute(() => setActiveOrganizationAction({ organizationId }), {
+            loadingMessage: `Changement de l'organisation...`,
+            successMessage: `Organisation sélectionnée avec succès`,
+            errorMessage: "Impossible de changer d'organisation",
+        });
     };
-
-    const displayOrganization = currentActiveOrg ?? null;
-    const hasOrganizations = sortedOrganizations.length > 0;
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 p-2 cursor-pointer">
                 <ImageProfile
-                    user={displayOrganization}
+                    user={activeOrganization}
                     size="md"
                     defaultImage="/images/logo.png"
                 />
@@ -87,7 +40,7 @@ export default function OrgButton({ organizations = [], activeOrganization }) {
                         {SiteConfig.title}
                     </span>
                     <span className="text-xs font-medium text-muted-foreground -mt-1 truncate w-full">
-                        {displayOrganization?.name ||
+                        {activeOrganization?.name ||
                             "Aucune organisation active"}
                     </span>
                 </div>
@@ -96,19 +49,16 @@ export default function OrgButton({ organizations = [], activeOrganization }) {
                 className="w-56"
                 onCloseAutoFocus={event => event.preventDefault()}
             >
-                <DropdownMenuLabel className="text-xs text-muted-foreground">
-                    Mes organisations
+                <DropdownMenuLabel className="text-xs text-muted-foreground flex items-center gap-2">
+                    Mes organisations{" "}
+                    {isPending && (
+                        <Loader2 size={10} className="animate-spin" />
+                    )}
                 </DropdownMenuLabel>
-                {!hasOrganizations && (
-                    <DropdownMenuItem disabled>
-                        Aucune organisation
-                    </DropdownMenuItem>
-                )}
-                {hasOrganizations &&
-                    sortedOrganizations.map(organization => {
+                {organizations.length > 0 ? (
+                    organizations.map(organization => {
                         const isActive =
-                            organization.id === currentActiveOrg?.id;
-                        const isSwitching = switchingOrgId === organization.id;
+                            organization.id === activeOrganization?.id;
 
                         return (
                             <DropdownMenuItem
@@ -119,21 +69,24 @@ export default function OrgButton({ organizations = [], activeOrganization }) {
                                         organization.id
                                     );
                                 }}
-                                disabled={isSwitching}
+                                disabled={isPending}
                                 className="flex items-center justify-between gap-2"
                             >
                                 <ImageProfile user={organization} size="xs" />
                                 <span className="truncate text-sm flex-1">
                                     {organization.name}
                                 </span>
-                                {isSwitching ? (
-                                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                                ) : isActive ? (
+                                {isActive ? (
                                     <Check className="h-4 w-4 text-primary" />
                                 ) : null}
                             </DropdownMenuItem>
                         );
-                    })}
+                    })
+                ) : (
+                    <DropdownMenuItem disabled>
+                        Aucune organisation
+                    </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                     onSelect={event => {

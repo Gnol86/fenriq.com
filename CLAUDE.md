@@ -78,6 +78,7 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 
 - Use React Hook Form with Zod validation
 - Server actions in `.action.js` files
+- **ALWAYS** use `useServerAction` hook for executing server actions in client components
 - Use `resolveActionResult` helper for mutations
 - Follow form creation pattern in `/src/features/form/`
 
@@ -111,6 +112,10 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 - `src/lib/auth-monitoring.js` - Monitoring/logging - USE for debugging
 - `src/lib/auth-error-handling.js` - Error handling - USE for resilience
 - `src/lib/auth.js` - Core config - READ ONLY, don't modify directly
+
+### **🚨 CRITICAL - Server Actions System**
+
+- `src/hooks/use-server-action.js` - **PRIMARY** hook for server actions - ALWAYS use this in client components
 
 ### **Agent Rules for Auth**
 
@@ -202,6 +207,15 @@ await invalidateUserCache(userId, orgId);
 
 // ✅ ALWAYS use resilient patterns for production
 const resilientFunction = withResilientAuth(fallback)(operation);
+
+// ✅ ALWAYS use useServerAction hook for server actions in client components
+import { useServerAction } from "@/hooks/use-server-action";
+const { execute, isPending, isSuccess, isError } = useServerAction();
+await execute(() => myServerAction(data), {
+    loadingMessage: "En cours...",
+    successMessage: "Succès!",
+    errorMessage: "Erreur",
+});
 ```
 
 # **Documentation:**
