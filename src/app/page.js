@@ -3,6 +3,7 @@ import SignUpButton from "@/components/auth/SignUpButton";
 import SignInButton from "@/components/auth/SignInButton";
 import SignOutButton from "@/components/auth/SignOutButton";
 import GoAppButton from "@/components/auth/GoAppButton";
+import { SiteConfig } from "@/site-config";
 
 export default function Home() {
     return (
@@ -19,7 +20,9 @@ export default function Home() {
                 </main>
             </div>
             <footer className="absolute bottom-0 left-0 right-0 p-4 flex gap-2 justify-between items-center text-sm">
-                <div>© {new Date().getFullYear()} Arnaud Marchot</div>
+                <div>
+                    © {new Date().getFullYear()} {SiteConfig.team.name}
+                </div>
                 <div className="flex gap-2 items-center">
                     <AnimatedThemeToggler />
                     <SignUpButton />

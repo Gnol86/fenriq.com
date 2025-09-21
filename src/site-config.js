@@ -10,7 +10,7 @@ export const SiteConfig = {
     },
     team: {
         website: "https://polgpt.be",
-        name: "L'équipe",
+        name: "Arnaud Marchot",
         email: "info@polgpt.be",
     },
     mail: {
