@@ -17,7 +17,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getInitials } from "@/lib/utils";
 import Link from "next/link";
-import Breadcrumb from "@/components/breadcrumb";
 
 export default async function DashboardPage() {
     const [user, organizationsRaw = [], activeOrganization, contacts] =
@@ -40,8 +39,7 @@ export default async function DashboardPage() {
     const hasOrganizations = sortedOrganizations.length > 0;
 
     return (
-        <div className="flex flex-col gap-6 p-10 max-w-4xl mx-auto">
-            <Breadcrumb items={[{ name: "Dashboard", href: "/dashboard" }]} />
+        <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
                 <h1 className="text-3xl font-bold">
                     Bienvenue {user?.name ?? "sur votre espace"}.

@@ -11,7 +11,6 @@ import { requireUser, requireOrganization } from "@/lib/auth-access";
 import MembersTable from "./components/members-table";
 import InvitationsTable from "./components/invitations-table";
 import InviteMemberDialog from "./components/invite-member-dialog";
-import Breadcrumb from "@/components/breadcrumb";
 
 export default async function OrganizationMembersPage() {
     const user = await requireUser();
@@ -24,17 +23,7 @@ export default async function OrganizationMembersPage() {
     ).length;
 
     return (
-        <div className="flex flex-col gap-6 p-10 max-w-4xl mx-auto">
-            <Breadcrumb
-                items={[
-                    { name: "Dashboard", href: "/dashboard" },
-                    { name: "Organisation" },
-                    {
-                        name: "Membres de l'organisation",
-                        href: "/dashboard/orgs/members",
-                    },
-                ]}
-            />
+        <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
                     <CardTitle>Membres de l&apos;organisation</CardTitle>

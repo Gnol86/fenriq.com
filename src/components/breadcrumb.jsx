@@ -1,3 +1,5 @@
+// src/components/breadcrumb.jsx
+
 import React from "react";
 import {
     Breadcrumb as BC,
