@@ -37,7 +37,12 @@ function copyLink(invitationId) {
     }
 }
 
-export default function InvitationsActionMenu({ invitation, organizationId }) {
+export default function InvitationsActionMenu({
+    invitation,
+    organizationId,
+    canCreate,
+    canCancel,
+}) {
     const router = useRouter();
     const [resendingId, setResendingId] = useState(null);
     const [cancelingId, setCancelingId] = useState(null);
@@ -123,47 +128,53 @@ export default function InvitationsActionMenu({ invitation, organizationId }) {
                     <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
                 </Button>
             </DropdownMenuTrigger>
+
             <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                    onSelect={event => {
-                        event.preventDefault();
-                        copyLink(invitation.id);
-                    }}
-                >
-                    Copier le lien
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                    onSelect={event => {
-                        event.preventDefault();
-                        resendInvitation();
-                    }}
-                    disabled={isResending || isCanceling}
-                >
-                    {isResending && (
-                        <Loader2
-                            className="mr-2 h-4 w-4 animate-spin"
-                            aria-hidden="true"
-                        />
-                    )}
-                    Renvoyer
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                    variant="destructive"
-                    onSelect={event => {
-                        event.preventDefault();
-                        cancelInvitation();
-                    }}
-                    disabled={isCanceling}
-                >
-                    {isCanceling && (
-                        <Loader2
-                            className="mr-2 h-4 w-4 animate-spin"
-                            aria-hidden="true"
-                        />
-                    )}
-                    Supprimer
-                </DropdownMenuItem>
+                {canCreate && (
+                    <>
+                        <DropdownMenuItem
+                            onSelect={event => {
+                                event.preventDefault();
+                                copyLink(invitation.id);
+                            }}
+                        >
+                            Copier le lien
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onSelect={event => {
+                                event.preventDefault();
+                                resendInvitation();
+                            }}
+                            disabled={isResending || isCanceling}
+                        >
+                            {isResending && (
+                                <Loader2
+                                    className="mr-2 h-4 w-4 animate-spin"
+                                    aria-hidden="true"
+                                />
+                            )}
+                            Renvoyer
+                        </DropdownMenuItem>
+                    </>
+                )}
+                {canCancel && (
+                    <DropdownMenuItem
+                        variant="destructive"
+                        onSelect={event => {
+                            event.preventDefault();
+                            cancelInvitation();
+                        }}
+                        disabled={isCanceling}
+                    >
+                        {isCanceling && (
+                            <Loader2
+                                className="mr-2 h-4 w-4 animate-spin"
+                                aria-hidden="true"
+                            />
+                        )}
+                        Annuler
+                    </DropdownMenuItem>
+                )}
             </DropdownMenuContent>
         </DropdownMenu>
     );

@@ -23,6 +23,8 @@ export default function MembersActionMenu({
     organizationId,
     memberRole,
     currentUserId,
+    canUpdate,
+    canDelete,
 }) {
     const router = useRouter();
     const [removalTarget, setRemovalTarget] = useState(false);
@@ -126,39 +128,42 @@ export default function MembersActionMenu({
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuSub>
-                        <DropdownMenuSubTrigger>
-                            Modifier le rôle
-                        </DropdownMenuSubTrigger>
-                        <DropdownMenuSubContent>
-                            {roleOptions.map(([role, label]) => (
-                                <DropdownMenuItem
-                                    key={role}
-                                    onSelect={event => {
-                                        event.preventDefault();
-                                        handleRoleChange(role);
-                                    }}
-                                    disabled={
-                                        roleChangeDisabled ||
-                                        memberRole === role
-                                    }
-                                >
-                                    <span className="text-sm">{label}</span>
-                                </DropdownMenuItem>
-                            ))}
-                        </DropdownMenuSubContent>
-                    </DropdownMenuSub>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                        variant="destructive"
-                        onSelect={event => {
-                            event.preventDefault();
-                            setRemovalTarget(true);
-                        }}
-                        disabled={memberRole === "owner" || isSelf}
-                    >
-                        Supprimer
-                    </DropdownMenuItem>
+                    {canUpdate && (
+                        <DropdownMenuSub>
+                            <DropdownMenuSubTrigger>
+                                Modifier le rôle
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuSubContent>
+                                {roleOptions.map(([role, label]) => (
+                                    <DropdownMenuItem
+                                        key={role}
+                                        onSelect={event => {
+                                            event.preventDefault();
+                                            handleRoleChange(role);
+                                        }}
+                                        disabled={
+                                            roleChangeDisabled ||
+                                            memberRole === role
+                                        }
+                                    >
+                                        <span className="text-sm">{label}</span>
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuSubContent>
+                        </DropdownMenuSub>
+                    )}
+                    {canDelete && (
+                        <DropdownMenuItem
+                            variant="destructive"
+                            onSelect={event => {
+                                event.preventDefault();
+                                setRemovalTarget(true);
+                            }}
+                            disabled={memberRole === "owner" || isSelf}
+                        >
+                            Supprimer
+                        </DropdownMenuItem>
+                    )}
                 </DropdownMenuContent>
             </DropdownMenu>
 

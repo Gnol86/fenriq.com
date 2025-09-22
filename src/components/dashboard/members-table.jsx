@@ -8,35 +8,22 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { defaultRoleLabels } from "./constants";
-import { formatMemberSince } from "./utils";
 import ImageProfile from "@/components/image-profile";
+import { hasGlobalPermission } from "@/lib/auth-access";
+import { formatDate } from "@/lib/utils";
 
-function sortMembers(members) {
-    return [...members].sort((a, b) => {
-        const nameA = (a?.user?.name || a?.user?.email || "").toLocaleLowerCase(
-            "fr"
-        );
-        const nameB = (b?.user?.name || b?.user?.email || "").toLocaleLowerCase(
-            "fr"
-        );
-        return nameA.localeCompare(nameB, "fr", { sensitivity: "accent" });
-    });
-}
-
-export default function MembersTable({
+export default async function MembersTable({
     members,
     organizationId,
     currentUserId,
 }) {
-    const sortedMembers = sortMembers(members);
+    const canUpdate = await hasGlobalPermission({
+        member: ["update"],
+    });
 
-    if (!sortedMembers.length) {
-        return (
-            <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
-                Aucun membre actif pour le moment.
-            </div>
-        );
-    }
+    const canDelete = await hasGlobalPermission({
+        member: ["delete"],
+    });
 
     return (
         <Table>
@@ -45,11 +32,13 @@ export default function MembersTable({
                     <TableHead>Utilisateur</TableHead>
                     <TableHead>Rôle</TableHead>
                     <TableHead>Depuis</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
+                    {(canUpdate || canDelete) && (
+                        <TableHead className="text-right">Action</TableHead>
+                    )}
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {sortedMembers.map(member => {
+                {members.map(member => {
                     const memberRole = member?.role ?? "member";
 
                     return (
@@ -81,17 +70,21 @@ export default function MembersTable({
                             </TableCell>
                             <TableCell>
                                 <span className="text-sm text-muted-foreground">
-                                    {formatMemberSince(member?.createdAt)}
+                                    {formatDate(member?.createdAt)}
                                 </span>
                             </TableCell>
-                            <TableCell className="text-right">
-                                <MembersActionMenu
-                                    member={member}
-                                    memberRole={memberRole}
-                                    organizationId={organizationId}
-                                    currentUserId={currentUserId}
-                                />
-                            </TableCell>
+                            {(canUpdate || canDelete) && (
+                                <TableCell className="text-right">
+                                    <MembersActionMenu
+                                        member={member}
+                                        memberRole={memberRole}
+                                        organizationId={organizationId}
+                                        currentUserId={currentUserId}
+                                        canUpdate={canUpdate}
+                                        canDelete={canDelete}
+                                    />
+                                </TableCell>
+                            )}
                         </TableRow>
                     );
                 })}

@@ -18,6 +18,7 @@ import { LayoutDashboard } from "lucide-react";
 import { Plus, Settings, AlertTriangle, Users } from "lucide-react";
 import Link from "next/link";
 import { PrismaClient } from "@/generated/prisma";
+import { MailPlusIcon } from "lucide-react";
 
 export default async function SideBarContent() {
     const user = await requireUser();
@@ -87,6 +88,18 @@ export default async function SideBarContent() {
                                             <Link href="/dashboard/orgs/members">
                                                 <Users className="opacity-60" />
                                                 Membres
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )}
+                                {(await hasGlobalPermission({
+                                    invitation: ["read"],
+                                })) && (
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link href="/dashboard/orgs/invitations">
+                                                <MailPlusIcon className="opacity-60" />
+                                                Invitations
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>

@@ -7,16 +7,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
-import { defaultRoleLabels } from "./constants";
-import { formatMemberSince } from "./utils";
-
-const invitationStatusLabels = {
-    accepted: "Acceptée",
-    pending: "En attente",
-    canceled: "Annulée",
-    rejected: "Refusée",
-};
+import { cn, formatDate } from "@/lib/utils";
+import { defaultRoleLabels, invitationStatusLabels } from "./constants";
+import { hasGlobalPermission } from "@/lib/auth-access";
 
 function formatInvitationStatus(invitation) {
     if (!invitation) {
@@ -28,7 +21,7 @@ function formatInvitationStatus(invitation) {
         invitation.expiresAt &&
         new Date(invitation.expiresAt).getTime() < Date.now()
     ) {
-        return "Périmée";
+        return invitationStatusLabels.outdated;
     }
 
     return invitationStatusLabels[invitation.status] ?? invitation.status;
@@ -70,8 +63,19 @@ function sortInvitations(invitations) {
     });
 }
 
-export default function InvitationsTable({ invitations, organizationId }) {
+export default async function InvitationsTable({
+    invitations,
+    organizationId,
+}) {
     const sortedInvitations = sortInvitations(invitations);
+
+    const canCreate = await hasGlobalPermission({
+        invitation: ["create"],
+    });
+
+    const canCancel = await hasGlobalPermission({
+        invitation: ["cancel"],
+    });
 
     if (!sortedInvitations.length) {
         return (
@@ -89,7 +93,9 @@ export default function InvitationsTable({ invitations, organizationId }) {
                     <TableHead>Rôle</TableHead>
                     <TableHead>Statut</TableHead>
                     <TableHead>Expire le</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
+                    {(canCreate || canCancel) && (
+                        <TableHead className="text-right">Action</TableHead>
+                    )}
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -123,18 +129,20 @@ export default function InvitationsTable({ invitations, organizationId }) {
                             <TableCell>
                                 <span className="text-sm text-muted-foreground">
                                     {invitation.expiresAt
-                                        ? formatMemberSince(
-                                              invitation.expiresAt
-                                          )
+                                        ? formatDate(invitation.expiresAt)
                                         : "-"}
                                 </span>
                             </TableCell>
-                            <TableCell className="text-right">
-                                <InvitationsActionMenu
-                                    invitation={invitation}
-                                    organizationId={organizationId}
-                                />
-                            </TableCell>
+                            {(canCreate || canCancel) && (
+                                <TableCell className="text-right">
+                                    <InvitationsActionMenu
+                                        invitation={invitation}
+                                        organizationId={organizationId}
+                                        canCreate={canCreate}
+                                        canCancel={canCancel}
+                                    />
+                                </TableCell>
+                            )}
                         </TableRow>
                     );
                 })}
