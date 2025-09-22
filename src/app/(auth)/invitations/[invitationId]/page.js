@@ -7,9 +7,23 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { PrismaClient } from "@/generated/prisma";
 
-export default function InvitationPage({ params }) {
+export default async function InvitationPage({ params }) {
     const { invitationId } = params;
+
+    const prisma = new PrismaClient();
+    const invitation = await prisma.invitation.findUnique({
+        where: {
+            id: invitationId,
+        },
+        include: {
+            organization: true,
+            user: true,
+        },
+    });
+
+    console.log("########Invitation:", invitation);
 
     return (
         <div className="min-h-dvh flex flex-col items-center justify-center px-4 py-12">
@@ -23,11 +37,14 @@ export default function InvitationPage({ params }) {
                     />
                     <div className="flex flex-col gap-2">
                         <CardTitle>
-                            Invitation à rejoindre une organisation
+                            Invitation à rejoindre{" "}
+                            {invitation.organization.name}
                         </CardTitle>
                         <CardDescription>
-                            Confirmez que vous souhaitez rejoindre cette
-                            organisation.
+                            Vous avez été invité(e) par {invitation.user.name} à
+                            rejoindre l&apos;organisation{" "}
+                            {invitation.organization.name} en tant que "
+                            {invitation.role}".
                         </CardDescription>
                     </div>
                 </CardHeader>

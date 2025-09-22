@@ -1,13 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Loader2, MailPlus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+import { useServerAction } from "@/hooks/use-server-action";
+import { inviteMemberAction } from "@/actions/organisations.action";
 import { Button } from "@/components/ui/button";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { defaultRoleLabels } from "./constants";
 import {
     Dialog,
     DialogContent,
@@ -28,54 +36,41 @@ import {
 import { Input } from "@/components/ui/input";
 
 const inviteSchema = z.object({
-    email: z
-        .string({ required_error: "L'adresse email est requise" })
-        .trim()
-        .min(1, "L'adresse email est requise")
-        .email("Adresse email invalide"),
+    email: z.email("Adresse email invalide").trim(),
+    role: z.enum(["member", "admin"], {
+        required_error: "Veuillez sélectionner un rôle",
+    }),
 });
 
 export default function InviteMemberDialog({
     organizationId,
     organizationName,
 }) {
-    const router = useRouter();
+    const { execute, isPending } = useServerAction();
     const [open, setOpen] = useState(false);
     const form = useForm({
         resolver: zodResolver(inviteSchema),
-        defaultValues: { email: "" },
+        defaultValues: { email: "", role: "member" },
     });
 
     const onInvite = async values => {
-        if (!organizationId) {
-            toast.error(
-                "Aucune organisation active. Sélectionnez une organisation avant d'inviter."
-            );
-            return;
-        }
+        await execute(
+            () =>
+                inviteMemberAction({
+                    email: values.email,
+                    role: values.role,
+                    organizationId,
+                }),
+            {
+                loadingMessage: "Envoi de l'invitation...",
+                successMessage: "Invitation envoyée avec succès",
+                errorMessage:
+                    "Impossible d'envoyer l'invitation pour le moment",
+            }
+        );
 
-        try {
-            // const response = await inviteMemberAction({
-            //     email: values.email,
-            //     role: "member",
-            //     organizationId,
-            // });
-
-            // if (!response?.success) {
-            //     throw new Error(response?.error);
-            // }
-
-            toast.success("Invitation envoyée avec succès");
-            form.reset({ email: "" });
-            setOpen(false);
-            router.refresh();
-        } catch (error) {
-            console.error("Failed to invite member", error);
-            toast.error(
-                error?.message ||
-                    "Impossible d'envoyer l'invitation pour le moment"
-            );
-        }
+        form.reset({ email: "", role: "member" });
+        setOpen(false);
     };
 
     return (
@@ -111,11 +106,38 @@ export default function InviteMemberDialog({
                                             type="email"
                                             placeholder="prenom.nom@example.com"
                                             autoFocus
-                                            disabled={
-                                                form.formState.isSubmitting
-                                            }
+                                            disabled={isPending}
                                         />
                                     </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="role"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Rôle</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        disabled={isPending}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Sélectionner un rôle" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="member">
+                                                {defaultRoleLabels.member}
+                                            </SelectItem>
+                                            <SelectItem value="admin">
+                                                {defaultRoleLabels.admin}
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -125,15 +147,12 @@ export default function InviteMemberDialog({
                                 type="button"
                                 variant="outline"
                                 onClick={() => setOpen(false)}
-                                disabled={form.formState.isSubmitting}
+                                disabled={isPending}
                             >
                                 Annuler
                             </Button>
-                            <Button
-                                type="submit"
-                                disabled={form.formState.isSubmitting}
-                            >
-                                {form.formState.isSubmitting && (
+                            <Button type="submit" disabled={isPending}>
+                                {isPending && (
                                     <Loader2
                                         className="mr-2 h-4 w-4 animate-spin"
                                         aria-hidden="true"

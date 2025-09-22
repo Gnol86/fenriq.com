@@ -8,6 +8,8 @@ const LABELS = {
     manage: "Gérer l’organisation",
     members: "Membres",
     "danger-zone": "Danger",
+    user: "Utilisateur",
+    invitations: "Invitations",
 };
 
 export default async function BreadcrumbSlot({ params }) {

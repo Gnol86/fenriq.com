@@ -24,11 +24,11 @@ export async function createOrganizationAction({ name }) {
 }
 
 export async function deleteOrganizationAction({ organizationId }) {
-    const canDeleteOrganization = await hasGlobalPermissionCritical({
+    const can = await hasGlobalPermissionCritical({
         organization: ["delete"],
     });
 
-    if (!canDeleteOrganization) {
+    if (!can) {
         throw new Error(
             "Vous n'avez pas la permission d'effectuer cette action"
         );
@@ -75,6 +75,35 @@ export async function updateOrganizationAction({ organizationId, name }) {
         return { success: true };
     } catch (error) {
         console.error("Failed to update organization", error);
+        throw new Error(error.message);
+    }
+}
+
+export async function inviteMemberAction({ email, role, organizationId }) {
+    const can = await hasGlobalPermissionCritical({
+        invitation: ["create"],
+    });
+
+    if (!can) {
+        throw new Error(
+            "Vous n'avez pas la permission d'effectuer cette action"
+        );
+    }
+
+    try {
+        await auth.api.createInvitation({
+            body: {
+                email: email,
+                role: role,
+                organizationId: organizationId,
+                resend: true,
+            },
+            headers: await headers(),
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to send invitation", error);
         throw new Error(error.message);
     }
 }

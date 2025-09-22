@@ -19,7 +19,7 @@ import { authClient } from "@/lib/auth-client";
 import FormButton from "@/components/ui/form-button";
 
 const formSchema = z.object({
-    email: z.email("Veuillez entrer une adresse email valide"),
+    email: z.email("Veuillez entrer une adresse email valide").trim(),
 });
 
 export default function FormResendVerification() {

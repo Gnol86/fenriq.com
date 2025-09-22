@@ -3,19 +3,34 @@ import {
     SidebarGroupContent,
     SidebarGroupLabel,
     SidebarMenu,
+    SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { getCurrentOrganization } from "@/lib/auth-access";
+import { getCurrentOrganization, requireUser } from "@/lib/auth-access";
+import { MailPlus } from "lucide-react";
 import { LayoutDashboard } from "lucide-react";
 import { Plus, Settings, AlertTriangle, Users } from "lucide-react";
 import Link from "next/link";
+import { PrismaClient } from "@/generated/prisma";
 
 export default async function SideBarContent() {
+    const user = await requireUser();
     const activeOrganization = await getCurrentOrganization();
+    const prisma = new PrismaClient();
+    const invitations = await prisma.invitation.findMany({
+        where: {
+            email: user.email,
+            status: "pending",
+            expiresAt: {
+                gt: new Date(),
+            },
+        },
+    });
     const hasOrganization = Boolean(activeOrganization);
     const organizationLabel = activeOrganization?.name ?? "Organisation";
+
     return (
         <>
             <SidebarGroup>
@@ -77,6 +92,27 @@ export default async function SideBarContent() {
                                 </SidebarMenuItem>
                             </>
                         )}
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
+
+            <SidebarGroup>
+                <SidebarGroupLabel>{user.name}</SidebarGroupLabel>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild>
+                                <Link href="/dashboard/user/invitations">
+                                    <MailPlus className="opacity-60" />
+                                    Invitations
+                                </Link>
+                            </SidebarMenuButton>
+                            {invitations.length > 0 && (
+                                <SidebarMenuBadge className="bg-destructive text-destructive-foreground font-bold">
+                                    {invitations.length}
+                                </SidebarMenuBadge>
+                            )}
+                        </SidebarMenuItem>
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>

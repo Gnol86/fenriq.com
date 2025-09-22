@@ -20,10 +20,11 @@ import { authClient } from "@/lib/auth-client";
 import FormButton from "@/components/ui/form-button";
 
 const formSchema = z.object({
-    email: z.email("Veuillez entrer une adresse email valide"),
+    email: z.email("Veuillez entrer une adresse email valide").trim(),
     password: z
         .string("Veuillez entrer un mot de passe valide")
-        .min(1, "Le mot de passe est requis"),
+        .min(1, "Le mot de passe est requis")
+        .trim(),
 });
 
 export default function FormSignin() {
