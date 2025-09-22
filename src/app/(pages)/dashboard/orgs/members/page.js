@@ -1,4 +1,4 @@
-import MembersActionMenu from "@/components/dashboard/members-action-menu";
+import MembersActionMenu from "@/app/(pages)/dashboard/orgs/members/components/members-action-menu";
 import ImageProfile from "@/components/image-profile";
 import {
     Card,
@@ -24,7 +24,7 @@ import {
 import { defaultRoleLabels } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { redirect } from "next/navigation";
-import InviteMemberDialog from "../../../../../components/dashboard/invite-member-dialog";
+import InviteMemberDialog from "../invitations/components/invite-member-dialog";
 
 export default async function OrganizationMembersPage() {
     const user = await requireUser();

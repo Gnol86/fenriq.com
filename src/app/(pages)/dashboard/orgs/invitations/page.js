@@ -6,7 +6,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import InvitationsActionMenu from "@/components/dashboard/invitations-action-menu";
+import InvitationsActionMenu from "@/app/(pages)/dashboard/orgs/invitations/components/invitations-action-menu";
 import {
     Table,
     TableBody,
@@ -16,8 +16,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { requireOrganization, hasGlobalPermission } from "@/lib/auth-access";
-import InvitationsTable from "../../../../../components/dashboard/invitations-table";
-import InviteMemberDialog from "../../../../../components/dashboard/invite-member-dialog";
+import InviteMemberDialog from "./components/invite-member-dialog";
 import { redirect } from "next/navigation";
 import { defaultRoleLabels, invitationStatusLabels } from "@/lib/constants";
 import { cn, formatDate } from "@/lib/utils";
