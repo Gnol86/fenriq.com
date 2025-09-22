@@ -1,3 +1,5 @@
+import MembersActionMenu from "@/components/dashboard/members-action-menu";
+import ImageProfile from "@/components/image-profile";
 import {
     Card,
     CardAction,
@@ -6,7 +8,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import MembersActionMenu from "@/components/dashboard/members-action-menu";
 import {
     Table,
     TableBody,
@@ -15,16 +16,15 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { defaultRoleLabels } from "@/lib/constants";
-import ImageProfile from "@/components/image-profile";
-import { formatDate } from "@/lib/utils";
 import {
-    requireUser,
-    requireOrganization,
     hasGlobalPermission,
+    requireOrganization,
+    requireUser,
 } from "@/lib/auth-access";
-import InviteMemberDialog from "../../../../../components/dashboard/invite-member-dialog";
+import { defaultRoleLabels } from "@/lib/constants";
+import { formatDate } from "@/lib/utils";
 import { redirect } from "next/navigation";
+import InviteMemberDialog from "../../../../../components/dashboard/invite-member-dialog";
 
 export default async function OrganizationMembersPage() {
     const user = await requireUser();
