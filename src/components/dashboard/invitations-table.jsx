@@ -8,7 +8,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { cn, formatDate } from "@/lib/utils";
-import { defaultRoleLabels, invitationStatusLabels } from "./constants";
+import { defaultRoleLabels, invitationStatusLabels } from "@lib/constants";
 import { hasGlobalPermission } from "@/lib/auth-access";
 
 function formatInvitationStatus(invitation) {

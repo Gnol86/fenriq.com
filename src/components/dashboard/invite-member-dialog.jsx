@@ -15,7 +15,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { defaultRoleLabels } from "./constants";
+import { defaultRoleLabels } from "@/lib/constants";
 import {
     Dialog,
     DialogContent,

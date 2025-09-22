@@ -16,7 +16,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import RemoveMemberDialog from "./remove-member-dialog";
-import { defaultRoleLabels } from "./constants";
+import { defaultRoleLabels } from "@/lib/constants";
 
 export default function MembersActionMenu({
     member,
