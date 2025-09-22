@@ -12,11 +12,13 @@ import {
     TableHead,
     TableHeader,
     TableRow,
+    TableCaption,
 } from "@/components/ui/table";
 import { requireOrganization } from "@/lib/auth-access";
 import InviteMemberDialog from "./components/invite-member-dialog";
 import InvitationTableRow from "./components/invitation-table-row";
 import InvitationStats from "./components/invitation-stats";
+import InvitationFilter from "./components/invitation-filter";
 import { redirect } from "next/navigation";
 import { sortInvitationsByStatus } from "@/lib/invitation-utils";
 import { getInvitationPermissions } from "@/hooks/use-invitation-permissions";
@@ -32,14 +34,6 @@ export default async function OrganizationInvitationsPage() {
 
     const invitations = organization.invitations ?? [];
     const sortedInvitations = sortInvitationsByStatus(invitations);
-
-    if (!sortedInvitations.length) {
-        return (
-            <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
-                Aucune invitation en cours.
-            </div>
-        );
-    }
 
     return (
         <div className="flex flex-col gap-6">
@@ -62,32 +56,12 @@ export default async function OrganizationInvitationsPage() {
                 </CardHeader>
 
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Rôle</TableHead>
-                                <TableHead>Statut</TableHead>
-                                <TableHead>Expire le</TableHead>
-                                {(canCreate || canCancel) && (
-                                    <TableHead className="text-right">
-                                        Action
-                                    </TableHead>
-                                )}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {sortedInvitations.map(invitation => (
-                                <InvitationTableRow
-                                    key={invitation.id}
-                                    invitation={invitation}
-                                    organizationId={organization.id}
-                                    canCreate={canCreate}
-                                    canCancel={canCancel}
-                                />
-                            ))}
-                        </TableBody>
-                    </Table>
+                    <InvitationFilter
+                        invitations={sortedInvitations}
+                        canCreate={canCreate}
+                        canCancel={canCancel}
+                        organizationId={organization.id}
+                    />
                 </CardContent>
             </Card>
         </div>

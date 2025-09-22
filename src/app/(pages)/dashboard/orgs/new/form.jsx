@@ -45,13 +45,15 @@ export default function NewOrganizationForm() {
 
     const onSubmit = async values => {
         await execute(
-            () => createOrganizationAction({
-                name: values.name,
-            }),
+            () =>
+                createOrganizationAction({
+                    name: values.name,
+                }),
             {
                 loadingMessage: "Création de l'organisation...",
                 successMessage: "Organisation créée avec succès",
-                errorMessage: "Impossible de créer l'organisation pour le moment",
+                errorMessage:
+                    "Impossible de créer l'organisation pour le moment",
                 redirectOnSuccess: "/dashboard",
             }
         );

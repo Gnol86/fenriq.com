@@ -43,8 +43,8 @@ export default async function InvitationPage({ params }) {
                         <CardDescription>
                             Vous avez été invité(e) par {invitation.user.name} à
                             rejoindre l&apos;organisation{" "}
-                            {invitation.organization.name} en tant que "
-                            {invitation.role}".
+                            {invitation.organization.name} en tant que &quot;
+                            {invitation.role}&quot;.
                         </CardDescription>
                     </div>
                 </CardHeader>

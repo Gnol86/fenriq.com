@@ -18,7 +18,8 @@ export function StatusBadge({
     ...props
 }) {
     // Classes de base pour tous les badges
-    const baseClasses = "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium";
+    const baseClasses =
+        "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium";
 
     // Sélectionner les classes selon le variant
     let variantClasses = "";
@@ -31,10 +32,7 @@ export function StatusBadge({
     }
 
     return (
-        <span
-            className={cn(baseClasses, variantClasses, className)}
-            {...props}
-        >
+        <span className={cn(baseClasses, variantClasses, className)} {...props}>
             {children ?? status}
         </span>
     );

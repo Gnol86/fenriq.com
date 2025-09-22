@@ -18,9 +18,10 @@ export default function OrganizationSelectorButton({
         }
 
         await execute(
-            () => setActiveOrganizationAction({
-                organizationId: organization.id,
-            }),
+            () =>
+                setActiveOrganizationAction({
+                    organizationId: organization.id,
+                }),
             {
                 loadingMessage: "Sélection de l'organisation...",
                 successMessage: `Organisation "${organization.name}" sélectionnée avec succès`,

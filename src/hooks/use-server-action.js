@@ -13,30 +13,35 @@ export function useServerAction() {
     const [pendingExecution, setPendingExecution] = useState(null);
     const router = useRouter();
 
-    const executeAction = useCallback(async (action, options = {}) => {
-        const {
-            loadingMessage = "En cours...",
-            successMessage = "Opération réussie", 
-            errorMessage = "Une erreur s'est produite",
-            showToast = true,
-            refreshOnSuccess = true,
-            redirectOnSuccess = null,
-        } = options;
+    const executeAction = useCallback(
+        async (action, options = {}) => {
+            const {
+                loadingMessage = "En cours...",
+                successMessage = "Opération réussie",
+                errorMessage = "Une erreur s'est produite",
+                showToast = true,
+                refreshOnSuccess = true,
+                redirectOnSuccess = null,
+            } = options;
 
-        setIsError(false);
-        setIsSuccess(false);
-        setError(null);
-        setData(null);
+            setIsError(false);
+            setIsSuccess(false);
+            setError(null);
+            setData(null);
 
-        try {
-            if (showToast) {
-                toast.loading(loadingMessage);
-            }
+            try {
+                if (showToast) {
+                    toast.loading(loadingMessage);
+                }
 
-            const result = await action();
+                const result = await action();
 
                 // Si la server action retourne un objet avec success/message
-                if (result && typeof result === "object" && "success" in result) {
+                if (
+                    result &&
+                    typeof result === "object" &&
+                    "success" in result
+                ) {
                     if (result.success) {
                         setData(result);
                         setIsSuccess(true);
@@ -76,10 +81,12 @@ export function useServerAction() {
                     toast.error(err?.message || errorMessage);
                 }
                 throw err;
-        } finally {
-            setIsPending(false);
-        }
-    }, [router]);
+            } finally {
+                setIsPending(false);
+            }
+        },
+        [router]
+    );
 
     const execute = useCallback(
         async (
@@ -97,7 +104,12 @@ export function useServerAction() {
             // Vérifier la confirmation si nécessaire
             if (confirmationMessage) {
                 return new Promise((resolve, reject) => {
-                    setPendingExecution({ action, options: arguments[1], resolve, reject });
+                    setPendingExecution({
+                        action,
+                        options: arguments[1],
+                        resolve,
+                        reject,
+                    });
                     setShowConfirmDialog(true);
                 });
             }

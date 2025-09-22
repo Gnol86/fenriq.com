@@ -26,15 +26,15 @@ export function nameToSlug(name) {
 
 export function formatDate(date) {
     if (!date) return "N/A";
-    
+
     const dateObj = new Date(date);
-    
+
     // Vérifier si la date est valide
     if (isNaN(dateObj.getTime())) return "N/A";
-    
+
     return dateObj.toLocaleDateString("fr-FR", {
         day: "numeric",
-        month: "long", 
+        month: "long",
         year: "numeric",
     });
 }

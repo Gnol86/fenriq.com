@@ -19,7 +19,7 @@ export default function MemberTableRow({
     organizationId,
     currentUserId,
     canUpdate,
-    canDelete
+    canDelete,
 }) {
     const memberRole = member?.role ?? "member";
     const showActions = canUpdate || canDelete;
@@ -29,10 +29,7 @@ export default function MemberTableRow({
             {/* Utilisateur avec avatar et informations */}
             <TableCell>
                 <div className="flex items-center gap-2">
-                    <ImageProfile
-                        user={member?.user}
-                        size="sm"
-                    />
+                    <ImageProfile user={member?.user} size="sm" />
                     <div className="flex flex-col">
                         <span className="text-sm font-medium text-foreground">
                             {member?.user?.name || "Utilisateur"}

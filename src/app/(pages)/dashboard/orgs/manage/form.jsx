@@ -47,7 +47,12 @@ export default function ManageOrganizationForm({ organization }) {
     const onSubmit = async values => {
         if (!organization?.id) {
             await execute(
-                () => Promise.reject(new Error("Aucune organisation active n'a été trouvée. Veuillez en sélectionner une.")),
+                () =>
+                    Promise.reject(
+                        new Error(
+                            "Aucune organisation active n'a été trouvée. Veuillez en sélectionner une."
+                        )
+                    ),
                 {
                     showToast: true,
                     refreshOnSuccess: false,
@@ -57,14 +62,16 @@ export default function ManageOrganizationForm({ organization }) {
         }
 
         await execute(
-            () => updateOrganizationAction({
-                organizationId: organization.id,
-                name: values.name,
-            }),
+            () =>
+                updateOrganizationAction({
+                    organizationId: organization.id,
+                    name: values.name,
+                }),
             {
                 loadingMessage: "Mise à jour de l'organisation...",
                 successMessage: "Organisation mise à jour avec succès",
-                errorMessage: "Impossible de mettre à jour l'organisation pour le moment",
+                errorMessage:
+                    "Impossible de mettre à jour l'organisation pour le moment",
             }
         );
     };

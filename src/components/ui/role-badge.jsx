@@ -9,12 +9,7 @@ import { defaultRoleLabels } from "@/lib/constants";
  * @param {string} props.className - Classes CSS additionnelles
  * @param {React.ReactNode} props.children - Contenu personnalisé (remplace le rôle)
  */
-export function RoleBadge({
-    role,
-    className,
-    children,
-    ...props
-}) {
+export function RoleBadge({ role, className, children, ...props }) {
     // Classes de base pour les badges de rôle
     const baseClasses = "text-sm font-medium text-foreground";
 
@@ -22,10 +17,7 @@ export function RoleBadge({
     const roleLabel = role ? (defaultRoleLabels[role] ?? role) : "";
 
     return (
-        <span
-            className={cn(baseClasses, className)}
-            {...props}
-        >
+        <span className={cn(baseClasses, className)} {...props}>
             {children ?? roleLabel}
         </span>
     );

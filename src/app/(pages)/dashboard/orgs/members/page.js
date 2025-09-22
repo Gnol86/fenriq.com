@@ -9,16 +9,17 @@ import {
 import {
     Table,
     TableBody,
+    TableCaption,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { getMemberPermissions } from "@/hooks/use-member-permissions";
 import { requireOrganization, requireUser } from "@/lib/auth-access";
 import { redirect } from "next/navigation";
 import InviteMemberDialog from "../invitations/components/invite-member-dialog";
-import MemberTableRow from "./components/member-table-row";
 import MemberStats from "./components/member-stats";
-import { getMemberPermissions } from "@/hooks/use-member-permissions";
+import MemberTableRow from "./components/member-table-row";
 
 export default async function OrganizationMembersPage() {
     const user = await requireUser();
@@ -54,6 +55,11 @@ export default async function OrganizationMembersPage() {
 
                 <CardContent>
                     <Table>
+                        {!members.length && (
+                            <TableCaption>
+                                Aucun membre dans l&apos;organisation.
+                            </TableCaption>
+                        )}
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Utilisateur</TableHead>

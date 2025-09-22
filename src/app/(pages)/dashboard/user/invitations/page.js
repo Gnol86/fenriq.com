@@ -67,8 +67,8 @@ export default async function Page() {
                         {invitations.length > 0 ? (
                             invitations.map(invitation => {
                                 return (
-                                    <TableBody>
-                                        <TableRow key={invitation.id}>
+                                    <TableBody key={invitation.id}>
+                                        <TableRow>
                                             <TableCell>
                                                 {invitation.organization
                                                     ?.name || "N/A"}
@@ -96,7 +96,7 @@ export default async function Page() {
                                                         href={`/invitations/${invitation.id}`}
                                                     >
                                                         <Eye /> Voir
-                                                        l'invitation
+                                                        l&apos;invitation
                                                     </Link>
                                                 </Button>
                                             </TableCell>

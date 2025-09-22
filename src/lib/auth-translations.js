@@ -7,12 +7,10 @@ export const translations = {
         ORGANIZATION_NOT_FOUND: "Organisation introuvable.",
         ORGANIZATION_ALREADY_EXISTS:
             "Une organisation avec ces paramètres existe déjà.",
-        ORGANIZATION_NAME_REQUIRED:
-            "Le nom de l'organisation est obligatoire.",
+        ORGANIZATION_NAME_REQUIRED: "Le nom de l'organisation est obligatoire.",
         ORGANIZATION_SLUG_REQUIRED:
             "Le slug de l'organisation est obligatoire.",
-        ORGANIZATION_SLUG_INVALID:
-            "Le slug de l'organisation est invalide.",
+        ORGANIZATION_SLUG_INVALID: "Le slug de l'organisation est invalide.",
         ORGANIZATION_SLUG_TAKEN: "Ce slug est déjà utilisé.",
         ORGANIZATION_UPDATE_FORBIDDEN:
             "Vous n'avez pas l'autorisation de modifier cette organisation.",
@@ -26,18 +24,14 @@ export const translations = {
             "Aucune organisation active n'a été trouvée.",
         USER_NOT_ALLOWED_TO_CREATE_ORGANIZATION:
             "Vous n'êtes pas autorisé à créer une organisation.",
-        CHECK_SLUG_REQUIRED:
-            "Le slug est requis pour la vérification.",
+        CHECK_SLUG_REQUIRED: "Le slug est requis pour la vérification.",
 
         // Invitations
         INVITATION_NOT_FOUND: "Invitation introuvable.",
-        INVITATION_ALREADY_ACCEPTED:
-            "Cette invitation a déjà été acceptée.",
-        INVITATION_ALREADY_CANCELLED:
-            "Cette invitation a déjà été annulée.",
+        INVITATION_ALREADY_ACCEPTED: "Cette invitation a déjà été acceptée.",
+        INVITATION_ALREADY_CANCELLED: "Cette invitation a déjà été annulée.",
         INVITATION_EXPIRED: "L'invitation a expiré.",
-        INVITATION_EMAIL_REQUIRED:
-            "L'email est obligatoire pour l'invitation.",
+        INVITATION_EMAIL_REQUIRED: "L'email est obligatoire pour l'invitation.",
         INVITATION_CREATE_FORBIDDEN:
             "Vous n'avez pas l'autorisation d'inviter des membres.",
         INVITATION_CANCEL_FORBIDDEN:
@@ -107,8 +101,7 @@ export const translations = {
             "Vous n'avez pas l'autorisation de retirer des membres de l'équipe.",
 
         // Activité/orga active
-        ACTIVE_MEMBER_ROLE_NOT_FOUND:
-            "Rôle du membre actif introuvable.",
+        ACTIVE_MEMBER_ROLE_NOT_FOUND: "Rôle du membre actif introuvable.",
         ACTIVE_ORGANIZATION_SWITCH_FORBIDDEN:
             "Vous n'avez pas l'autorisation de changer d'organisation active.",
 
@@ -116,15 +109,11 @@ export const translations = {
         // ADMIN (plugin core)
         // ----------------------------
         ADMIN_FORBIDDEN: "Action réservée aux administrateurs.",
-        ADMIN_USER_CREATE_FAILED:
-            "Échec de la création de l'utilisateur.",
-        ADMIN_USER_UPDATE_FAILED:
-            "Échec de la mise à jour de l'utilisateur.",
-        ADMIN_USER_DELETE_FAILED:
-            "Échec de la suppression de l'utilisateur.",
+        ADMIN_USER_CREATE_FAILED: "Échec de la création de l'utilisateur.",
+        ADMIN_USER_UPDATE_FAILED: "Échec de la mise à jour de l'utilisateur.",
+        ADMIN_USER_DELETE_FAILED: "Échec de la suppression de l'utilisateur.",
         ADMIN_USER_NOT_FOUND: "Utilisateur introuvable.",
-        ADMIN_EMAIL_ALREADY_IN_USE:
-            "Cette adresse e-mail est déjà utilisée.",
+        ADMIN_EMAIL_ALREADY_IN_USE: "Cette adresse e-mail est déjà utilisée.",
         ADMIN_INVALID_ROLE: "Rôle administrateur invalide.",
         ADMIN_INVALID_STATUS: "Statut administrateur invalide.",
         ADMIN_PASSWORD_REQUIRED:
@@ -144,10 +133,8 @@ export const translations = {
         // Impersonation
         IMPERSONATION_FORBIDDEN:
             "Vous n'avez pas l'autorisation d'usurper un utilisateur.",
-        IMPERSONATION_FAILED:
-            "Impossible d'usurper cet utilisateur.",
-        CANNOT_IMPERSONATE_SELF:
-            "Vous ne pouvez pas vous usurper vous-même.",
+        IMPERSONATION_FAILED: "Impossible d'usurper cet utilisateur.",
+        CANNOT_IMPERSONATE_SELF: "Vous ne pouvez pas vous usurper vous-même.",
         CANNOT_IMPERSONATE_OWNER:
             "Impossible d'usurper le propriétaire d'une organisation.",
 
@@ -164,7 +151,6 @@ export const translations = {
         SLUG_REQUIRED: "Le slug de l'organisation est requis.", // [UI]
         DELETE_ORGANIZATION_INSTRUCTIONS:
             "Saisissez le slug de l'organisation pour confirmer :", // [UI]
-        DELETE_ORGANIZATION_SUCCESS:
-            "Organisation supprimée avec succès.", // [UI]
+        DELETE_ORGANIZATION_SUCCESS: "Organisation supprimée avec succès.", // [UI]
     },
 };

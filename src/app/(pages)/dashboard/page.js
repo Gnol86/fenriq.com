@@ -159,7 +159,9 @@ export default async function DashboardPage() {
                                     <OrganizationSelectorButton
                                         organization={organization}
                                         isActive={isActive}
-                                        activeOrganizationId={activeOrganizationId}
+                                        activeOrganizationId={
+                                            activeOrganizationId
+                                        }
                                     />
                                 </div>
                             );
