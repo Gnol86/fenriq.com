@@ -6,11 +6,18 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { requireOrganization } from "@/lib/auth-access";
+import { hasGlobalPermission, requireOrganization } from "@/lib/auth-access";
 import { AlertTriangle } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default async function DangerZonePage() {
     const organization = await requireOrganization();
+
+    const can = await hasGlobalPermission({
+        organization: ["delete"],
+    });
+    if (!can) redirect("/dashboard");
+
     return (
         <div className="flex flex-col gap-6">
             <Card>

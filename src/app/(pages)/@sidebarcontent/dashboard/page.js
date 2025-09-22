@@ -8,7 +8,11 @@ import {
     SidebarMenuItem,
     SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { getCurrentOrganization, requireUser } from "@/lib/auth-access";
+import {
+    getCurrentOrganization,
+    hasGlobalPermission,
+    requireUser,
+} from "@/lib/auth-access";
 import { MailPlus } from "lucide-react";
 import { LayoutDashboard } from "lucide-react";
 import { Plus, Settings, AlertTriangle, Users } from "lucide-react";
@@ -63,33 +67,45 @@ export default async function SideBarContent() {
                             </SidebarMenuItem>
                         ) : (
                             <>
-                                <SidebarMenuItem>
-                                    <SidebarMenuButton asChild>
-                                        <Link href="/dashboard/orgs/manage">
-                                            <Settings className="opacity-60" />
-                                            Gérer l&apos;organisation
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                                <SidebarMenuItem>
-                                    <SidebarMenuButton asChild>
-                                        <Link href="/dashboard/orgs/members">
-                                            <Users className="opacity-60" />
-                                            Membres
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                                <SidebarMenuItem>
-                                    <SidebarMenuButton asChild>
-                                        <Link
-                                            href="/dashboard/orgs/danger-zone"
-                                            className="text-destructive"
-                                        >
-                                            <AlertTriangle className="opacity-60" />
-                                            Danger
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
+                                {(await hasGlobalPermission({
+                                    organization: ["update"],
+                                })) && (
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link href="/dashboard/orgs/manage">
+                                                <Settings className="opacity-60" />
+                                                Gérer l&apos;organisation
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )}
+                                {(await hasGlobalPermission({
+                                    member: ["read"],
+                                })) && (
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link href="/dashboard/orgs/members">
+                                                <Users className="opacity-60" />
+                                                Membres
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )}
+                                {(await hasGlobalPermission({
+                                    organization: ["delete"],
+                                })) && (
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link
+                                                href="/dashboard/orgs/danger-zone"
+                                                className="text-destructive"
+                                            >
+                                                <AlertTriangle className="opacity-60" />
+                                                Danger
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )}
                             </>
                         )}
                     </SidebarMenu>
