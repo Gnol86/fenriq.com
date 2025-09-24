@@ -14,24 +14,53 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { getMemberPermissions } from "@/hooks/use-member-permissions";
-import { requireOrganization, requireUser } from "@/lib/auth-access";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import InviteMemberDialog from "../invitations/components/invite-member-dialog";
 import MemberStats from "./components/member-stats";
 import MemberTableRow from "./components/member-table-row";
+import { hasPermissionAction } from "@/actions/organization.action";
 
 export default async function OrganizationMembersPage() {
-    const user = await requireUser();
-    const organization = await requireOrganization();
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
 
-    // Obtenir toutes les permissions de membres en une seule fois
-    const { canRead, canUpdate, canDelete, canInvite } =
-        await getMemberPermissions();
+    const user = session.user;
 
-    if (!canRead) redirect("/dashboard");
+    const userOrganizations = await auth.api.listOrganizations({
+        headers: await headers(),
+    });
 
-    const members = organization.members ?? [];
+    const activeUserOrganization = userOrganizations?.find(
+        org => org.id === session.session.activeOrganizationId
+    );
+
+    const canMemberRead = await hasPermissionAction({
+        permissions: { member: ["read"] },
+    });
+    if (!canMemberRead) redirect("/dashboard");
+
+    const canInvitationCreate = await hasPermissionAction({
+        permissions: { invitation: ["create"] },
+    });
+
+    const canMemberUpdate = await hasPermissionAction({
+        permissions: { member: ["update"] },
+    });
+
+    const canMemberDelete = await hasPermissionAction({
+        permissions: { member: ["delete"] },
+    });
+
+    const members = activeUserOrganization
+        ? (
+              await auth.api.listMembers({
+                  headers: await headers(),
+              })
+          ).members
+        : [];
 
     return (
         <div className="flex flex-col gap-6">
@@ -43,11 +72,11 @@ export default async function OrganizationMembersPage() {
                         rôles et leurs permissions.
                         <MemberStats members={members} />
                     </CardDescription>
-                    {canInvite && (
+                    {canInvitationCreate && (
                         <CardAction>
                             <InviteMemberDialog
-                                organizationId={organization.id}
-                                organizationName={organization.name}
+                                organizationId={activeUserOrganization.id}
+                                organizationName={activeUserOrganization.name}
                             />
                         </CardAction>
                     )}
@@ -65,7 +94,7 @@ export default async function OrganizationMembersPage() {
                                 <TableHead>Utilisateur</TableHead>
                                 <TableHead>Rôle</TableHead>
                                 <TableHead>Depuis</TableHead>
-                                {(canUpdate || canDelete) && (
+                                {(canMemberUpdate || canMemberDelete) && (
                                     <TableHead className="text-right">
                                         Action
                                     </TableHead>
@@ -77,10 +106,10 @@ export default async function OrganizationMembersPage() {
                                 <MemberTableRow
                                     key={member.id}
                                     member={member}
-                                    organizationId={organization.id}
+                                    organizationId={activeUserOrganization.id}
                                     currentUserId={user.id}
-                                    canUpdate={canUpdate}
-                                    canDelete={canDelete}
+                                    canUpdate={canMemberUpdate}
+                                    canDelete={canMemberDelete}
                                 />
                             ))}
                         </TableBody>

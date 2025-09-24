@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useServerAction } from "@/hooks/use-server-action";
-import { inviteMemberAction } from "@/actions/organisations.action";
 import { Button } from "@/components/ui/button";
 import {
     Select,
@@ -34,6 +33,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { inviteMemberAction } from "@/actions/organization.action";
 
 const inviteSchema = z.object({
     email: z.email("Adresse email invalide").trim(),
@@ -62,10 +62,8 @@ export default function InviteMemberDialog({
                     organizationId,
                 }),
             {
-                loadingMessage: "Envoi de l'invitation...",
                 successMessage: "Invitation envoyée avec succès",
-                errorMessage:
-                    "Impossible d'envoyer l'invitation pour le moment",
+                redirectOnSuccess: "/dashboard/orgs/invitations",
             }
         );
 

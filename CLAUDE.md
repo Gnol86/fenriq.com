@@ -87,7 +87,6 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 #### **🎯 CRITICAL - Use New System Only**
 
 - **NEVER** use legacy auth functions (`getUser`, `getRequiredUser`, etc.)
-- **ALWAYS** use `@/lib/auth-access` for auth operations
 - **ALWAYS** consider cache invalidation after mutations
 
 #### **Patterns to Follow**
@@ -105,24 +104,14 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 
 ## Important Files
 
-### **🚨 CRITICAL - Authentication System (State-of-Art 2025)**
-
-- `src/lib/data-access.js` - **PRIMARY** auth layer - ALWAYS use this
-- `src/lib/permissions-cache.js` - Permission caching - USE for performance
-- `src/lib/auth-monitoring.js` - Monitoring/logging - USE for debugging
-- `src/lib/auth-error-handling.js` - Error handling - USE for resilience
-- `src/lib/auth.js` - Core config - READ ONLY, don't modify directly
-
 ### **🚨 CRITICAL - Server Actions System**
 
 - `src/hooks/use-server-action.js` - **PRIMARY** hook for server actions - ALWAYS use this in client components
 
 ### **Agent Rules for Auth**
 
-1. **NEVER** create auth code without reading data-access.js first
-2. **NEVER** use legacy auth patterns from existing code
-3. **ALWAYS** use new Data Access Layer patterns
-4. **ALWAYS** consider cache implications
+1. **NEVER** use legacy auth patterns from existing code
+2. **ALWAYS** consider cache implications
 
 ### **Other Core Files**
 
@@ -199,8 +188,6 @@ const user = await getCurrentUser(); // Missing monitoring
 ### **✅ REQUIRED Patterns**
 
 ```js
-// ✅ ALWAYS use new auth-access layer
-import { getCurrentUser, requireUser } from "@/lib/auth-access";
 
 // ✅ ALWAYS consider cache implications
 await invalidateUserCache(userId, orgId);

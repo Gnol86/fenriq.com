@@ -25,7 +25,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { deleteOrganizationAction } from "@/actions/organisations.action";
+import { deleteOrganizationAction } from "@/actions/organization.action";
 import { useServerAction } from "@/hooks/use-server-action";
 import { TriangleAlert } from "lucide-react";
 
@@ -40,7 +40,7 @@ export default function DangerZoneForm({ organization }) {
                     "Le nom saisi ne correspond pas à l'organisation active.",
             }),
     });
-    const { execute } = useServerAction();
+    const { execute, isPending } = useServerAction();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -61,10 +61,7 @@ export default function DangerZoneForm({ organization }) {
                     organizationId: organization.id,
                 }),
             {
-                loadingMessage: "Suppression de l'organisation...",
                 successMessage: "Organisation supprimée avec succès",
-                errorMessage:
-                    "Impossible de supprimer l'organisation pour le moment",
                 redirectOnSuccess: "/dashboard",
             }
         );
@@ -104,7 +101,7 @@ export default function DangerZoneForm({ organization }) {
                                     {...field}
                                     autoFocus
                                     placeholder={organization.name}
-                                    disabled={form.formState.isSubmitting}
+                                    disabled={isPending}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -117,7 +114,7 @@ export default function DangerZoneForm({ organization }) {
                             <FormButton
                                 type="button"
                                 variant="destructive"
-                                loading={form.formState.isSubmitting}
+                                loading={isPending}
                                 disabled={!form.formState.isValid}
                             >
                                 <TriangleAlert /> Supprimer l'organisation

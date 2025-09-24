@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
-import { createOrganizationAction } from "@/actions/organisations.action";
 import { useServerAction } from "@/hooks/use-server-action";
+import { createOrganizationAction } from "@/actions/organization.action";
 
 const formSchema = z.object({
     name: z
@@ -34,7 +34,7 @@ const formSchema = z.object({
 });
 
 export default function NewOrganizationForm() {
-    const { execute } = useServerAction();
+    const { execute, isPending } = useServerAction();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -50,10 +50,7 @@ export default function NewOrganizationForm() {
                     name: values.name,
                 }),
             {
-                loadingMessage: "Création de l'organisation...",
                 successMessage: "Organisation créée avec succès",
-                errorMessage:
-                    "Impossible de créer l'organisation pour le moment",
                 redirectOnSuccess: "/dashboard",
             }
         );
@@ -76,7 +73,7 @@ export default function NewOrganizationForm() {
                                     {...field}
                                     autoFocus
                                     placeholder="Aqme corp"
-                                    disabled={form.formState.isSubmitting}
+                                    disabled={isPending}
                                 />
                             </FormControl>
                             <FormDescription>
@@ -89,7 +86,7 @@ export default function NewOrganizationForm() {
 
                 <FormButton
                     type="submit"
-                    loading={form.formState.isSubmitting}
+                    loading={isPending}
                     className="self-end"
                 >
                     Créer l'organisation

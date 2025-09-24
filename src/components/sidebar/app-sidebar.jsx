@@ -5,26 +5,29 @@ import {
     SidebarHeader,
 } from "@/components/ui/sidebar";
 import UserButton from "./user-button";
-import {
-    getCurrentOrganization,
-    getListOrganizations,
-    requireUser,
-} from "@/lib/auth-access";
 import OrgButton from "./org-button";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export async function AppSidebar({ children }) {
-    const [user, organizations = [], activeOrganization] = await Promise.all([
-        requireUser(),
-        getListOrganizations(),
-        getCurrentOrganization(),
-    ]);
+    const session = await auth.api.getSession({
+        headers: await headers(), // you need to pass the headers object.
+    });
+    const user = session?.user;
 
+    const userOrganizations = await auth.api.listOrganizations({
+        headers: await headers(),
+    });
+
+    const activeUserOrganization = userOrganizations?.find(
+        org => org.id === session.session.activeOrganizationId
+    );
     return (
         <Sidebar>
             <SidebarHeader>
                 <OrgButton
-                    organizations={organizations ?? []}
-                    activeOrganization={activeOrganization}
+                    userOrganizations={userOrganizations}
+                    activeUserOrganization={activeUserOrganization}
                 />
             </SidebarHeader>
             <SidebarContent>{children}</SidebarContent>

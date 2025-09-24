@@ -6,33 +6,49 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import {
-    Table,
-    TableBody,
-    TableHead,
-    TableHeader,
-    TableRow,
-    TableCaption,
-} from "@/components/ui/table";
-import { requireOrganization } from "@/lib/auth-access";
 import InviteMemberDialog from "./components/invite-member-dialog";
-import InvitationTableRow from "./components/invitation-table-row";
 import InvitationStats from "./components/invitation-stats";
 import InvitationFilter from "./components/invitation-filter";
 import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import { sortInvitationsByStatus } from "@/lib/invitation-utils";
-import { getInvitationPermissions } from "@/hooks/use-invitation-permissions";
+import { hasPermissionAction } from "@/actions/organization.action";
 
 export default async function OrganizationInvitationsPage() {
-    const organization = await requireOrganization();
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
 
-    // Obtenir toutes les permissions d'invitation en une seule fois
-    const { canRead, canCreate, canCancel, canInvite } =
-        await getInvitationPermissions();
+    const userOrganizations = await auth.api.listOrganizations({
+        headers: await headers(),
+    });
 
-    if (!canRead) redirect("/dashboard");
+    const activeUserOrganization = userOrganizations?.find(
+        org => org.id === session.session.activeOrganizationId
+    );
 
-    const invitations = organization.invitations ?? [];
+    const canInvitationRead = await hasPermissionAction({
+        permissions: { invitation: ["read"] },
+    });
+    if (!canInvitationRead) redirect("/dashboard");
+
+    const canInvitationCreate = await hasPermissionAction({
+        permissions: { invitation: ["create"] },
+    });
+
+    const canInvitationCancel = await hasPermissionAction({
+        permissions: { invitation: ["cancel"] },
+    });
+
+    const invitations = activeUserOrganization
+        ? await auth.api.listInvitations({
+              headers: await headers(),
+          })
+        : [];
+
+    console.log(invitations);
+
     const sortedInvitations = sortInvitationsByStatus(invitations);
 
     return (
@@ -45,11 +61,11 @@ export default async function OrganizationInvitationsPage() {
                         membres à rejoindre votre organisation.
                         <InvitationStats invitations={invitations} />
                     </CardDescription>
-                    {canInvite && (
+                    {canInvitationCreate && (
                         <CardAction>
                             <InviteMemberDialog
-                                organizationId={organization.id}
-                                organizationName={organization.name}
+                                organizationId={activeUserOrganization.id}
+                                organizationName={activeUserOrganization.name}
                             />
                         </CardAction>
                     )}
@@ -58,9 +74,9 @@ export default async function OrganizationInvitationsPage() {
                 <CardContent>
                     <InvitationFilter
                         invitations={sortedInvitations}
-                        canCreate={canCreate}
-                        canCancel={canCancel}
-                        organizationId={organization.id}
+                        canCreate={canInvitationCreate}
+                        canCancel={canInvitationCancel}
+                        organizationId={activeUserOrganization.id}
                     />
                 </CardContent>
             </Card>

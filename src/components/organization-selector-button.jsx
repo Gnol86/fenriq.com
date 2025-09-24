@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
-import { setActiveOrganizationAction } from "@/actions/organisations.action";
 import { useServerAction } from "@/hooks/use-server-action";
+import { setActiveOrganizationAction } from "@/actions/organization.action";
 
 export default function OrganizationSelectorButton({
     organization,
@@ -23,9 +23,7 @@ export default function OrganizationSelectorButton({
                     organizationId: organization.id,
                 }),
             {
-                loadingMessage: "Sélection de l'organisation...",
-                successMessage: `Organisation "${organization.name}" sélectionnée avec succès`,
-                errorMessage: "Impossible de sélectionner l'organisation",
+                successMessage: `"${organization.name}" sélectionnée`,
             }
         );
     };

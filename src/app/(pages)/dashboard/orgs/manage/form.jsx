@@ -14,9 +14,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
-import { updateOrganizationAction } from "@/actions/organisations.action";
 import ImageProfile from "@/components/image-profile";
 import { useServerAction } from "@/hooks/use-server-action";
+import { updateOrganizationAction } from "@/actions/organization.action";
 
 const formSchema = z.object({
     name: z
@@ -35,7 +35,7 @@ const formSchema = z.object({
 });
 
 export default function ManageOrganizationForm({ organization }) {
-    const { execute } = useServerAction();
+    const { execute, isPending } = useServerAction();
     const organizationName = organization?.name ?? "";
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -45,33 +45,14 @@ export default function ManageOrganizationForm({ organization }) {
     });
 
     const onSubmit = async values => {
-        if (!organization?.id) {
-            await execute(
-                () =>
-                    Promise.reject(
-                        new Error(
-                            "Aucune organisation active n'a été trouvée. Veuillez en sélectionner une."
-                        )
-                    ),
-                {
-                    showToast: true,
-                    refreshOnSuccess: false,
-                }
-            );
-            return;
-        }
-
         await execute(
             () =>
                 updateOrganizationAction({
-                    organizationId: organization.id,
                     name: values.name,
+                    organizationId: organization.id,
                 }),
             {
-                loadingMessage: "Mise à jour de l'organisation...",
                 successMessage: "Organisation mise à jour avec succès",
-                errorMessage:
-                    "Impossible de mettre à jour l'organisation pour le moment",
             }
         );
     };
@@ -111,7 +92,7 @@ export default function ManageOrganizationForm({ organization }) {
                                 <Input
                                     {...field}
                                     autoFocus
-                                    disabled={form.formState.isSubmitting}
+                                    disabled={isPending}
                                 />
                             </FormControl>
                             <FormDescription>
@@ -123,10 +104,7 @@ export default function ManageOrganizationForm({ organization }) {
                 />
 
                 <div className="flex justify-end">
-                    <FormButton
-                        type="submit"
-                        loading={form.formState.isSubmitting}
-                    >
+                    <FormButton type="submit" loading={isPending}>
                         Enregistrer les modifications
                     </FormButton>
                 </div>

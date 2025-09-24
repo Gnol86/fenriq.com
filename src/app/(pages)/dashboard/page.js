@@ -1,10 +1,4 @@
 import {
-    getCurrentOrganization,
-    getListOrganizations,
-    requireUser,
-    getListContactsActiveOrganization,
-} from "@/lib/auth-access";
-import {
     Card,
     CardAction,
     CardContent,
@@ -16,26 +10,44 @@ import {
 import Link from "next/link";
 import ImageProfile from "@/components/image-profile";
 import OrganizationSelectorButton from "@/components/organization-selector-button";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { PrismaClient } from "@/generated/prisma";
 
 export default async function DashboardPage() {
-    const [user, organizationsRaw = [], activeOrganization, contacts] =
-        await Promise.all([
-            requireUser(),
-            getListOrganizations(),
-            getCurrentOrganization(),
-            getListContactsActiveOrganization(),
-        ]);
+    const session = await auth.api.getSession({
+        headers: await headers(), // you need to pass the headers object.
+    });
+    const user = session?.user;
+    const userOrganizations = await auth.api.listOrganizations({
+        headers: await headers(),
+    });
 
-    const organizations = Array.isArray(organizationsRaw)
-        ? organizationsRaw
+    const activeUserOrganization = session.session.activeOrganizationId
+        ? userOrganizations?.find(
+              org => org.id === session.session.activeOrganizationId
+          )
+        : null;
+
+    const prisma = new PrismaClient();
+    const contacts = activeUserOrganization
+        ? await prisma.member.findMany({
+              where: {
+                  organizationId: activeUserOrganization.id,
+                  role: {
+                      in: ["admin", "owner"],
+                  },
+              },
+              include: {
+                  user: {
+                      select: {
+                          name: true,
+                          email: true,
+                      },
+                  },
+              },
+          })
         : [];
-    const sortedOrganizations = [...organizations].sort((a, b) =>
-        (a?.name ?? "").localeCompare(b?.name ?? "", "fr", {
-            sensitivity: "accent",
-        })
-    );
-    const activeOrganizationId = activeOrganization?.id ?? null;
-    const hasOrganizations = sortedOrganizations.length > 0;
 
     return (
         <div className="flex flex-col gap-6">
@@ -52,15 +64,15 @@ export default async function DashboardPage() {
                         Aperçu de l&apos;organisation actuelle.
                     </CardDescription>
                     <CardAction>
-                        {activeOrganization ? (
+                        {activeUserOrganization ? (
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center gap-3">
                                     <ImageProfile
-                                        user={activeOrganization}
+                                        user={activeUserOrganization}
                                         size="lg"
                                     />
                                     <span className="font-semibold truncate">
-                                        {activeOrganization?.name ??
+                                        {activeUserOrganization?.name ??
                                             "Organisation"}
                                     </span>
                                 </div>
@@ -75,7 +87,7 @@ export default async function DashboardPage() {
                         )}
                     </CardAction>
                 </CardHeader>
-                {activeOrganization && (
+                {activeUserOrganization && (
                     <CardContent className="flex flex-col gap-4">
                         Personnes de contact
                         {contacts?.length > 0 ? (
@@ -133,11 +145,8 @@ export default async function DashboardPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-3">
-                    {hasOrganizations ? (
-                        sortedOrganizations.map((organization, index) => {
-                            const isActive =
-                                organization?.id === activeOrganizationId;
-
+                    {userOrganizations.length > 0 ? (
+                        userOrganizations.map((organization, index) => {
                             return (
                                 <div
                                     key={
@@ -158,9 +167,12 @@ export default async function DashboardPage() {
                                     </div>
                                     <OrganizationSelectorButton
                                         organization={organization}
-                                        isActive={isActive}
+                                        isActive={
+                                            organization?.id ===
+                                            activeUserOrganization?.id
+                                        }
                                         activeOrganizationId={
-                                            activeOrganizationId
+                                            activeUserOrganization?.id
                                         }
                                     />
                                 </div>

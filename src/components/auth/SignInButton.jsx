@@ -1,9 +1,13 @@
-import { getCurrentUser } from "@/lib/auth-access";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export default async function SignInButton() {
-    const user = await getCurrentUser();
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+    const user = session?.user;
 
     if (user) {
         return null;

@@ -1,18 +1,12 @@
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { getCurrentOrganization, requireUser } from "@/lib/auth-access";
 
 export default async function Layout({
     children,
     breadcrumbs,
     sidebarcontent,
 }) {
-    await requireUser();
-    const activeOrganization = await getCurrentOrganization();
-    const hasOrganization = Boolean(activeOrganization);
-    const organizationLabel = activeOrganization?.name ?? "Organisation";
-
     return (
         <SidebarProvider>
             <AppSidebar>{sidebarcontent}</AppSidebar>

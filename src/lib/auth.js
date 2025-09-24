@@ -1,7 +1,7 @@
 // src/lib/auth.js
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { admin, organization } from "better-auth/plugins";
+import { admin, createAuthMiddleware, organization } from "better-auth/plugins";
 import { localization } from "better-auth-localization";
 import { getServerUrl } from "./server-url";
 import { SiteConfig } from "@/site-config";
@@ -21,16 +21,14 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, { provider: "postgres" }),
     baseURL: getServerUrl(),
     basePath: "/api/auth",
-    disabledPaths,
+    // disabledPaths,
     logger: {
-        level: "info",
+        disabled: false,
+        disableColors: false,
+        level: "error",
         log: (level, message, ...args) => {
-            console.log({
-                level,
-                message,
-                metadata: args,
-                timestamp: new Date().toISOString(),
-            });
+            // Custom logging implementation
+            console.log(`[${level}] ${message}`, ...args);
         },
     },
     session: {
@@ -44,10 +42,43 @@ export const auth = betterAuth({
     // Sécurité renforcée
     rateLimit: {
         enabled: true,
-        window: 60, // 1 minute
+        window: 10, // 1 minute
         max: 100, // 100 requêtes par minute
     },
-    // Hooks désactivés temporairement pour éviter les erreurs de démarrage
+    hooks: {
+        before: createAuthMiddleware(async ctx => {
+            const path = ctx.path;
+            const orgId = ctx.query?.organizationId;
+
+            const needsMemberRead = [
+                "/organization/list-members",
+                "/organization/get-full-organization",
+            ].includes(path);
+
+            const needsInvitationRead = [
+                "/organization/list-invitations",
+                "/organization/get-full-organization",
+            ].includes(path);
+
+            if (!needsMemberRead && !needsInvitationRead) return;
+
+            const permissions = {};
+            if (needsMemberRead) permissions.member = ["read"];
+            if (needsInvitationRead) permissions.invitation = ["read"];
+
+            const ok = await auth.api
+                .hasPermission({
+                    headers: ctx.headers,
+                    body: { permissions, organizationId: orgId },
+                })
+                .catch(() => null);
+
+            if (!ok?.success)
+                throw new APIError("FORBIDDEN", {
+                    message: "Permission manquante",
+                });
+        }),
+    },
     advanced: {
         cookiePrefix: SiteConfig.appId,
     },

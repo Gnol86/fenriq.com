@@ -6,23 +6,46 @@ import {
     SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarSeparator,
 } from "@/components/ui/sidebar";
-import {
-    getCurrentOrganization,
-    hasGlobalPermission,
-    requireUser,
-} from "@/lib/auth-access";
 import { MailPlus } from "lucide-react";
 import { LayoutDashboard } from "lucide-react";
 import { Plus, Settings, AlertTriangle, Users } from "lucide-react";
 import Link from "next/link";
 import { PrismaClient } from "@/generated/prisma";
 import { MailPlusIcon } from "lucide-react";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { hasPermissionAction } from "@/actions/organization.action";
 
 export default async function SideBarContent() {
-    const user = await requireUser();
-    const activeOrganization = await getCurrentOrganization();
+    const session = await auth.api.getSession({
+        headers: await headers(), // you need to pass the headers object.
+    });
+    const user = session?.user;
+    const userOrganizations = await auth.api.listOrganizations({
+        headers: await headers(),
+    });
+
+    const activeUserOrganization = userOrganizations?.find(
+        org => org.id === session.session.activeOrganizationId
+    );
+
+    const canOrgsUpdate = await hasPermissionAction({
+        permissions: { organization: ["update"] },
+    });
+
+    const canMembresRead = await hasPermissionAction({
+        permissions: { member: ["read"] },
+    });
+
+    const canInvitationsRead = await hasPermissionAction({
+        permissions: { invitation: ["read"] },
+    });
+
+    const canOrgsDelete = await hasPermissionAction({
+        permissions: { organization: ["delete"] },
+    });
+
     const prisma = new PrismaClient();
     const invitations = await prisma.invitation.findMany({
         where: {
@@ -33,8 +56,6 @@ export default async function SideBarContent() {
             },
         },
     });
-    const hasOrganization = Boolean(activeOrganization);
-    const organizationLabel = activeOrganization?.name ?? "Organisation";
 
     return (
         <>
@@ -54,10 +75,12 @@ export default async function SideBarContent() {
             </SidebarGroup>
 
             <SidebarGroup>
-                <SidebarGroupLabel>{organizationLabel}</SidebarGroupLabel>
+                <SidebarGroupLabel>
+                    {activeUserOrganization?.name ?? "Organisation"}
+                </SidebarGroupLabel>
                 <SidebarGroupContent>
                     <SidebarMenu>
-                        {!hasOrganization ? (
+                        {!activeUserOrganization ? (
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
                                     <Link href="/dashboard/orgs/new">
@@ -68,9 +91,7 @@ export default async function SideBarContent() {
                             </SidebarMenuItem>
                         ) : (
                             <>
-                                {(await hasGlobalPermission({
-                                    organization: ["update"],
-                                })) && (
+                                {canOrgsUpdate && (
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
                                             <Link href="/dashboard/orgs/manage">
@@ -80,9 +101,7 @@ export default async function SideBarContent() {
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
                                 )}
-                                {(await hasGlobalPermission({
-                                    member: ["read"],
-                                })) && (
+                                {canMembresRead && (
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
                                             <Link href="/dashboard/orgs/members">
@@ -92,9 +111,7 @@ export default async function SideBarContent() {
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
                                 )}
-                                {(await hasGlobalPermission({
-                                    invitation: ["read"],
-                                })) && (
+                                {canInvitationsRead && (
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
                                             <Link href="/dashboard/orgs/invitations">
@@ -104,9 +121,7 @@ export default async function SideBarContent() {
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
                                 )}
-                                {(await hasGlobalPermission({
-                                    organization: ["delete"],
-                                })) && (
+                                {canOrgsDelete && (
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
                                             <Link

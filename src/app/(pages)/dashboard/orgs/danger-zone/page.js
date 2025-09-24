@@ -6,17 +6,29 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { hasGlobalPermission, requireOrganization } from "@/lib/auth-access";
+import { auth } from "@/lib/auth";
 import { AlertTriangle } from "lucide-react";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { hasPermissionAction } from "@/actions/organization.action";
 
 export default async function DangerZonePage() {
-    const organization = await requireOrganization();
-
-    const can = await hasGlobalPermission({
-        organization: ["delete"],
+    const session = await auth.api.getSession({
+        headers: await headers(),
     });
-    if (!can) redirect("/dashboard");
+
+    const userOrganizations = await auth.api.listOrganizations({
+        headers: await headers(),
+    });
+
+    const activeUserOrganization = userOrganizations?.find(
+        org => org.id === session.session.activeOrganizationId
+    );
+
+    const canOrgsDelete = await hasPermissionAction({
+        permissions: { organization: ["delete"] },
+    });
+    if (!canOrgsDelete) redirect("/dashboard");
 
     return (
         <div className="flex flex-col gap-6">
@@ -34,7 +46,7 @@ export default async function DangerZonePage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <DangerZoneForm organization={organization} />
+                    <DangerZoneForm organization={activeUserOrganization} />
                 </CardContent>
             </Card>
         </div>
