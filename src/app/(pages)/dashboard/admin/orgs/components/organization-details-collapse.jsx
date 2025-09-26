@@ -30,8 +30,6 @@ function MemberRow({ member, currentUserId }) {
                 userId: member.userId,
             });
 
-            console.log(result);
-
             if (result.data?.session) {
                 toast.success("Usurpation réussie");
                 router.push("/dashboard");

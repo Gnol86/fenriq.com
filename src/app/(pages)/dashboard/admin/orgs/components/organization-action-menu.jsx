@@ -12,11 +12,7 @@ import {
 export default function OrganizationActionMenu({ organization }) {
     const { execute } = useServerAction();
 
-    const handleUpdateOrganization = async () => {
-        // Pour l'instant, juste un placeholder
-        // Dans une vraie application, cela ouvrirait un modal de modification
-        console.log("Modifier l'organisation:", organization.id);
-    };
+    const handleUpdateOrganization = async () => {};
 
     const handleDeleteOrganization = async () => {
         if (
@@ -37,7 +33,11 @@ export default function OrganizationActionMenu({ organization }) {
 
     return (
         <div className="flex gap-2 justify-end items-center">
-            <Button variant="outline" onClick={handleUpdateOrganization} size="sm">
+            <Button
+                variant="outline"
+                onClick={handleUpdateOrganization}
+                size="sm"
+            >
                 <Edit3 className="h-4 w-4 mr-2" />
                 Modifier
             </Button>
@@ -47,7 +47,11 @@ export default function OrganizationActionMenu({ organization }) {
                 Paramètres
             </Button>
 
-            <Button variant="destructive" onClick={handleDeleteOrganization} size="sm">
+            <Button
+                variant="destructive"
+                onClick={handleDeleteOrganization}
+                size="sm"
+            >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Supprimer
             </Button>

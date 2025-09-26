@@ -23,8 +23,6 @@ export default async function InvitationPage({ params }) {
         },
     });
 
-    console.log("########Invitation:", invitation);
-
     return (
         <div className="min-h-dvh flex flex-col items-center justify-center px-4 py-12">
             <Card className="w-full max-w-lg">

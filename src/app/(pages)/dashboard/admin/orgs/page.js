@@ -77,11 +77,6 @@ export default async function AdminOrganizationsPage({ searchParams }) {
         })
     );
 
-    console.log(
-        "🔍 DEBUG - Structure d'une organisation complète:",
-        JSON.stringify(allOrganizations[0], null, 2)
-    );
-
     // Filtrer et paginer côté client (pour l'instant)
     let filteredOrgs = allOrganizations;
 

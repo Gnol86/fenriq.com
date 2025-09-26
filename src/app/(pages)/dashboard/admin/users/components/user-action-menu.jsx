@@ -65,8 +65,6 @@ export default function UserActionMenu({ user, isCurrentUser }) {
                 userId: user.id,
             });
 
-            console.log(result);
-
             if (result.data?.session) {
                 toast.success("Usurpation réussie");
                 router.push("/dashboard");

@@ -47,8 +47,6 @@ export default async function OrganizationInvitationsPage() {
           })
         : [];
 
-    console.log(invitations);
-
     const sortedInvitations = sortInvitationsByStatus(invitations);
 
     return (
