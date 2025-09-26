@@ -13,6 +13,7 @@ export async function AppSidebar({ children }) {
     const session = await auth.api.getSession({
         headers: await headers(), // you need to pass the headers object.
     });
+
     const user = session?.user;
 
     const userOrganizations = await auth.api.listOrganizations({
@@ -32,7 +33,10 @@ export async function AppSidebar({ children }) {
             </SidebarHeader>
             <SidebarContent>{children}</SidebarContent>
             <SidebarFooter>
-                <UserButton user={user} />
+                <UserButton
+                    user={user}
+                    isImpersonating={session?.session?.impersonatedBy}
+                />
             </SidebarFooter>
         </Sidebar>
     );

@@ -11,7 +11,6 @@ import {
     adminPermissions,
     memberPermissions,
 } from "./organization-permissions.js";
-import { disabledPaths } from "./auth-disabled-paths.js";
 import { translations } from "./auth-translations.js";
 
 import { PrismaClient } from "../generated/prisma";
@@ -21,16 +20,6 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, { provider: "postgres" }),
     baseURL: getServerUrl(),
     basePath: "/api/auth",
-    // disabledPaths,
-    logger: {
-        disabled: false,
-        disableColors: false,
-        level: "error",
-        log: (level, message, ...args) => {
-            // Custom logging implementation
-            console.log(`[${level}] ${message}`, ...args);
-        },
-    },
     session: {
         expiresIn: 60 * 60 * 24 * 7, // 7 jours
         updateAge: 60 * 60 * 24, // Refresh après 24h

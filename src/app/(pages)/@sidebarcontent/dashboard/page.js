@@ -141,26 +141,6 @@ export default async function SideBarContent() {
                 </SidebarGroupContent>
             </SidebarGroup>
 
-            <SidebarGroup>
-                <SidebarGroupLabel>{user.name}</SidebarGroupLabel>
-                <SidebarGroupContent>
-                    <SidebarMenu>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton asChild>
-                                <Link href="/dashboard/user/invitations">
-                                    <MailPlus className="opacity-60" />
-                                    Invitations
-                                </Link>
-                            </SidebarMenuButton>
-                            {invitations.length > 0 && (
-                                <SidebarMenuBadge className="bg-destructive text-destructive-foreground font-bold">
-                                    {invitations.length}
-                                </SidebarMenuBadge>
-                            )}
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarGroupContent>
-            </SidebarGroup>
             {user.role === "admin" && (
                 <SidebarGroup>
                     <SidebarGroupLabel>Administration</SidebarGroupLabel>
@@ -186,6 +166,27 @@ export default async function SideBarContent() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             )}
+
+            <SidebarGroup>
+                <SidebarGroupLabel>{user.name}</SidebarGroupLabel>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild>
+                                <Link href="/dashboard/user/invitations">
+                                    <MailPlus className="opacity-60" />
+                                    Invitations
+                                </Link>
+                            </SidebarMenuButton>
+                            {invitations.length > 0 && (
+                                <SidebarMenuBadge className="bg-destructive text-destructive-foreground font-bold">
+                                    {invitations.length}
+                                </SidebarMenuBadge>
+                            )}
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
         </>
     );
 }

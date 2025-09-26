@@ -10,16 +10,19 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Shield, Loader2 } from "lucide-react";
-import { signOut } from "@/lib/auth-client";
+import { LogOut, Loader2 } from "lucide-react";
+import { authClient, signOut } from "@/lib/auth-client";
 import { LayoutDashboard } from "lucide-react";
 import { AppWindow } from "lucide-react";
 import ImageProfile from "../image-profile";
+import { HatGlasses } from "lucide-react";
+import { toast } from "sonner";
 
-export default function UserButton({ user }) {
+export default function UserButton({ user, isImpersonating = null }) {
     const router = useRouter();
     const pathname = usePathname();
     const [isSigningOut, startSignOut] = useTransition();
+    const [isStoppingImpersonation, stopImpersonating] = useTransition();
 
     if (!user) {
         return null;
@@ -27,7 +30,6 @@ export default function UserButton({ user }) {
 
     const isOnApp = pathname?.startsWith("/app");
     const isOnDashboard = pathname?.startsWith("/dashboard");
-    const isOnAdmin = pathname?.startsWith("/admin");
 
     const handleSignOut = () => {
         startSignOut(async () => {
@@ -41,13 +43,33 @@ export default function UserButton({ user }) {
         });
     };
 
+    const handleStopImpersonating = () => {
+        stopImpersonating(async () => {
+            await authClient.admin.stopImpersonating();
+
+            toast.success("Usurpation terminée");
+            router.push("/dashboard");
+            router.refresh();
+        });
+    };
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 p-2 cursor-pointer">
                 <ImageProfile user={user} />
                 <div className="flex flex-col justify-start items-start flex-1 text-left overflow-hidden min-w-0">
                     <span className="font-medium truncate w-full">
-                        {user.name || "Utilisateur"}
+                        {isImpersonating ? (
+                            <span className="text-destructive truncate flex items-center gap-1">
+                                {user.name || "Utilisateur"}{" "}
+                                <HatGlasses
+                                    className="text-foreground"
+                                    size={16}
+                                />
+                            </span>
+                        ) : (
+                            user.name || "Utilisateur"
+                        )}
                     </span>
                     <span className="text-xs font-medium text-muted-foreground -mt-1 truncate w-full">
                         {user.email || ""}
@@ -90,44 +112,61 @@ export default function UserButton({ user }) {
                         </Link>
                     </DropdownMenuItem>
                 )}
-                {!isOnAdmin && user.role === "admin" && (
-                    <DropdownMenuItem asChild>
-                        <Link href="/admin" className="flex items-center gap-2">
-                            <Shield
+                {isImpersonating ? (
+                    <DropdownMenuItem
+                        variant="destructive"
+                        onSelect={event => {
+                            event.preventDefault();
+                            if (!isStoppingImpersonation) {
+                                handleStopImpersonating();
+                            }
+                        }}
+                        disabled={isStoppingImpersonation}
+                        className="flex items-center gap-2"
+                    >
+                        {isStoppingImpersonation ? (
+                            <Loader2
+                                size={16}
+                                className="opacity-60 animate-spin"
+                                aria-hidden="true"
+                            />
+                        ) : (
+                            <HatGlasses
                                 size={16}
                                 className="opacity-60"
                                 aria-hidden="true"
                             />
-                            Administration
-                        </Link>
+                        )}
+                        Stopper usurpation
+                    </DropdownMenuItem>
+                ) : (
+                    <DropdownMenuItem
+                        variant="destructive"
+                        onSelect={event => {
+                            event.preventDefault();
+                            if (!isSigningOut) {
+                                handleSignOut();
+                            }
+                        }}
+                        disabled={isSigningOut}
+                        className="flex items-center gap-2"
+                    >
+                        {isSigningOut ? (
+                            <Loader2
+                                size={16}
+                                className="opacity-60 animate-spin"
+                                aria-hidden="true"
+                            />
+                        ) : (
+                            <LogOut
+                                size={16}
+                                className="opacity-60"
+                                aria-hidden="true"
+                            />
+                        )}
+                        Se déconnecter
                     </DropdownMenuItem>
                 )}
-                <DropdownMenuItem
-                    variant="destructive"
-                    onSelect={event => {
-                        event.preventDefault();
-                        if (!isSigningOut) {
-                            handleSignOut();
-                        }
-                    }}
-                    disabled={isSigningOut}
-                    className="flex items-center gap-2"
-                >
-                    {isSigningOut ? (
-                        <Loader2
-                            size={16}
-                            className="opacity-60 animate-spin"
-                            aria-hidden="true"
-                        />
-                    ) : (
-                        <LogOut
-                            size={16}
-                            className="opacity-60"
-                            aria-hidden="true"
-                        />
-                    )}
-                    Se déconnecter
-                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

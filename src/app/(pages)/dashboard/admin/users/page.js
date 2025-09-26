@@ -1,40 +1,183 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
+import SearchInput from "@/components/ui/search-input";
+import UserTableRow from "./components/user-table-row";
 
-export default async function Page() {
+const USERS_PER_PAGE = 10;
+
+export default async function AdminUsersPage({ searchParams }) {
     const session = await auth.api.getSession({
         headers: await headers(),
     });
 
     const user = session.user;
-    if (user.role !== "admin") {
-        redirect("/dashboard");
-    }
-    
-    const users = await auth.api.listUsers({
+    // if (user.role !== "admin") {
+    //     redirect("/dashboard");
+    // }
+
+    // Parse search parameters
+    const resolvedSearchParams = await searchParams;
+    const searchValue = resolvedSearchParams?.search || "";
+    const page = parseInt(resolvedSearchParams?.page || "1", 10);
+    const sortBy = resolvedSearchParams?.sortBy || "createdAt";
+    const sortDirection = resolvedSearchParams?.sortDirection || "desc";
+
+    // Calculate pagination
+    const offset = (page - 1) * USERS_PER_PAGE;
+
+    // Fetch users with pagination and search
+    const usersResponse = await auth.api.listUsers({
         query: {
             query: {
-                searchValue: "some name",
+                searchValue,
                 searchField: "name",
                 searchOperator: "contains",
-                limit: 100,
-                offset: 100,
-                sortBy: "name",
-                sortDirection: "desc",
-                filterField: "email",
-                filterValue: "hello@example.com",
-                filterOperator: "eq",
+                limit: USERS_PER_PAGE,
+                offset,
+                sortBy,
+                sortDirection,
             },
         },
-        // This endpoint requires session cookies.
         headers: await headers(),
     });
 
+    const users = usersResponse?.users || [];
+    const totalUsers = usersResponse?.total || 0;
+    const totalPages = Math.ceil(totalUsers / USERS_PER_PAGE);
+
     return (
-        <div>
-            <h1>Admin Dashboard</h1>
-            <p>Welcome, {user.name}!</p>
+        <div className="flex flex-col gap-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Gestion des utilisateurs</CardTitle>
+                    <CardDescription>
+                        Gérez tous les utilisateurs de la plateforme. Total:{" "}
+                        {totalUsers} utilisateurs
+                    </CardDescription>
+                </CardHeader>
+
+                <CardContent className="flex flex-col w-full gap-4">
+                    {/* Search */}
+                    <SearchInput placeholder="Rechercher par nom ou email..." />
+
+                    {/* Users table */}
+                    <Table>
+                        {!users.length && (
+                            <TableCaption>
+                                {searchValue
+                                    ? "Aucun utilisateur trouvé pour cette recherche."
+                                    : "Aucun utilisateur trouvé."}
+                            </TableCaption>
+                        )}
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Utilisateur</TableHead>
+                                <TableHead>Rôle</TableHead>
+                                <TableHead>Statut</TableHead>
+                                <TableHead>Créé le</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {users.map(userItem => (
+                                <UserTableRow
+                                    key={userItem.id}
+                                    user={userItem}
+                                    currentUserId={user.id}
+                                />
+                            ))}
+                        </TableBody>
+                    </Table>
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                        <div className="flex justify-center">
+                            <Pagination>
+                                <PaginationContent>
+                                    {page > 1 && (
+                                        <PaginationItem>
+                                            <PaginationPrevious
+                                                href={`?${new URLSearchParams({
+                                                    ...resolvedSearchParams,
+                                                    page: (page - 1).toString(),
+                                                }).toString()}`}
+                                            />
+                                        </PaginationItem>
+                                    )}
+
+                                    {/* Page numbers */}
+                                    {Array.from(
+                                        { length: Math.min(5, totalPages) },
+                                        (_, i) => {
+                                            const pageNum = Math.max(
+                                                1,
+                                                Math.min(
+                                                    page - 2 + i,
+                                                    totalPages - 4 + i
+                                                )
+                                            );
+                                            if (pageNum > totalPages)
+                                                return null;
+
+                                            return (
+                                                <PaginationItem key={pageNum}>
+                                                    <PaginationLink
+                                                        href={`?${new URLSearchParams(
+                                                            {
+                                                                ...resolvedSearchParams,
+                                                                page: pageNum.toString(),
+                                                            }
+                                                        ).toString()}`}
+                                                        isActive={
+                                                            pageNum === page
+                                                        }
+                                                    >
+                                                        {pageNum}
+                                                    </PaginationLink>
+                                                </PaginationItem>
+                                            );
+                                        }
+                                    )}
+
+                                    {page < totalPages && (
+                                        <PaginationItem>
+                                            <PaginationNext
+                                                href={`?${new URLSearchParams({
+                                                    ...resolvedSearchParams,
+                                                    page: (page + 1).toString(),
+                                                }).toString()}`}
+                                            />
+                                        </PaginationItem>
+                                    )}
+                                </PaginationContent>
+                            </Pagination>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
         </div>
     );
 }

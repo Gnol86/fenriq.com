@@ -1,7 +1,8 @@
 export const defaultRoleLabels = {
     owner: "Propriétaire",
-    admin: "Admin",
+    admin: "Administrateur",
     member: "Membre",
+    user: "Utilisateur",
 };
 
 export const invitationStatusLabels = {
