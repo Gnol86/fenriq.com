@@ -50,16 +50,16 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
         loadSessions();
     }, [user.id]);
 
-    const handleRevokeSession = async sessionId => {
+    const handleRevokeSession = async sessionToken => {
         await execute(
-            () => revokeUserSessionAction({ userId: user.id, sessionId }),
+            () => revokeUserSessionAction({ sessionToken }),
             {
                 successMessage: "Session révoquée avec succès",
             }
         );
 
         // Recharger les sessions
-        setSessions(prev => prev.filter(session => session.id !== sessionId));
+        setSessions(prev => prev.filter(session => session.token !== sessionToken));
     };
 
     const handleRevokeAllSessions = async () => {
@@ -255,7 +255,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                                 size="sm"
                                                 onClick={() =>
                                                     handleRevokeSession(
-                                                        session.id
+                                                        session.token
                                                     )
                                                 }
                                                 className="ml-2"

@@ -25,11 +25,11 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import SearchInput from "@/components/ui/search-input";
-import UserTableRow from "./components/user-table-row";
+import OrganizationTableRow from "./components/organization-table-row";
 
-const USERS_PER_PAGE = 10;
+const ORGS_PER_PAGE = 10;
 
-export default async function AdminUsersPage({ searchParams }) {
+export default async function AdminOrganizationsPage({ searchParams }) {
     const session = await auth.api.getSession({
         headers: await headers(),
     });
@@ -47,65 +47,95 @@ export default async function AdminUsersPage({ searchParams }) {
     const sortDirection = resolvedSearchParams?.sortDirection || "desc";
 
     // Calculate pagination
-    const offset = (page - 1) * USERS_PER_PAGE;
+    const offset = (page - 1) * ORGS_PER_PAGE;
 
-    // Fetch users with pagination and search
-    const usersResponse = await auth.api.listUsers({
-        query: {
-            query: {
-                searchValue,
-                searchField: "name",
-                searchOperator: "contains",
-                limit: USERS_PER_PAGE,
-                offset,
-                sortBy,
-                sortDirection,
-            },
-        },
-        headers: await headers(),
-    });
+    // Fetch organizations avec leurs membres
+    const basicOrganizations =
+        (await auth.api.listOrganizations({
+            headers: await headers(),
+        })) || [];
 
-    const users = usersResponse?.users || [];
-    const totalUsers = usersResponse?.total || 0;
-    const totalPages = Math.ceil(totalUsers / USERS_PER_PAGE);
+    // Récupérer les détails complets de chaque organisation (avec membres)
+    const allOrganizations = await Promise.all(
+        basicOrganizations.map(async org => {
+            try {
+                const fullOrg = await auth.api.getFullOrganization({
+                    body: {
+                        organizationId: org.id,
+                        membersLimit: 50, // Limite de 50 membres par org
+                    },
+                    headers: await headers(),
+                });
+                return fullOrg || org;
+            } catch (error) {
+                console.error(
+                    `Erreur lors de la récupération de l'org ${org.id}:`,
+                    error
+                );
+                return org; // Retourner l'org de base en cas d'erreur
+            }
+        })
+    );
+
+    console.log(
+        "🔍 DEBUG - Structure d'une organisation complète:",
+        JSON.stringify(allOrganizations[0], null, 2)
+    );
+
+    // Filtrer et paginer côté client (pour l'instant)
+    let filteredOrgs = allOrganizations;
+
+    // Appliquer la recherche si une valeur est fournie
+    if (searchValue) {
+        filteredOrgs = allOrganizations.filter(
+            org =>
+                org.name?.toLowerCase().includes(searchValue.toLowerCase()) ||
+                org.slug?.toLowerCase().includes(searchValue.toLowerCase())
+        );
+    }
+
+    // Calculer la pagination
+    const totalOrgs = filteredOrgs.length;
+    const organizations = filteredOrgs.slice(offset, offset + ORGS_PER_PAGE);
+    const totalPages = Math.ceil(totalOrgs / ORGS_PER_PAGE);
 
     return (
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Gestion des utilisateurs</CardTitle>
+                    <CardTitle>Gestion des organisations</CardTitle>
                     <CardDescription>
-                        Gérez tous les utilisateurs de la plateforme. Total:{" "}
-                        {totalUsers} utilisateurs
+                        Gérez toutes les organisations de la plateforme. Total:{" "}
+                        {totalOrgs} organisations
                     </CardDescription>
                 </CardHeader>
 
                 <CardContent className="flex flex-col w-full gap-4">
                     {/* Search */}
-                    <SearchInput placeholder="Rechercher par nom ou email..." />
+                    <SearchInput placeholder="Rechercher par nom d'organisation..." />
 
-                    {/* Users table */}
+                    {/* Organizations table */}
                     <Table>
-                        {!users.length && (
+                        {!organizations.length && (
                             <TableCaption>
                                 {searchValue
-                                    ? "Aucun utilisateur trouvé pour cette recherche."
-                                    : "Aucun utilisateur trouvé."}
+                                    ? "Aucune organisation trouvée pour cette recherche."
+                                    : "Aucune organisation trouvée."}
                             </TableCaption>
                         )}
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Utilisateur</TableHead>
-                                <TableHead>Rôle</TableHead>
+                                <TableHead>Organisation</TableHead>
+                                <TableHead>Membres</TableHead>
                                 <TableHead>Statut</TableHead>
-                                <TableHead>Créé le</TableHead>
+                                <TableHead>Créée le</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {users.map(userItem => (
-                                <UserTableRow
-                                    key={userItem.id}
-                                    user={userItem}
+                            {organizations.map(org => (
+                                <OrganizationTableRow
+                                    key={org.id}
+                                    organization={org}
                                     currentUserId={user.id}
                                 />
                             ))}

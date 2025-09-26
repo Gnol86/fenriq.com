@@ -116,9 +116,9 @@ export async function listUserSessionsAction({ userId }) {
     });
 }
 
-export async function revokeUserSessionAction({ userId, sessionId }) {
+export async function revokeUserSessionAction({ sessionToken }) {
     return await auth.api.revokeUserSession({
-        body: { userId, sessionId },
+        body: { sessionToken },
         headers: await headers(),
     });
 }
@@ -133,6 +133,69 @@ export async function revokeUserSessionsAction({ userId }) {
 export async function impersonateUserAction({ userId }) {
     return await auth.api.impersonateUser({
         body: { userId },
+        headers: await headers(),
+    });
+}
+
+// Organisation actions
+
+export async function listOrganizationsAction({
+    searchValue = "",
+    searchField = "name",
+    searchOperator = "contains",
+    limit = 10,
+    offset = 0,
+    sortBy = "createdAt",
+    sortDirection = "desc",
+}) {
+    const query = {
+        searchValue,
+        searchField,
+        searchOperator,
+        limit,
+        offset,
+        sortBy,
+        sortDirection,
+    };
+
+    return await auth.api.listOrganizations({
+        query: { query },
+        headers: await headers(),
+    });
+}
+
+export async function createOrganizationAction({
+    name,
+    slug,
+    description,
+    logo,
+    metadata,
+}) {
+    return await auth.api.createOrganization({
+        body: {
+            name,
+            slug,
+            description,
+            logo,
+            metadata,
+        },
+        headers: await headers(),
+    });
+}
+
+export async function updateOrganizationAction({ organizationId, data }) {
+    return await auth.api.updateOrganization({
+        body: {
+            organizationId,
+            data,
+        },
+        headers: await headers(),
+    });
+}
+
+export async function deleteOrganizationAction({ organizationId }) {
+    return await auth.api.deleteOrganization({
+        body: { organizationId },
         headers: await headers(),
     });
 }
