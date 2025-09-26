@@ -211,7 +211,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                 Aucune session active
                             </div>
                         ) : (
-                            <ScrollArea className="max-h-40 ">
+                            <ScrollArea onCard className="max-h-40 ">
                                 <div className="flex flex-col gap-2">
                                     {sessions.map(session => (
                                         <div
