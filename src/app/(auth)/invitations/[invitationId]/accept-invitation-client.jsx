@@ -52,7 +52,7 @@ export default function AcceptInvitationClient({ invitationId }) {
                     ? "Invitation acceptée. Bienvenue !"
                     : "Invitation acceptée. Activez l'organisation depuis le menu si nécessaire."
             );
-            router.push("/dashboard/orgs/members");
+            router.push("/app");
             router.refresh();
         } catch (error) {
             console.error("Failed to accept invitation", error);
@@ -78,6 +78,7 @@ export default function AcceptInvitationClient({ invitationId }) {
 
             setStatus("rejected");
             toast.success("Invitation refusée.");
+            router.push("/app");
         } catch (error) {
             console.error("Failed to reject invitation", error);
             toast.error(
@@ -129,9 +130,6 @@ export default function AcceptInvitationClient({ invitationId }) {
                     <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                     <span>Invitation acceptée. Redirection en cours...</span>
                 </div>
-                <Button onClick={() => router.push("/dashboard/orgs/members")}>
-                    Voir les membres
-                </Button>
             </div>
         );
     }
@@ -141,14 +139,8 @@ export default function AcceptInvitationClient({ invitationId }) {
             <div className="flex flex-col items-start gap-3 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2 text-destructive">
                     <ShieldOff className="h-4 w-4" aria-hidden="true" />
-                    <span>Invitation refusée.</span>
+                    <span>Invitation refusée. Redirection en cours...</span>
                 </div>
-                <Button
-                    variant="outline"
-                    onClick={() => router.push("/dashboard")}
-                >
-                    Retour au tableau de bord
-                </Button>
             </div>
         );
     }

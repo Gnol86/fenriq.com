@@ -63,7 +63,7 @@ export default function InviteMemberDialog({
                 }),
             {
                 successMessage: "Invitation envoyée avec succès",
-                redirectOnSuccess: "/dashboard/orgs/invitations",
+                redirectOnSuccess: "/dashboard/org/invitations",
             }
         );
 

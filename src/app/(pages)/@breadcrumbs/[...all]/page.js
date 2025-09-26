@@ -3,13 +3,16 @@ import Breadcrumb from "@/components/breadcrumb";
 const LABELS = {
     app: "Documents",
     dashboard: "Dashboard",
-    orgs: "Organisation",
+    org: "Organisation",
+    orgs: "Organisations",
     new: "Créer une organisation",
     manage: "Gérer l’organisation",
     members: "Membres",
     "danger-zone": "Danger",
     user: "Utilisateur",
     invitations: "Invitations",
+    users: "Utilisateurs",
+    admin: "Administration",
 };
 
 export default async function BreadcrumbSlot({ params }) {

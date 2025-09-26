@@ -93,7 +93,7 @@ export default function OrgButton({
                 <DropdownMenuItem
                     onSelect={event => {
                         event.preventDefault();
-                        router.push("/dashboard/orgs/new");
+                        router.push("/dashboard/org/new");
                     }}
                 >
                     <Plus className="" aria-hidden="true" />

@@ -16,6 +16,7 @@ import { MailPlusIcon } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { hasPermissionAction } from "@/actions/organization.action";
+import { Building } from "lucide-react";
 
 export default async function SideBarContent() {
     const session = await auth.api.getSession({
@@ -83,7 +84,7 @@ export default async function SideBarContent() {
                         {!activeUserOrganization ? (
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
-                                    <Link href="/dashboard/orgs/new">
+                                    <Link href="/dashboard/org/new">
                                         <Plus className="opacity-60" />
                                         Créer une organisation
                                     </Link>
@@ -94,7 +95,7 @@ export default async function SideBarContent() {
                                 {canOrgsUpdate && (
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
-                                            <Link href="/dashboard/orgs/manage">
+                                            <Link href="/dashboard/org/manage">
                                                 <Settings className="opacity-60" />
                                                 Gérer l&apos;organisation
                                             </Link>
@@ -104,7 +105,7 @@ export default async function SideBarContent() {
                                 {canMembresRead && (
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
-                                            <Link href="/dashboard/orgs/members">
+                                            <Link href="/dashboard/org/members">
                                                 <Users className="opacity-60" />
                                                 Membres
                                             </Link>
@@ -114,7 +115,7 @@ export default async function SideBarContent() {
                                 {canInvitationsRead && (
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
-                                            <Link href="/dashboard/orgs/invitations">
+                                            <Link href="/dashboard/org/invitations">
                                                 <MailPlusIcon className="opacity-60" />
                                                 Invitations
                                             </Link>
@@ -125,7 +126,7 @@ export default async function SideBarContent() {
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
                                             <Link
-                                                href="/dashboard/orgs/danger-zone"
+                                                href="/dashboard/org/danger-zone"
                                                 className="text-destructive"
                                             >
                                                 <AlertTriangle className="opacity-60" />
@@ -160,6 +161,31 @@ export default async function SideBarContent() {
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>
+            {user.role === "admin" && (
+                <SidebarGroup>
+                    <SidebarGroupLabel>Administration</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/dashboard/admin/users">
+                                        <Users className="opacity-60" />
+                                        Utilisateurs
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/dashboard/admin/orgs">
+                                        <Building className="opacity-60" />
+                                        Organisations
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            )}
         </>
     );
 }
