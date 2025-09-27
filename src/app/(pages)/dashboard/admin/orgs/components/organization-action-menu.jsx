@@ -4,15 +4,11 @@ import { useState } from "react";
 import { Trash2, Edit3, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useServerAction } from "@/hooks/use-server-action";
-import {
-    updateOrganizationAction,
-    deleteOrganizationAction,
-} from "@/actions/admin.action";
+import { deleteOrganizationAction } from "@/actions/admin.action";
+import Link from "next/link";
 
 export default function OrganizationActionMenu({ organization }) {
     const { execute } = useServerAction();
-
-    const handleUpdateOrganization = async () => {};
 
     const handleDeleteOrganization = async () => {
         if (
@@ -33,19 +29,12 @@ export default function OrganizationActionMenu({ organization }) {
 
     return (
         <div className="flex gap-2 justify-end items-center">
-            <Button
-                variant="outline"
-                onClick={handleUpdateOrganization}
-                size="sm"
-            >
-                <Edit3 className="h-4 w-4 mr-2" />
-                Modifier
-            </Button>
-
-            <Button variant="outline" size="sm">
-                <Settings className="h-4 w-4 mr-2" />
-                Paramètres
-            </Button>
+            <Link href={`/dashboard/admin/orgs/${organization.slug}`}>
+                <Button variant="outline" size="sm">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Paramètres
+                </Button>
+            </Link>
 
             <Button
                 variant="destructive"

@@ -1,7 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Provider } from "@/components/provider";
-import { Toaster } from "@/components/ui/sonner";
 import { SiteConfig } from "@/site-config";
 import WindowSize from "@/components/dev/window-size";
 
@@ -30,7 +29,6 @@ export default function RootLayout({ children }) {
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
                 <Provider>{children}</Provider>
-                <Toaster position="top-center" richColors closeButton />
                 {process.env.NODE_ENV === "development" && <WindowSize />}
             </body>
         </html>

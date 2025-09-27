@@ -1,6 +1,7 @@
 "use client";
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { Toaster } from "@/components/ui/sonner";
 
 export function Provider({ children }) {
     return (
@@ -11,6 +12,7 @@ export function Provider({ children }) {
             disableTransitionOnChange
         >
             {children}
+            <Toaster position="top-center" richColors closeButton />
         </NextThemesProvider>
     );
 }

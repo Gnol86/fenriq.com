@@ -138,32 +138,6 @@ export async function impersonateUserAction({ userId }) {
 }
 
 // Organisation actions
-
-export async function listOrganizationsAction({
-    searchValue = "",
-    searchField = "name",
-    searchOperator = "contains",
-    limit = 10,
-    offset = 0,
-    sortBy = "createdAt",
-    sortDirection = "desc",
-}) {
-    const query = {
-        searchValue,
-        searchField,
-        searchOperator,
-        limit,
-        offset,
-        sortBy,
-        sortDirection,
-    };
-
-    return await auth.api.listOrganizations({
-        query: { query },
-        headers: await headers(),
-    });
-}
-
 export async function createOrganizationAction({
     name,
     slug,
@@ -196,6 +170,86 @@ export async function updateOrganizationAction({ organizationId, data }) {
 export async function deleteOrganizationAction({ organizationId }) {
     return await auth.api.deleteOrganization({
         body: { organizationId },
+        headers: await headers(),
+    });
+}
+
+export async function getOrganizationBySlugAsAdminAction({ slug }) {
+    return await auth.api.getFullOrganization({
+        query: { organizationSlug: slug },
+        headers: await headers(),
+    });
+}
+
+export async function listOrganizationMembersAsAdminAction({ organizationId }) {
+    return await auth.api.getFullOrganization({
+        query: { organizationId: organizationId },
+        headers: await headers(),
+    });
+}
+
+export async function listOrganizationInvitationsAsAdminAction({
+    organizationId,
+}) {
+    return await auth.api.listInvitations({
+        query: { organizationId: organizationId },
+        headers: await headers(),
+    });
+}
+
+export async function updateMemberRoleAsAdminAction({
+    memberId,
+    role,
+    organizationId,
+}) {
+    return await auth.api.updateMemberRole({
+        body: {
+            memberId,
+            role,
+            organizationId,
+        },
+        headers: await headers(),
+    });
+}
+
+export async function removeMemberAsAdminAction({
+    memberIdOrEmail,
+    organizationId,
+}) {
+    return await auth.api.removeMember({
+        body: {
+            memberIdOrEmail,
+            organizationId,
+        },
+        headers: await headers(),
+    });
+}
+
+export async function cancelInvitationAsAdminAction({
+    invitationId,
+    organizationId,
+}) {
+    return await auth.api.cancelInvitation({
+        body: {
+            invitationId,
+            organizationId,
+        },
+        headers: await headers(),
+    });
+}
+
+export async function resendInvitationAsAdminAction({
+    email,
+    role,
+    organizationId,
+}) {
+    return await auth.api.createInvitation({
+        body: {
+            email,
+            role,
+            organizationId,
+            resend: true,
+        },
         headers: await headers(),
     });
 }
