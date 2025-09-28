@@ -12,7 +12,7 @@ export function Provider({ children }) {
             disableTransitionOnChange
         >
             {children}
-            <Toaster position="top-center" richColors closeButton />
+            <Toaster position="bottom-right" richColors closeButton />
         </NextThemesProvider>
     );
 }

@@ -1,14 +1,25 @@
 "use client";
-import { Moon, SunDim } from "lucide-react";
+import { Monitor, Moon, SunDim } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+
+const THEME_ORDER = ["light", "dark", "system"];
+const THEME_NAME = {
+    light: "clair",
+    dark: "sombre",
+    system: "système",
+};
 
 export const AnimatedThemeToggler = ({ className, size = 20 }) => {
-    const { theme, setTheme } = useTheme();
+    const { theme = "system", setTheme } = useTheme();
     const buttonRef = useRef(null);
     const [mounted, setMounted] = useState(false);
+
+    const currentThemeIndex = THEME_ORDER.indexOf(theme);
 
     useEffect(() => {
         setMounted(true);
@@ -17,13 +28,20 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
     const changeTheme = async () => {
         if (!buttonRef.current) return;
 
-        const newTheme = theme === "dark" ? "light" : "dark";
+        const normalizedIndex =
+            currentThemeIndex === -1
+                ? THEME_ORDER.indexOf("system")
+                : currentThemeIndex;
+        const nextTheme =
+            THEME_ORDER[(normalizedIndex + 1) % THEME_ORDER.length];
 
-        await document.startViewTransition(() => {
+        const transition = document.startViewTransition(() => {
             flushSync(() => {
-                setTheme(newTheme);
+                setTheme(nextTheme);
             });
-        }).ready;
+        });
+
+        await transition.ready;
 
         const { top, left, width, height } =
             buttonRef.current.getBoundingClientRect();
@@ -34,7 +52,7 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
         const bottom = window.innerHeight - top;
         const maxRad = Math.hypot(Math.max(left, right), Math.max(top, bottom));
 
-        document.documentElement.animate(
+        const animation = document.documentElement.animate(
             {
                 clipPath: [
                     `circle(0px at ${x}px ${y}px)`,
@@ -47,15 +65,30 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
                 pseudoElement: "::view-transition-new(root)",
             }
         );
+
+        try {
+            await animation.finished;
+            await transition.finished;
+        } catch (error) {
+            // Animation may be cancelled; we still show feedback at the end of handler
+        }
+
+        toast("Thème " + THEME_NAME[nextTheme] + " appliqué");
     };
 
     if (!mounted) {
-        return null;
+        return <Loader2 size={size} className="animate-spin" />;
     }
+
+    const renderIcon = () => {
+        if (theme === "dark") return <Moon size={size} />;
+        if (theme === "system") return <Monitor size={size} />;
+        return <SunDim size={size} />;
+    };
 
     return (
         <button ref={buttonRef} onClick={changeTheme} className={cn(className)}>
-            {theme === "dark" ? <Moon size={size} /> : <SunDim size={size} />}
+            {renderIcon()}
         </button>
     );
 };
