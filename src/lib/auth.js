@@ -133,6 +133,15 @@ export const auth = betterAuth({
             defaultRole: "user",
         }),
         organization({
+            allowUserToCreateOrganization:
+                SiteConfig.options.organization.allowUserToCreateOrganization,
+            organizationLimit:
+                SiteConfig.options.organization.organizationLimit,
+            membershipLimit: SiteConfig.options.organization.membershipLimit,
+            invitationLimit: SiteConfig.options.organization.invitationLimit,
+            invitationExpiresIn:
+                SiteConfig.options.organization.invitationExpiresIn,
+
             creatorRole: "owner",
             ac: ac,
             roles: {
@@ -140,7 +149,7 @@ export const auth = betterAuth({
                 admin: adminPermissions,
                 member: memberPermissions,
             },
-            invitationExpiresIn: 60 * 60 * 24 * 30,
+
             sendInvitationEmail: async ({
                 email,
                 organization,

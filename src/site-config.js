@@ -23,4 +23,13 @@ export const SiteConfig = {
     brand: {
         primary: "#6366F1",
     },
+    options: {
+        organization: {
+            allowUserToCreateOrganization: true,
+            organizationLimit: 5,
+            membershipLimit: 9999,
+            invitationLimit: 9999,
+            invitationExpiresIn: 60 * 60 * 24 * 30,
+        },
+    },
 };
