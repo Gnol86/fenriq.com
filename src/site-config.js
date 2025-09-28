@@ -4,7 +4,7 @@ export const SiteConfig = {
     prodUrl: "https://polgpt.be",
     appId: "polgpt",
     domain: "polgpt.be",
-    appIcon: "/images/logo_noborder.png",
+    appIcon: "/images/logo.png",
     company: {
         name: "PolGPT",
     },
