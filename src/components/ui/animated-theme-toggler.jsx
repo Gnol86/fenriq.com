@@ -5,7 +5,7 @@ import { flushSync } from "react-dom";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
-export const AnimatedThemeToggler = ({ className }) => {
+export const AnimatedThemeToggler = ({ className, size = 20 }) => {
     const { theme, setTheme } = useTheme();
     const buttonRef = useRef(null);
     const [mounted, setMounted] = useState(false);
@@ -55,7 +55,7 @@ export const AnimatedThemeToggler = ({ className }) => {
 
     return (
         <button ref={buttonRef} onClick={changeTheme} className={cn(className)}>
-            {theme === "dark" ? <Moon size={20} /> : <SunDim size={20} />}
+            {theme === "dark" ? <Moon size={size} /> : <SunDim size={size} />}
         </button>
     );
 };

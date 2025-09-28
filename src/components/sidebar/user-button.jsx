@@ -17,6 +17,7 @@ import { AppWindow } from "lucide-react";
 import ImageProfile from "../image-profile";
 import { HatGlasses } from "lucide-react";
 import { toast } from "sonner";
+import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
 
 export default function UserButton({ user, isImpersonating = null }) {
     const router = useRouter();
@@ -80,9 +81,11 @@ export default function UserButton({ user, isImpersonating = null }) {
                 className="w-56"
                 onCloseAutoFocus={event => event.preventDefault()}
             >
-                <DropdownMenuLabel className="flex items-center gap-2 truncate">
+                <DropdownMenuLabel className="flex items-center gap-2">
                     <ImageProfile entity={user} size="xs" />
-                    {user.name || "Utilisateur"}
+                    <div className="truncate">{user.name || "Utilisateur"}</div>
+                    <div className="flex-1" />
+                    <AnimatedThemeToggler size={16} />
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {!isOnApp && (

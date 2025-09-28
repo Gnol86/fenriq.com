@@ -33,7 +33,7 @@ export async function uploadFile(file, folder = "", oldUrl) {
         });
         await deleteFile(oldUrl);
         revalidatePath("/");
-        return blob;
+        return blob.url;
     } catch (error) {
         console.error("Erreur lors de l'upload:", error);
         throw new Error("Erreur lors de l'upload du fichier");

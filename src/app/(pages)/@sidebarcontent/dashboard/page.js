@@ -173,6 +173,19 @@ export default async function SideBarContent() {
                     <SidebarMenu>
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild>
+                                <Link href="/dashboard/user/settings">
+                                    <Settings className="opacity-60" />
+                                    Parramètres
+                                </Link>
+                            </SidebarMenuButton>
+                            {invitations.length > 0 && (
+                                <SidebarMenuBadge className="bg-destructive text-destructive-foreground font-bold">
+                                    {invitations.length}
+                                </SidebarMenuBadge>
+                            )}
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild>
                                 <Link href="/dashboard/user/invitations">
                                     <MailPlus className="opacity-60" />
                                     Invitations

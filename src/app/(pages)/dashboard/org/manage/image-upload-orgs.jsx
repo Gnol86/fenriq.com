@@ -19,15 +19,14 @@ export default function ImageUpload({ organization }) {
         await execute(
             async () => {
                 console.log("uploading image");
-                const blob = await uploadFile(
+                const url = await uploadFile(
                     file,
                     "organization",
                     organization?.logo
                 );
-                console.log(blob);
                 await updateOrganizationAction({
                     organizationId: organization.id,
-                    logo: blob.url,
+                    logo: url,
                 });
             },
             {

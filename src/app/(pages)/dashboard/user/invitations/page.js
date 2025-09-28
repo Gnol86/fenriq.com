@@ -14,15 +14,25 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { requireUser } from "@/lib/auth-access";
 import { PrismaClient } from "@/generated/prisma";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { Eye } from "lucide-react";
+import { notFound } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export default async function Page() {
-    const user = await requireUser();
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    const user = session?.user;
+
+    if (!user) {
+        notFound();
+    }
 
     const prisma = new PrismaClient();
     const invitations = await prisma.invitation.findMany({

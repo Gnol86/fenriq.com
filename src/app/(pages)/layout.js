@@ -18,7 +18,6 @@ export default async function Layout({
                 <div className="flex flex-col gap-6 p-6 max-w-4xl mx-auto">
                     {children}
                 </div>
-                <AnimatedThemeToggler className="fixed bottom-4 right-4" />
             </main>
         </SidebarProvider>
     );

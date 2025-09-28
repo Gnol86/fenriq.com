@@ -14,72 +14,65 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
-import ImageUpload from "./image-upload-orgs";
+import ImageUploadUser from "./image-upload-user";
 import { useServerAction } from "@/hooks/use-server-action";
-import { updateOrganizationAction } from "@/actions/organization.action";
+import { updateUserAction } from "@/actions/user.action";
 
 const formSchema = z.object({
     name: z
         .string()
         .trim()
-        .regex(
-            /^[\p{L}\p{N} -]+$/u,
-            "Le nom ne peut contenir que des lettres, chiffres, espaces ou tirets"
-        )
         .min(2, "Le nom doit contenir au moins 2 caractères")
-        .max(80, "Le nom ne peut pas dépasser 80 caractères")
-        .refine(value => {
-            const alphanumericMatches = value.match(/\p{L}|\p{N}/gu) ?? [];
-            return alphanumericMatches.length >= 2;
-        }, "Le nom doit contenir au minimum deux caractères alphanumériques"),
+        .max(50, "Le nom ne peut pas dépasser 50 caractères"),
 });
 
-export default function ManageOrganizationForm({ organization }) {
+export default function UserSettingsForm({ user }) {
     const { execute, isPending } = useServerAction();
-    const organizationName = organization?.name ?? "";
+
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: organizationName,
+            name: user?.name ?? "",
         },
     });
 
     const onSubmit = async values => {
         await execute(
             () =>
-                updateOrganizationAction({
+                updateUserAction({
                     name: values.name,
-                    organizationId: organization.id,
                 }),
             {
-                successMessage: "Organisation mise à jour avec succès",
+                successMessage: "Paramètres mis à jour avec succès",
+                errorMessage: "Erreur lors de la mise à jour des paramètres",
             }
         );
     };
 
-    return organization ? (
+    return user ? (
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="flex flex-col gap-6"
             >
-                <ImageUpload organization={organization} />
+                <ImageUploadUser user={user} />
 
                 <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Nom de l&apos;organisation</FormLabel>
+                            <FormLabel>Nom</FormLabel>
                             <FormControl>
                                 <Input
                                     {...field}
                                     autoFocus
                                     disabled={isPending}
+                                    placeholder="Votre nom"
                                 />
                             </FormControl>
                             <FormDescription>
-                                Ce nom est visible par tous les membres.
+                                Ce nom sera affiché dans votre profil.
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -95,11 +88,8 @@ export default function ManageOrganizationForm({ organization }) {
         </Form>
     ) : (
         <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-            <p>Aucune organisation active n&apos;a été trouvée.</p>
-            <p>
-                Sélectionnez une organisation dans le menu latéral pour pouvoir
-                modifier ses informations.
-            </p>
+            <p>Impossible de charger les informations utilisateur.</p>
+            <p>Veuillez vous reconnecter pour accéder à vos paramètres.</p>
         </div>
     );
 }

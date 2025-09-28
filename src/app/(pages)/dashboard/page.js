@@ -43,6 +43,7 @@ export default async function DashboardPage() {
                       select: {
                           name: true,
                           email: true,
+                          image: true,
                       },
                   },
               },
