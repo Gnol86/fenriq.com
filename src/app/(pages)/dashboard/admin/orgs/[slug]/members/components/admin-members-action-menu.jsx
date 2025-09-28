@@ -54,28 +54,25 @@ export default function AdminMembersActionMenu({
         [member?.id, memberRole, organizationId, router, execute]
     );
 
-    const handleImpersonateUser = useCallback(
-        async () => {
-            if (!member?.user?.id) {
-                return;
-            }
+    const handleImpersonateUser = useCallback(async () => {
+        if (!member?.user?.id) {
+            return;
+        }
 
-            await execute(
-                () =>
-                    impersonateUserAction({
-                        userId: member.user.id,
-                    }),
-                {
-                    successMessage: `Usurpation de ${member.user.name || member.user.email} démarrée`,
-                    onSuccess: () => {
-                        router.push("/dashboard");
-                        router.refresh();
-                    },
-                }
-            );
-        },
-        [member?.user?.id, router, execute]
-    );
+        await execute(
+            () =>
+                impersonateUserAction({
+                    userId: member.user.id,
+                }),
+            {
+                successMessage: `Usurpation de ${member.user.name || member.user.email} démarrée`,
+                onSuccess: () => {
+                    router.push("/dashboard");
+                    router.refresh();
+                },
+            }
+        );
+    }, [member?.user?.id, router, execute]);
 
     const roleOptions = useMemo(() => Object.entries(defaultRoleLabels), []);
 
@@ -101,7 +98,9 @@ export default function AdminMembersActionMenu({
                     <DropdownMenuItem
                         onSelect={event => {
                             event.preventDefault();
-                            router.push(`/dashboard/admin/users/${member.user.id}`);
+                            router.push(
+                                `/dashboard/admin/users/${member.user.id}`
+                            );
                         }}
                     >
                         <Eye className="mr-2 h-4 w-4" />
@@ -136,10 +135,7 @@ export default function AdminMembersActionMenu({
                                         event.preventDefault();
                                         handleRoleChange(role);
                                     }}
-                                    disabled={
-                                        isPending ||
-                                        memberRole === role
-                                    }
+                                    disabled={isPending || memberRole === role}
                                 >
                                     <span className="text-sm">{label}</span>
                                 </DropdownMenuItem>

@@ -65,7 +65,9 @@ export default function AdminInvitationFilter({
                         <TableHead>Statut</TableHead>
                         <TableHead>Invité par</TableHead>
                         <TableHead>Expire le</TableHead>
-                        <TableHead className="text-right">Actions Admin</TableHead>
+                        <TableHead className="text-right">
+                            Actions Admin
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>

@@ -13,7 +13,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Loader2, MoreHorizontal, Copy, RotateCcw, X, Eye } from "lucide-react";
 import { useServerAction } from "@/hooks/use-server-action";
-import { cancelInvitationAsAdminAction, resendInvitationAsAdminAction } from "@/actions/admin.action";
+import {
+    cancelInvitationAsAdminAction,
+    resendInvitationAsAdminAction,
+} from "@/actions/admin.action";
 
 function copyLink(invitationId) {
     try {

@@ -13,7 +13,9 @@ import { getOrganizationBySlugAsAdminAction } from "@/actions/admin.action";
 export default async function AdminDangerZonePage({ params }) {
     const { slug } = params;
 
-    const organizationResult = await getOrganizationBySlugAsAdminAction({ slug });
+    const organizationResult = await getOrganizationBySlugAsAdminAction({
+        slug,
+    });
 
     if (!organizationResult || organizationResult.error) {
         notFound();
@@ -30,9 +32,10 @@ export default async function AdminDangerZonePage({ params }) {
                         Zone dangereuse (Admin)
                     </CardTitle>
                     <CardDescription>
-                        En tant qu&apos;administrateur, vous pouvez supprimer l&apos;organisation
-                        <strong> {organization.name}</strong>. Cette action est irréversible et aura
-                        les conséquences suivantes :
+                        En tant qu&apos;administrateur, vous pouvez supprimer
+                        l&apos;organisation
+                        <strong> {organization.name}</strong>. Cette action est
+                        irréversible et aura les conséquences suivantes :
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -41,8 +44,14 @@ export default async function AdminDangerZonePage({ params }) {
                             Conséquences de la suppression :
                         </h4>
                         <ul className="text-sm text-muted-foreground space-y-2">
-                            <li>• Tous les membres perdront l&apos;accès immédiatement</li>
-                            <li>• Toutes les données de l&apos;organisation seront supprimées</li>
+                            <li>
+                                • Tous les membres perdront l&apos;accès
+                                immédiatement
+                            </li>
+                            <li>
+                                • Toutes les données de l&apos;organisation
+                                seront supprimées
+                            </li>
                             <li>• Les invitations en cours seront annulées</li>
                             <li>• Les sessions actives seront terminées</li>
                             <li>• Cette action ne peut pas être annulée</li>

@@ -46,7 +46,9 @@ export default function AdminInvitationTableRow({
             <TableCell>
                 <div className="flex flex-col">
                     <span className="text-sm text-muted-foreground">
-                        {invitation.invitedBy?.name || invitation.invitedBy?.email || "Système"}
+                        {invitation.invitedBy?.name ||
+                            invitation.invitedBy?.email ||
+                            "Système"}
                     </span>
                     {invitation.invitedBy?.id && (
                         <span className="text-xs text-blue-600">

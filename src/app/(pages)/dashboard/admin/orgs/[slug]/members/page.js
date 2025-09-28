@@ -23,7 +23,9 @@ import { getOrganizationBySlugAsAdminAction } from "@/actions/admin.action";
 export default async function AdminOrganizationMembersPage({ params }) {
     const { slug } = params;
 
-    const organizationResult = await getOrganizationBySlugAsAdminAction({ slug });
+    const organizationResult = await getOrganizationBySlugAsAdminAction({
+        slug,
+    });
 
     if (!organizationResult || organizationResult.error) {
         notFound();
@@ -38,9 +40,10 @@ export default async function AdminOrganizationMembersPage({ params }) {
                 <CardHeader>
                     <CardTitle>Membres de l&apos;organisation</CardTitle>
                     <CardDescription>
-                        Gérez les membres de l&apos;organisation {organization.name}, leurs
-                        rôles et leurs permissions. En tant qu&apos;administrateur, vous avez
-                        tous les droits sur cette organisation.
+                        Gérez les membres de l&apos;organisation{" "}
+                        {organization.name}, leurs rôles et leurs permissions.
+                        En tant qu&apos;administrateur, vous avez tous les
+                        droits sur cette organisation.
                         <AdminMemberStats members={members} />
                     </CardDescription>
                     <CardAction>

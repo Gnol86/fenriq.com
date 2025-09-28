@@ -83,12 +83,13 @@ export default function AdminDangerZoneForm({ organization }) {
                         Action Administrateur
                     </div>
                     <p className="font-medium">
-                        Cette action supprimera définitivement l'organisation "{organization.name}"
-                        et toutes ses données associées.
+                        Cette action supprimera définitivement l'organisation "
+                        {organization.name}" et toutes ses données associées.
                     </p>
                     <p className="text-destructive/70 mt-1">
-                        En tant qu'administrateur, vous avez les droits pour effectuer cette action.
-                        Assurez-vous que la suppression est nécessaire.
+                        En tant qu'administrateur, vous avez les droits pour
+                        effectuer cette action. Assurez-vous que la suppression
+                        est nécessaire.
                     </p>
                 </div>
 
@@ -99,8 +100,15 @@ export default function AdminDangerZoneForm({ organization }) {
                             <div>• Nom : {organization.name}</div>
                             <div>• Slug : {organization.slug}</div>
                             <div>• ID : {organization.id}</div>
-                            <div>• Membres : {organization.members?.length || 0}</div>
-                            <div>• Créée le : {new Date(organization.createdAt).toLocaleDateString('fr-FR')}</div>
+                            <div>
+                                • Membres : {organization.members?.length || 0}
+                            </div>
+                            <div>
+                                • Créée le :{" "}
+                                {new Date(
+                                    organization.createdAt
+                                ).toLocaleDateString("fr-FR")}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -114,7 +122,8 @@ export default function AdminDangerZoneForm({ organization }) {
                                 Confirmez le nom de l'organisation
                             </FormLabel>
                             <FormDescription>
-                                Tapez exactement "{organization.name}" pour confirmer la suppression.
+                                Tapez exactement "{organization.name}" pour
+                                confirmer la suppression.
                             </FormDescription>
                             <FormControl>
                                 <Input
@@ -137,7 +146,8 @@ export default function AdminDangerZoneForm({ organization }) {
                                 loading={isPending}
                                 disabled={!form.formState.isValid}
                             >
-                                <TriangleAlert /> Supprimer l'organisation (Admin)
+                                <TriangleAlert /> Supprimer l'organisation
+                                (Admin)
                                 <TriangleAlert />
                             </FormButton>
                         </AlertDialogTrigger>
@@ -148,14 +158,27 @@ export default function AdminDangerZoneForm({ organization }) {
                                     Confirmation Administrateur
                                 </AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    <strong>Vous êtes sur le point de supprimer définitivement l'organisation
-                                    "{organization.name}"</strong>
-                                    <br /><br />
+                                    <strong>
+                                        Vous êtes sur le point de supprimer
+                                        définitivement l'organisation "
+                                        {organization.name}"
+                                    </strong>
+                                    <br />
+                                    <br />
                                     Cette action :
                                     <ul className="mt-2 space-y-1 text-sm">
-                                        <li>• Supprimera toutes les données de l'organisation</li>
-                                        <li>• Révoquera l'accès de tous les membres</li>
-                                        <li>• Annulera toutes les invitations en cours</li>
+                                        <li>
+                                            • Supprimera toutes les données de
+                                            l'organisation
+                                        </li>
+                                        <li>
+                                            • Révoquera l'accès de tous les
+                                            membres
+                                        </li>
+                                        <li>
+                                            • Annulera toutes les invitations en
+                                            cours
+                                        </li>
                                         <li>• Ne pourra pas être annulée</li>
                                     </ul>
                                 </AlertDialogDescription>

@@ -16,6 +16,15 @@ import { translations } from "./auth-translations.js";
 import { PrismaClient } from "../generated/prisma";
 const prisma = new PrismaClient();
 
+async function getActiveOrganization(userId) {
+    const userMembership = await prisma.member.findFirst({
+        where: { userId },
+        include: { organization: true },
+        orderBy: { createdAt: "desc" },
+    });
+    return userMembership?.organization ?? null;
+}
+
 export const auth = betterAuth({
     database: prismaAdapter(prisma, { provider: "postgres" }),
     baseURL: getServerUrl(),
@@ -25,7 +34,7 @@ export const auth = betterAuth({
         updateAge: 60 * 60 * 24, // Refresh après 24h
         cookieCache: {
             enabled: true,
-            maxAge: 5 * 60, // 5 minutes (best practice sécurité)
+            maxAge: 60, // 5 minutes (best practice sécurité)
         },
     },
     // Sécurité renforcée
@@ -33,6 +42,27 @@ export const auth = betterAuth({
         enabled: true,
         window: 10, // 1 minute
         max: 100, // 100 requêtes par minute
+    },
+    databaseHooks: {
+        session: {
+            create: {
+                before: async session => {
+                    const organization = await getActiveOrganization(
+                        session.userId
+                    );
+                    console.log(
+                        "Auto Active organisation :",
+                        organization?.name
+                    );
+                    return {
+                        data: {
+                            ...session,
+                            activeOrganizationId: organization?.id,
+                        },
+                    };
+                },
+            },
+        },
     },
     hooks: {
         before: createAuthMiddleware(async ctx => {

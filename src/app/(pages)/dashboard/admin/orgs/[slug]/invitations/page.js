@@ -10,13 +10,18 @@ import AdminInviteMemberDialog from "../members/components/admin-invite-member-d
 import AdminInvitationStats from "./components/admin-invitation-stats";
 import AdminInvitationFilter from "./components/admin-invitation-filter";
 import { notFound } from "next/navigation";
-import { getOrganizationBySlugAsAdminAction, listOrganizationInvitationsAsAdminAction } from "@/actions/admin.action";
+import {
+    getOrganizationBySlugAsAdminAction,
+    listOrganizationInvitationsAsAdminAction,
+} from "@/actions/admin.action";
 import { sortInvitationsByStatus } from "@/lib/invitation-utils";
 
 export default async function AdminOrganizationInvitationsPage({ params }) {
     const { slug } = params;
 
-    const organizationResult = await getOrganizationBySlugAsAdminAction({ slug });
+    const organizationResult = await getOrganizationBySlugAsAdminAction({
+        slug,
+    });
 
     if (!organizationResult || organizationResult.error) {
         notFound();
@@ -37,9 +42,10 @@ export default async function AdminOrganizationInvitationsPage({ params }) {
                 <CardHeader>
                     <CardTitle>Invitations</CardTitle>
                     <CardDescription>
-                        Gérez les invitations de l&apos;organisation {organization.name}.
-                        En tant qu&apos;administrateur, vous pouvez inviter de nouveaux membres
-                        et gérer toutes les invitations en cours.
+                        Gérez les invitations de l&apos;organisation{" "}
+                        {organization.name}. En tant qu&apos;administrateur,
+                        vous pouvez inviter de nouveaux membres et gérer toutes
+                        les invitations en cours.
                         <AdminInvitationStats invitations={invitations} />
                     </CardDescription>
                     <CardAction>

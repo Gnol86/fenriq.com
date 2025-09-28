@@ -51,15 +51,14 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
     }, [user.id]);
 
     const handleRevokeSession = async sessionToken => {
-        await execute(
-            () => revokeUserSessionAction({ sessionToken }),
-            {
-                successMessage: "Session révoquée avec succès",
-            }
-        );
+        await execute(() => revokeUserSessionAction({ sessionToken }), {
+            successMessage: "Session révoquée avec succès",
+        });
 
         // Recharger les sessions
-        setSessions(prev => prev.filter(session => session.token !== sessionToken));
+        setSessions(prev =>
+            prev.filter(session => session.token !== sessionToken)
+        );
     };
 
     const handleRevokeAllSessions = async () => {

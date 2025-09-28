@@ -44,7 +44,14 @@ export default function AdminRemoveMemberDialog({
                 },
             }
         );
-    }, [member?.id, organizationId, router, execute, onOpenChange, member.user]);
+    }, [
+        member?.id,
+        organizationId,
+        router,
+        execute,
+        onOpenChange,
+        member.user,
+    ]);
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -56,9 +63,11 @@ export default function AdminRemoveMemberDialog({
                     </DialogTitle>
                     <DialogDescription>
                         Vous êtes sur le point de supprimer{" "}
-                        <strong>{member?.user?.name || member?.user?.email}</strong> de
-                        l&apos;organisation. En tant qu&apos;administrateur, cette action est
-                        irréversible.
+                        <strong>
+                            {member?.user?.name || member?.user?.email}
+                        </strong>{" "}
+                        de l&apos;organisation. En tant qu&apos;administrateur,
+                        cette action est irréversible.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -67,9 +76,17 @@ export default function AdminRemoveMemberDialog({
                         Conséquences de cette action :
                     </h4>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                        <li>• L&apos;utilisateur perdra accès à l&apos;organisation</li>
-                        <li>• Ses permissions seront révoquées immédiatement</li>
-                        <li>• Il devra être ré-invité pour retrouver l&apos;accès</li>
+                        <li>
+                            • L&apos;utilisateur perdra accès à
+                            l&apos;organisation
+                        </li>
+                        <li>
+                            • Ses permissions seront révoquées immédiatement
+                        </li>
+                        <li>
+                            • Il devra être ré-invité pour retrouver
+                            l&apos;accès
+                        </li>
                         <li>• Toutes ses sessions actives seront terminées</li>
                     </ul>
                 </div>

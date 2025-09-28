@@ -87,8 +87,9 @@ export default function AdminInviteMemberDialog({
                 <DialogHeader>
                     <DialogTitle>Inviter un membre (Admin)</DialogTitle>
                     <DialogDescription>
-                        En tant qu&apos;administrateur, invitez une nouvelle personne
-                        dans l&apos;organisation {organizationName ?? ""}.
+                        En tant qu&apos;administrateur, invitez une nouvelle
+                        personne dans l&apos;organisation{" "}
+                        {organizationName ?? ""}.
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>

@@ -122,7 +122,8 @@ export default function AdminManageOrganizationForm({ organization }) {
         <div className="flex flex-col gap-2 text-sm text-muted-foreground">
             <p>Organisation non trouvée.</p>
             <p>
-                Vérifiez que l&apos;organisation existe et que le slug est correct.
+                Vérifiez que l&apos;organisation existe et que le slug est
+                correct.
             </p>
         </div>
     );

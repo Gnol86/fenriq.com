@@ -188,7 +188,6 @@ const user = await getCurrentUser(); // Missing monitoring
 ### **✅ REQUIRED Patterns**
 
 ```js
-
 // ✅ ALWAYS consider cache implications
 await invalidateUserCache(userId, orgId);
 
