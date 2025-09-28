@@ -40,11 +40,13 @@ export async function createOrganizationAction({ name }) {
     });
 }
 
-export async function updateOrganizationAction({ name, organizationId }) {
+export async function updateOrganizationAction({ name, logo, organizationId }) {
     return await auth.api.updateOrganization({
         body: {
             data: {
                 name: name,
+                slug: name ? nameToSlug(name) : undefined,
+                logo: logo,
             },
             organizationId: organizationId,
         },

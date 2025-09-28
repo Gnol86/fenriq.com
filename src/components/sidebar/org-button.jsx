@@ -27,7 +27,7 @@ export default function OrgButton({
         <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 p-2 cursor-pointer">
                 <ImageProfile
-                    user={activeUserOrganization}
+                    entity={activeUserOrganization}
                     size="md"
                     defaultImage="/images/logo.png"
                 />
@@ -74,7 +74,7 @@ export default function OrgButton({
                                 className="flex items-center justify-between gap-2"
                                 disabled={isPending}
                             >
-                                <ImageProfile user={organization} size="xs" />
+                                <ImageProfile entity={organization} size="xs" />
                                 <span className="truncate text-sm flex-1">
                                     {organization.name}
                                 </span>

@@ -119,7 +119,7 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                     <TableCell>
                                         <div className="flex items-center gap-2">
                                             <ImageProfile
-                                                user={org}
+                                                entity={org}
                                                 size="sm"
                                             />
                                             <div className="flex flex-col">

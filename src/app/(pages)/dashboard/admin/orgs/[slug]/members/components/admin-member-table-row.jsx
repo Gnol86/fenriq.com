@@ -24,7 +24,7 @@ export default function AdminMemberTableRow({
             {/* Utilisateur avec avatar et informations */}
             <TableCell>
                 <div className="flex items-center gap-2">
-                    <ImageProfile user={member?.user} size="sm" />
+                    <ImageProfile entity={member?.user} size="sm" />
                     <div className="flex flex-col">
                         <span className="text-sm font-medium text-foreground">
                             {member?.user?.name || "Utilisateur"}

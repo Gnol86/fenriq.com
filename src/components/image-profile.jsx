@@ -20,7 +20,7 @@ const INITIAL_SIZES = {
 };
 
 export default function ImageProfile({
-    user,
+    entity,
     size = "md",
     defaultImage = undefined,
 }) {
@@ -29,9 +29,12 @@ export default function ImageProfile({
             <AvatarFallback
                 className={`ring ring-inset ring-foreground/20 ${INITIAL_SIZES[size]}`}
             >
-                {getInitials(user?.name || user?.email || "-")}
+                {getInitials(entity?.name || entity?.email || "-")}
             </AvatarFallback>
-            <AvatarImage src={user?.image ?? defaultImage} alt={user?.name} />
+            <AvatarImage
+                src={(entity?.image || entity?.logo) ?? defaultImage}
+                alt={entity?.name}
+            />
         </Avatar>
     );
 }

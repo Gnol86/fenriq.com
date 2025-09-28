@@ -53,7 +53,7 @@ export default function Error({ error, reset }) {
         <main className="flex flex-col gap-4 items-center justify-center h-dvh">
             <div className="flex gap-2 justify-center items-center">
                 <div className="text-2xl font-bold">{errorInfo.statusCode}</div>
-                <div className="text-sm">Une erreur s'est produite</div>
+                <div className="text-sm">Une erreur s&apos;est produite</div>
             </div>
             <div className="flex gap-4">
                 <Button variant="" onClick={() => reset()}>

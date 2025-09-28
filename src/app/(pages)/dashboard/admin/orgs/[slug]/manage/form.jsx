@@ -76,7 +76,7 @@ export default function AdminManageOrganizationForm({ organization }) {
                         Image de profil
                     </p>
                     <div className="flex items-center gap-4">
-                        <ImageProfile user={organization} size="2xl" />
+                        <ImageProfile entity={organization} size="2xl" />
                         <div className="flex flex-col text-sm text-muted-foreground">
                             <span>
                                 Le téléchargement d&apos;une nouvelle image

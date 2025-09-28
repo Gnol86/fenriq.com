@@ -68,7 +68,7 @@ export default async function DashboardPage() {
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center gap-3">
                                     <ImageProfile
-                                        user={activeUserOrganization}
+                                        entity={activeUserOrganization}
                                         size="lg"
                                     />
                                     <span className="font-semibold truncate">
@@ -100,7 +100,7 @@ export default async function DashboardPage() {
                                         >
                                             <div className="flex items-center gap-3 min-w-0">
                                                 <ImageProfile
-                                                    user={contact?.user}
+                                                    entity={contact?.user}
                                                     size="md"
                                                 />
                                                 <div className="flex flex-col gap-0.5 min-w-0">
@@ -157,7 +157,7 @@ export default async function DashboardPage() {
                                 >
                                     <div className="flex items-center gap-3 min-w-0">
                                         <ImageProfile
-                                            user={organization}
+                                            entity={organization}
                                             size="md"
                                         />
                                         <span className="font-bold truncate">

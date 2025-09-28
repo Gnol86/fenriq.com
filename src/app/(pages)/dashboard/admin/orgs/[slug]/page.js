@@ -43,7 +43,7 @@ export default async function AdminOrganizationPage({ params }) {
             <Card>
                 <CardHeader>
                     <div className="flex items-center gap-4">
-                        <ImageProfile user={organization} size="2xl" />
+                        <ImageProfile entity={organization} size="2xl" />
                         <div className="flex flex-col gap-2">
                             <CardTitle className="text-2xl">
                                 {organization.name}

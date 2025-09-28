@@ -41,7 +41,7 @@ export default function UserTableRow({ user, currentUserId }) {
                                 <ChevronRight className="text-muted-foreground" />
                             )}
                         </div>
-                        <ImageProfile user={user} size="sm" />
+                        <ImageProfile entity={user} size="sm" />
                         <div className="flex flex-col">
                             <div className="flex items-center gap-2">
                                 <span className="text-sm font-medium text-foreground">

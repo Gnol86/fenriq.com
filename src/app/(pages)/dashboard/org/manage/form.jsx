@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import FormButton from "@/components/ui/form-button";
-import ImageProfile from "@/components/image-profile";
+import ImageUpload from "@/components/image-upload";
 import { useServerAction } from "@/hooks/use-server-action";
 import { updateOrganizationAction } from "@/actions/organization.action";
 
@@ -63,24 +63,7 @@ export default function ManageOrganizationForm({ organization }) {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="flex flex-col gap-6"
             >
-                <section className="flex flex-col gap-3">
-                    <p className="text-sm font-medium text-foreground">
-                        Image de profil
-                    </p>
-                    <div className="flex items-center gap-4">
-                        <ImageProfile user={organization} size="2xl" />
-                        <div className="flex flex-col text-sm text-muted-foreground">
-                            <span>
-                                Le téléchargement d&apos;une nouvelle image
-                                n&apos;est pas encore disponible.
-                            </span>
-                            <span>
-                                Cette image correspond à celle enregistrée pour
-                                votre organisation.
-                            </span>
-                        </div>
-                    </div>
-                </section>
+                <ImageUpload organization={organization} />
 
                 <FormField
                     control={form.control}

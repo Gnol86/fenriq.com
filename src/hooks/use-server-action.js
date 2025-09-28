@@ -14,7 +14,7 @@ export function useServerAction() {
     const execute = useCallback(
         async (action, options = {}) => {
             const {
-                successMessage = "Opération réussie",
+                successMessage = null,
                 refreshOnSuccess = true,
                 redirectOnSuccess = null,
             } = options;

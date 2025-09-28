@@ -56,7 +56,7 @@ export default function UserButton({ user, isImpersonating = null }) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 p-2 cursor-pointer">
-                <ImageProfile user={user} />
+                <ImageProfile entity={user} />
                 <div className="flex flex-col justify-start items-start flex-1 text-left overflow-hidden min-w-0">
                     <span className="font-medium truncate w-full">
                         {isImpersonating ? (
@@ -81,7 +81,7 @@ export default function UserButton({ user, isImpersonating = null }) {
                 onCloseAutoFocus={event => event.preventDefault()}
             >
                 <DropdownMenuLabel className="flex items-center gap-2 truncate">
-                    <ImageProfile user={user} size="xs" />
+                    <ImageProfile entity={user} size="xs" />
                     {user.name || "Utilisateur"}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
