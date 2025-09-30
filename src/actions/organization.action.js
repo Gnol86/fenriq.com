@@ -82,3 +82,34 @@ export async function inviteMemberAction({ email, role, organizationId }) {
         headers: await headers(),
     });
 }
+
+export async function updateMemberRoleAction({ memberId, role, organizationId }) {
+    return await auth.api.updateMemberRole({
+        body: {
+            memberId,
+            role,
+            organizationId,
+        },
+        headers: await headers(),
+    });
+}
+
+export async function removeMemberAction({ memberIdOrEmail, organizationId }) {
+    return await auth.api.removeMember({
+        body: {
+            memberIdOrEmail,
+            organizationId,
+        },
+        headers: await headers(),
+    });
+}
+
+export async function cancelInvitationAction({ invitationId, organizationId }) {
+    return await auth.api.cancelInvitation({
+        body: {
+            invitationId,
+            organizationId,
+        },
+        headers: await headers(),
+    });
+}

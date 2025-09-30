@@ -1,8 +1,6 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +14,12 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import RemoveMemberDialog from "./remove-member-dialog";
-import { defaultRoleLabels } from "@/lib/constants";
+import { organizationRoleLabels } from "@/lib/constants";
+import { useServerAction } from "@/hooks/use-server-action";
+import {
+    updateMemberRoleAction,
+    removeMemberAction,
+} from "@/actions/organization.action";
 
 export default function MembersActionMenu({
     member,
@@ -26,10 +29,9 @@ export default function MembersActionMenu({
     canUpdate,
     canDelete,
 }) {
-    const router = useRouter();
+    const { execute, isPending } = useServerAction();
     const [removalTarget, setRemovalTarget] = useState(false);
     const [isRemovingMember, setIsRemovingMember] = useState(false);
-    const [isUpdatingMemberId, setIsUpdatingMemberId] = useState(null);
 
     const isSelf = useMemo(() => {
         const memberUserId = member?.user?.id ?? member?.userId;
@@ -42,64 +44,43 @@ export default function MembersActionMenu({
                 return;
             }
 
-            setIsUpdatingMemberId(member.id);
-            try {
-                // const result = await updateMemberRoleAction({
-                //     memberId: member.id,
-                //     role,
-                //     organizationId,
-                // });
-
-                // if (!result?.success) {
-                //     throw new Error(result?.error);
-                // }
-
-                toast.success("Rôle mis à jour");
-                router.refresh();
-            } catch (error) {
-                console.error("Failed to update member role", error);
-                toast.error(
-                    error?.message ||
-                        "Impossible de mettre à jour le rôle pour le moment"
-                );
-            } finally {
-                setIsUpdatingMemberId(null);
-            }
+            await execute(
+                () =>
+                    updateMemberRoleAction({
+                        memberId: member.id,
+                        role,
+                        organizationId,
+                    }),
+                {
+                    successMessage: "Rôle mis à jour",
+                    errorMessage:
+                        "Impossible de mettre à jour le rôle pour le moment",
+                }
+            );
         },
-        [member?.id, memberRole, organizationId, router]
+        [member?.id, memberRole, organizationId, execute]
     );
 
-    const confirmRemoval = useCallback(() => {
+    const confirmRemoval = useCallback(async () => {
         if (!organizationId || !member?.id) {
             return;
         }
 
         setIsRemovingMember(true);
-        (async () => {
-            try {
-                // const result = await removeMemberAction({
-                //     memberIdOrEmail: member.id,
-                //     organizationId,
-                // });
-
-                // if (!result?.success) {
-                //     throw new Error(result?.error);
-                // }
-
-                toast.success("Membre supprimé de l'organisation");
-                router.refresh();
-            } catch (error) {
-                console.error("Failed to remove member", error);
-                toast.error(
-                    error?.message ||
-                        "Impossible de supprimer ce membre pour le moment"
-                );
-            } finally {
-                setIsRemovingMember(false);
-                setRemovalTarget(false);
+        await execute(
+            () =>
+                removeMemberAction({
+                    memberIdOrEmail: member.id,
+                    organizationId,
+                }),
+            {
+                successMessage: "Membre supprimé de l'organisation",
+                errorMessage: "Impossible de supprimer ce membre pour le moment",
             }
-        })();
-    }, [member?.id, organizationId, router]);
+        );
+        setIsRemovingMember(false);
+        setRemovalTarget(false);
+    }, [member?.id, organizationId, execute]);
 
     const closeRemovalDialog = useCallback(() => {
         if (!isRemovingMember) {
@@ -107,8 +88,11 @@ export default function MembersActionMenu({
         }
     }, [isRemovingMember]);
 
-    const roleOptions = useMemo(() => Object.entries(defaultRoleLabels), []);
-    const roleChangeDisabled = isSelf || isUpdatingMemberId === member?.id;
+    const roleOptions = useMemo(
+        () => Object.entries(organizationRoleLabels),
+        []
+    );
+    const roleChangeDisabled = isSelf || isPending;
 
     return (
         <>

@@ -1,6 +1,6 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { defaultRoleLabels } from "@/lib/constants";
+import { organizationRoleLabels } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { getInvitationDisplayStatus } from "@/lib/invitation-utils";
 import InvitationsActionMenu from "./invitations-action-menu";
@@ -36,7 +36,7 @@ export default function InvitationTableRow({
             {/* Rôle assigné */}
             <TableCell>
                 <span className="text-sm font-medium text-foreground">
-                    {defaultRoleLabels[invitationRole] ?? invitationRole}
+                    {organizationRoleLabels[invitationRole] ?? invitationRole}
                 </span>
             </TableCell>
 
