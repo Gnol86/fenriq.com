@@ -13,6 +13,7 @@ const LABELS = {
     invitations: "Invitations",
     users: "Utilisateurs",
     admin: "Administration",
+    settings: "Paramètres",
 };
 
 export default async function BreadcrumbSlot({ params }) {
