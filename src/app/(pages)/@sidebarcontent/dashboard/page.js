@@ -17,6 +17,8 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { hasPermissionAction } from "@/actions/organization.action";
 import { Building } from "lucide-react";
+import { Shield } from "lucide-react";
+import { User } from "lucide-react";
 
 export default async function SideBarContent() {
     const session = await auth.api.getSession({
@@ -80,7 +82,8 @@ export default async function SideBarContent() {
                 canInvitationsRead ||
                 canOrgsDelete) && (
                 <SidebarGroup>
-                    <SidebarGroupLabel>
+                    <SidebarGroupLabel className="flex gap-1 items-center">
+                        <Building />
                         {activeUserOrganization?.name ?? "Organisation"}
                     </SidebarGroupLabel>
 
@@ -149,7 +152,9 @@ export default async function SideBarContent() {
 
             {user.role === "admin" && (
                 <SidebarGroup>
-                    <SidebarGroupLabel>Administration</SidebarGroupLabel>
+                    <SidebarGroupLabel className="flex gap-1 items-center">
+                        <Shield /> Administration
+                    </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem>
@@ -174,7 +179,10 @@ export default async function SideBarContent() {
             )}
 
             <SidebarGroup>
-                <SidebarGroupLabel>{user.name}</SidebarGroupLabel>
+                <SidebarGroupLabel className="flex gap-1 items-center">
+                    <User />
+                    {user.name}
+                </SidebarGroupLabel>
                 <SidebarGroupContent>
                     <SidebarMenu>
                         <SidebarMenuItem>
