@@ -9,18 +9,16 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SiteConfig } from "@/site-config";
-import { Check, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Check } from "lucide-react";
 import { useServerAction } from "@/hooks/use-server-action";
 import { setActiveOrganizationAction } from "@/actions/organization.action";
 import ImageProfile from "../image-profile";
-import { Loader2 } from "lucide-react";
+import CreateOrganizationDialog from "./create-organization-dialog";
 
 export default function OrgButton({
     userOrganizations,
     activeUserOrganization,
 }) {
-    const router = useRouter();
     const { execute, isPending } = useServerAction();
 
     return (
@@ -90,15 +88,7 @@ export default function OrgButton({
                     </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                    onSelect={event => {
-                        event.preventDefault();
-                        router.push("/dashboard/org/new");
-                    }}
-                >
-                    <Plus className="" aria-hidden="true" />
-                    Créer une organisation
-                </DropdownMenuItem>
+                <CreateOrganizationDialog />
             </DropdownMenuContent>
         </DropdownMenu>
     );

@@ -77,78 +77,66 @@ export default async function SideBarContent() {
                 </SidebarGroupContent>
             </SidebarGroup>
 
-            {(canOrgsUpdate ||
-                canMembresRead ||
-                canInvitationsRead ||
-                canOrgsDelete) && (
-                <SidebarGroup>
-                    <SidebarGroupLabel className="flex gap-1 items-center">
-                        <Building />
-                        {activeUserOrganization?.name ?? "Organisation"}
-                    </SidebarGroupLabel>
+            {activeUserOrganization &&
+                (canOrgsUpdate ||
+                    canMembresRead ||
+                    canInvitationsRead ||
+                    canOrgsDelete) && (
+                    <SidebarGroup>
+                        <SidebarGroupLabel className="flex gap-1 items-center">
+                            <Building />
+                            {activeUserOrganization?.name ?? "Organisation"}
+                        </SidebarGroupLabel>
 
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            {!activeUserOrganization ? (
-                                <SidebarMenuItem>
-                                    <SidebarMenuButton asChild>
-                                        <Link href="/dashboard/org/new">
-                                            <Plus className="opacity-60" />
-                                            Créer une organisation
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ) : (
-                                <>
-                                    {canOrgsUpdate && (
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton asChild>
-                                                <Link href="/dashboard/org/manage">
-                                                    <Settings className="opacity-60" />
-                                                    Gérer l&apos;organisation
-                                                </Link>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    )}
-                                    {canMembresRead && (
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton asChild>
-                                                <Link href="/dashboard/org/members">
-                                                    <Users className="opacity-60" />
-                                                    Membres
-                                                </Link>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    )}
-                                    {canInvitationsRead && (
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton asChild>
-                                                <Link href="/dashboard/org/invitations">
-                                                    <MailPlusIcon className="opacity-60" />
-                                                    Invitations
-                                                </Link>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    )}
-                                    {canOrgsDelete && (
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton asChild>
-                                                <Link
-                                                    href="/dashboard/org/danger-zone"
-                                                    className="text-destructive"
-                                                >
-                                                    <AlertTriangle className="opacity-60" />
-                                                    Danger
-                                                </Link>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    )}
-                                </>
-                            )}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
-            )}
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {canOrgsUpdate && (
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link href="/dashboard/org/manage">
+                                                <Settings className="opacity-60" />
+                                                Gérer l&apos;organisation
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )}
+                                {canMembresRead && (
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link href="/dashboard/org/members">
+                                                <Users className="opacity-60" />
+                                                Membres
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )}
+                                {canInvitationsRead && (
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link href="/dashboard/org/invitations">
+                                                <MailPlusIcon className="opacity-60" />
+                                                Invitations
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )}
+                                {canOrgsDelete && (
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link
+                                                href="/dashboard/org/danger-zone"
+                                                className="text-destructive"
+                                            >
+                                                <AlertTriangle className="opacity-60" />
+                                                Danger
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                )}
 
             {user.role === "admin" && (
                 <SidebarGroup>
