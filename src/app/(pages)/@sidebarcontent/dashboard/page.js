@@ -194,6 +194,17 @@ export default async function SideBarContent() {
                                 </SidebarMenuBadge>
                             )}
                         </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild>
+                                <Link
+                                    href="/dashboard/user/danger-zone"
+                                    className="text-destructive"
+                                >
+                                    <AlertTriangle className="opacity-60" />
+                                    Danger
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>

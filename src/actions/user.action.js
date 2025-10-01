@@ -13,3 +13,10 @@ export async function updateUserAction({ name, email, image }) {
         headers: await headers(),
     });
 }
+
+export async function deleteUserAction() {
+    return await auth.api.deleteUser({
+        body: {},
+        headers: await headers(),
+    });
+}

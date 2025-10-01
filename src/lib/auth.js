@@ -12,6 +12,7 @@ import {
     memberPermissions,
 } from "./organization-permissions.js";
 import { translations } from "./auth-translations.js";
+import { deleteFile } from "@/actions/file.action";
 
 import { PrismaClient } from "../generated/prisma";
 const prisma = new PrismaClient();
@@ -101,6 +102,49 @@ export const auth = betterAuth({
     advanced: {
         cookiePrefix: SiteConfig.appId,
     },
+    user: {
+        deleteUser: {
+            enabled: true,
+            beforeDelete: async user => {
+                // Vérifier si l'utilisateur est le seul propriétaire d'organisations
+                const userOwnerships = await prisma.member.findMany({
+                    where: {
+                        userId: user.id,
+                        role: "owner",
+                    },
+                    include: {
+                        organization: {
+                            include: {
+                                members: {
+                                    where: {
+                                        role: "owner",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                });
+
+                // Trouver les organisations où l'utilisateur est le seul propriétaire
+                const soleOwnerOrgs = userOwnerships.filter(
+                    membership => membership.organization.members.length === 1
+                );
+
+                if (soleOwnerOrgs.length > 0) {
+                    const orgNames = soleOwnerOrgs
+                        .map(m => m.organization.name)
+                        .join(", ");
+                    throw new Error(
+                        `Impossible de supprimer votre compte. Vous êtes le seul propriétaire de ces organisations : ${orgNames}. Veuillez transférer la propriété ou supprimer ces organisations avant de supprimer votre compte.`
+                    );
+                }
+            },
+            afterDelete: async user => {
+                // Supprimer l'image de profil du blob si elle existe
+                await deleteFile(user.image);
+            },
+        },
+    },
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: true,
@@ -148,6 +192,13 @@ export const auth = betterAuth({
                 owner: ownerPermissions,
                 admin: adminPermissions,
                 member: memberPermissions,
+            },
+
+            organizationHooks: {
+                afterDeleteOrganization: async data => {
+                    // Supprimer le logo de l'organisation du blob s'il existe
+                    await deleteFile(data.organization.logo);
+                },
             },
 
             sendInvitationEmail: async ({
