@@ -2,22 +2,18 @@
 import { Monitor, Moon, SunDim } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 import { flushSync } from "react-dom";
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 const THEME_ORDER = ["light", "dark", "system"];
-const THEME_NAME = {
-    light: "clair",
-    dark: "sombre",
-    system: "système",
-};
-
 export const AnimatedThemeToggler = ({ className, size = 20 }) => {
     const { theme = "system", setTheme } = useTheme();
     const buttonRef = useRef(null);
     const [mounted, setMounted] = useState(false);
+    const tTheme = useTranslations("theme.toggler");
 
     const currentThemeIndex = THEME_ORDER.indexOf(theme);
 
@@ -73,7 +69,12 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
             // Animation may be cancelled; we still show feedback at the end of handler
         }
 
-        toast("Thème " + THEME_NAME[nextTheme] + " appliqué");
+        const themeLabel = tTheme(nextTheme);
+        toast.success(
+            tTheme("toast_success", {
+                theme: themeLabel,
+            })
+        );
     };
 
     if (!mounted) {
@@ -87,7 +88,12 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
     };
 
     return (
-        <button ref={buttonRef} onClick={changeTheme} className={cn(className)}>
+        <button
+            ref={buttonRef}
+            onClick={changeTheme}
+            className={cn(className)}
+            aria-label={tTheme("button_aria_label")}
+        >
             {renderIcon()}
         </button>
     );

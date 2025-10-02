@@ -214,6 +214,8 @@ This project uses **next-intl** for internationalization with French (fr) as the
 - `@lib/i18n/request.js` - Request configuration for loading translations based on cookie
 - `messages/fr.json` - French translations
 - `messages/en.json` - English translations
+- `messages/nl.json` - Dutch translations
+- `messages/de.json` - German translations
 - Cookie: `NEXT_LOCALE` stores user's locale preference
 
 ## Translation Patterns
@@ -267,7 +269,7 @@ export default function MyForm() {
 
 ## Translation Organization
 
-Translations are organized by namespaces in `messages/fr.json` and `messages/en.json`:
+Translations are organized by namespaces in `messages/xx.json` :
 
 ```json
 {
@@ -293,19 +295,19 @@ Translations are organized by namespaces in `messages/fr.json` and `messages/en.
 
 ## Helper Patterns for Dynamic Content
 
-Use `next-intl` directly for labels (roles, invitation status, etc.).
+Translate dynamic labels with `next-intl` directly.
 
 ```js
-// Client component
+// Client component example
 const tRoles = useTranslations("roles");
 const roleLabel = tRoles(member.role);
 
-// Server component
-const t = await getTranslations("invitation_status");
-const statusLabel = t(statusKey);
+// Server component example
+const tInvitationStatus = await getTranslations("invitation_status");
+const statusLabel = tInvitationStatus(statusKey);
 ```
 
-Utilities such as `getInvitationDisplayStatus` return a status key (e.g. `pending`, `outdated`). Translate those keys in the component before rendering.
+Utilities like `getInvitationDisplayStatus` return status keys (`pending`, `outdated`, etc.). Convert those keys to user-facing text with the appropriate translation namespace inside the component.
 
 ## Translation Keys Best Practices
 

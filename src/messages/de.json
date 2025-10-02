@@ -571,6 +571,15 @@
             "copy_success": "In die Zwischenablage kopiert"
         }
     },
+    "theme": {
+        "toggler": {
+            "light": "heller Modus",
+            "dark": "dunkler Modus",
+            "system": "Systemmodus",
+            "toast_success": "{theme} wurde aktiviert",
+            "button_aria_label": "Modus wechseln"
+        }
+    },
     "common": {
         "welcome": "Willkommen",
         "n_a": "n. a.",

@@ -570,6 +570,15 @@
             "copy_success": "Copié dans le presse-papier"
         }
     },
+    "theme": {
+        "toggler": {
+            "light": "clair",
+            "dark": "sombre",
+            "system": "système",
+            "toast_success": "Thème {theme} appliqué",
+            "button_aria_label": "Changer de thème"
+        }
+    },
     "common": {
         "welcome": "Bienvenue",
         "n_a": "N/A",

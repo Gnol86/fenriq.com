@@ -571,6 +571,15 @@
             "copy_success": "Gekopieerd naar klembord"
         }
     },
+    "theme": {
+        "toggler": {
+            "light": "lichte modus",
+            "dark": "donkere modus",
+            "system": "systeemmodus",
+            "toast_success": "{theme} is toegepast",
+            "button_aria_label": "Modus wisselen"
+        }
+    },
     "common": {
         "welcome": "Welkom",
         "n_a": "N.v.t.",

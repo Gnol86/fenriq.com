@@ -571,6 +571,15 @@
             "copy_success": "Copied to clipboard"
         }
     },
+    "theme": {
+        "toggler": {
+            "light": "light",
+            "dark": "dark",
+            "system": "system",
+            "toast_success": "Theme {theme} applied",
+            "button_aria_label": "Toggle theme"
+        }
+    },
     "common": {
         "welcome": "Welcome",
         "n_a": "N/A",

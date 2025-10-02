@@ -214,6 +214,8 @@ This project uses **next-intl** for internationalization with French (fr) as the
 - `@lib/i18n/request.js` - Request configuration for loading translations based on cookie
 - `messages/fr.json` - French translations
 - `messages/en.json` - English translations
+- `messages/nl.json` - Dutch translations
+- `messages/de.json` - German translations
 - Cookie: `NEXT_LOCALE` stores user's locale preference
 
 ## Translation Patterns
@@ -267,7 +269,7 @@ export default function MyForm() {
 
 ## Translation Organization
 
-Translations are organized by namespaces in `messages/fr.json` and `messages/en.json`:
+Translations are organized by namespaces in `messages/xx.json` :
 
 ```json
 {
