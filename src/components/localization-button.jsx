@@ -27,7 +27,7 @@ export default function LocalizationButton({ currentLocale, size = 20 }) {
             <DropdownMenuTrigger>
                 <Globe size={size} />
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="w-48" side="top">
                 <DropdownMenuLabel className="flex items-center justify-between">
                     <ReactCountryFlag
                         svg

@@ -1,11 +1,12 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+
 import { Provider } from "@/components/provider";
 import { SiteConfig } from "@/site-config";
 import WindowSize from "@/components/dev/window-size";
 import { getMessages } from "next-intl/server";
 import { cookies } from "next/headers";
 import { defaultLocale } from "@lib/i18n/config";
+import "./globals.css";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",

@@ -11,7 +11,7 @@ import {
     adminPermissions,
     memberPermissions,
 } from "./organization-permissions.js";
-import { translations } from "./auth-translations.js";
+import { getBetterAuthTranslations } from "@/messages/get-better-auth-translations.js";
 import { deleteFile } from "@/actions/file.action";
 
 import { PrismaClient } from "../generated/prisma";
@@ -208,7 +208,7 @@ export const auth = betterAuth({
                     return "en-US";
                 }
             },
-            translations,
+            translations: getBetterAuthTranslations(),
         }),
         admin({
             defaultRole: "user",
