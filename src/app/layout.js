@@ -5,7 +5,7 @@ import { SiteConfig } from "@/site-config";
 import WindowSize from "@/components/dev/window-size";
 import { getMessages } from "next-intl/server";
 import { cookies } from "next/headers";
-import { defaultLocale } from "@/i18n/config";
+import { defaultLocale } from "@lib/i18n/config";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",

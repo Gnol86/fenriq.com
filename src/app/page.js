@@ -1,11 +1,16 @@
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { AnimatedThemeToggler } from "@/components/animated-theme-toggler";
 import SignUpButton from "@/components/auth/SignUpButton";
 import SignInButton from "@/components/auth/SignInButton";
 import SignOutButton from "@/components/auth/SignOutButton";
 import GoAppButton from "@/components/auth/GoAppButton";
 import { SiteConfig } from "@/site-config";
+import { cookies } from "next/headers";
+import { defaultLocale } from "@lib/i18n/config";
+import LocalizationButton from "@/components/localization-button";
 
-export default function Home() {
+export default async function Home() {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
     return (
         <>
             <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
@@ -24,6 +29,7 @@ export default function Home() {
                     © {new Date().getFullYear()} {SiteConfig.team.name}
                 </div>
                 <div className="flex gap-2 items-center">
+                    <LocalizationButton currentLocale={locale} />
                     <AnimatedThemeToggler />
                     <SignUpButton />
                     <SignInButton />

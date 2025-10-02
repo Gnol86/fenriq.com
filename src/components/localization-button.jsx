@@ -6,18 +6,17 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Globe } from "lucide-react";
+import { Check, Globe } from "lucide-react";
 import { useServerAction } from "@/hooks/use-server-action";
 import { setLocaleAction } from "@/actions/locale.action";
-import { localeNames, locales } from "@/i18n/config";
+import { localeNames, locales } from "@lib/i18n/config";
 
-export default function LocalizationButton({ currentLocale }) {
-    console.log("currentLocale", currentLocale);
+export default function LocalizationButton({ currentLocale, size = 20 }) {
     const { execute, isPending } = useServerAction();
     return (
         <DropdownMenu>
             <DropdownMenuTrigger>
-                <Globe size={16} />
+                <Globe size={size} />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 {locales.map(locale => {

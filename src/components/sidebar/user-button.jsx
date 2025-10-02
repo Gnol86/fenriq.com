@@ -17,14 +17,14 @@ import { AppWindow } from "lucide-react";
 import ImageProfile from "../image-profile";
 import { HatGlasses } from "lucide-react";
 import { toast } from "sonner";
-import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
+import { AnimatedThemeToggler } from "../animated-theme-toggler";
 import { useTranslations } from "next-intl";
 import LocalizationButton from "../localization-button";
 
 export default function UserButton({
     user,
     isImpersonating = null,
-    locale = "en",
+    currentLocale = "en",
 }) {
     const t = useTranslations("sidebar.user_button");
     const router = useRouter();
@@ -94,7 +94,10 @@ export default function UserButton({
                         {user.name || t("default_name")}
                     </div>
                     <div className="flex-1" />
-                    <LocalizationButton locale={locale} />
+                    <LocalizationButton
+                        currentLocale={currentLocale}
+                        size={16}
+                    />
                     <AnimatedThemeToggler size={16} />
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />

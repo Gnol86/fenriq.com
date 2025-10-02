@@ -9,7 +9,7 @@ import OrgButton from "./org-button";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { cookies } from "next/headers";
-import { defaultLocale } from "@/i18n/config";
+import { defaultLocale } from "@lib/i18n/config";
 
 export async function AppSidebar({ children }) {
     const cookieStore = await cookies();

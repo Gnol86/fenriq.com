@@ -1,4 +1,4 @@
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { AnimatedThemeToggler } from "@/components/animated-theme-toggler";
 
 export default function RootLayout({ children }) {
     return (

@@ -210,8 +210,8 @@ This project uses **next-intl** for internationalization with French (fr) as the
 
 ## Configuration Files
 
-- `src/i18n/config.js` - Locale configuration (locales array, defaultLocale)
-- `src/i18n/request.js` - Request configuration for loading translations based on cookie
+- `@lib/i18n/config.js` - Locale configuration (locales array, defaultLocale)
+- `@lib/i18n/request.js` - Request configuration for loading translations based on cookie
 - `messages/fr.json` - French translations
 - `messages/en.json` - English translations
 - Cookie: `NEXT_LOCALE` stores user's locale preference

@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { defaultLocale } from "@/i18n/config";
+import { defaultLocale } from "@lib/i18n/config";
 
 export function cn(...inputs) {
     return twMerge(clsx(inputs));
