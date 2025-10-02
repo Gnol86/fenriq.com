@@ -12,6 +12,7 @@ import { Check, Globe } from "lucide-react";
 import { useServerAction } from "@/hooks/use-server-action";
 import { setLocaleAction } from "@/actions/locale.action";
 import { localeNames, locales } from "@lib/i18n/config";
+import ReactCountryFlag from "react-country-flag";
 
 export default function LocalizationButton({ currentLocale, size = 20 }) {
     const { execute, isPending } = useServerAction();
@@ -28,7 +29,8 @@ export default function LocalizationButton({ currentLocale, size = 20 }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuLabel className="flex items-center justify-between">
-                    {localeNames[currentLocale]}{" "}
+                    <ReactCountryFlag svg countryCode="US" />
+                    {localeNames[currentLocale]}
                     <Check className="h-4 w-4 text-primary" />
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -48,12 +50,11 @@ export default function LocalizationButton({ currentLocale, size = 20 }) {
                                     }
                                 );
                             }}
-                            className="flex items-center justify-between gap-2"
+                            className="flex items-center gap-2 text-sm"
                             disabled={isPending}
                         >
-                            <span className="text-sm">
-                                {localeNames[locale] ?? locale}
-                            </span>
+                            <ReactCountryFlag svg countryCode={locale} />
+                            {localeNames[locale] ?? locale}
                         </DropdownMenuItem>
                     );
                 })}

@@ -5,7 +5,7 @@ export default async function BreadcrumbSlot({ params }) {
     const resolvedParams = await params;
     const segments = resolvedParams.all || [];
 
-    if (!segments.length) return null;
+    if (segments.length < 2) return null;
 
     const t = await getTranslations("breadcrumbs");
 
