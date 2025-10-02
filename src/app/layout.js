@@ -3,6 +3,9 @@ import "./globals.css";
 import { Provider } from "@/components/provider";
 import { SiteConfig } from "@/site-config";
 import WindowSize from "@/components/dev/window-size";
+import { getMessages } from "next-intl/server";
+import { cookies } from "next/headers";
+import { defaultLocale } from "@/i18n/config";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -22,14 +25,22 @@ export const metadata = {
     },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
+    const messages = await getMessages();
+
     return (
-        <html lang="fr" suppressHydrationWarning>
+        <html lang={locale} suppressHydrationWarning>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                <Provider>{children}</Provider>
-                {process.env.NODE_ENV === "development" && <WindowSize />}
+                <Provider locale={locale} messages={messages}>
+                    {children}
+                </Provider>
+                {process.env.NODE_ENV === "development" && (
+                    <WindowSize currentLocale={locale} />
+                )}
             </body>
         </html>
     );

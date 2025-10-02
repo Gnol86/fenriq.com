@@ -12,30 +12,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Loader2, MoreHorizontal } from "lucide-react";
-
-function copyLink(invitationId) {
-    try {
-        const origin =
-            typeof window !== "undefined" && window.location?.origin
-                ? window.location.origin
-                : "";
-        const link = `${origin}/invitations/${invitationId}`;
-        if (navigator?.clipboard?.writeText) {
-            navigator.clipboard.writeText(link);
-        } else {
-            const textarea = document.createElement("textarea");
-            textarea.value = link;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand("copy");
-            document.body.removeChild(textarea);
-        }
-        toast.success("Lien d'invitation copié");
-    } catch (error) {
-        console.error("Failed to copy invitation link", error);
-        toast.error("Impossible de copier le lien d'invitation");
-    }
-}
+import { useTranslations } from "next-intl";
 
 export default function InvitationsActionMenu({
     invitation,
@@ -43,6 +20,7 @@ export default function InvitationsActionMenu({
     canCreate,
     canCancel,
 }) {
+    const t = useTranslations("organization.invitations");
     const router = useRouter();
     const [resendingId, setResendingId] = useState(null);
     const [cancelingId, setCancelingId] = useState(null);
@@ -50,9 +28,36 @@ export default function InvitationsActionMenu({
     const isResending = resendingId === invitation.id;
     const isCanceling = cancelingId === invitation.id;
 
+    const copyLink = useCallback(
+        invitationId => {
+            try {
+                const origin =
+                    typeof window !== "undefined" && window.location?.origin
+                        ? window.location.origin
+                        : "";
+                const link = `${origin}/invitations/${invitationId}`;
+                if (navigator?.clipboard?.writeText) {
+                    navigator.clipboard.writeText(link);
+                } else {
+                    const textarea = document.createElement("textarea");
+                    textarea.value = link;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textarea);
+                }
+                toast.success(t("success_link_copied"));
+            } catch (error) {
+                console.error("Failed to copy invitation link", error);
+                toast.error(t("error_copy_link"));
+            }
+        },
+        [t]
+    );
+
     const resendInvitation = useCallback(() => {
         if (!invitation?.email || !organizationId) {
-            toast.error("Impossible de renvoyer cette invitation");
+            toast.error(t("error_resend_generic"));
             return;
         }
 
@@ -70,23 +75,20 @@ export default function InvitationsActionMenu({
                 //     throw new Error(response?.error);
                 // }
 
-                toast.success("Invitation renvoyée");
+                toast.success(t("success_resent"));
                 router.refresh();
             } catch (error) {
                 console.error("Failed to resend invitation", error);
-                toast.error(
-                    error?.message ||
-                        "Impossible de renvoyer cette invitation pour le moment"
-                );
+                toast.error(error?.message || t("error_resend"));
             } finally {
                 setResendingId(null);
             }
         })();
-    }, [invitation, organizationId, router]);
+    }, [invitation, organizationId, router, t]);
 
     const cancelInvitation = useCallback(() => {
         if (!invitation?.id || !organizationId) {
-            toast.error("Invitation introuvable");
+            toast.error(t("error_not_found"));
             return;
         }
 
@@ -102,19 +104,16 @@ export default function InvitationsActionMenu({
                 //     throw new Error(result?.error);
                 // }
 
-                toast.success("Invitation annulée");
+                toast.success(t("success_cancelled"));
                 router.refresh();
             } catch (error) {
                 console.error("Failed to cancel invitation", error);
-                toast.error(
-                    error?.message ||
-                        "Impossible d'annuler cette invitation pour le moment"
-                );
+                toast.error(error?.message || t("error_cancel"));
             } finally {
                 setCancelingId(null);
             }
         })();
-    }, [invitation, organizationId, router]);
+    }, [invitation, organizationId, router, t]);
 
     return (
         <DropdownMenu>
@@ -123,7 +122,7 @@ export default function InvitationsActionMenu({
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8"
-                    aria-label="Actions sur l'invitation"
+                    aria-label={t("actions_label")}
                 >
                     <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
                 </Button>
@@ -138,7 +137,7 @@ export default function InvitationsActionMenu({
                                 copyLink(invitation.id);
                             }}
                         >
-                            Copier le lien
+                            {t("menu_copy_link")}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             onSelect={event => {
@@ -153,7 +152,7 @@ export default function InvitationsActionMenu({
                                     aria-hidden="true"
                                 />
                             )}
-                            Renvoyer
+                            {t("menu_resend")}
                         </DropdownMenuItem>
                     </>
                 )}
@@ -172,7 +171,7 @@ export default function InvitationsActionMenu({
                                 aria-hidden="true"
                             />
                         )}
-                        Annuler
+                        {t("menu_cancel")}
                     </DropdownMenuItem>
                 )}
             </DropdownMenuContent>

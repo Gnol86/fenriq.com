@@ -11,6 +11,7 @@ import {
     TableCaption,
 } from "@/components/ui/table";
 import InvitationTableRow from "./invitation-table-row";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function InvitationFilter({
     invitations,
@@ -18,6 +19,8 @@ export default function InvitationFilter({
     canCancel,
     organizationId,
 }) {
+    const t = useTranslations("organization.invitations.filter");
+    const locale = useLocale();
     const [showAll, setShowAll] = useState(false);
 
     // Filtrer les invitations selon l'état du toggle
@@ -36,17 +39,15 @@ export default function InvitationFilter({
             <div className="flex justify-between items-center">
                 <div className="text-sm text-muted-foreground">
                     {showAll
-                        ? `Affichage de toutes les invitations (${totalCount})`
-                        : `Affichage des invitations en attente (${pendingCount})`}
+                        ? t("showing_all", { count: totalCount })
+                        : t("showing_pending", { count: pendingCount })}
                 </div>
                 <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setShowAll(!showAll)}
                 >
-                    {showAll
-                        ? "Voir les invitations en attente"
-                        : "Voir toutes les invitations"}
+                    {showAll ? t("show_pending") : t("show_all")}
                 </Button>
             </div>
 
@@ -54,19 +55,17 @@ export default function InvitationFilter({
             <Table>
                 {!filteredInvitations.length && (
                     <TableCaption>
-                        {showAll
-                            ? "Aucune invitation."
-                            : "Aucune invitation en attente."}
+                        {showAll ? t("no_invitations") : t("no_pending_invitations")}
                     </TableCaption>
                 )}
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Rôle</TableHead>
-                        <TableHead>Statut</TableHead>
-                        <TableHead>Expire le</TableHead>
+                        <TableHead>{t("table_email")}</TableHead>
+                        <TableHead>{t("table_role")}</TableHead>
+                        <TableHead>{t("table_status")}</TableHead>
+                        <TableHead>{t("table_expires")}</TableHead>
                         {(canCreate || canCancel) && (
-                            <TableHead className="text-right">Action</TableHead>
+                            <TableHead className="text-right">{t("table_action")}</TableHead>
                         )}
                     </TableRow>
                 </TableHeader>
@@ -78,6 +77,7 @@ export default function InvitationFilter({
                             organizationId={organizationId}
                             canCreate={canCreate}
                             canCancel={canCancel}
+                            locale={locale}
                         />
                     ))}
                 </TableBody>

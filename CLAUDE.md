@@ -204,6 +204,159 @@ await execute(() => myServerAction(data), {
 });
 ```
 
+# **Internationalization (i18n)**
+
+This project uses **next-intl** for internationalization with French (fr) as the default language and English (en) support.
+
+## Configuration Files
+
+- `src/i18n/config.js` - Locale configuration (locales array, defaultLocale)
+- `src/i18n/request.js` - Request configuration for loading translations based on cookie
+- `messages/fr.json` - French translations
+- `messages/en.json` - English translations
+- Cookie: `NEXT_LOCALE` stores user's locale preference
+
+## Translation Patterns
+
+### Server Components
+
+```js
+import { getTranslations } from "next-intl/server";
+
+export default async function MyPage() {
+    const t = await getTranslations("namespace.subnamespace");
+
+    return <h1>{t("page_title")}</h1>;
+}
+```
+
+### Client Components
+
+```js
+"use client";
+import { useTranslations } from "next-intl";
+
+export default function MyComponent() {
+    const t = useTranslations("namespace.subnamespace");
+
+    return <h1>{t("page_title")}</h1>;
+}
+```
+
+### Zod Schemas in Client Components
+
+Schemas must be defined **inside** the component to access translation hooks:
+
+```js
+"use client";
+import { useTranslations } from "next-intl";
+
+export default function MyForm() {
+    const t = useTranslations("validation");
+
+    // ✅ Schema inside component to access t()
+    const formSchema = z.object({
+        name: z.string()
+            .min(2, t("name.min_length"))
+            .max(50, t("name.max_length")),
+    });
+
+    // ... rest of component
+}
+```
+
+## Translation Organization
+
+Translations are organized by namespaces in `messages/fr.json` and `messages/en.json`:
+
+```json
+{
+    "auth": {
+        "signin": { "page_title": "...", "email_label": "..." },
+        "signup": { "page_title": "...", "password_label": "..." }
+    },
+    "user": {
+        "settings": { "page_title": "...", "name_label": "..." }
+    },
+    "organization": {
+        "members": { "page_title": "...", "table_user": "..." }
+    },
+    "validation": {
+        "email": { "invalid": "...", "required": "..." },
+        "password": { "min_length": "...", "mismatch": "..." }
+    },
+    "common": { "cancel": "...", "save": "...", "n_a": "..." },
+    "roles": { "owner": "...", "admin": "...", "member": "..." },
+    "breadcrumbs": { "dashboard": "...", "settings": "..." }
+}
+```
+
+## Helper Functions for Dynamic Content
+
+For role labels, status labels, etc., use helper functions:
+
+```js
+// src/lib/constants.js
+export function getRoleLabel(role, t) {
+    return t(`roles.${role}`);
+}
+
+export function getInvitationStatusLabel(status, t) {
+    return t(`invitation_status.${status}`);
+}
+
+// Usage in components
+const roleLabel = getRoleLabel(member.role, t);
+```
+
+## Translation Keys Best Practices
+
+1. **Namespace by feature**: `auth.signin`, `user.settings`, `organization.members`
+2. **Descriptive keys**: `page_title`, `email_label`, `save_button`, `success_message`
+3. **Validation namespace**: Group all validation messages under `validation.*`
+4. **Common namespace**: Shared translations like buttons, labels, N/A
+5. **Use parameters**: `t("confirm_delete", { name: org.name })`
+
+## Adding Translations
+
+When adding new user-facing text:
+
+1. **Never hardcode text** - Always use translation keys
+2. **Add to both** `messages/fr.json` AND `messages/en.json`
+3. **Use appropriate namespace** based on the feature
+4. **Keep keys consistent** across languages
+5. **Test both languages** to ensure translations work
+
+## Example: Complete Page Translation
+
+```js
+// Server Component
+import { getTranslations } from "next-intl/server";
+
+export default async function MembersPage() {
+    const t = await getTranslations("organization.members");
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>{t("page_title")}</CardTitle>
+                <CardDescription>{t("page_description")}</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>{t("table_user")}</TableHead>
+                            <TableHead>{t("table_role")}</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                </Table>
+            </CardContent>
+        </Card>
+    );
+}
+```
+
 # **Documentation:**
 
 ✅ ALWAYS use web-search to find documentation about the library you're using.

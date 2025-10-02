@@ -18,13 +18,16 @@ import {
     removeUserAction,
     impersonateUserAction,
 } from "@/actions/admin.action";
-import { defaultRoleLabels } from "@/lib/constants";
+import { getRoleLabel } from "@/lib/constants";
 import { HatGlasses } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function UserActionMenu({ user, isCurrentUser }) {
+    const t = useTranslations("admin.users");
+    const tRoles = useTranslations("roles");
     const router = useRouter();
     const { execute } = useServerAction();
 
@@ -34,7 +37,9 @@ export default function UserActionMenu({ user, isCurrentUser }) {
         await execute(
             () => setUserRoleAction({ userId: user.id, role: newRole }),
             {
-                successMessage: `Rôle mis à jour vers ${defaultRoleLabels[newRole] || newRole}`,
+                successMessage: t("success_role_updated", {
+                    role: getRoleLabel(newRole, tRoles),
+                }),
             }
         );
     };
@@ -44,48 +49,48 @@ export default function UserActionMenu({ user, isCurrentUser }) {
             () =>
                 banUserAction({
                     userId: user.id,
-                    banReason: "Banni par l'administrateur",
+                    banReason: t("ban_reason"),
                 }),
             {
-                successMessage: "Utilisateur banni avec succès",
+                successMessage: t("success_banned"),
             }
         );
     };
 
     const handleUnbanUser = async () => {
         await execute(() => unbanUserAction({ userId: user.id }), {
-            successMessage: "Utilisateur débanni avec succès",
+            successMessage: t("success_unbanned"),
         });
     };
 
     const handleImpersonateUser = async () => {
         try {
-            // Utiliser authClient directement au lieu d'une server action
             const result = await authClient.admin.impersonateUser({
                 userId: user.id,
             });
 
             if (result.data?.session) {
-                toast.success("Usurpation réussie");
+                toast.success(t("success_impersonate"));
                 router.push("/dashboard");
                 router.refresh();
             }
         } catch (error) {
             console.error("Erreur lors de l'usurpation:", error);
+            toast.error(t("impersonate_error"));
         }
     };
 
     const handleRemoveUser = async () => {
         if (
             !confirm(
-                `Êtes-vous sûr de vouloir supprimer définitivement l'utilisateur ${user.name || user.email} ?`
+                t("confirm_delete", { name: user.name || user.email })
             )
         ) {
             return;
         }
 
         await execute(() => removeUserAction({ userId: user.id }), {
-            successMessage: "Utilisateur supprimé avec succès",
+            successMessage: t("success_deleted"),
         });
     };
 
@@ -95,18 +100,18 @@ export default function UserActionMenu({ user, isCurrentUser }) {
 
     const isBanned = user.banned;
 
-    // Filtrer uniquement les rôles user et admin
     const allowedRoles = ["user", "admin"];
-    const filteredRoles = Object.entries(defaultRoleLabels).filter(([role]) =>
-        allowedRoles.includes(role)
-    );
+    const filteredRoles = allowedRoles.map(role => [
+        role,
+        getRoleLabel(role, tRoles),
+    ]);
 
     return (
         <div className="flex gap-2 justify-end items-center">
             <Select value={user.role} onValueChange={handleRoleChange}>
                 <SelectTrigger className="w-fit">
                     <SelectValue>
-                        {defaultRoleLabels[user.role] || user.role}
+                        {getRoleLabel(user.role, tRoles)}
                     </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
@@ -121,23 +126,23 @@ export default function UserActionMenu({ user, isCurrentUser }) {
             {isBanned ? (
                 <Button onClick={handleUnbanUser} size="sm">
                     <UserCheck className="h-4 w-4 mr-2" />
-                    Débannir
+                    {t("unban_button")}
                 </Button>
             ) : (
                 <Button onClick={handleBanUser} size="sm">
                     <Ban className="h-4 w-4 mr-2" />
-                    Bannir
+                    {t("ban_button")}
                 </Button>
             )}
 
             <Button variant="outline" onClick={handleImpersonateUser} size="sm">
                 <HatGlasses className="h-4 w-4 mr-2" />
-                Usurper
+                {t("impersonate_button")}
             </Button>
 
             <Button variant="destructive" onClick={handleRemoveUser} size="sm">
                 <Trash2 className="h-4 w-4 mr-2" />
-                Supprimer
+                {t("delete_button")}
             </Button>
         </div>
     );

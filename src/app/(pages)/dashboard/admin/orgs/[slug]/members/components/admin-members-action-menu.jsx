@@ -15,10 +15,11 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import AdminRemoveMemberDialog from "./admin-remove-member-dialog";
-import { defaultRoleLabels } from "@/lib/constants";
+import { getRoleLabel } from "@/lib/constants";
 import { useServerAction } from "@/hooks/use-server-action";
 import { updateMemberRoleAsAdminAction } from "@/actions/admin.action";
 import { impersonateUserAction } from "@/actions/admin.action";
+import { useTranslations } from "next-intl";
 
 export default function AdminMembersActionMenu({
     member,
@@ -29,6 +30,11 @@ export default function AdminMembersActionMenu({
     const router = useRouter();
     const { execute, isPending } = useServerAction();
     const [removalTarget, setRemovalTarget] = useState(false);
+    const tMembers = useTranslations("admin.org_members");
+    const tDetails = useTranslations("admin.org_details");
+    const tRoles = useTranslations("roles");
+    const fallbackName =
+        member.user?.name || member.user?.email || tDetails("fallback_user");
 
     const handleRoleChange = useCallback(
         async role => {
@@ -44,7 +50,7 @@ export default function AdminMembersActionMenu({
                         organizationId,
                     }),
                 {
-                    successMessage: "Rôle mis à jour avec succès (Admin)",
+                    successMessage: tMembers("success_role_updated"),
                     onSuccess: () => {
                         router.refresh();
                     },
@@ -65,16 +71,25 @@ export default function AdminMembersActionMenu({
                     userId: member.user.id,
                 }),
             {
-                successMessage: `Usurpation de ${member.user.name || member.user.email} démarrée`,
+                successMessage: tMembers("success_impersonate", {
+                    name: fallbackName,
+                }),
                 onSuccess: () => {
                     router.push("/dashboard");
                     router.refresh();
                 },
             }
         );
-    }, [member?.user?.id, router, execute]);
+    }, [fallbackName, member?.user?.id, router, execute, tMembers]);
 
-    const roleOptions = useMemo(() => Object.entries(defaultRoleLabels), []);
+    const roleOptions = useMemo(
+        () =>
+            ["owner", "admin", "member"].map(role => ({
+                role,
+                label: getRoleLabel(role, tRoles),
+            })),
+        [tRoles]
+    );
 
     return (
         <>
@@ -84,7 +99,7 @@ export default function AdminMembersActionMenu({
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8"
-                        aria-label="Actions admin du membre"
+                        aria-label={tMembers("action_menu_label")}
                         disabled={isPending}
                     >
                         <MoreHorizontal
@@ -104,7 +119,7 @@ export default function AdminMembersActionMenu({
                         }}
                     >
                         <Eye className="mr-2 h-4 w-4" />
-                        Voir les détails
+                        {tMembers("view_details")}
                     </DropdownMenuItem>
 
                     {/* Usurper l'utilisateur */}
@@ -116,7 +131,7 @@ export default function AdminMembersActionMenu({
                         disabled={isPending}
                     >
                         <HatGlasses className="mr-2 h-4 w-4" />
-                        Usurper l&apos;utilisateur
+                        {tMembers("impersonate")}
                     </DropdownMenuItem>
 
                     <DropdownMenuSeparator />
@@ -125,10 +140,10 @@ export default function AdminMembersActionMenu({
                     <DropdownMenuSub>
                         <DropdownMenuSubTrigger>
                             <UserCog className="mr-2 h-4 w-4" />
-                            Modifier le rôle
+                            {tMembers("change_role")}
                         </DropdownMenuSubTrigger>
                         <DropdownMenuSubContent>
-                            {roleOptions.map(([role, label]) => (
+                            {roleOptions.map(({ role, label }) => (
                                 <DropdownMenuItem
                                     key={role}
                                     onSelect={event => {
@@ -155,7 +170,7 @@ export default function AdminMembersActionMenu({
                             }}
                             disabled={isPending}
                         >
-                            Supprimer de l&apos;organisation
+                            {tMembers("remove")}
                         </DropdownMenuItem>
                     )}
                 </DropdownMenuContent>

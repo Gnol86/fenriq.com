@@ -28,19 +28,22 @@ import {
 import { deleteOrganizationAction } from "@/actions/organization.action";
 import { useServerAction } from "@/hooks/use-server-action";
 import { TriangleAlert } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function DangerZoneForm({ organization }) {
+    const t = useTranslations("organization.danger_zone");
+    const tValidation = useTranslations("validation.confirmation");
+    const { execute, isPending } = useServerAction();
+
     const formSchema = z.object({
         confirmation: z
             .string()
             .trim()
-            .min(1, "Vous devez saisir le nom de l'organisation pour confirmer")
+            .min(1, tValidation("org_name_required"))
             .refine(value => value === organization.name, {
-                message:
-                    "Le nom saisi ne correspond pas à l'organisation active.",
+                message: tValidation("org_name_mismatch"),
             }),
     });
-    const { execute, isPending } = useServerAction();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -61,7 +64,7 @@ export default function DangerZoneForm({ organization }) {
                     organizationId: organization.id,
                 }),
             {
-                successMessage: "Organisation supprimée avec succès",
+                successMessage: t("success_message"),
                 redirectOnSuccess: "/dashboard",
             }
         );
@@ -75,12 +78,10 @@ export default function DangerZoneForm({ organization }) {
             >
                 <div className="rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
                     <p className="font-medium">
-                        Cette action est définitive et supprimera toutes les
-                        données de l'organisation "{organization.name}".
+                        {t("warning_title", { name: organization.name })}
                     </p>
                     <p className="text-destructive/70">
-                        Assurez-vous d'avoir exporté toutes les informations
-                        nécessaires avant de continuer.
+                        {t("warning_subtitle")}
                     </p>
                 </div>
 
@@ -89,12 +90,11 @@ export default function DangerZoneForm({ organization }) {
                     name="confirmation"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
-                                Confirmez le nom de l'organisation
-                            </FormLabel>
+                            <FormLabel>{t("confirm_label")}</FormLabel>
                             <FormDescription>
-                                Tapez "{organization.name}" pour valider la
-                                suppression.
+                                {t("confirm_description", {
+                                    name: organization.name,
+                                })}
                             </FormDescription>
                             <FormControl>
                                 <Input
@@ -117,29 +117,30 @@ export default function DangerZoneForm({ organization }) {
                                 loading={isPending}
                                 disabled={!form.formState.isValid}
                             >
-                                <TriangleAlert /> Supprimer l'organisation
+                                <TriangleAlert /> {t("delete_button")}
                                 <TriangleAlert />
                             </FormButton>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
                                 <AlertDialogTitle>
-                                    Êtes-vous absolument sûr ?
+                                    {t("alert_title")}
                                 </AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    Cette action ne peut pas être annulée. Cela
-                                    supprimera définitivement l'organisation "
-                                    {organization.name}" et toutes ses données
-                                    associées.
+                                    {t("alert_description", {
+                                        name: organization.name,
+                                    })}
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                <AlertDialogCancel>
+                                    {t("alert_cancel")}
+                                </AlertDialogCancel>
                                 <AlertDialogAction
                                     onClick={handleDeleteConfirmation}
                                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                 >
-                                    Supprimer définitivement
+                                    {t("alert_confirm")}
                                 </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>

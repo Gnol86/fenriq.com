@@ -21,8 +21,10 @@ import InviteMemberDialog from "../invitations/components/invite-member-dialog";
 import MemberStats from "./components/member-stats";
 import MemberTableRow from "./components/member-table-row";
 import { hasPermissionAction } from "@/actions/organization.action";
+import { getTranslations } from "next-intl/server";
 
 export default async function OrganizationMembersPage() {
+    const t = await getTranslations("organization.members");
     const session = await auth.api.getSession({
         headers: await headers(),
     });
@@ -66,10 +68,9 @@ export default async function OrganizationMembersPage() {
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Membres de l&apos;organisation</CardTitle>
+                    <CardTitle>{t("page_title")}</CardTitle>
                     <CardDescription>
-                        Gérez les membres actifs de votre organisation, leurs
-                        rôles et leurs permissions.
+                        {t("page_description")}
                         <MemberStats members={members} />
                     </CardDescription>
                     {canInvitationCreate && (
@@ -85,18 +86,16 @@ export default async function OrganizationMembersPage() {
                 <CardContent>
                     <Table>
                         {!members.length && (
-                            <TableCaption>
-                                Aucun membre dans l&apos;organisation.
-                            </TableCaption>
+                            <TableCaption>{t("no_members")}</TableCaption>
                         )}
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Utilisateur</TableHead>
-                                <TableHead>Rôle</TableHead>
-                                <TableHead>Depuis</TableHead>
+                                <TableHead>{t("table_user")}</TableHead>
+                                <TableHead>{t("table_role")}</TableHead>
+                                <TableHead>{t("table_since")}</TableHead>
                                 {(canMemberUpdate || canMemberDelete) && (
                                     <TableHead className="text-right">
-                                        Action
+                                        {t("table_action")}
                                     </TableHead>
                                 )}
                             </TableRow>

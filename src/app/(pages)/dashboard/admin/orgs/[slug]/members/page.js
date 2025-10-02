@@ -19,9 +19,12 @@ import AdminInviteMemberDialog from "./components/admin-invite-member-dialog";
 import AdminMemberStats from "./components/admin-member-stats";
 import AdminMemberTableRow from "./components/admin-member-table-row";
 import { getOrganizationBySlugAsAdminAction } from "@/actions/admin.action";
+import { getTranslations } from "next-intl/server";
 
 export default async function AdminOrganizationMembersPage({ params }) {
     const { slug } = params;
+    const tOrgMembers = await getTranslations("organization.members");
+    const tAdminMembers = await getTranslations("admin.org_members");
 
     const organizationResult = await getOrganizationBySlugAsAdminAction({
         slug,
@@ -38,12 +41,14 @@ export default async function AdminOrganizationMembersPage({ params }) {
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Membres de l&apos;organisation</CardTitle>
-                    <CardDescription>
-                        Gérez les membres de l&apos;organisation{" "}
-                        {organization.name}, leurs rôles et leurs permissions.
-                        En tant qu&apos;administrateur, vous avez tous les
-                        droits sur cette organisation.
+                    <CardTitle>{tOrgMembers("page_title")}</CardTitle>
+                    <CardDescription className="flex flex-col gap-2">
+                        {tAdminMembers("page_description", {
+                            name: organization.name,
+                        })}
+                        <span className="text-muted-foreground">
+                            {tAdminMembers("page_note")}
+                        </span>
                         <AdminMemberStats members={members} />
                     </CardDescription>
                     <CardAction>
@@ -58,16 +63,16 @@ export default async function AdminOrganizationMembersPage({ params }) {
                     <Table>
                         {!members.length && (
                             <TableCaption>
-                                Aucun membre dans l&apos;organisation.
+                                {tOrgMembers("no_members")}
                             </TableCaption>
                         )}
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Utilisateur</TableHead>
-                                <TableHead>Rôle</TableHead>
-                                <TableHead>Depuis</TableHead>
+                                <TableHead>{tOrgMembers("table_user")}</TableHead>
+                                <TableHead>{tOrgMembers("table_role")}</TableHead>
+                                <TableHead>{tOrgMembers("table_since")}</TableHead>
                                 <TableHead className="text-right">
-                                    Actions Admin
+                                    {tAdminMembers("table_actions")}
                                 </TableHead>
                             </TableRow>
                         </TableHeader>

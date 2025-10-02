@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Loader2, MailPlus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -14,7 +14,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { defaultRoleLabels } from "@/lib/constants";
 import {
     Dialog,
     DialogContent,
@@ -35,13 +34,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { inviteMemberAction } from "@/actions/organization.action";
 import { useRouter } from "next/navigation";
-
-const inviteSchema = z.object({
-    email: z.email("Adresse email invalide").trim(),
-    role: z.enum(["member", "admin"], {
-        required_error: "Veuillez sélectionner un rôle",
-    }),
-});
+import { useTranslations } from "next-intl";
+import { getRoleLabel } from "@/lib/constants";
 
 export default function AdminInviteMemberDialog({
     organizationId,
@@ -50,6 +44,25 @@ export default function AdminInviteMemberDialog({
     const { execute, isPending } = useServerAction();
     const [open, setOpen] = useState(false);
     const router = useRouter();
+    const tMembers = useTranslations("admin.org_members");
+    const tInvitations = useTranslations("organization.invitations");
+    const tValidation = useTranslations("validation");
+    const tRoles = useTranslations("roles");
+
+    const inviteSchema = useMemo(
+        () =>
+            z.object({
+                email: z
+                    .string()
+                    .trim()
+                    .email(tValidation("email.invalid")),
+                role: z.enum(["member", "admin"], {
+                    required_error: tValidation("role.required"),
+                }),
+            }),
+        [tValidation]
+    );
+
     const form = useForm({
         resolver: zodResolver(inviteSchema),
         defaultValues: { email: "", role: "member" },
@@ -64,7 +77,7 @@ export default function AdminInviteMemberDialog({
                     organizationId,
                 }),
             {
-                successMessage: "Invitation envoyée avec succès (Admin)",
+                successMessage: tMembers("invite_success"),
                 onSuccess: () => {
                     router.refresh();
                 },
@@ -80,16 +93,16 @@ export default function AdminInviteMemberDialog({
             <DialogTrigger asChild>
                 <Button type="button" className="self-start" size="sm">
                     <MailPlus className="mr-2 h-4 w-4" aria-hidden="true" />
-                    Inviter un membre
+                    {tMembers("invite_trigger")}
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Inviter un membre (Admin)</DialogTitle>
+                    <DialogTitle>{tMembers("invite_title")}</DialogTitle>
                     <DialogDescription>
-                        En tant qu&apos;administrateur, invitez une nouvelle
-                        personne dans l&apos;organisation{" "}
-                        {organizationName ?? ""}.
+                        {tMembers("invite_description", {
+                            name: organizationName ?? "",
+                        })}
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -102,12 +115,16 @@ export default function AdminInviteMemberDialog({
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Adresse email</FormLabel>
+                                    <FormLabel>
+                                        {tInvitations("email_label")}
+                                    </FormLabel>
                                     <FormControl>
                                         <Input
                                             {...field}
                                             type="email"
-                                            placeholder="prenom.nom@example.com"
+                                            placeholder={tInvitations(
+                                                "email_placeholder"
+                                            )}
                                             autoFocus
                                             disabled={isPending}
                                         />
@@ -121,7 +138,9 @@ export default function AdminInviteMemberDialog({
                             name="role"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Rôle</FormLabel>
+                                    <FormLabel>
+                                        {tInvitations("role_label")}
+                                    </FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
@@ -129,16 +148,19 @@ export default function AdminInviteMemberDialog({
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Sélectionner un rôle" />
+                                                <SelectValue
+                                                    placeholder={tMembers(
+                                                        "invite_role_placeholder"
+                                                    )}
+                                                />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="member">
-                                                {defaultRoleLabels.member}
-                                            </SelectItem>
-                                            <SelectItem value="admin">
-                                                {defaultRoleLabels.admin}
-                                            </SelectItem>
+                                            {["member", "admin"].map(role => (
+                                                <SelectItem key={role} value={role}>
+                                                    {getRoleLabel(role, tRoles)}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -152,7 +174,7 @@ export default function AdminInviteMemberDialog({
                                 onClick={() => setOpen(false)}
                                 disabled={isPending}
                             >
-                                Annuler
+                                {tMembers("invite_cancel")}
                             </Button>
                             <Button type="submit" disabled={isPending}>
                                 {isPending && (
@@ -161,7 +183,7 @@ export default function AdminInviteMemberDialog({
                                         aria-hidden="true"
                                     />
                                 )}
-                                Envoyer l&apos;invitation
+                                {tMembers("invite_submit")}
                             </Button>
                         </DialogFooter>
                     </form>

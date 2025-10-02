@@ -7,8 +7,11 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 
-export default function Page() {
+export default async function Page() {
+    const t = await getTranslations("auth.signup");
+
     return (
         <Card className="w-sm">
             <CardHeader className="flex items-start gap-4">
@@ -19,10 +22,9 @@ export default function Page() {
                     height={75}
                 />
                 <div className="flex flex-col gap-2">
-                    <CardTitle className="text-xl">S&apos;inscrire</CardTitle>
+                    <CardTitle className="text-xl">{t("page_title")}</CardTitle>
                     <CardDescription>
-                        Inscrivez-vous pour obtenir un accès à
-                        l&apos;application
+                        {t("page_description")}
                     </CardDescription>
                 </div>
             </CardHeader>

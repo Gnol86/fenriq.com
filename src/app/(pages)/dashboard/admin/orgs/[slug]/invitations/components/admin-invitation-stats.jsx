@@ -1,3 +1,7 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 /**
  * Composant pour afficher les statistiques d'invitations (version admin)
  * Affiche le nombre d'invitations par statut avec plus de détails
@@ -15,47 +19,38 @@ export default function AdminInvitationStats({ invitations }) {
         invitation => invitation.status === "expired"
     ).length;
     const totalInvitationsCount = invitations.length;
+    const t = useTranslations("admin.org_invitations");
 
     if (totalInvitationsCount === 0) {
         return (
             <span className="block mt-1 text-muted-foreground">
-                Aucune invitation envoyée
+                {t("empty_all")}
             </span>
         );
     }
 
     return (
         <div className="mt-2 space-y-1">
-            {/* Invitations en attente */}
             {pendingInvitationsCount > 0 && (
                 <span className="block text-amber-600 dark:text-amber-400">
-                    {pendingInvitationsCount} invitation
-                    {pendingInvitationsCount > 1 ? "s" : ""} en attente
+                    {t("stats_pending", { count: pendingInvitationsCount })}
                 </span>
             )}
 
-            {/* Invitations acceptées */}
             {acceptedInvitationsCount > 0 && (
                 <span className="block text-green-600 dark:text-green-400">
-                    {acceptedInvitationsCount} invitation
-                    {acceptedInvitationsCount > 1 ? "s" : ""} acceptée
-                    {acceptedInvitationsCount > 1 ? "s" : ""}
+                    {t("stats_accepted", { count: acceptedInvitationsCount })}
                 </span>
             )}
 
-            {/* Invitations expirées */}
             {expiredInvitationsCount > 0 && (
                 <span className="block text-red-600 dark:text-red-400">
-                    {expiredInvitationsCount} invitation
-                    {expiredInvitationsCount > 1 ? "s" : ""} expirée
-                    {expiredInvitationsCount > 1 ? "s" : ""}
+                    {t("stats_expired", { count: expiredInvitationsCount })}
                 </span>
             )}
 
-            {/* Total */}
             <span className="block text-muted-foreground text-sm">
-                Total : {totalInvitationsCount} invitation
-                {totalInvitationsCount > 1 ? "s" : ""} (Admin)
+                {t("stats_total", { count: totalInvitationsCount })}
             </span>
         </div>
     );

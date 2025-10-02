@@ -1,3 +1,3 @@
 export default function DefaultBreadcrumb() {
-    return null; // rien par défaut
+    return null; // nothing by default
 }

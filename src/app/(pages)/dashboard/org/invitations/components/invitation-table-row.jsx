@@ -19,6 +19,7 @@ export default function InvitationTableRow({
     organizationId,
     canCreate,
     canCancel,
+    locale,
 }) {
     const statusLabel = getInvitationDisplayStatus(invitation);
     const invitationRole = invitation.role ?? "member";
@@ -49,7 +50,7 @@ export default function InvitationTableRow({
             <TableCell>
                 <span className="text-sm text-muted-foreground">
                     {invitation.expiresAt
-                        ? formatDate(invitation.expiresAt)
+                        ? formatDate(invitation.expiresAt, locale)
                         : "-"}
                 </span>
             </TableCell>

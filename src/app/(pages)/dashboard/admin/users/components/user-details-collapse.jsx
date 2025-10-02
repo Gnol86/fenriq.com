@@ -21,14 +21,18 @@ import {
     Trash2,
     UserLock,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import UserActionMenu from "./user-action-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function UserDetailsCollapse({ user, isCurrentUser }) {
     const [sessions, setSessions] = useState([]);
     const [loadingSessions, setLoadingSessions] = useState(false);
     const { execute } = useServerAction();
+    const tUsers = useTranslations("admin.users");
+    const tCommon = useTranslations("common");
+    const locale = useLocale();
 
     // Charger les sessions de l'utilisateur
     useEffect(() => {
@@ -52,7 +56,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
 
     const handleRevokeSession = async sessionToken => {
         await execute(() => revokeUserSessionAction({ sessionToken }), {
-            successMessage: "Session révoquée avec succès",
+            successMessage: tUsers("sessions_revoke_success"),
         });
 
         // Recharger les sessions
@@ -64,42 +68,44 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
     const handleRevokeAllSessions = async () => {
         if (
             !confirm(
-                `Êtes-vous sûr de vouloir révoquer toutes les sessions de ${user.name || user.email} ?`
+                tUsers("sessions_revoke_confirm", {
+                    name: user.name || user.email,
+                })
             )
         ) {
             return;
         }
 
         await execute(() => revokeUserSessionsAction({ userId: user.id }), {
-            successMessage: "Toutes les sessions ont été révoquées",
+            successMessage: tUsers("sessions_revoke_all_success"),
         });
 
         setSessions([]);
     };
 
     const formatSessionDate = date => {
-        if (!date) return "N/A";
+        if (!date) return tCommon("n_a");
         const dateObj = new Date(date);
-        if (isNaN(dateObj.getTime())) return "N/A";
+        if (isNaN(dateObj.getTime())) return tCommon("n_a");
 
-        return dateObj.toLocaleString("fr-FR", {
+        return new Intl.DateTimeFormat(locale, {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
-        });
+        }).format(dateObj);
     };
 
     const getUserAgent = userAgent => {
-        if (!userAgent) return "Inconnu";
+        if (!userAgent) return tUsers("sessions_unknown");
 
         // Extraction simple du navigateur et OS
         if (userAgent.includes("Chrome")) return "Chrome";
         if (userAgent.includes("Firefox")) return "Firefox";
         if (userAgent.includes("Safari")) return "Safari";
         if (userAgent.includes("Edge")) return "Edge";
-        return "Autre";
+        return tUsers("sessions_unknown");
     };
 
     return (
@@ -109,13 +115,13 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                     <div className="flex items-center justify-between w-full ">
                         <div className="flex items-center gap-1.5 font-bold">
                             <Shield className="h-4 w-4 mt-0.25" />
-                            Informations détaillées
+                            {tUsers("details_title")}
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 text-sm">
                         <div className="flex items-center gap-1">
                             <div className="font-medium text-muted-foreground">
-                                ID
+                                {tUsers("details_id")}
                             </div>
                             <p className="font-mono text-xs break-all">
                                 {user.id}
@@ -123,7 +129,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                         </div>
                         <div className="flex items-center gap-1">
                             <div className="font-medium text-muted-foreground">
-                                Email
+                                {tUsers("details_email")}
                             </div>
                             <div className="flex items-center gap-1">
                                 <Mail className="h-3 w-3" />
@@ -143,38 +149,38 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                         </div>
                         <div className="flex items-center gap-1">
                             <div className="font-medium text-muted-foreground">
-                                Créé le
+                                {tUsers("details_created")}
                             </div>
                             <div className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
-                                {formatDate(user.createdAt)}
+                                {formatDate(user.createdAt, locale)}
                             </div>
                         </div>
                         <div className="flex items-center gap-1">
                             <div className="font-medium text-muted-foreground">
-                                Modifié le
+                                {tUsers("details_updated")}
                             </div>
                             <div className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
-                                {formatDate(user.updatedAt)}
+                                {formatDate(user.updatedAt, locale)}
                             </div>
                         </div>
                         {user.banned && (
                             <div className="flex gap-1">
                                 <div className="font-medium text-destructive">
-                                    Banni
+                                    {tUsers("details_banned")}
                                 </div>
                                 <div className="flex flex-col gap-1">
                                     {user.banReason && (
                                         <div className="flex items-center gap-1">
                                             <UserLock className="h-3 w-3" />
-                                            {user.banReason}
+                                            {tUsers("details_ban_reason")}: {user.banReason}
                                         </div>
                                     )}
                                     {user.banExpiresIn && (
                                         <div className="flex items-center gap-1">
                                             <Clock className="h-3 w-3" />
-                                            {user.banExpiresIn}
+                                            {tUsers("details_ban_expires")}: {user.banExpiresIn}
                                         </div>
                                     )}
                                 </div>
@@ -187,7 +193,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                     <div className="flex items-center justify-between w-full ">
                         <div className="flex items-center gap-1.5 font-bold">
                             <Monitor className="h-4 w-4 mt-0.25" />
-                            Sessions actives ({sessions.length})
+                            {tUsers("sessions_title", { count: sessions.length })}
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 text-sm">
@@ -198,16 +204,16 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                 onClick={handleRevokeAllSessions}
                             >
                                 <Trash2 className="h-3 w-3 mr-1" />
-                                Tout révoquer
+                                {tUsers("sessions_revoke_all")}
                             </Button>
                         )}
                         {loadingSessions ? (
                             <div className="text-center py-4 text-muted-foreground">
-                                Chargement des sessions...
+                                {tUsers("sessions_loading")}
                             </div>
                         ) : sessions.length === 0 ? (
                             <div className="text-center py-4 text-muted-foreground">
-                                Aucune session active
+                                {tUsers("sessions_empty")}
                             </div>
                         ) : (
                             <ScrollArea onCard className="max-h-40 ">
@@ -235,17 +241,13 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                                     )}
                                                 </div>
                                                 <div className="text-xs text-muted-foreground">
-                                                    Créée:{" "}
-                                                    {formatSessionDate(
-                                                        session.createdAt
-                                                    )}
+                                                    {tUsers("sessions_created")}{" "}
+                                                    {formatSessionDate(session.createdAt)}
                                                 </div>
                                                 {session.expiresAt && (
                                                     <div className="text-xs text-muted-foreground">
-                                                        Expire:{" "}
-                                                        {formatSessionDate(
-                                                            session.expiresAt
-                                                        )}
+                                                        {tUsers("sessions_expires")}{" "}
+                                                        {formatSessionDate(session.expiresAt)}
                                                     </div>
                                                 )}
                                             </div>
@@ -258,6 +260,9 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                                     )
                                                 }
                                                 className="ml-2"
+                                                aria-label={tUsers(
+                                                    "sessions_revoke_all"
+                                                )}
                                             >
                                                 <Trash2 className="h-3 w-3" />
                                             </Button>

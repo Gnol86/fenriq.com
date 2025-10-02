@@ -18,27 +18,37 @@ import ImageProfile from "@/components/image-profile";
 import { useServerAction } from "@/hooks/use-server-action";
 import { updateOrganizationAction } from "@/actions/admin.action";
 import { useRouter } from "next/navigation";
-
-const formSchema = z.object({
-    name: z
-        .string()
-        .trim()
-        .regex(
-            /^[\p{L}\p{N} -]+$/u,
-            "Le nom ne peut contenir que des lettres, chiffres, espaces ou tirets"
-        )
-        .min(2, "Le nom doit contenir au moins 2 caractères")
-        .max(80, "Le nom ne peut pas dépasser 80 caractères")
-        .refine(value => {
-            const alphanumericMatches = value.match(/\p{L}|\p{N}/gu) ?? [];
-            return alphanumericMatches.length >= 2;
-        }, "Le nom doit contenir au minimum deux caractères alphanumériques"),
-});
+import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 
 export default function AdminManageOrganizationForm({ organization }) {
     const { execute, isPending } = useServerAction();
     const router = useRouter();
     const organizationName = organization?.name ?? "";
+    const tAdminManage = useTranslations("admin.org_manage");
+    const tOrgManage = useTranslations("organization.manage");
+    const tValidation = useTranslations("validation.organization_name");
+
+    const formSchema = useMemo(
+        () =>
+            z.object({
+                name: z
+                    .string()
+                    .trim()
+                    .regex(
+                        /^[\p{L}\p{N} -]+$/u,
+                        tValidation("pattern")
+                    )
+                    .min(2, tValidation("min_length"))
+                    .max(80, tValidation("max_length"))
+                    .refine(value => {
+                        const alphanumericMatches =
+                            value.match(/\p{L}|\p{N}/gu) ?? [];
+                        return alphanumericMatches.length >= 2;
+                    }, tValidation("min_alphanumeric")),
+            }),
+        [tValidation]
+    );
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -57,7 +67,7 @@ export default function AdminManageOrganizationForm({ organization }) {
                     },
                 }),
             {
-                successMessage: "Organisation mise à jour avec succès",
+                successMessage: tAdminManage("success_message"),
                 onSuccess: () => {
                     router.refresh();
                 },
@@ -73,19 +83,13 @@ export default function AdminManageOrganizationForm({ organization }) {
             >
                 <section className="flex flex-col gap-3">
                     <p className="text-sm font-medium text-foreground">
-                        Image de profil
+                        {tAdminManage("image_section_title")}
                     </p>
                     <div className="flex items-center gap-4">
                         <ImageProfile entity={organization} size="2xl" />
                         <div className="flex flex-col text-sm text-muted-foreground">
-                            <span>
-                                Le téléchargement d&apos;une nouvelle image
-                                n&apos;est pas encore disponible.
-                            </span>
-                            <span>
-                                Cette image correspond à celle enregistrée pour
-                                l&apos;organisation.
-                            </span>
+                            <span>{tAdminManage("image_section_info_1")}</span>
+                            <span>{tAdminManage("image_section_info_2")}</span>
                         </div>
                     </div>
                 </section>
@@ -95,7 +99,7 @@ export default function AdminManageOrganizationForm({ organization }) {
                     name="name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Nom de l&apos;organisation</FormLabel>
+                            <FormLabel>{tOrgManage("name_label")}</FormLabel>
                             <FormControl>
                                 <Input
                                     {...field}
@@ -104,7 +108,7 @@ export default function AdminManageOrganizationForm({ organization }) {
                                 />
                             </FormControl>
                             <FormDescription>
-                                Ce nom est visible par tous les membres.
+                                {tOrgManage("name_description")}
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -113,18 +117,15 @@ export default function AdminManageOrganizationForm({ organization }) {
 
                 <div className="flex justify-end">
                     <FormButton type="submit" loading={isPending}>
-                        Enregistrer les modifications
+                        {tAdminManage("submit_button")}
                     </FormButton>
                 </div>
             </form>
         </Form>
     ) : (
         <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-            <p>Organisation non trouvée.</p>
-            <p>
-                Vérifiez que l&apos;organisation existe et que le slug est
-                correct.
-            </p>
+            <p>{tAdminManage("not_found_title")}</p>
+            <p>{tAdminManage("not_found_description")}</p>
         </div>
     );
 }

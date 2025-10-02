@@ -26,10 +26,13 @@ import { Eye } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getTranslations, getLocale } from "next-intl/server";
 
 const ORGS_PER_PAGE = 10;
 
 export default async function AdminOrganizationsPage({ searchParams }) {
+    const t = await getTranslations("admin.organizations");
+    const locale = await getLocale();
     // Parse search parameters
     const resolvedSearchParams = await searchParams;
     const searchValue = resolvedSearchParams?.search || "";
@@ -79,36 +82,36 @@ export default async function AdminOrganizationsPage({ searchParams }) {
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Gestion des organisations</CardTitle>
+                    <CardTitle>{t("page_title")}</CardTitle>
                     <CardDescription className="flex flex-col gap-1">
-                        Gérez toutes les organisations de la plateforme.
+                        {t("page_description")}
                         <span className="text-muted-foreground">
-                            Total: {lengthTotalOrgs} organisations
+                            {t("page_total", { count: lengthTotalOrgs })}
                         </span>
                     </CardDescription>
                 </CardHeader>
 
                 <CardContent className="flex flex-col w-full gap-4">
                     {/* Search */}
-                    <SearchInput placeholder="Rechercher par nom d'organisation..." />
+                    <SearchInput placeholder={t("search_placeholder")} />
 
                     {/* Organizations table */}
                     <Table>
                         {!organizations.length && (
                             <TableCaption>
                                 {searchValue
-                                    ? "Aucune organisation trouvée pour cette recherche."
-                                    : "Aucune organisation trouvée."}
+                                    ? t("no_search_results")
+                                    : t("no_organizations")}
                             </TableCaption>
                         )}
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Organisation</TableHead>
-                                <TableHead>Statut</TableHead>
-                                <TableHead>Membres</TableHead>
-                                <TableHead>Créée le</TableHead>
+                                <TableHead>{t("table_organization")}</TableHead>
+                                <TableHead>{t("table_status")}</TableHead>
+                                <TableHead>{t("table_members")}</TableHead>
+                                <TableHead>{t("table_created")}</TableHead>
                                 <TableHead className="text-right">
-                                    Détails
+                                    {t("table_details")}
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -139,7 +142,7 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                             variant="outline"
                                             className="text-xs"
                                         >
-                                            A modifier
+                                            {t("status_placeholder")}
                                         </Badge>
                                     </TableCell>
 
@@ -149,7 +152,7 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                     {/* Date de création */}
                                     <TableCell>
                                         <span className="text-sm text-muted-foreground">
-                                            {formatDate(org.createdAt)}
+                                            {formatDate(org.createdAt, locale)}
                                         </span>
                                     </TableCell>
 

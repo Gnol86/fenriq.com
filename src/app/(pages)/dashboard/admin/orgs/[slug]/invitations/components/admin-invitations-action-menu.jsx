@@ -17,30 +17,7 @@ import {
     cancelInvitationAsAdminAction,
     resendInvitationAsAdminAction,
 } from "@/actions/admin.action";
-
-function copyLink(invitationId) {
-    try {
-        const origin =
-            typeof window !== "undefined" && window.location?.origin
-                ? window.location.origin
-                : "";
-        const link = `${origin}/invitations/${invitationId}`;
-        if (navigator?.clipboard?.writeText) {
-            navigator.clipboard.writeText(link);
-        } else {
-            const textarea = document.createElement("textarea");
-            textarea.value = link;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand("copy");
-            document.body.removeChild(textarea);
-        }
-        toast.success("Lien d'invitation copié (Admin)");
-    } catch (error) {
-        console.error("Failed to copy invitation link", error);
-        toast.error("Impossible de copier le lien d'invitation");
-    }
-}
+import { useTranslations } from "next-intl";
 
 export default function AdminInvitationsActionMenu({
     invitation,
@@ -49,10 +26,37 @@ export default function AdminInvitationsActionMenu({
 }) {
     const router = useRouter();
     const { execute, isPending } = useServerAction();
+    const tInvitations = useTranslations("organization.invitations");
+    const tAdminInvitations = useTranslations("admin.org_invitations");
+    const tMembers = useTranslations("admin.org_members");
+
+    const copyLink = useCallback(() => {
+        try {
+            const origin =
+                typeof window !== "undefined" && window.location?.origin
+                    ? window.location.origin
+                    : "";
+            const link = `${origin}/invitations/${invitation.id}`;
+            if (navigator?.clipboard?.writeText) {
+                navigator.clipboard.writeText(link);
+            } else {
+                const textarea = document.createElement("textarea");
+                textarea.value = link;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textarea);
+            }
+            toast.success(tInvitations("success_link_copied"));
+        } catch (error) {
+            console.error("Failed to copy invitation link", error);
+            toast.error(tInvitations("error_copy_link"));
+        }
+    }, [invitation.id, tInvitations]);
 
     const resendInvitation = useCallback(async () => {
         if (!invitation?.email || !organizationId) {
-            toast.error("Impossible de renvoyer cette invitation");
+            toast.error(tInvitations("error_resend"));
             return;
         }
 
@@ -64,17 +68,17 @@ export default function AdminInvitationsActionMenu({
                     organizationId,
                 }),
             {
-                successMessage: "Invitation renvoyée avec succès (Admin)",
+                successMessage: tInvitations("success_resent"),
                 onSuccess: () => {
                     router.refresh();
                 },
             }
         );
-    }, [invitation, organizationId, router, execute]);
+    }, [execute, invitation, organizationId, router, tInvitations]);
 
     const cancelInvitation = useCallback(async () => {
         if (!invitation?.id || !organizationId) {
-            toast.error("Invitation introuvable");
+            toast.error(tInvitations("error_not_found"));
             return;
         }
 
@@ -85,17 +89,17 @@ export default function AdminInvitationsActionMenu({
                     organizationId,
                 }),
             {
-                successMessage: "Invitation annulée avec succès (Admin)",
+                successMessage: tInvitations("success_cancelled"),
                 onSuccess: () => {
                     router.refresh();
                 },
             }
         );
-    }, [invitation, organizationId, router, execute]);
+    }, [execute, invitation, organizationId, router, tInvitations]);
 
     const viewInvitationDetails = useCallback(() => {
-        toast.info(`Invitation ID: ${invitation.id}`);
-    }, [invitation.id]);
+        toast.info(tAdminInvitations("toast_invitation_id", { id: invitation.id }));
+    }, [invitation.id, tAdminInvitations]);
 
     return (
         <DropdownMenu>
@@ -104,7 +108,7 @@ export default function AdminInvitationsActionMenu({
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8"
-                    aria-label="Actions admin sur l'invitation"
+                    aria-label={tAdminInvitations("action_menu_label")}
                     disabled={isPending}
                 >
                     <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
@@ -120,7 +124,7 @@ export default function AdminInvitationsActionMenu({
                     }}
                 >
                     <Eye className="mr-2 h-4 w-4" />
-                    Voir les détails
+                    {tMembers("view_details")}
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
@@ -129,11 +133,11 @@ export default function AdminInvitationsActionMenu({
                 <DropdownMenuItem
                     onSelect={event => {
                         event.preventDefault();
-                        copyLink(invitation.id);
+                        copyLink();
                     }}
                 >
                     <Copy className="mr-2 h-4 w-4" />
-                    Copier le lien
+                    {tInvitations("menu_copy_link")}
                 </DropdownMenuItem>
 
                 {/* Renvoyer l'invitation */}
@@ -145,7 +149,7 @@ export default function AdminInvitationsActionMenu({
                     disabled={isPending}
                 >
                     <RotateCcw className="mr-2 h-4 w-4" />
-                    Renvoyer l&apos;invitation
+                    {tInvitations("menu_resend")}
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
@@ -160,7 +164,7 @@ export default function AdminInvitationsActionMenu({
                     disabled={isPending}
                 >
                     <X className="mr-2 h-4 w-4" />
-                    Annuler l&apos;invitation
+                    {tInvitations("menu_cancel")}
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

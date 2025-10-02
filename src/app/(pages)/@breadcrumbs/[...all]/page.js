@@ -1,34 +1,24 @@
 import Breadcrumb from "@/components/breadcrumb";
-
-const LABELS = {
-    app: "Documents",
-    dashboard: "Dashboard",
-    org: "Organisation",
-    orgs: "Organisations",
-    new: "Créer une organisation",
-    manage: "Gérer l’organisation",
-    members: "Membres",
-    "danger-zone": "Danger",
-    user: "Utilisateur",
-    invitations: "Invitations",
-    users: "Utilisateurs",
-    admin: "Administration",
-    settings: "Paramètres",
-};
+import { getTranslations } from "next-intl/server";
 
 export default async function BreadcrumbSlot({ params }) {
     const resolvedParams = await params;
     const segments = resolvedParams.all || [];
 
+    if (!segments.length) return null;
+
+    const t = await getTranslations("breadcrumbs");
+
     let href = "";
     const items = segments.map(seg => {
         href += "/" + seg;
+        const key = seg.replace(/-/g, "_");
+        const name = t.has(key) ? t(key) : decodeURIComponent(seg);
         return {
-            name: LABELS[seg] ?? decodeURIComponent(seg),
+            name,
             href: href,
         };
     });
 
-    if (!items.length) return null;
-    return <Breadcrumb items={[...items]} />;
+    return <Breadcrumb items={items} />;
 }

@@ -7,8 +7,11 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 
-export default function Page() {
+export default async function Page() {
+    const t = await getTranslations("auth.verify_email");
+
     return (
         <Card className="w-sm">
             <CardHeader className="flex items-start gap-4">
@@ -20,12 +23,10 @@ export default function Page() {
                 />
                 <div className="flex flex-col gap-2">
                     <CardTitle className="text-xl">
-                        Vérification de l&apos;email
+                        {t("page_title")}
                     </CardTitle>
                     <CardDescription>
-                        Votre compte n&apos;est pas encore vérifié. Vérifiez
-                        votre boîte email ou demandez un nouveau lien de
-                        vérification.
+                        {t("page_description")}
                     </CardDescription>
                 </div>
             </CardHeader>

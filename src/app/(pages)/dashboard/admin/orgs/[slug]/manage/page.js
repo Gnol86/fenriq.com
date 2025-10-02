@@ -8,9 +8,12 @@ import {
 } from "@/components/ui/card";
 import { notFound } from "next/navigation";
 import { getOrganizationBySlugAsAdminAction } from "@/actions/admin.action";
+import { getTranslations } from "next-intl/server";
 
 export default async function AdminOrganizationManagePage({ params }) {
     const { slug } = params;
+    const tAdminManage = await getTranslations("admin.org_manage");
+    const tOrgManage = await getTranslations("organization.manage");
 
     const organizationResult = await getOrganizationBySlugAsAdminAction({
         slug,
@@ -26,12 +29,14 @@ export default async function AdminOrganizationManagePage({ params }) {
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Gérer l&apos;organisation</CardTitle>
-                    <CardDescription>
-                        Modifiez les informations principales de
-                        l&apos;organisation {organization.name}. En tant
-                        qu&apos;administrateur, vous pouvez modifier toutes les
-                        organisations.
+                    <CardTitle>{tAdminManage("page_title")}</CardTitle>
+                    <CardDescription className="flex flex-col gap-2">
+                        {tAdminManage("page_description", {
+                            name: organization.name,
+                        })}
+                        <span className="text-muted-foreground">
+                            {tAdminManage("page_note")}
+                        </span>
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

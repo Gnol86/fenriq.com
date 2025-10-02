@@ -14,7 +14,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { organizationRoleLabels } from "@/lib/constants";
+import { getRoleLabel } from "@/lib/constants";
 import {
     Dialog,
     DialogContent,
@@ -34,20 +34,25 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { inviteMemberAction } from "@/actions/organization.action";
-
-const inviteSchema = z.object({
-    email: z.email("Adresse email invalide").trim(),
-    role: z.enum(["member", "admin"], {
-        required_error: "Veuillez sélectionner un rôle",
-    }),
-});
+import { useTranslations } from "next-intl";
 
 export default function InviteMemberDialog({
     organizationId,
     organizationName,
 }) {
+    const t = useTranslations("organization.invitations");
+    const tValidation = useTranslations("validation");
+    const tRoles = useTranslations("roles");
     const { execute, isPending } = useServerAction();
     const [open, setOpen] = useState(false);
+
+    const inviteSchema = z.object({
+        email: z.email(tValidation("email.invalid_short")).trim(),
+        role: z.enum(["member", "admin"], {
+            required_error: tValidation("role.required"),
+        }),
+    });
+
     const form = useForm({
         resolver: zodResolver(inviteSchema),
         defaultValues: { email: "", role: "member" },
@@ -62,7 +67,7 @@ export default function InviteMemberDialog({
                     organizationId,
                 }),
             {
-                successMessage: "Invitation envoyée avec succès",
+                successMessage: t("success_sent"),
                 redirectOnSuccess: "/dashboard/org/invitations",
             }
         );
@@ -76,15 +81,16 @@ export default function InviteMemberDialog({
             <DialogTrigger asChild>
                 <Button type="button" className="self-start" size="sm">
                     <MailPlus className="mr-2 h-4 w-4" aria-hidden="true" />
-                    Inviter
+                    {t("invite_button")}
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Inviter un membre</DialogTitle>
+                    <DialogTitle>{t("invite_dialog_title")}</DialogTitle>
                     <DialogDescription>
-                        Saisissez l&apos;adresse email de la personne à inviter
-                        dans l&apos;organisation {organizationName ?? ""}.
+                        {t("invite_dialog_description", {
+                            name: organizationName ?? "",
+                        })}
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -97,12 +103,12 @@ export default function InviteMemberDialog({
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Adresse email</FormLabel>
+                                    <FormLabel>{t("email_label")}</FormLabel>
                                     <FormControl>
                                         <Input
                                             {...field}
                                             type="email"
-                                            placeholder="prenom.nom@example.com"
+                                            placeholder={t("email_placeholder")}
                                             autoFocus
                                             disabled={isPending}
                                         />
@@ -116,7 +122,7 @@ export default function InviteMemberDialog({
                             name="role"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Rôle</FormLabel>
+                                    <FormLabel>{t("role_label")}</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
@@ -124,15 +130,19 @@ export default function InviteMemberDialog({
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Sélectionner un rôle" />
+                                                <SelectValue
+                                                    placeholder={t(
+                                                        "role_placeholder"
+                                                    )}
+                                                />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectItem value="member">
-                                                {organizationRoleLabels.member}
+                                                {getRoleLabel("member", tRoles)}
                                             </SelectItem>
                                             <SelectItem value="admin">
-                                                {organizationRoleLabels.admin}
+                                                {getRoleLabel("admin", tRoles)}
                                             </SelectItem>
                                         </SelectContent>
                                     </Select>
@@ -147,7 +157,7 @@ export default function InviteMemberDialog({
                                 onClick={() => setOpen(false)}
                                 disabled={isPending}
                             >
-                                Annuler
+                                {t("cancel_button")}
                             </Button>
                             <Button type="submit" disabled={isPending}>
                                 {isPending && (
@@ -156,7 +166,7 @@ export default function InviteMemberDialog({
                                         aria-hidden="true"
                                     />
                                 )}
-                                Envoyer l&apos;invitation
+                                {t("send_button")}
                             </Button>
                         </DialogFooter>
                     </form>

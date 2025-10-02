@@ -13,8 +13,10 @@ import OrganizationSelectorButton from "@/components/organization-selector-butto
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { PrismaClient } from "@/generated/prisma";
+import { getTranslations } from "next-intl/server";
 
 export default async function DashboardPage() {
+    const t = await getTranslations("dashboard.index");
     const session = await auth.api.getSession({
         headers: await headers(), // you need to pass the headers object.
     });
@@ -54,15 +56,15 @@ export default async function DashboardPage() {
         <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
                 <h1 className="text-3xl font-bold">
-                    Bienvenue {user?.name ?? "sur votre espace"}.
+                    {t("welcome", { name: user?.name ?? t("fallback_space") })}
                 </h1>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Organisation active</CardTitle>
+                    <CardTitle>{t("active_organization_title")}</CardTitle>
                     <CardDescription>
-                        Aperçu de l&apos;organisation actuelle.
+                        {t("active_organization_description")}
                     </CardDescription>
                     <CardAction>
                         {activeUserOrganization ? (
@@ -74,15 +76,14 @@ export default async function DashboardPage() {
                                     />
                                     <span className="font-semibold truncate">
                                         {activeUserOrganization?.name ??
-                                            "Organisation"}
+                                            t("organization_fallback")}
                                     </span>
                                 </div>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-3 text-sm text-muted-foreground">
                                 <p>
-                                    Aucune organisation active n&apos;est
-                                    sélectionnée.
+                                    {t("no_active_organization")}
                                 </p>
                             </div>
                         )}
@@ -90,7 +91,7 @@ export default async function DashboardPage() {
                 </CardHeader>
                 {activeUserOrganization && (
                     <CardContent className="flex flex-col gap-4">
-                        Personnes de contact
+                        {t("contact_persons_title")}
                         {contacts?.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {contacts.map(contact => {
@@ -107,7 +108,7 @@ export default async function DashboardPage() {
                                                 <div className="flex flex-col gap-0.5 min-w-0">
                                                     <span className="text-sm font-medium text-foreground truncate">
                                                         {contact?.user.name ??
-                                                            "Contact"}
+                                                            t("contact_fallback")}
                                                     </span>
                                                     <span className="text-sm font-bold -mt-1 text-foreground truncate">
                                                         {contact?.user.email ? (
@@ -121,7 +122,7 @@ export default async function DashboardPage() {
                                                                 }
                                                             </Link>
                                                         ) : (
-                                                            "Pas d'adresse mail renseignée"
+                                                            t("no_email")
                                                         )}
                                                     </span>
                                                 </div>
@@ -132,7 +133,7 @@ export default async function DashboardPage() {
                             </div>
                         ) : (
                             <div className="rounded-lg border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">
-                                Aucun contact pour le moment.
+                                {t("no_contacts")}
                             </div>
                         )}
                     </CardContent>
@@ -140,9 +141,9 @@ export default async function DashboardPage() {
             </Card>
             <Card>
                 <CardHeader>
-                    <CardTitle>Mes organisations</CardTitle>
+                    <CardTitle>{t("my_organizations_title")}</CardTitle>
                     <CardDescription>
-                        Liste des organisations auxquelles vous avez accès.
+                        {t("my_organizations_description")}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-3">
@@ -163,7 +164,7 @@ export default async function DashboardPage() {
                                         />
                                         <span className="font-bold truncate">
                                             {organization?.name ??
-                                                "Organisation"}
+                                                t("organization_fallback")}
                                         </span>
                                     </div>
                                     <OrganizationSelectorButton
@@ -181,8 +182,7 @@ export default async function DashboardPage() {
                         })
                     ) : (
                         <div className="rounded-lg border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">
-                            Aucune organisation pour le moment. Créez votre
-                            première organisation pour commencer.
+                            {t("no_organizations")}
                         </div>
                     )}
                 </CardContent>

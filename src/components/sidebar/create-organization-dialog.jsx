@@ -28,26 +28,26 @@ import { Button } from "@/components/ui/button";
 import { useServerAction } from "@/hooks/use-server-action";
 import { createOrganizationAction } from "@/actions/organization.action";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-
-const formSchema = z.object({
-    name: z
-        .string()
-        .trim()
-        .regex(
-            /^[\p{L}\p{N} -]+$/u,
-            "Le nom ne peut contenir que des lettres, chiffres, espaces ou tirets"
-        )
-        .min(2, "Le nom doit contenir au moins 2 caractères")
-        .max(80, "Le nom ne peut pas dépasser 80 caractères")
-        .refine(value => {
-            const alphanumericMatches = value.match(/\p{L}|\p{N}/gu) ?? [];
-            return alphanumericMatches.length >= 2;
-        }, "Le nom doit contenir au minimum deux caractères alphanumériques"),
-});
+import { useTranslations } from "next-intl";
 
 export default function CreateOrganizationDialog() {
+    const t = useTranslations("organization.create_dialog");
+    const tValidation = useTranslations("validation.organization_name");
     const { execute, isPending } = useServerAction();
     const [open, setOpen] = useState(false);
+
+    const formSchema = z.object({
+        name: z
+            .string()
+            .trim()
+            .regex(/^[\p{L}\p{N} -]+$/u, tValidation("pattern"))
+            .min(2, tValidation("min_length"))
+            .max(80, tValidation("max_length"))
+            .refine(value => {
+                const alphanumericMatches = value.match(/\p{L}|\p{N}/gu) ?? [];
+                return alphanumericMatches.length >= 2;
+            }, tValidation("min_alphanumeric")),
+    });
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -69,7 +69,7 @@ export default function CreateOrganizationDialog() {
                     name: values.name,
                 }),
             {
-                successMessage: "Organisation créée avec succès",
+                successMessage: t("success_message"),
                 redirectOnSuccess: "/dashboard",
             }
         );
@@ -88,16 +88,13 @@ export default function CreateOrganizationDialog() {
                     }}
                 >
                     <Plus className="" aria-hidden="true" />
-                    Créer une organisation
+                    {t("trigger_button")}
                 </DropdownMenuItem>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Créer une organisation</DialogTitle>
-                    <DialogDescription>
-                        Donnez un nom à votre organisation pour commencer à
-                        collaborer avec votre équipe.
-                    </DialogDescription>
+                    <DialogTitle>{t("title")}</DialogTitle>
+                    <DialogDescription>{t("description")}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form
@@ -109,17 +106,17 @@ export default function CreateOrganizationDialog() {
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Nom de l'organisation</FormLabel>
+                                    <FormLabel>{t("name_label")}</FormLabel>
                                     <FormControl>
                                         <Input
                                             {...field}
                                             autoFocus
-                                            placeholder="Aqme corp"
+                                            placeholder={t("name_placeholder")}
                                             disabled={isPending}
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        Ce nom est visible par tous les membres.
+                                        {t("name_description")}
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -133,7 +130,7 @@ export default function CreateOrganizationDialog() {
                                 onClick={() => setOpen(false)}
                                 disabled={isPending}
                             >
-                                Annuler
+                                {t("cancel_button")}
                             </Button>
                             <Button type="submit" disabled={isPending}>
                                 {isPending && (
@@ -142,7 +139,7 @@ export default function CreateOrganizationDialog() {
                                         aria-hidden="true"
                                     />
                                 )}
-                                Créer l&apos;organisation
+                                {t("create_button")}
                             </Button>
                         </DialogFooter>
                     </form>

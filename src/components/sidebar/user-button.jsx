@@ -18,8 +18,10 @@ import ImageProfile from "../image-profile";
 import { HatGlasses } from "lucide-react";
 import { toast } from "sonner";
 import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
+import { useTranslations } from "next-intl";
 
 export default function UserButton({ user, isImpersonating = null }) {
+    const t = useTranslations("sidebar.user_button");
     const router = useRouter();
     const pathname = usePathname();
     const [isSigningOut, startSignOut] = useTransition();
@@ -48,7 +50,7 @@ export default function UserButton({ user, isImpersonating = null }) {
         stopImpersonating(async () => {
             await authClient.admin.stopImpersonating();
 
-            toast.success("Usurpation terminée");
+            toast.success(t("success_stop_impersonation"));
             router.push("/dashboard");
             router.refresh();
         });
@@ -62,14 +64,14 @@ export default function UserButton({ user, isImpersonating = null }) {
                     <span className="font-medium truncate w-full">
                         {isImpersonating ? (
                             <span className="text-destructive truncate flex items-center gap-1">
-                                {user.name || "Utilisateur"}{" "}
+                                {user.name || t("default_name")}{" "}
                                 <HatGlasses
                                     className="text-foreground"
                                     size={16}
                                 />
                             </span>
                         ) : (
-                            user.name || "Utilisateur"
+                            user.name || t("default_name")
                         )}
                     </span>
                     <span className="text-xs font-medium text-muted-foreground -mt-1 truncate w-full">
@@ -83,7 +85,9 @@ export default function UserButton({ user, isImpersonating = null }) {
             >
                 <DropdownMenuLabel className="flex items-center gap-2">
                     <ImageProfile entity={user} size="xs" />
-                    <div className="truncate">{user.name || "Utilisateur"}</div>
+                    <div className="truncate">
+                        {user.name || t("default_name")}
+                    </div>
                     <div className="flex-1" />
                     <AnimatedThemeToggler size={16} />
                 </DropdownMenuLabel>
@@ -96,7 +100,7 @@ export default function UserButton({ user, isImpersonating = null }) {
                                 className="opacity-60"
                                 aria-hidden="true"
                             />
-                            Retour à l'application
+                            {t("return_to_app")}
                         </Link>
                     </DropdownMenuItem>
                 )}
@@ -111,7 +115,7 @@ export default function UserButton({ user, isImpersonating = null }) {
                                 className="opacity-60"
                                 aria-hidden="true"
                             />
-                            Dashboard
+                            {t("dashboard")}
                         </Link>
                     </DropdownMenuItem>
                 )}
@@ -140,7 +144,7 @@ export default function UserButton({ user, isImpersonating = null }) {
                                 aria-hidden="true"
                             />
                         )}
-                        Stopper usurpation
+                        {t("stop_impersonation")}
                     </DropdownMenuItem>
                 ) : (
                     <DropdownMenuItem
@@ -167,7 +171,7 @@ export default function UserButton({ user, isImpersonating = null }) {
                                 aria-hidden="true"
                             />
                         )}
-                        Se déconnecter
+                        {t("sign_out")}
                     </DropdownMenuItem>
                 )}
             </DropdownMenuContent>

@@ -1,5 +1,6 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { defaultLocale } from "@/i18n/config";
 
 export function cn(...inputs) {
     return twMerge(clsx(inputs));
@@ -24,17 +25,39 @@ export function nameToSlug(name) {
         .slice(0, 80);
 }
 
-export function formatDate(date) {
+const LOCALE_TO_REGION = {
+    fr: "fr-FR",
+    en: "en-US",
+};
+
+function resolveLocale(locale) {
+    if (locale) {
+        return LOCALE_TO_REGION[locale] ?? locale;
+    }
+
+    if (typeof navigator !== "undefined" && navigator.language) {
+        return navigator.language;
+    }
+
+    if (typeof Intl !== "undefined") {
+        const resolved = Intl.DateTimeFormat().resolvedOptions().locale;
+        if (resolved) return resolved;
+    }
+
+    return LOCALE_TO_REGION[defaultLocale] ?? defaultLocale;
+}
+
+export function formatDate(date, locale) {
     if (!date) return "N/A";
 
     const dateObj = new Date(date);
+    if (Number.isNaN(dateObj.getTime())) return "N/A";
 
-    // Vérifier si la date est valide
-    if (isNaN(dateObj.getTime())) return "N/A";
-
-    return dateObj.toLocaleDateString("fr-FR", {
+    const formatter = new Intl.DateTimeFormat(resolveLocale(locale), {
         day: "numeric",
         month: "long",
         year: "numeric",
     });
+
+    return formatter.format(dateObj);
 }

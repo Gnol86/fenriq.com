@@ -15,9 +15,11 @@ import {
     listOrganizationInvitationsAsAdminAction,
 } from "@/actions/admin.action";
 import { sortInvitationsByStatus } from "@/lib/invitation-utils";
+import { getTranslations } from "next-intl/server";
 
 export default async function AdminOrganizationInvitationsPage({ params }) {
     const { slug } = params;
+    const tAdminInvitations = await getTranslations("admin.org_invitations");
 
     const organizationResult = await getOrganizationBySlugAsAdminAction({
         slug,
@@ -40,12 +42,14 @@ export default async function AdminOrganizationInvitationsPage({ params }) {
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Invitations</CardTitle>
-                    <CardDescription>
-                        Gérez les invitations de l&apos;organisation{" "}
-                        {organization.name}. En tant qu&apos;administrateur,
-                        vous pouvez inviter de nouveaux membres et gérer toutes
-                        les invitations en cours.
+                    <CardTitle>{tAdminInvitations("page_title")}</CardTitle>
+                    <CardDescription className="flex flex-col gap-2">
+                        {tAdminInvitations("page_description", {
+                            name: organization.name,
+                        })}
+                        <span className="text-muted-foreground">
+                            {tAdminInvitations("page_note")}
+                        </span>
                         <AdminInvitationStats invitations={invitations} />
                     </CardDescription>
                     <CardAction>

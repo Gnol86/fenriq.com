@@ -17,17 +17,20 @@ import FormButton from "@/components/ui/form-button";
 import ImageUploadUser from "./image-upload-user";
 import { useServerAction } from "@/hooks/use-server-action";
 import { updateUserAction } from "@/actions/user.action";
-
-const formSchema = z.object({
-    name: z
-        .string()
-        .trim()
-        .min(2, "Le nom doit contenir au moins 2 caractères")
-        .max(50, "Le nom ne peut pas dépasser 50 caractères"),
-});
+import { useTranslations } from "next-intl";
 
 export default function UserSettingsForm({ user }) {
+    const t = useTranslations("user.settings");
+    const tValidation = useTranslations("validation.name");
     const { execute, isPending } = useServerAction();
+
+    const formSchema = z.object({
+        name: z
+            .string()
+            .trim()
+            .min(2, tValidation("min_length"))
+            .max(50, tValidation("max_length")),
+    });
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -43,8 +46,8 @@ export default function UserSettingsForm({ user }) {
                     name: values.name,
                 }),
             {
-                successMessage: "Paramètres mis à jour avec succès",
-                errorMessage: "Erreur lors de la mise à jour des paramètres",
+                successMessage: t("success_message"),
+                errorMessage: t("error_message"),
             }
         );
     };
@@ -62,17 +65,17 @@ export default function UserSettingsForm({ user }) {
                     name="name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Nom</FormLabel>
+                            <FormLabel>{t("name_label")}</FormLabel>
                             <FormControl>
                                 <Input
                                     {...field}
                                     autoFocus
                                     disabled={isPending}
-                                    placeholder="Votre nom"
+                                    placeholder={t("name_placeholder")}
                                 />
                             </FormControl>
                             <FormDescription>
-                                Ce nom sera affiché dans votre profil.
+                                {t("name_description")}
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -81,15 +84,15 @@ export default function UserSettingsForm({ user }) {
 
                 <div className="flex justify-end">
                     <FormButton type="submit" loading={isPending}>
-                        Enregistrer les modifications
+                        {t("save_button")}
                     </FormButton>
                 </div>
             </form>
         </Form>
     ) : (
         <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-            <p>Impossible de charger les informations utilisateur.</p>
-            <p>Veuillez vous reconnecter pour accéder à vos paramètres.</p>
+            <p>{t("no_user_error")}</p>
+            <p>{t("reconnect_message")}</p>
         </div>
     );
 }

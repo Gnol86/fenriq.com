@@ -1,9 +1,10 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { defaultRoleLabels } from "@/lib/constants";
+import { getRoleLabel } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { getInvitationDisplayStatus } from "@/lib/invitation-utils";
 import AdminInvitationsActionMenu from "./admin-invitations-action-menu";
+import { useTranslations, useLocale } from "next-intl";
 
 /**
  * Composant ligne de tableau pour afficher une invitation (version admin)
@@ -20,6 +21,10 @@ export default function AdminInvitationTableRow({
 }) {
     const statusLabel = getInvitationDisplayStatus(invitation);
     const invitationRole = invitation.role ?? "member";
+    const tAdminInvitations = useTranslations("admin.org_invitations");
+    const tRoles = useTranslations("roles");
+    const roleLabel = getRoleLabel(invitationRole, tRoles);
+    const locale = useLocale();
 
     return (
         <TableRow>
@@ -33,7 +38,7 @@ export default function AdminInvitationTableRow({
             {/* Rôle assigné */}
             <TableCell>
                 <span className="text-sm font-medium text-foreground">
-                    {defaultRoleLabels[invitationRole] ?? invitationRole}
+                    {roleLabel}
                 </span>
             </TableCell>
 
@@ -48,7 +53,7 @@ export default function AdminInvitationTableRow({
                     <span className="text-sm text-muted-foreground">
                         {invitation.invitedBy?.name ||
                             invitation.invitedBy?.email ||
-                            "Système"}
+                            tAdminInvitations("system_sender")}
                     </span>
                     {invitation.invitedBy?.id && (
                         <span className="text-xs text-blue-600">
@@ -62,7 +67,7 @@ export default function AdminInvitationTableRow({
             <TableCell>
                 <span className="text-sm text-muted-foreground">
                     {invitation.expiresAt
-                        ? formatDate(invitation.expiresAt)
+                        ? formatDate(invitation.expiresAt, locale)
                         : "-"}
                 </span>
             </TableCell>

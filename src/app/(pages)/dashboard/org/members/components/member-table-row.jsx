@@ -3,6 +3,7 @@ import { RoleBadge } from "@/components/ui/role-badge";
 import ImageProfile from "@/components/image-profile";
 import { formatDate } from "@/lib/utils";
 import MembersActionMenu from "./members-action-menu";
+import { useTranslations, useLocale } from "next-intl";
 
 /**
  * Composant ligne de tableau pour afficher un membre
@@ -23,6 +24,8 @@ export default function MemberTableRow({
 }) {
     const memberRole = member?.role ?? "member";
     const showActions = canUpdate || canDelete;
+    const t = useTranslations("organization.members");
+    const locale = useLocale();
 
     return (
         <TableRow>
@@ -32,7 +35,7 @@ export default function MemberTableRow({
                     <ImageProfile entity={member?.user} size="sm" />
                     <div className="flex flex-col">
                         <span className="text-sm font-medium text-foreground">
-                            {member?.user?.name || "Utilisateur"}
+                            {member?.user?.name || t("table_user")}
                         </span>
                         {member?.user?.email ? (
                             <span className="text-xs text-muted-foreground">
@@ -51,7 +54,7 @@ export default function MemberTableRow({
             {/* Date d'ajout */}
             <TableCell>
                 <span className="text-sm text-muted-foreground">
-                    {formatDate(member?.createdAt)}
+                    {formatDate(member?.createdAt, locale)}
                 </span>
             </TableCell>
 

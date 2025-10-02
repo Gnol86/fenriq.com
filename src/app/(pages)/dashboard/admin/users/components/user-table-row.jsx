@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import UserActionMenu from "./user-action-menu";
 import UserDetailsCollapse from "./user-details-collapse";
+import { useTranslations, useLocale } from "next-intl";
 
 /**
  * Composant ligne de tableau pour afficher un utilisateur
@@ -20,6 +21,8 @@ export default function UserTableRow({ user, currentUserId }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const isCurrentUser = user.id === currentUserId;
     const isBanned = user.banned;
+    const tUsers = useTranslations("admin.users");
+    const locale = useLocale();
 
     const toggleExpanded = () => {
         setIsExpanded(!isExpanded);
@@ -43,21 +46,21 @@ export default function UserTableRow({ user, currentUserId }) {
                         </div>
                         <ImageProfile entity={user} size="sm" />
                         <div className="flex flex-col">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-foreground">
-                                    {user.name || "Utilisateur"}
-                                </span>
-                                {isCurrentUser && (
-                                    <Badge
-                                        variant="secondary"
-                                        className="text-xs"
-                                    >
-                                        Vous
-                                    </Badge>
-                                )}
-                            </div>
-                            <span className="text-xs text-muted-foreground">
-                                {user.email}
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-foreground">
+                                {user.name || tUsers("table_user")}
+                            </span>
+                            {isCurrentUser && (
+                                <Badge
+                                    variant="secondary"
+                                    className="text-xs"
+                                >
+                                    {tUsers("badge_you")}
+                                </Badge>
+                            )}
+                        </div>
+                        <span className="text-xs text-muted-foreground">
+                            {user.email}
                             </span>
                         </div>
                     </div>
@@ -73,16 +76,16 @@ export default function UserTableRow({ user, currentUserId }) {
                     <div className="flex items-center gap-2">
                         {isBanned ? (
                             <Badge variant="destructive" className="text-xs">
-                                Banni
+                                {tUsers("status_banned")}
                             </Badge>
                         ) : (
                             <Badge variant="secondary" className="text-xs">
-                                Actif
+                                {tUsers("status_active")}
                             </Badge>
                         )}
                         {user.emailVerified && (
                             <Badge variant="outline" className="text-xs">
-                                Email vérifié
+                                {tUsers("status_email_verified")}
                             </Badge>
                         )}
                     </div>
@@ -91,7 +94,7 @@ export default function UserTableRow({ user, currentUserId }) {
                 {/* Date de création */}
                 <TableCell>
                     <span className="text-sm text-muted-foreground">
-                        {formatDate(user.createdAt)}
+                        {formatDate(user.createdAt, locale)}
                     </span>
                 </TableCell>
             </TableRow>

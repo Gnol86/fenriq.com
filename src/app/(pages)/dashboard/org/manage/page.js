@@ -10,8 +10,10 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { hasPermissionAction } from "@/actions/organization.action";
+import { getTranslations } from "next-intl/server";
 
 export default async function OrganizationManagePage() {
+    const t = await getTranslations("organization.manage");
     const session = await auth.api.getSession({
         headers: await headers(),
     });
@@ -33,11 +35,8 @@ export default async function OrganizationManagePage() {
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Gérer l&apos;organisation</CardTitle>
-                    <CardDescription>
-                        Modifiez les informations principales de votre
-                        organisation.
-                    </CardDescription>
+                    <CardTitle>{t("page_title")}</CardTitle>
+                    <CardDescription>{t("page_description")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <ManageOrganizationForm

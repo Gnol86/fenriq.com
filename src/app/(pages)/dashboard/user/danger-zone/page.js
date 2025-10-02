@@ -10,8 +10,11 @@ import { auth } from "@/lib/auth";
 import { AlertTriangle } from "lucide-react";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 export default async function DangerZonePage() {
+    const tBreadcrumbs = await getTranslations("breadcrumbs");
+    const tDangerZone = await getTranslations("user.danger_zone");
     const session = await auth.api.getSession({
         headers: await headers(),
     });
@@ -28,13 +31,10 @@ export default async function DangerZonePage() {
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-destructive">
                         <AlertTriangle className="h-5 w-5" />
-                        Zone dangereuse
+                        {tBreadcrumbs("danger_zone")}
                     </CardTitle>
                     <CardDescription>
-                        Supprimer votre compte est une action irréversible.
-                        Vous perdrez l&apos;accès à toutes vos données et à
-                        toutes les organisations. Saisissez votre adresse email
-                        pour confirmer.
+                        {tDangerZone("card_description")}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

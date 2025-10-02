@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { deleteFile, uploadFile } from "@/actions/file.action";
 import { updateUserAction } from "@/actions/user.action";
+import { useTranslations } from "next-intl";
 
 export default function ImageUploadUser({ user }) {
     const fileInputRef = useRef(null);
@@ -32,6 +33,7 @@ export default function ImageUploadUser({ user }) {
     const [previewUrl, setPreviewUrl] = useState("");
     const [isCropping, setIsCropping] = useState(false);
     const [zoom, setZoom] = useState(1);
+    const tImageUpload = useTranslations("user.image_upload");
     const zoomRange = useMemo(
         () => ({
             min: 1,
@@ -73,7 +75,7 @@ export default function ImageUploadUser({ user }) {
                 });
             },
             {
-                successMessage: "Image de profil mise à jour avec succès",
+                successMessage: tImageUpload("success_upload"),
             }
         );
     };
@@ -89,7 +91,7 @@ export default function ImageUploadUser({ user }) {
                 });
             },
             {
-                successMessage: "Image de profil supprimée avec succès",
+                successMessage: tImageUpload("success_delete"),
             }
         );
     };
@@ -143,7 +145,7 @@ export default function ImageUploadUser({ user }) {
         canvas.height = outputHeight;
         const ctx = canvas.getContext("2d");
         if (!ctx) {
-            throw new Error("Impossible de préparer le contexte de recadrage");
+            throw new Error(tImageUpload("error_crop_context"));
         }
 
         ctx.drawImage(
@@ -161,11 +163,7 @@ export default function ImageUploadUser({ user }) {
         const blob = await new Promise((resolve, reject) => {
             canvas.toBlob(value => {
                 if (!value) {
-                    reject(
-                        new Error(
-                            "Erreur lors de la génération de l'image recadrée"
-                        )
-                    );
+                    reject(new Error(tImageUpload("error_crop_generate")));
                     return;
                 }
                 resolve(value);
@@ -175,7 +173,7 @@ export default function ImageUploadUser({ user }) {
         return new File([blob], selectedFile.name, {
             type: selectedFile.type || "image/png",
         });
-    }, [cropArea, previewUrl, selectedFile]);
+    }, [cropArea, previewUrl, selectedFile, tImageUpload]);
 
     const handleCropConfirm = async () => {
         if (!selectedFile) return;
@@ -187,7 +185,7 @@ export default function ImageUploadUser({ user }) {
             setIsCropperOpen(false);
             resetCropperState();
         } catch (error) {
-            console.error("Erreur lors du recadrage de l'image", error);
+            console.error(tImageUpload("error_crop_generate"), error);
         } finally {
             setIsCropping(false);
         }
@@ -202,7 +200,7 @@ export default function ImageUploadUser({ user }) {
     if (!user) {
         return (
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-                <p>Aucun utilisateur trouvé.</p>
+                <p>{tImageUpload("no_user")}</p>
             </div>
         );
     }
@@ -250,7 +248,7 @@ export default function ImageUploadUser({ user }) {
             <Dialog open={isCropperOpen} onOpenChange={handleDialogOpenChange}>
                 <DialogContent className="sm:max-w-xl">
                     <DialogHeader>
-                        <DialogTitle>Recadrer l'image</DialogTitle>
+                        <DialogTitle>{tImageUpload("cropper_title")}</DialogTitle>
                     </DialogHeader>
                     <div className="flex flex-col gap-4">
                         <div className="flex h-80 w-full items-center justify-center overflow-hidden rounded-lg bg-muted">
@@ -266,20 +264,21 @@ export default function ImageUploadUser({ user }) {
                                     className="h-full w-full"
                                 >
                                     <CropperDescription>
-                                        Déplacez l'image pour ajuster le
-                                        cadrage.
+                                        {tImageUpload("cropper_description")}
                                     </CropperDescription>
                                     <CropperImage />
                                     <CropperCropArea className="rounded-full" />
                                 </Cropper>
                             ) : (
                                 <p className="text-sm text-muted-foreground">
-                                    Chargement de l'image...
+                                    {tImageUpload("cropper_loading")}
                                 </p>
                             )}
                         </div>
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="image-zoom-slider">Zoom</Label>
+                            <Label htmlFor="image-zoom-slider">
+                                {tImageUpload("zoom_label")}
+                            </Label>
                             <input
                                 id="image-zoom-slider"
                                 type="range"
@@ -300,7 +299,7 @@ export default function ImageUploadUser({ user }) {
                             onClick={() => setIsCropperOpen(false)}
                             disabled={isPending || isCropping}
                         >
-                            Annuler
+                            {tImageUpload("cancel_button")}
                         </Button>
                         <Button
                             type="button"
@@ -308,8 +307,8 @@ export default function ImageUploadUser({ user }) {
                             disabled={isPending || isCropping || !selectedFile}
                         >
                             {isCropping || isPending
-                                ? "En cours..."
-                                : "Enregistrer"}
+                                ? tImageUpload("saving_button")
+                                : tImageUpload("save_button")}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

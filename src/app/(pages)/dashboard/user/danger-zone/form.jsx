@@ -28,19 +28,22 @@ import {
 import { deleteUserAction } from "@/actions/user.action";
 import { useServerAction } from "@/hooks/use-server-action";
 import { TriangleAlert } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function DangerZoneForm({ user }) {
+    const t = useTranslations("user.danger_zone");
+    const tValidation = useTranslations("validation.confirmation");
+    const { execute, isPending } = useServerAction();
+
     const formSchema = z.object({
         confirmation: z
             .string()
             .trim()
-            .min(1, "Vous devez saisir votre adresse email pour confirmer")
+            .min(1, tValidation("email_required"))
             .refine(value => value === user.email, {
-                message:
-                    "L'adresse email saisie ne correspond pas à votre compte.",
+                message: tValidation("email_mismatch"),
             }),
     });
-    const { execute, isPending } = useServerAction();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -56,7 +59,7 @@ export default function DangerZoneForm({ user }) {
 
     const handleDeleteConfirmation = async () => {
         await execute(() => deleteUserAction(), {
-            successMessage: "Compte supprimé avec succès",
+            successMessage: t("success_message"),
             redirectOnSuccess: "/",
         });
     };
@@ -68,14 +71,9 @@ export default function DangerZoneForm({ user }) {
                 className="flex flex-col gap-6"
             >
                 <div className="rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
-                    <p className="font-medium">
-                        Cette action est définitive et supprimera toutes vos
-                        données personnelles et votre accès à toutes les
-                        organisations.
-                    </p>
+                    <p className="font-medium">{t("warning_title")}</p>
                     <p className="text-destructive/70">
-                        Assurez-vous d'avoir exporté toutes les informations
-                        nécessaires avant de continuer.
+                        {t("warning_subtitle")}
                     </p>
                 </div>
 
@@ -84,12 +82,9 @@ export default function DangerZoneForm({ user }) {
                     name="confirmation"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
-                                Confirmez votre adresse email
-                            </FormLabel>
+                            <FormLabel>{t("confirm_label")}</FormLabel>
                             <FormDescription>
-                                Tapez "{user.email}" pour valider la
-                                suppression.
+                                {t("confirm_description", { email: user.email })}
                             </FormDescription>
                             <FormControl>
                                 <Input
@@ -112,28 +107,28 @@ export default function DangerZoneForm({ user }) {
                                 loading={isPending}
                                 disabled={!form.formState.isValid}
                             >
-                                <TriangleAlert /> Supprimer mon compte
+                                <TriangleAlert /> {t("delete_button")}
                                 <TriangleAlert />
                             </FormButton>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
                                 <AlertDialogTitle>
-                                    Êtes-vous absolument sûr ?
+                                    {t("alert_title")}
                                 </AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    Cette action ne peut pas être annulée. Cela
-                                    supprimera définitivement votre compte et
-                                    toutes vos données associées.
+                                    {t("alert_description")}
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                <AlertDialogCancel>
+                                    {t("alert_cancel")}
+                                </AlertDialogCancel>
                                 <AlertDialogAction
                                     onClick={handleDeleteConfirmation}
                                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                 >
-                                    Supprimer définitivement
+                                    {t("alert_confirm")}
                                 </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>

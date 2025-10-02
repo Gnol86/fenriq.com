@@ -6,23 +6,21 @@ import { Button } from "@/components/ui/button";
 import { useServerAction } from "@/hooks/use-server-action";
 import { deleteOrganizationAction } from "@/actions/admin.action";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function OrganizationActionMenu({ organization }) {
+    const t = useTranslations("admin.organizations");
     const { execute } = useServerAction();
 
     const handleDeleteOrganization = async () => {
-        if (
-            !confirm(
-                `Êtes-vous sûr de vouloir supprimer définitivement l'organisation "${organization.name}" ?`
-            )
-        ) {
+        if (!confirm(t("confirm_delete", { name: organization.name }))) {
             return;
         }
 
         await execute(
             () => deleteOrganizationAction({ organizationId: organization.id }),
             {
-                successMessage: "Organisation supprimée avec succès",
+                successMessage: t("success_deleted"),
             }
         );
     };
@@ -32,7 +30,7 @@ export default function OrganizationActionMenu({ organization }) {
             <Link href={`/dashboard/admin/orgs/${organization.slug}`}>
                 <Button variant="outline" size="sm">
                     <Settings className="h-4 w-4 mr-2" />
-                    Paramètres
+                    {t("settings_button")}
                 </Button>
             </Link>
 
@@ -42,7 +40,7 @@ export default function OrganizationActionMenu({ organization }) {
                 size="sm"
             >
                 <Trash2 className="h-4 w-4 mr-2" />
-                Supprimer
+                {t("delete_button")}
             </Button>
         </div>
     );

@@ -8,6 +8,7 @@ import { Loader2, ShieldCheck, ShieldOff } from "lucide-react";
 import { authClient, useSession } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import FormButton from "@/components/ui/form-button";
+import { useTranslations } from "next-intl";
 
 export default function AcceptInvitationClient({ invitationId }) {
     const router = useRouter();
@@ -15,6 +16,7 @@ export default function AcceptInvitationClient({ invitationId }) {
     const [isAccepting, setIsAccepting] = useState(false);
     const [isRejecting, setIsRejecting] = useState(false);
     const [status, setStatus] = useState(null);
+    const t = useTranslations("auth.invitation");
 
     const handleAccept = async () => {
         setIsAccepting(true);
@@ -25,7 +27,7 @@ export default function AcceptInvitationClient({ invitationId }) {
 
             if (result?.error) {
                 throw new Error(
-                    result.error.message || "Échec de l'acceptation"
+                    result.error.message || t("error_accept")
                 );
             }
 
@@ -49,16 +51,15 @@ export default function AcceptInvitationClient({ invitationId }) {
             setStatus("accepted");
             toast.success(
                 organizationActivated
-                    ? "Invitation acceptée. Bienvenue !"
-                    : "Invitation acceptée. Activez l'organisation depuis le menu si nécessaire."
+                    ? t("success_accepted")
+                    : t("success_accepted_activate")
             );
             router.push("/app");
             router.refresh();
         } catch (error) {
             console.error("Failed to accept invitation", error);
             toast.error(
-                error?.message ||
-                    "Impossible d'accepter l'invitation pour le moment"
+                error?.message || t("error_cannot_accept")
             );
         } finally {
             setIsAccepting(false);
@@ -73,17 +74,16 @@ export default function AcceptInvitationClient({ invitationId }) {
             });
 
             if (result?.error) {
-                throw new Error(result.error.message || "Échec du refus");
+                throw new Error(result.error.message || t("error_reject"));
             }
 
             setStatus("rejected");
-            toast.success("Invitation refusée.");
+            toast.success(t("success_rejected"));
             router.push("/app");
         } catch (error) {
             console.error("Failed to reject invitation", error);
             toast.error(
-                error?.message ||
-                    "Impossible de refuser l'invitation pour le moment"
+                error?.message || t("error_cannot_reject")
             );
         } finally {
             setIsRejecting(false);
@@ -94,7 +94,7 @@ export default function AcceptInvitationClient({ invitationId }) {
         return (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                Vérification de votre session...
+                {t("verifying_session")}
             </div>
         );
     }
@@ -102,20 +102,20 @@ export default function AcceptInvitationClient({ invitationId }) {
     if (!session?.user) {
         return (
             <div className="flex flex-col gap-4 text-sm text-muted-foreground">
-                <p>Vous devez être connecté pour accepter cette invitation.</p>
+                <p>{t("must_signin")}</p>
                 <div className="flex gap-2">
                     <Button asChild>
                         <Link
                             href={`/signin?redirect=/invitations/${invitationId}`}
                         >
-                            Se connecter
+                            {t("signin_button")}
                         </Link>
                     </Button>
                     <Button asChild variant="outline">
                         <Link
                             href={`/signup?redirect=/invitations/${invitationId}`}
                         >
-                            Créer un compte
+                            {t("create_account_button")}
                         </Link>
                     </Button>
                 </div>
@@ -128,7 +128,7 @@ export default function AcceptInvitationClient({ invitationId }) {
             <div className="flex flex-col items-start gap-3 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2 text-emerald-600">
                     <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-                    <span>Invitation acceptée. Redirection en cours...</span>
+                    <span>{t("accepted_message")}</span>
                 </div>
             </div>
         );
@@ -139,7 +139,7 @@ export default function AcceptInvitationClient({ invitationId }) {
             <div className="flex flex-col items-start gap-3 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2 text-destructive">
                     <ShieldOff className="h-4 w-4" aria-hidden="true" />
-                    <span>Invitation refusée. Redirection en cours...</span>
+                    <span>{t("rejected_message")}</span>
                 </div>
             </div>
         );
@@ -148,8 +148,7 @@ export default function AcceptInvitationClient({ invitationId }) {
     return (
         <div className="flex flex-col gap-4">
             <p className="text-sm text-muted-foreground">
-                Vous êtes sur le point de rejoindre l&apos;organisation.
-                Confirmez votre choix.
+                {t("confirm_message")}
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
                 <FormButton
@@ -164,7 +163,7 @@ export default function AcceptInvitationClient({ invitationId }) {
                             aria-hidden="true"
                         />
                     )}
-                    Accepter l&apos;invitation
+                    {t("accept_button")}
                 </FormButton>
                 <FormButton
                     onClick={handleReject}
@@ -179,7 +178,7 @@ export default function AcceptInvitationClient({ invitationId }) {
                             aria-hidden="true"
                         />
                     )}
-                    Refuser
+                    {t("reject_button")}
                 </FormButton>
             </div>
         </div>

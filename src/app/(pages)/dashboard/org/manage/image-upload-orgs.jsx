@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { deleteFile, uploadFile } from "@/actions/file.action";
 import { updateOrganizationAction } from "@/actions/organization.action";
+import { useTranslations } from "next-intl";
 
 export default function ImageUpload({ organization }) {
     const fileInputRef = useRef(null);
@@ -32,6 +33,8 @@ export default function ImageUpload({ organization }) {
     const [previewUrl, setPreviewUrl] = useState("");
     const [isCropping, setIsCropping] = useState(false);
     const [zoom, setZoom] = useState(1);
+    const tManage = useTranslations("organization.manage");
+    const tImageUpload = useTranslations("organization.image_upload");
     const zoomRange = useMemo(
         () => ({
             min: 1,
@@ -78,7 +81,7 @@ export default function ImageUpload({ organization }) {
                 });
             },
             {
-                successMessage: "Image de profil mise à jour avec succès",
+                successMessage: tImageUpload("success_upload"),
             }
         );
     };
@@ -95,7 +98,7 @@ export default function ImageUpload({ organization }) {
                 });
             },
             {
-                successMessage: "Image de profil supprimée avec succès",
+                successMessage: tImageUpload("success_delete"),
             }
         );
     };
@@ -149,7 +152,7 @@ export default function ImageUpload({ organization }) {
         canvas.height = outputHeight;
         const ctx = canvas.getContext("2d");
         if (!ctx) {
-            throw new Error("Impossible de préparer le contexte de recadrage");
+            throw new Error(tImageUpload("error_crop_context"));
         }
 
         ctx.drawImage(
@@ -167,11 +170,7 @@ export default function ImageUpload({ organization }) {
         const blob = await new Promise((resolve, reject) => {
             canvas.toBlob(value => {
                 if (!value) {
-                    reject(
-                        new Error(
-                            "Erreur lors de la génération de l'image recadrée"
-                        )
-                    );
+                    reject(new Error(tImageUpload("error_crop_generate")));
                     return;
                 }
                 resolve(value);
@@ -181,7 +180,7 @@ export default function ImageUpload({ organization }) {
         return new File([blob], selectedFile.name, {
             type: selectedFile.type || "image/png",
         });
-    }, [cropArea, previewUrl, selectedFile]);
+    }, [cropArea, previewUrl, selectedFile, tImageUpload]);
 
     const handleCropConfirm = async () => {
         if (!selectedFile) return;
@@ -193,7 +192,7 @@ export default function ImageUpload({ organization }) {
             setIsCropperOpen(false);
             resetCropperState();
         } catch (error) {
-            console.error("Erreur lors du recadrage de l'image", error);
+            console.error(tImageUpload("error_crop_generate"), error);
         } finally {
             setIsCropping(false);
         }
@@ -208,7 +207,7 @@ export default function ImageUpload({ organization }) {
     if (!organization) {
         return (
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-                <p>Aucune organisation active n&apos;a été trouvée.</p>
+                <p>{tManage("no_org_error")}</p>
             </div>
         );
     }
@@ -256,7 +255,9 @@ export default function ImageUpload({ organization }) {
             <Dialog open={isCropperOpen} onOpenChange={handleDialogOpenChange}>
                 <DialogContent className="sm:max-w-xl">
                     <DialogHeader>
-                        <DialogTitle>Recadrer l'image</DialogTitle>
+                        <DialogTitle>
+                            {tImageUpload("cropper_title")}
+                        </DialogTitle>
                     </DialogHeader>
                     <div className="flex flex-col gap-4">
                         <div className="flex h-80 w-full items-center justify-center overflow-hidden rounded-lg bg-muted">
@@ -272,20 +273,21 @@ export default function ImageUpload({ organization }) {
                                     className="h-full w-full"
                                 >
                                     <CropperDescription>
-                                        Déplacez l'image pour ajuster le
-                                        cadrage.
+                                        {tImageUpload("cropper_description")}
                                     </CropperDescription>
                                     <CropperImage />
                                     <CropperCropArea className="rounded-full" />
                                 </Cropper>
                             ) : (
                                 <p className="text-sm text-muted-foreground">
-                                    Chargement de l'image...
+                                    {tImageUpload("cropper_loading")}
                                 </p>
                             )}
                         </div>
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="org-image-zoom-slider">Zoom</Label>
+                            <Label htmlFor="org-image-zoom-slider">
+                                {tImageUpload("zoom_label")}
+                            </Label>
                             <input
                                 id="org-image-zoom-slider"
                                 type="range"
@@ -306,7 +308,7 @@ export default function ImageUpload({ organization }) {
                             onClick={() => setIsCropperOpen(false)}
                             disabled={isPending || isCropping}
                         >
-                            Annuler
+                            {tImageUpload("cancel_button")}
                         </Button>
                         <Button
                             type="button"
@@ -314,8 +316,8 @@ export default function ImageUpload({ organization }) {
                             disabled={isPending || isCropping || !selectedFile}
                         >
                             {isCropping || isPending
-                                ? "En cours..."
-                                : "Enregistrer"}
+                                ? tImageUpload("saving_button")
+                                : tImageUpload("save_button")}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

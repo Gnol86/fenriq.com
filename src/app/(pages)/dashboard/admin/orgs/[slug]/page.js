@@ -19,8 +19,11 @@ import {
 } from "lucide-react";
 import ImageProfile from "@/components/image-profile";
 import { getOrganizationBySlugAsAdminAction } from "@/actions/admin.action";
+import { getTranslations, getLocale } from "next-intl/server";
 
 export default async function AdminOrganizationPage({ params }) {
+    const t = await getTranslations("admin.organizations");
+    const locale = await getLocale();
     const { slug } = params;
 
     const organization = await getOrganizationBySlugAsAdminAction({ slug });
@@ -50,14 +53,12 @@ export default async function AdminOrganizationPage({ params }) {
                             </CardTitle>
                             <CardDescription className="flex items-center gap-2">
                                 <Building2 className="h-4 w-4" />
-                                Slug: {organization.slug}
+                                {t("slug_label")} {organization.slug}
                             </CardDescription>
                             <CardDescription className="flex items-center gap-2">
                                 <Calendar className="h-4 w-4" />
-                                Créé le{" "}
-                                {new Date(
-                                    organization.createdAt
-                                ).toLocaleDateString("fr-FR")}
+                                {t("created_on")}{" "}
+                                {formatDate(organization.createdAt, locale)}
                             </CardDescription>
                         </div>
                     </div>
@@ -69,13 +70,16 @@ export default async function AdminOrganizationPage({ params }) {
                 <Card>
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium">
-                            Membres
+                            {t("stats_members")}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{memberCount}</div>
                         <p className="text-xs text-muted-foreground">
-                            {adminCount} admin{adminCount > 1 ? "s" : ""}
+                            {t("stats_admins", {
+                                count: adminCount,
+                                s: adminCount > 1 ? "s" : "",
+                            })}
                         </p>
                     </CardContent>
                 </Card>
@@ -83,15 +87,15 @@ export default async function AdminOrganizationPage({ params }) {
                 <Card>
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium">
-                            Statut
+                            {t("stats_status")}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-green-600">
-                            Actif
+                            {t("stats_status_active")}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            Organisation fonctionnelle
+                            {t("stats_status_description")}
                         </p>
                     </CardContent>
                 </Card>
@@ -99,13 +103,15 @@ export default async function AdminOrganizationPage({ params }) {
                 <Card>
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium">
-                            Type
+                            {t("stats_type")}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">Standard</div>
+                        <div className="text-2xl font-bold">
+                            {t("stats_type_standard")}
+                        </div>
                         <p className="text-xs text-muted-foreground">
-                            Plan par défaut
+                            {t("stats_type_description")}
                         </p>
                     </CardContent>
                 </Card>
@@ -117,17 +123,16 @@ export default async function AdminOrganizationPage({ params }) {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Settings className="h-5 w-5" />
-                            Gérer l&apos;organisation
+                            {t("manage_title")}
                         </CardTitle>
                         <CardDescription>
-                            Modifiez les informations de base de
-                            l&apos;organisation.
+                            {t("manage_description")}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Button asChild variant="outline" className="w-full">
                             <Link href={`/dashboard/admin/orgs/${slug}/manage`}>
-                                Accéder aux paramètres
+                                {t("manage_button")}
                             </Link>
                         </Button>
                     </CardContent>
@@ -137,11 +142,10 @@ export default async function AdminOrganizationPage({ params }) {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Users className="h-5 w-5" />
-                            Membres ({memberCount})
+                            {t("members_title", { count: memberCount })}
                         </CardTitle>
                         <CardDescription>
-                            Gérez les membres et leurs rôles dans
-                            l&apos;organisation.
+                            {t("members_description")}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -149,7 +153,7 @@ export default async function AdminOrganizationPage({ params }) {
                             <Link
                                 href={`/dashboard/admin/orgs/${slug}/members`}
                             >
-                                Gérer les membres
+                                {t("members_button")}
                             </Link>
                         </Button>
                     </CardContent>
@@ -159,11 +163,10 @@ export default async function AdminOrganizationPage({ params }) {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Mail className="h-5 w-5" />
-                            Invitations
+                            {t("invitations_title")}
                         </CardTitle>
                         <CardDescription>
-                            Gérez les invitations en cours et invitez de
-                            nouveaux membres.
+                            {t("invitations_description")}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -171,7 +174,7 @@ export default async function AdminOrganizationPage({ params }) {
                             <Link
                                 href={`/dashboard/admin/orgs/${slug}/invitations`}
                             >
-                                Gérer les invitations
+                                {t("invitations_button")}
                             </Link>
                         </Button>
                     </CardContent>
@@ -181,10 +184,10 @@ export default async function AdminOrganizationPage({ params }) {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-destructive">
                             <AlertTriangle className="h-5 w-5" />
-                            Zone de danger
+                            {t("danger_zone_title")}
                         </CardTitle>
                         <CardDescription>
-                            Actions irréversibles sur l&apos;organisation.
+                            {t("danger_zone_description")}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -196,7 +199,7 @@ export default async function AdminOrganizationPage({ params }) {
                             <Link
                                 href={`/dashboard/admin/orgs/${slug}/danger-zone`}
                             >
-                                Accéder à la zone de danger
+                                {t("danger_zone_button")}
                             </Link>
                         </Button>
                     </CardContent>
@@ -207,9 +210,9 @@ export default async function AdminOrganizationPage({ params }) {
             {organization.metadata && (
                 <Card>
                     <CardHeader>
-                        <CardTitle>Métadonnées</CardTitle>
+                        <CardTitle>{t("metadata_title")}</CardTitle>
                         <CardDescription>
-                            Informations techniques supplémentaires.
+                            {t("metadata_description")}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>

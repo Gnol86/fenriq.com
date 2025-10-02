@@ -26,10 +26,12 @@ import {
 } from "@/components/ui/pagination";
 import SearchInput from "@/components/ui/search-input";
 import UserTableRow from "./components/user-table-row";
+import { getTranslations } from "next-intl/server";
 
 const USERS_PER_PAGE = 10;
 
 export default async function AdminUsersPage({ searchParams }) {
+    const tUsers = await getTranslations("admin.users");
     const session = await auth.api.getSession({
         headers: await headers(),
     });
@@ -73,32 +75,31 @@ export default async function AdminUsersPage({ searchParams }) {
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Gestion des utilisateurs</CardTitle>
+                    <CardTitle>{tUsers("page_title")}</CardTitle>
                     <CardDescription>
-                        Gérez tous les utilisateurs de la plateforme. Total:{" "}
-                        {totalUsers} utilisateurs
+                        {tUsers("page_description", { count: totalUsers })}
                     </CardDescription>
                 </CardHeader>
 
                 <CardContent className="flex flex-col w-full gap-4">
                     {/* Search */}
-                    <SearchInput placeholder="Rechercher par nom ou email..." />
+                    <SearchInput placeholder={tUsers("search_placeholder")} />
 
                     {/* Users table */}
                     <Table>
                         {!users.length && (
                             <TableCaption>
                                 {searchValue
-                                    ? "Aucun utilisateur trouvé pour cette recherche."
-                                    : "Aucun utilisateur trouvé."}
+                                    ? tUsers("no_search_results")
+                                    : tUsers("no_users")}
                             </TableCaption>
                         )}
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Utilisateur</TableHead>
-                                <TableHead>Rôle</TableHead>
-                                <TableHead>Statut</TableHead>
-                                <TableHead>Créé le</TableHead>
+                                <TableHead>{tUsers("table_user")}</TableHead>
+                                <TableHead>{tUsers("table_role")}</TableHead>
+                                <TableHead>{tUsers("table_status")}</TableHead>
+                                <TableHead>{tUsers("table_created")}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>

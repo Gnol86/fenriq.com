@@ -19,42 +19,37 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import FormButton from "@/components/ui/form-button";
 import { PasswordInput } from "@/components/ui/password-input";
-
-const formSchema = z
-    .object({
-        name: z
-            .string()
-            .min(2, "Le nom doit contenir au moins 2 caractères")
-            .max(50, "Le nom ne peut pas dépasser 50 caractères"),
-        email: z.email("Veuillez entrer une adresse email valide"),
-        password: z
-            .string()
-            .min(8, "Le mot de passe doit contenir au moins 8 caractères")
-            .regex(
-                /(?=.*[a-z])/,
-                "Le mot de passe doit contenir au moins une minuscule"
-            )
-            .regex(
-                /(?=.*[A-Z])/,
-                "Le mot de passe doit contenir au moins une majuscule"
-            )
-            .regex(
-                /(?=.*\d)/,
-                "Le mot de passe doit contenir au moins un chiffre"
-            ),
-        password_confirm: z
-            .string()
-            .min(1, "Veuillez confirmer votre mot de passe"),
-    })
-    .refine(data => data.password === data.password_confirm, {
-        message: "Les mots de passe ne correspondent pas",
-        path: ["password_confirm"],
-    });
+import { useTranslations } from "next-intl";
 
 export default function FormSignup() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const email = searchParams.get("email");
+    const t = useTranslations("auth.signup");
+    const tValidation = useTranslations("validation");
+
+    const formSchema = z
+        .object({
+            name: z
+                .string()
+                .min(2, tValidation("name.min_length"))
+                .max(50, tValidation("name.max_length")),
+            email: z.email(tValidation("email.invalid")),
+            password: z
+                .string()
+                .min(8, tValidation("password.min_length"))
+                .regex(/(?=.*[a-z])/, tValidation("password.lowercase_required"))
+                .regex(/(?=.*[A-Z])/, tValidation("password.uppercase_required"))
+                .regex(/(?=.*\d)/, tValidation("password.digit_required")),
+            password_confirm: z
+                .string()
+                .min(1, tValidation("password.confirm_required")),
+        })
+        .refine(data => data.password === data.password_confirm, {
+            message: tValidation("password.mismatch"),
+            path: ["password_confirm"],
+        });
+
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -76,22 +71,19 @@ export default function FormSignup() {
                 },
                 {
                     onSuccess: () => {
-                        toast.success(
-                            "Compte créé avec succès. Un email de vérification a été envoyé."
-                        );
+                        toast.success(t("success_message"));
                         router.push("/verify-email?email=" + values.email);
                     },
                     onError: ctx => {
                         toast.error(
-                            ctx.error.message ||
-                                "Échec de l'envoi du formulaire"
+                            ctx.error.message || t("error_submission")
                         );
                     },
                 }
             );
         } catch (error) {
             console.error("Form submission error", error);
-            toast.error("Échec de l'envoi du formulaire. Veuillez réessayer.");
+            toast.error(t("error_try_again"));
         }
     };
 
@@ -103,7 +95,7 @@ export default function FormSignup() {
                     name="name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Nom</FormLabel>
+                            <FormLabel>{t("name_label")}</FormLabel>
                             <FormControl>
                                 <Input
                                     disabled={form.formState.isSubmitting}
@@ -122,7 +114,7 @@ export default function FormSignup() {
                     name="email"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>{t("email_label")}</FormLabel>
                             <FormControl>
                                 <Input
                                     disabled={form.formState.isSubmitting}
@@ -141,7 +133,7 @@ export default function FormSignup() {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Mot de passe</FormLabel>
+                            <FormLabel>{t("password_label")}</FormLabel>
                             <FormControl>
                                 <PasswordStrengthInput
                                     disabled={form.formState.isSubmitting}
@@ -159,7 +151,7 @@ export default function FormSignup() {
                     name="password_confirm"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Confirmer le mot de passe</FormLabel>
+                            <FormLabel>{t("password_confirm_label")}</FormLabel>
                             <FormControl>
                                 <PasswordInput
                                     disabled={form.formState.isSubmitting}
@@ -177,14 +169,14 @@ export default function FormSignup() {
                         loading={form.formState.isSubmitting}
                         className="flex-1"
                     >
-                        S'inscrire
+                        {t("submit_button")}
                     </FormButton>
                     <Link href="/">
-                        <Button variant="ghost">Annuler</Button>
+                        <Button variant="ghost">{t("cancel_button")}</Button>
                     </Link>
                 </div>
                 <div className="text-xs flex gap-2 justify-center items-center">
-                    Vous avez déjà un compte ?
+                    {t("already_account_text")}
                     <Link
                         href={
                             form.watch("email")
@@ -193,7 +185,7 @@ export default function FormSignup() {
                         }
                         className="text-primary hover:underline"
                     >
-                        Se connecter
+                        {t("signin_link")}
                     </Link>
                 </div>
             </form>

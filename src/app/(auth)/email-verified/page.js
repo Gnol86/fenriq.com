@@ -8,8 +8,11 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 
-export default function Page() {
+export default async function Page() {
+    const t = await getTranslations("auth.email_verified");
+
     return (
         <Card className="w-sm">
             <CardHeader className="flex items-start gap-4">
@@ -21,11 +24,10 @@ export default function Page() {
                 />
                 <div className="flex flex-col gap-2">
                     <CardTitle className="text-xl text-green-600">
-                        Email vérifié ✓
+                        {t("page_title")}
                     </CardTitle>
                     <CardDescription>
-                        Votre adresse email a été vérifiée avec succès ! Vous
-                        pouvez maintenant vous connecter à votre compte.
+                        {t("page_description")}
                     </CardDescription>
                 </div>
             </CardHeader>
@@ -33,7 +35,7 @@ export default function Page() {
                 <div className="flex gap-2">
                     <Link href="/app" className="flex-1">
                         <Button className="w-full">
-                            Accèder à l&apos;application
+                            {t("go_to_app_button")}
                         </Button>
                     </Link>
                 </div>

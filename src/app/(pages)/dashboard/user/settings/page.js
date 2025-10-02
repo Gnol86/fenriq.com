@@ -9,8 +9,10 @@ import {
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 export default async function UserSettingsPage() {
+    const t = await getTranslations("user.settings");
     const session = await auth.api.getSession({
         headers: await headers(),
     });
@@ -25,11 +27,8 @@ export default async function UserSettingsPage() {
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Paramètres du compte</CardTitle>
-                    <CardDescription>
-                        Modifiez vos informations personnelles et préférences de
-                        compte.
-                    </CardDescription>
+                    <CardTitle>{t("page_title")}</CardTitle>
+                    <CardDescription>{t("page_description")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <UserSettingsForm user={user} />

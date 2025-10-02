@@ -8,9 +8,11 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { PrismaClient } from "@/generated/prisma";
+import { getTranslations } from "next-intl/server";
 
 export default async function InvitationPage({ params }) {
     const { invitationId } = params;
+    const t = await getTranslations("auth.invitation");
 
     const prisma = new PrismaClient();
     const invitation = await prisma.invitation.findUnique({
@@ -35,14 +37,10 @@ export default async function InvitationPage({ params }) {
                     />
                     <div className="flex flex-col gap-2">
                         <CardTitle>
-                            Invitation à rejoindre{" "}
-                            {invitation.organization.name}
+                            {t("page_title")} {invitation.organization.name}
                         </CardTitle>
                         <CardDescription>
-                            Vous avez été invité(e) par {invitation.user.name} à
-                            rejoindre l&apos;organisation{" "}
-                            {invitation.organization.name} en tant que &quot;
-                            {invitation.role}&quot;.
+                            {t("page_description_invited_by")} {invitation.user.name} {t("page_description_to_join")} {invitation.organization.name} {t("page_description_as_role")} &quot;{invitation.role}&quot;.
                         </CardDescription>
                     </div>
                 </CardHeader>

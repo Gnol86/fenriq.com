@@ -22,8 +22,12 @@ import { Eye } from "lucide-react";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { getTranslations, getLocale } from "next-intl/server";
 
 export default async function Page() {
+    const t = await getTranslations("user.invitations");
+    const tCommon = await getTranslations("common");
+    const locale = await getLocale();
     const session = await auth.api.getSession({
         headers: await headers(),
     });
@@ -54,22 +58,20 @@ export default async function Page() {
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        Mes invitations
+                        {t("page_title")}
                     </CardTitle>
-                    <CardDescription>
-                        Liste des invitations envoyées à votre compte.
-                    </CardDescription>
+                    <CardDescription>{t("page_description")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Organisation</TableHead>
-                                <TableHead>Invité par</TableHead>
-                                <TableHead>Rôle</TableHead>
-                                <TableHead>Expiration</TableHead>
+                                <TableHead>{t("table_organization")}</TableHead>
+                                <TableHead>{t("table_invited_by")}</TableHead>
+                                <TableHead>{t("table_role")}</TableHead>
+                                <TableHead>{t("table_expiration")}</TableHead>
                                 <TableHead className="text-right">
-                                    Action
+                                    {t("table_action")}
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -80,20 +82,21 @@ export default async function Page() {
                                     <TableBody key={invitation.id}>
                                         <TableRow>
                                             <TableCell>
-                                                {invitation.organization
-                                                    ?.name || "N/A"}
+                                                {invitation.organization?.name ||
+                                                    tCommon("n_a")}
                                             </TableCell>
                                             <TableCell>
                                                 {invitation.user?.name ||
                                                     invitation.user?.email ||
-                                                    "N/A"}
+                                                    tCommon("n_a")}
                                             </TableCell>
                                             <TableCell>
                                                 {invitation.role}
                                             </TableCell>
                                             <TableCell>
                                                 {formatDate(
-                                                    invitation.expiresAt
+                                                    invitation.expiresAt,
+                                                    locale
                                                 )}
                                             </TableCell>
                                             <TableCell className="flex justify-end items-center gap-2">
@@ -105,8 +108,7 @@ export default async function Page() {
                                                     <Link
                                                         href={`/invitations/${invitation.id}`}
                                                     >
-                                                        <Eye /> Voir
-                                                        l&apos;invitation
+                                                        <Eye /> {t("view_button")}
                                                     </Link>
                                                 </Button>
                                             </TableCell>
@@ -116,7 +118,7 @@ export default async function Page() {
                             })
                         ) : (
                             <TableCaption className="text-center">
-                                Aucune invitation en attente
+                                {t("no_invitations")}
                             </TableCaption>
                         )}
                     </Table>

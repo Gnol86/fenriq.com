@@ -18,19 +18,23 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import FormButton from "@/components/ui/form-button";
-
-const formSchema = z.object({
-    email: z.email("Veuillez entrer une adresse email valide").trim(),
-    password: z
-        .string("Veuillez entrer un mot de passe valide")
-        .min(1, "Le mot de passe est requis")
-        .trim(),
-});
+import { useTranslations } from "next-intl";
 
 export default function FormSignin() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const email = searchParams.get("email");
+    const t = useTranslations("auth.signin");
+    const tValidation = useTranslations("validation");
+
+    const formSchema = z.object({
+        email: z.email(tValidation("email.invalid")).trim(),
+        password: z
+            .string(tValidation("password.valid_required"))
+            .min(1, tValidation("password.required"))
+            .trim(),
+    });
+
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -49,20 +53,18 @@ export default function FormSignin() {
                 },
                 {
                     onSuccess: () => {
-                        toast.success("Connexion réussie");
+                        toast.success(t("success_message"));
                     },
                     onError: ctx => {
                         if (ctx.error.status === 403) {
                             // Rediriger vers la page de vérification avec l'email
-                            toast.error(
-                                "Votre adresse email n'est pas vérifiée."
-                            );
+                            toast.error(t("error_email_not_verified"));
                             router.push(
                                 `/verify-email?email=${encodeURIComponent(values.email)}`
                             );
                         } else {
                             toast.error(
-                                ctx.error.message || "Échec de la connexion"
+                                ctx.error.message || t("error_signin_failed")
                             );
                         }
                     },
@@ -70,7 +72,7 @@ export default function FormSignin() {
             );
         } catch (error) {
             console.error("Form submission error", error);
-            toast.error("Échec de la connexion. Veuillez réessayer.");
+            toast.error(t("error_try_again"));
         }
     };
 
@@ -82,7 +84,7 @@ export default function FormSignin() {
                     name="email"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>{t("email_label")}</FormLabel>
                             <FormControl>
                                 <Input
                                     disabled={form.formState.isSubmitting}
@@ -101,7 +103,7 @@ export default function FormSignin() {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Mot de passe</FormLabel>
+                            <FormLabel>{t("password_label")}</FormLabel>
                             <FormControl>
                                 <PasswordInput
                                     disabled={form.formState.isSubmitting}
@@ -119,14 +121,14 @@ export default function FormSignin() {
                         loading={form.formState.isSubmitting}
                         className="flex-1"
                     >
-                        Se connecter
+                        {t("submit_button")}
                     </FormButton>
                     <Link href="/">
-                        <Button variant="ghost">Annuler</Button>
+                        <Button variant="ghost">{t("cancel_button")}</Button>
                     </Link>
                 </div>
                 <div className="text-xs flex gap-2 justify-center items-center">
-                    Vous n'avez pas de compte ?
+                    {t("no_account_text")}
                     <Link
                         href={
                             form.watch("email")
@@ -135,7 +137,7 @@ export default function FormSignin() {
                         }
                         className="text-primary hover:underline"
                     >
-                        S'inscrire
+                        {t("signup_link")}
                     </Link>
                 </div>
             </form>

@@ -11,6 +11,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useTranslations } from "next-intl";
 
 export default function RemoveMemberDialog({
     open,
@@ -20,6 +21,7 @@ export default function RemoveMemberDialog({
     onCancel,
 }) {
     const memberName = member?.user?.name;
+    const t = useTranslations("organization.members");
 
     return (
         <AlertDialog
@@ -32,11 +34,15 @@ export default function RemoveMemberDialog({
         >
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Supprimer ce membre ?</AlertDialogTitle>
+                    <AlertDialogTitle>
+                        {t("remove_dialog_title")}
+                    </AlertDialogTitle>
                     <AlertDialogDescription>
-                        Cette action retirera l&apos;accès de
-                        {memberName ? ` ${memberName}` : " ce membre"}
-                        {" à l'organisation."}
+                        {memberName
+                            ? t("remove_dialog_description", {
+                                  name: memberName,
+                              })
+                            : t("remove_dialog_description_fallback")}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -48,7 +54,7 @@ export default function RemoveMemberDialog({
                             }
                         }}
                     >
-                        Annuler
+                        {t("remove_dialog_cancel")}
                     </AlertDialogCancel>
                     <AlertDialogAction
                         onClick={onConfirm}
@@ -61,7 +67,7 @@ export default function RemoveMemberDialog({
                                 aria-hidden="true"
                             />
                         )}
-                        Supprimer
+                        {t("remove_dialog_confirm")}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

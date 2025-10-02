@@ -14,14 +14,17 @@ import {
 } from "lucide-react";
 import OrganizationActionMenu from "./organization-action-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useServerAction } from "@/hooks/use-server-action";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 
 // Composant pour afficher un membre avec bouton d'usurpation
 function MemberRow({ member, currentUserId }) {
     const router = useRouter();
+    const tMembers = useTranslations("admin.org_members");
+    const tDetails = useTranslations("admin.org_details");
+    const fallbackName = member.user?.name || member.user?.email || tDetails("fallback_user");
 
     const handleImpersonateUser = async () => {
         try {
@@ -31,13 +34,15 @@ function MemberRow({ member, currentUserId }) {
             });
 
             if (result.data?.session) {
-                toast.success("Usurpation réussie");
+                toast.success(
+                    tMembers("success_impersonate", { name: fallbackName })
+                );
                 router.push("/dashboard");
                 router.refresh();
             }
         } catch (error) {
             console.error("Erreur lors de l'usurpation:", error);
-            toast.error("Erreur lors de l'usurpation");
+            toast.error(tMembers("impersonate_error"));
         }
     };
 
@@ -46,7 +51,7 @@ function MemberRow({ member, currentUserId }) {
             <div className="flex items-center gap-2">
                 <div className="flex flex-col">
                     <span className="text-sm font-medium">
-                        {member.user?.name || "Utilisateur"}
+                        {fallbackName}
                     </span>
                     <span className="text-xs text-muted-foreground">
                         {member.user?.email}
@@ -64,11 +69,11 @@ function MemberRow({ member, currentUserId }) {
                         size="sm"
                     >
                         <HatGlasses className="h-4 w-4 mr-2" />
-                        Usurper
+                        {tMembers("owners_impersonate")}
                     </Button>
                 ) : (
                     <Badge variant="secondary" className="text-xs">
-                        Vous
+                        {tMembers("owners_badge_self")}
                     </Badge>
                 )}
             </div>
@@ -80,8 +85,12 @@ export default function OrganizationDetailsCollapse({
     organization,
     currentUserId,
 }) {
+    const tDetails = useTranslations("admin.org_details");
+    const tMembers = useTranslations("admin.org_members");
+    const locale = useLocale();
+
     const formatDescription = description => {
-        if (!description) return "Aucune description";
+        if (!description) return tDetails("field_description_empty");
         return description.length > 100
             ? description.substring(0, 100) + "..."
             : description;
@@ -94,13 +103,13 @@ export default function OrganizationDetailsCollapse({
                     <div className="flex items-center justify-between w-full ">
                         <div className="flex items-center gap-1.5 font-bold">
                             <Building2 className="h-4 w-4 mt-0.25" />
-                            Informations détaillées
+                            {tDetails("details_title")}
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 text-sm">
                         <div className="flex items-center gap-1">
                             <div className="font-medium text-muted-foreground">
-                                ID
+                                {tDetails("field_id")}
                             </div>
                             <p className="font-mono text-xs break-all">
                                 {organization.id}
@@ -108,7 +117,7 @@ export default function OrganizationDetailsCollapse({
                         </div>
                         <div className="flex items-center gap-1">
                             <div className="font-medium text-muted-foreground">
-                                Nom
+                                {tDetails("field_name")}
                             </div>
                             <div className="flex items-center gap-1">
                                 <Building2 className="h-3 w-3" />
@@ -117,7 +126,7 @@ export default function OrganizationDetailsCollapse({
                         </div>
                         <div className="flex items-center gap-1">
                             <div className="font-medium text-muted-foreground">
-                                Slug
+                                {tDetails("field_slug")}
                             </div>
                             <div className="flex items-center gap-1">
                                 <Globe className="h-3 w-3" />
@@ -127,7 +136,7 @@ export default function OrganizationDetailsCollapse({
                         {organization.description && (
                             <div className="flex gap-1">
                                 <div className="font-medium text-muted-foreground">
-                                    Description
+                                    {tDetails("field_description")}
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <FileText className="h-3 w-3" />
@@ -139,11 +148,11 @@ export default function OrganizationDetailsCollapse({
                         )}
                         <div className="flex items-center gap-1">
                             <div className="font-medium text-muted-foreground">
-                                Créée le
+                                {tDetails("field_created")}
                             </div>
                             <div className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
-                                {formatDate(organization.createdAt)}
+                                {formatDate(organization.createdAt, locale)}
                             </div>
                         </div>
                     </div>
@@ -153,11 +162,12 @@ export default function OrganizationDetailsCollapse({
                     <div className="flex items-center justify-between w-full ">
                         <div className="flex items-center gap-1.5 font-bold">
                             <Users className="h-4 w-4 mt-0.25" />
-                            Propriétaires (
-                            {organization.members?.filter(
-                                member => member.role === "owner"
-                            ).length || 0}
-                            )
+                            {tMembers("owners_title", {
+                                count:
+                                    organization.members?.filter(
+                                        member => member.role === "owner"
+                                    ).length || 0,
+                            })}
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 text-sm">
@@ -165,7 +175,7 @@ export default function OrganizationDetailsCollapse({
                             member => member.role === "owner"
                         ).length ? (
                             <div className="text-center py-4 text-muted-foreground">
-                                Aucun propriétaire
+                                {tMembers("owners_empty")}
                             </div>
                         ) : (
                             <ScrollArea onCard className="max-h-40">

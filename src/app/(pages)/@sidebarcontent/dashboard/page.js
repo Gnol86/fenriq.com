@@ -19,8 +19,10 @@ import { hasPermissionAction } from "@/actions/organization.action";
 import { Building } from "lucide-react";
 import { Shield } from "lucide-react";
 import { User } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 export default async function SideBarContent() {
+    const t = await getTranslations("sidebar.dashboard");
     const session = await auth.api.getSession({
         headers: await headers(), // you need to pass the headers object.
     });
@@ -69,7 +71,7 @@ export default async function SideBarContent() {
                             <SidebarMenuButton asChild>
                                 <Link href="/dashboard">
                                     <LayoutDashboard className="opacity-60" />
-                                    Dashboard
+                                    {t("dashboard")}
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -85,7 +87,7 @@ export default async function SideBarContent() {
                     <SidebarGroup>
                         <SidebarGroupLabel className="flex gap-1 items-center">
                             <Building />
-                            {activeUserOrganization?.name ?? "Organisation"}
+                            {activeUserOrganization?.name ?? t("organization_fallback")}
                         </SidebarGroupLabel>
 
                         <SidebarGroupContent>
@@ -95,7 +97,7 @@ export default async function SideBarContent() {
                                         <SidebarMenuButton asChild>
                                             <Link href="/dashboard/org/manage">
                                                 <Settings className="opacity-60" />
-                                                Gérer l&apos;organisation
+                                                {t("manage_organization")}
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -105,7 +107,7 @@ export default async function SideBarContent() {
                                         <SidebarMenuButton asChild>
                                             <Link href="/dashboard/org/members">
                                                 <Users className="opacity-60" />
-                                                Membres
+                                                {t("members")}
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -115,7 +117,7 @@ export default async function SideBarContent() {
                                         <SidebarMenuButton asChild>
                                             <Link href="/dashboard/org/invitations">
                                                 <MailPlusIcon className="opacity-60" />
-                                                Invitations
+                                                {t("invitations")}
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -128,7 +130,7 @@ export default async function SideBarContent() {
                                                 className="text-destructive"
                                             >
                                                 <AlertTriangle className="opacity-60" />
-                                                Danger
+                                                {t("danger")}
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -141,7 +143,7 @@ export default async function SideBarContent() {
             {user.role === "admin" && (
                 <SidebarGroup>
                     <SidebarGroupLabel className="flex gap-1 items-center">
-                        <Shield /> Administration
+                        <Shield /> {t("administration")}
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
@@ -149,7 +151,7 @@ export default async function SideBarContent() {
                                 <SidebarMenuButton asChild>
                                     <Link href="/dashboard/admin/users">
                                         <Users className="opacity-60" />
-                                        Utilisateurs
+                                        {t("users")}
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -157,7 +159,7 @@ export default async function SideBarContent() {
                                 <SidebarMenuButton asChild>
                                     <Link href="/dashboard/admin/orgs">
                                         <Building className="opacity-60" />
-                                        Organisations
+                                        {t("organizations")}
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -177,7 +179,7 @@ export default async function SideBarContent() {
                             <SidebarMenuButton asChild>
                                 <Link href="/dashboard/user/settings">
                                     <Settings className="opacity-60" />
-                                    Parramètres
+                                    {t("settings")}
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -185,7 +187,7 @@ export default async function SideBarContent() {
                             <SidebarMenuButton asChild>
                                 <Link href="/dashboard/user/invitations">
                                     <MailPlus className="opacity-60" />
-                                    Invitations
+                                    {t("invitations")}
                                 </Link>
                             </SidebarMenuButton>
                             {invitations.length > 0 && (
@@ -201,7 +203,7 @@ export default async function SideBarContent() {
                                     className="text-destructive"
                                 >
                                     <AlertTriangle className="opacity-60" />
-                                    Danger
+                                    {t("danger")}
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>

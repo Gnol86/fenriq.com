@@ -14,8 +14,10 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { sortInvitationsByStatus } from "@/lib/invitation-utils";
 import { hasPermissionAction } from "@/actions/organization.action";
+import { getTranslations } from "next-intl/server";
 
 export default async function OrganizationInvitationsPage() {
+    const t = await getTranslations("organization.invitations");
     const session = await auth.api.getSession({
         headers: await headers(),
     });
@@ -53,10 +55,9 @@ export default async function OrganizationInvitationsPage() {
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Invitations</CardTitle>
+                    <CardTitle>{t("page_title")}</CardTitle>
                     <CardDescription>
-                        Gérez les invitations en cours et invitez de nouveaux
-                        membres à rejoindre votre organisation.
+                        {t("page_description")}
                         <InvitationStats invitations={invitations} />
                     </CardDescription>
                     {canInvitationCreate && (

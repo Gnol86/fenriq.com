@@ -14,12 +14,13 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import RemoveMemberDialog from "./remove-member-dialog";
-import { organizationRoleLabels } from "@/lib/constants";
+import { getRoleLabel } from "@/lib/constants";
 import { useServerAction } from "@/hooks/use-server-action";
 import {
     updateMemberRoleAction,
     removeMemberAction,
 } from "@/actions/organization.action";
+import { useTranslations } from "next-intl";
 
 export default function MembersActionMenu({
     member,
@@ -29,6 +30,8 @@ export default function MembersActionMenu({
     canUpdate,
     canDelete,
 }) {
+    const t = useTranslations("organization.members");
+    const tRoles = useTranslations("roles");
     const { execute, isPending } = useServerAction();
     const [removalTarget, setRemovalTarget] = useState(false);
     const [isRemovingMember, setIsRemovingMember] = useState(false);
@@ -52,9 +55,8 @@ export default function MembersActionMenu({
                         organizationId,
                     }),
                 {
-                    successMessage: "Rôle mis à jour",
-                    errorMessage:
-                        "Impossible de mettre à jour le rôle pour le moment",
+                    successMessage: t("success_role_updated"),
+                    errorMessage: t("error_role_update"),
                 }
             );
         },
@@ -74,8 +76,8 @@ export default function MembersActionMenu({
                     organizationId,
                 }),
             {
-                successMessage: "Membre supprimé de l'organisation",
-                errorMessage: "Impossible de supprimer ce membre pour le moment",
+                successMessage: t("success_member_removed"),
+                errorMessage: t("error_member_remove"),
             }
         );
         setIsRemovingMember(false);
@@ -89,8 +91,12 @@ export default function MembersActionMenu({
     }, [isRemovingMember]);
 
     const roleOptions = useMemo(
-        () => Object.entries(organizationRoleLabels),
-        []
+        () => [
+            ["owner", getRoleLabel("owner", tRoles)],
+            ["admin", getRoleLabel("admin", tRoles)],
+            ["member", getRoleLabel("member", tRoles)],
+        ],
+        [tRoles]
     );
     const roleChangeDisabled = isSelf || isPending;
 
@@ -115,7 +121,7 @@ export default function MembersActionMenu({
                     {canUpdate && (
                         <DropdownMenuSub>
                             <DropdownMenuSubTrigger>
-                                Modifier le rôle
+                                {t("menu_change_role")}
                             </DropdownMenuSubTrigger>
                             <DropdownMenuSubContent>
                                 {roleOptions.map(([role, label]) => (
@@ -145,7 +151,7 @@ export default function MembersActionMenu({
                             }}
                             disabled={memberRole === "owner" || isSelf}
                         >
-                            Supprimer
+                            {t("menu_remove")}
                         </DropdownMenuItem>
                     )}
                 </DropdownMenuContent>

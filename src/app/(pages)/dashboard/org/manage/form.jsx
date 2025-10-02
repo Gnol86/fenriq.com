@@ -17,25 +17,26 @@ import FormButton from "@/components/ui/form-button";
 import ImageUpload from "./image-upload-orgs";
 import { useServerAction } from "@/hooks/use-server-action";
 import { updateOrganizationAction } from "@/actions/organization.action";
-
-const formSchema = z.object({
-    name: z
-        .string()
-        .trim()
-        .regex(
-            /^[\p{L}\p{N} -]+$/u,
-            "Le nom ne peut contenir que des lettres, chiffres, espaces ou tirets"
-        )
-        .min(2, "Le nom doit contenir au moins 2 caractères")
-        .max(80, "Le nom ne peut pas dépasser 80 caractères")
-        .refine(value => {
-            const alphanumericMatches = value.match(/\p{L}|\p{N}/gu) ?? [];
-            return alphanumericMatches.length >= 2;
-        }, "Le nom doit contenir au minimum deux caractères alphanumériques"),
-});
+import { useTranslations } from "next-intl";
 
 export default function ManageOrganizationForm({ organization }) {
+    const t = useTranslations("organization.manage");
+    const tValidation = useTranslations("validation.organization_name");
     const { execute, isPending } = useServerAction();
+
+    const formSchema = z.object({
+        name: z
+            .string()
+            .trim()
+            .regex(/^[\p{L}\p{N} -]+$/u, tValidation("pattern"))
+            .min(2, tValidation("min_length"))
+            .max(80, tValidation("max_length"))
+            .refine(value => {
+                const alphanumericMatches = value.match(/\p{L}|\p{N}/gu) ?? [];
+                return alphanumericMatches.length >= 2;
+            }, tValidation("min_alphanumeric")),
+    });
+
     const organizationName = organization?.name ?? "";
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -52,7 +53,7 @@ export default function ManageOrganizationForm({ organization }) {
                     organizationId: organization.id,
                 }),
             {
-                successMessage: "Organisation mise à jour avec succès",
+                successMessage: t("success_message"),
             }
         );
     };
@@ -70,7 +71,7 @@ export default function ManageOrganizationForm({ organization }) {
                     name="name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Nom de l&apos;organisation</FormLabel>
+                            <FormLabel>{t("name_label")}</FormLabel>
                             <FormControl>
                                 <Input
                                     {...field}
@@ -79,7 +80,7 @@ export default function ManageOrganizationForm({ organization }) {
                                 />
                             </FormControl>
                             <FormDescription>
-                                Ce nom est visible par tous les membres.
+                                {t("name_description")}
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -88,18 +89,15 @@ export default function ManageOrganizationForm({ organization }) {
 
                 <div className="flex justify-end">
                     <FormButton type="submit" loading={isPending}>
-                        Enregistrer les modifications
+                        {t("save_button")}
                     </FormButton>
                 </div>
             </form>
         </Form>
     ) : (
         <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-            <p>Aucune organisation active n&apos;a été trouvée.</p>
-            <p>
-                Sélectionnez une organisation dans le menu latéral pour pouvoir
-                modifier ses informations.
-            </p>
+            <p>{t("no_org_error")}</p>
+            <p>{t("select_org_message")}</p>
         </div>
     );
 }

@@ -14,12 +14,16 @@ import { useServerAction } from "@/hooks/use-server-action";
 import { setActiveOrganizationAction } from "@/actions/organization.action";
 import ImageProfile from "../image-profile";
 import CreateOrganizationDialog from "./create-organization-dialog";
+import { useTranslations } from "next-intl";
 
 export default function OrgButton({
     userOrganizations,
     activeUserOrganization,
 }) {
     const { execute, isPending } = useServerAction();
+    const tDashboard = useTranslations("dashboard.index");
+    const tOrganizationSelector = useTranslations("organization.selector");
+    const tAdminOrganizations = useTranslations("admin.organizations");
 
     return (
         <DropdownMenu>
@@ -35,7 +39,7 @@ export default function OrgButton({
                     </span>
                     <span className="text-xs font-medium text-muted-foreground -mt-1 truncate w-full">
                         {activeUserOrganization?.name ||
-                            "Aucune organisation active"}
+                            tDashboard("no_active_organization")}
                     </span>
                 </div>
             </DropdownMenuTrigger>
@@ -44,7 +48,7 @@ export default function OrgButton({
                 onCloseAutoFocus={event => event.preventDefault()}
             >
                 <DropdownMenuLabel className="text-xs text-muted-foreground flex items-center gap-2">
-                    Mes organisations{" "}
+                    {tDashboard("my_organizations_title")}
                 </DropdownMenuLabel>
                 {userOrganizations && userOrganizations.length > 0 ? (
                     userOrganizations.map(organization => {
@@ -64,7 +68,11 @@ export default function OrgButton({
                                                 organizationId: organization.id,
                                             }),
                                         {
-                                            successMessage: `"${organization.name}" sélectionnée`,
+                                            successMessage:
+                                                tOrganizationSelector(
+                                                    "success_selected",
+                                                    { name: organization.name }
+                                                ),
                                             refreshOnSuccess: true,
                                         }
                                     );
@@ -84,7 +92,7 @@ export default function OrgButton({
                     })
                 ) : (
                     <DropdownMenuItem disabled>
-                        Aucune organisation
+                        {tAdminOrganizations("no_organizations")}
                     </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />

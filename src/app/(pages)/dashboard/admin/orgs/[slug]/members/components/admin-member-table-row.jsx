@@ -3,6 +3,7 @@ import { RoleBadge } from "@/components/ui/role-badge";
 import ImageProfile from "@/components/image-profile";
 import { formatDate } from "@/lib/utils";
 import AdminMembersActionMenu from "./admin-members-action-menu";
+import { useTranslations, useLocale } from "next-intl";
 
 /**
  * Composant ligne de tableau pour afficher un membre (version admin)
@@ -18,6 +19,8 @@ export default function AdminMemberTableRow({
     organizationSlug,
 }) {
     const memberRole = member?.role ?? "member";
+    const tAdminUsers = useTranslations("admin.users");
+    const locale = useLocale();
 
     return (
         <TableRow>
@@ -27,7 +30,7 @@ export default function AdminMemberTableRow({
                     <ImageProfile entity={member?.user} size="sm" />
                     <div className="flex flex-col">
                         <span className="text-sm font-medium text-foreground">
-                            {member?.user?.name || "Utilisateur"}
+                            {member?.user?.name || tAdminUsers("table_user")}
                         </span>
                         {member?.user?.email ? (
                             <span className="text-xs text-muted-foreground">
@@ -49,7 +52,7 @@ export default function AdminMemberTableRow({
             {/* Date d'ajout */}
             <TableCell>
                 <span className="text-sm text-muted-foreground">
-                    {formatDate(member?.createdAt)}
+                    {formatDate(member?.createdAt, locale)}
                 </span>
             </TableCell>
 

@@ -11,6 +11,7 @@ import {
     TableCaption,
 } from "@/components/ui/table";
 import AdminInvitationTableRow from "./admin-invitation-table-row";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function AdminInvitationFilter({
     invitations,
@@ -18,6 +19,10 @@ export default function AdminInvitationFilter({
     organizationSlug,
 }) {
     const [showAll, setShowAll] = useState(false);
+    const tAdminInvitations = useTranslations("admin.org_invitations");
+    const tFilter = useTranslations("organization.invitations.filter");
+    const tInvitations = useTranslations("organization.invitations");
+    const locale = useLocale();
 
     // Filtrer les invitations selon l'état du toggle
     const filteredInvitations = showAll
@@ -35,8 +40,12 @@ export default function AdminInvitationFilter({
             <div className="flex justify-between items-center">
                 <div className="text-sm text-muted-foreground">
                     {showAll
-                        ? `Affichage de toutes les invitations (${totalCount}) - Admin`
-                        : `Affichage des invitations en attente (${pendingCount}) - Admin`}
+                        ? tAdminInvitations("status_all", {
+                              count: totalCount,
+                          })
+                        : tAdminInvitations("status_pending", {
+                              count: pendingCount,
+                          })}
                 </div>
                 <Button
                     variant="outline"
@@ -44,8 +53,8 @@ export default function AdminInvitationFilter({
                     onClick={() => setShowAll(!showAll)}
                 >
                     {showAll
-                        ? "Voir les invitations en attente"
-                        : "Voir toutes les invitations"}
+                        ? tAdminInvitations("toggle_show_pending")
+                        : tAdminInvitations("toggle_show_all")}
                 </Button>
             </div>
 
@@ -54,19 +63,19 @@ export default function AdminInvitationFilter({
                 {!filteredInvitations.length && (
                     <TableCaption>
                         {showAll
-                            ? "Aucune invitation dans cette organisation."
-                            : "Aucune invitation en attente dans cette organisation."}
+                            ? tAdminInvitations("empty_all")
+                            : tAdminInvitations("empty_pending")}
                     </TableCaption>
                 )}
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Rôle</TableHead>
-                        <TableHead>Statut</TableHead>
-                        <TableHead>Invité par</TableHead>
-                        <TableHead>Expire le</TableHead>
+                        <TableHead>{tFilter("table_email")}</TableHead>
+                        <TableHead>{tFilter("table_role")}</TableHead>
+                        <TableHead>{tFilter("table_status")}</TableHead>
+                        <TableHead>{tInvitations("table_invited_by")}</TableHead>
+                        <TableHead>{tFilter("table_expires")}</TableHead>
                         <TableHead className="text-right">
-                            Actions Admin
+                            {tAdminInvitations("action_menu_label")}
                         </TableHead>
                     </TableRow>
                 </TableHeader>
@@ -77,6 +86,7 @@ export default function AdminInvitationFilter({
                             invitation={invitation}
                             organizationId={organizationId}
                             organizationSlug={organizationSlug}
+                            locale={locale}
                         />
                     ))}
                 </TableBody>

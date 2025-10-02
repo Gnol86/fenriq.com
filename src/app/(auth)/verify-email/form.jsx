@@ -17,14 +17,17 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import FormButton from "@/components/ui/form-button";
-
-const formSchema = z.object({
-    email: z.email("Veuillez entrer une adresse email valide").trim(),
-});
+import { useTranslations } from "next-intl";
 
 export default function FormResendVerification() {
     const searchParams = useSearchParams();
     const email = searchParams.get("email");
+    const t = useTranslations("auth.verify_email");
+    const tValidation = useTranslations("validation");
+
+    const formSchema = z.object({
+        email: z.email(tValidation("email.invalid")).trim(),
+    });
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -40,14 +43,10 @@ export default function FormResendVerification() {
                 callbackURL: "/email-verified",
             });
 
-            toast.success(
-                "Email de vérification envoyé ! Vérifiez votre boîte email."
-            );
+            toast.success(t("success_message"));
         } catch (error) {
-            console.error("Erreur lors de l'envoi de l'email:", error);
-            toast.error(
-                "Erreur lors de l'envoi de l'email. Veuillez réessayer."
-            );
+            console.error(t("error_log"), error);
+            toast.error(t("error_message"));
         }
     };
 
@@ -59,7 +58,7 @@ export default function FormResendVerification() {
                     name="email"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>{t("email_label")}</FormLabel>
                             <FormControl>
                                 <Input
                                     disabled={true}
@@ -78,20 +77,20 @@ export default function FormResendVerification() {
                         loading={form.formState.isSubmitting}
                         className="flex-1"
                     >
-                        Renvoyer l'email
+                        {t("submit_button")}
                     </FormButton>
                     <Link href="/signin">
-                        <Button variant="ghost">Retour</Button>
+                        <Button variant="ghost">{t("back_button")}</Button>
                     </Link>
                 </div>
 
                 <div className="text-xs flex gap-2 justify-center items-center">
-                    Déjà vérifié ?
+                    {t("already_verified_text")}
                     <Link
                         href="/signin"
                         className="text-primary hover:underline"
                     >
-                        Se connecter
+                        {t("signin_link")}
                     </Link>
                 </div>
             </form>
