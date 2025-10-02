@@ -14,7 +14,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import RemoveMemberDialog from "./remove-member-dialog";
-import { getRoleLabel } from "@/lib/constants";
 import { useServerAction } from "@/hooks/use-server-action";
 import {
     updateMemberRoleAction,
@@ -92,9 +91,9 @@ export default function MembersActionMenu({
 
     const roleOptions = useMemo(
         () => [
-            ["owner", getRoleLabel("owner", tRoles)],
-            ["admin", getRoleLabel("admin", tRoles)],
-            ["member", getRoleLabel("member", tRoles)],
+            ["owner", tRoles("owner")],
+            ["admin", tRoles("admin")],
+            ["member", tRoles("member")],
         ],
         [tRoles]
     );

@@ -1,7 +1,9 @@
-import { auth } from "@/lib/auth";
+import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
+
 import { signOutAction } from "@/actions/auth.action";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
 
 export default async function SignOutButton() {
     const session = await auth.api.getSession({
@@ -13,10 +15,12 @@ export default async function SignOutButton() {
         return null;
     }
 
+    const t = await getTranslations("auth.buttons");
+
     return (
         <form action={signOutAction}>
             <Button type="submit" variant="outline">
-                Se déconnecter
+                {t("sign_out")}
             </Button>
         </form>
     );

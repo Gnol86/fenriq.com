@@ -1,14 +1,12 @@
-import { invitationStatusLabels } from "@/lib/constants";
-
 /**
- * Formate le statut d'une invitation pour l'affichage utilisateur
+ * Détermine le statut d'une invitation pour l'affichage utilisateur
  * Gère automatiquement les invitations expirées
  * @param {Object} invitation - L'objet invitation
- * @returns {string} Le libellé du statut formaté
+ * @returns {string} Le statut technique (accepted, pending, outdated, ...)
  */
 export function getInvitationDisplayStatus(invitation) {
     if (!invitation) {
-        return "-";
+        return "unknown";
     }
 
     // Vérifier si l'invitation est expirée
@@ -17,28 +15,28 @@ export function getInvitationDisplayStatus(invitation) {
         invitation.expiresAt &&
         new Date(invitation.expiresAt).getTime() < Date.now()
     ) {
-        return invitationStatusLabels.outdated;
+        return "outdated";
     }
 
-    return invitationStatusLabels[invitation.status] ?? invitation.status;
+    return invitation.status ?? "unknown";
 }
 
 /**
  * Retourne les classes CSS pour le badge de statut d'invitation
  * Supporte les thèmes clair et sombre
- * @param {string} statusLabel - Le libellé du statut (ex: "Acceptée", "En attente")
+ * @param {string} statusKey - Le statut technique (accepted, pending, ...)
  * @returns {string} Les classes CSS pour le badge
  */
-export function getInvitationStatusBadgeClasses(statusLabel) {
-    switch (statusLabel) {
-        case "Acceptée":
+export function getInvitationStatusBadgeClasses(statusKey) {
+    switch (statusKey) {
+        case "accepted":
             return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200";
-        case "En attente":
+        case "pending":
             return "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200";
-        case "Périmée":
+        case "outdated":
             return "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-200";
-        case "Annulée":
-        case "Refusée":
+        case "canceled":
+        case "rejected":
             return "bg-slate-200 text-slate-700 dark:bg-slate-800/60 dark:text-slate-200";
         default:
             return "bg-muted text-muted-foreground";

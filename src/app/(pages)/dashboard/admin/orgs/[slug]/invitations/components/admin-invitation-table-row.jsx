@@ -1,6 +1,5 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { getRoleLabel } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { getInvitationDisplayStatus } from "@/lib/invitation-utils";
 import AdminInvitationsActionMenu from "./admin-invitations-action-menu";
@@ -19,11 +18,22 @@ export default function AdminInvitationTableRow({
     organizationId,
     organizationSlug,
 }) {
-    const statusLabel = getInvitationDisplayStatus(invitation);
+    const statusKey = getInvitationDisplayStatus(invitation);
     const invitationRole = invitation.role ?? "member";
     const tAdminInvitations = useTranslations("admin.org_invitations");
     const tRoles = useTranslations("roles");
-    const roleLabel = getRoleLabel(invitationRole, tRoles);
+    const tInvitationStatus = useTranslations("invitation_status");
+    const roleLabel = tRoles(invitationRole);
+    const normalizedStatusKey =
+        statusKey === "unknown"
+            ? invitation?.status ?? "pending"
+            : statusKey;
+    let statusLabel = normalizedStatusKey;
+    try {
+        statusLabel = tInvitationStatus(normalizedStatusKey);
+    } catch (error) {
+        statusLabel = normalizedStatusKey;
+    }
     const locale = useLocale();
 
     return (
@@ -44,7 +54,9 @@ export default function AdminInvitationTableRow({
 
             {/* Statut avec badge */}
             <TableCell>
-                <StatusBadge status={statusLabel} variant="invitation" />
+                <StatusBadge status={normalizedStatusKey} variant="invitation">
+                    {statusLabel}
+                </StatusBadge>
             </TableCell>
 
             {/* Invité par (info admin supplémentaire) */}

@@ -1,9 +1,11 @@
+"use client";
+
 import { TableCell, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { organizationRoleLabels } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { getInvitationDisplayStatus } from "@/lib/invitation-utils";
 import InvitationsActionMenu from "./invitations-action-menu";
+import { useTranslations } from "next-intl";
 
 /**
  * Composant ligne de tableau pour afficher une invitation
@@ -21,9 +23,22 @@ export default function InvitationTableRow({
     canCancel,
     locale,
 }) {
-    const statusLabel = getInvitationDisplayStatus(invitation);
+    const tRoles = useTranslations("roles");
+    const tInvitationStatus = useTranslations("invitation_status");
+    const statusKey = getInvitationDisplayStatus(invitation);
+    const normalizedStatusKey =
+        statusKey === "unknown"
+            ? invitation?.status ?? "pending"
+            : statusKey;
+    let statusLabel = normalizedStatusKey;
+    try {
+        statusLabel = tInvitationStatus(normalizedStatusKey);
+    } catch (error) {
+        statusLabel = normalizedStatusKey;
+    }
     const invitationRole = invitation.role ?? "member";
     const showActions = canCreate || canCancel;
+    const roleLabel = tRoles(invitationRole);
 
     return (
         <TableRow>
@@ -37,13 +52,15 @@ export default function InvitationTableRow({
             {/* Rôle assigné */}
             <TableCell>
                 <span className="text-sm font-medium text-foreground">
-                    {organizationRoleLabels[invitationRole] ?? invitationRole}
+                    {roleLabel}
                 </span>
             </TableCell>
 
             {/* Statut avec badge */}
             <TableCell>
-                <StatusBadge status={statusLabel} variant="invitation" />
+                <StatusBadge status={normalizedStatusKey} variant="invitation">
+                    {statusLabel}
+                </StatusBadge>
             </TableCell>
 
             {/* Date d'expiration */}

@@ -18,7 +18,6 @@ import {
     removeUserAction,
     impersonateUserAction,
 } from "@/actions/admin.action";
-import { getRoleLabel } from "@/lib/constants";
 import { HatGlasses } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
@@ -38,7 +37,7 @@ export default function UserActionMenu({ user, isCurrentUser }) {
             () => setUserRoleAction({ userId: user.id, role: newRole }),
             {
                 successMessage: t("success_role_updated", {
-                    role: getRoleLabel(newRole, tRoles),
+                    role: tRoles(newRole),
                 }),
             }
         );
@@ -103,7 +102,7 @@ export default function UserActionMenu({ user, isCurrentUser }) {
     const allowedRoles = ["user", "admin"];
     const filteredRoles = allowedRoles.map(role => [
         role,
-        getRoleLabel(role, tRoles),
+        tRoles(role),
     ]);
 
     return (
@@ -111,7 +110,7 @@ export default function UserActionMenu({ user, isCurrentUser }) {
             <Select value={user.role} onValueChange={handleRoleChange}>
                 <SelectTrigger className="w-fit">
                     <SelectValue>
-                        {getRoleLabel(user.role, tRoles)}
+                        {tRoles(user.role)}
                     </SelectValue>
                 </SelectTrigger>
                 <SelectContent>

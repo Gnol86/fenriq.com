@@ -1,7 +1,9 @@
-import { Button } from "../ui/button";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
+import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
+
+import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
 
 export default async function GoAppButton() {
     const session = await auth.api.getSession({
@@ -13,9 +15,11 @@ export default async function GoAppButton() {
         return null;
     }
 
+    const t = await getTranslations("auth.buttons");
+
     return (
         <Link href="/app">
-            <Button>Application</Button>
+            <Button>{t("go_to_app")}</Button>
         </Link>
     );
 }

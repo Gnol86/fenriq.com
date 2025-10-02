@@ -1,5 +1,11 @@
 {
     "auth": {
+        "buttons": {
+            "sign_in": "Sign In",
+            "sign_up": "Sign Up",
+            "sign_out": "Sign Out",
+            "go_to_app": "Go to App"
+        },
         "signin": {
             "page_title": "Sign In",
             "page_description": "Sign in to your account to access the application",

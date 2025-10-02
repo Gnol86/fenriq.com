@@ -291,23 +291,21 @@ Translations are organized by namespaces in `messages/fr.json` and `messages/en.
 }
 ```
 
-## Helper Functions for Dynamic Content
+## Helper Patterns for Dynamic Content
 
-For role labels, status labels, etc., use helper functions:
+Use `next-intl` directly for labels (roles, invitation status, etc.).
 
 ```js
-// src/lib/constants.js
-export function getRoleLabel(role, t) {
-    return t(`roles.${role}`);
-}
+// Client component
+const tRoles = useTranslations("roles");
+const roleLabel = tRoles(member.role);
 
-export function getInvitationStatusLabel(status, t) {
-    return t(`invitation_status.${status}`);
-}
-
-// Usage in components
-const roleLabel = getRoleLabel(member.role, t);
+// Server component
+const t = await getTranslations("invitation_status");
+const statusLabel = t(statusKey);
 ```
+
+Utilities such as `getInvitationDisplayStatus` return a status key (e.g. `pending`, `outdated`). Translate those keys in the component before rendering.
 
 ## Translation Keys Best Practices
 

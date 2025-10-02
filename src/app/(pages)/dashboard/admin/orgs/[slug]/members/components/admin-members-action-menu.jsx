@@ -15,7 +15,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import AdminRemoveMemberDialog from "./admin-remove-member-dialog";
-import { getRoleLabel } from "@/lib/constants";
 import { useServerAction } from "@/hooks/use-server-action";
 import { updateMemberRoleAsAdminAction } from "@/actions/admin.action";
 import { impersonateUserAction } from "@/actions/admin.action";
@@ -86,7 +85,7 @@ export default function AdminMembersActionMenu({
         () =>
             ["owner", "admin", "member"].map(role => ({
                 role,
-                label: getRoleLabel(role, tRoles),
+                label: tRoles(role),
             })),
         [tRoles]
     );

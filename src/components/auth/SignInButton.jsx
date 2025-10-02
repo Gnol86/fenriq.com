@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { Button } from "../ui/button";
-import { auth } from "@/lib/auth";
+import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
+
+import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
 
 export default async function SignInButton() {
     const session = await auth.api.getSession({
@@ -13,9 +15,11 @@ export default async function SignInButton() {
         return null;
     }
 
+    const t = await getTranslations("auth.buttons");
+
     return (
         <Link href="/signin">
-            <Button>Se connecter</Button>
+            <Button>{t("sign_in")}</Button>
         </Link>
     );
 }

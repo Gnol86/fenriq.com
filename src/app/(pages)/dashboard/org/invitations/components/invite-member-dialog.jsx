@@ -14,7 +14,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { getRoleLabel } from "@/lib/constants";
 import {
     Dialog,
     DialogContent,
@@ -139,10 +138,10 @@ export default function InviteMemberDialog({
                                         </FormControl>
                                         <SelectContent>
                                             <SelectItem value="member">
-                                                {getRoleLabel("member", tRoles)}
+                                                {tRoles("member")}
                                             </SelectItem>
                                             <SelectItem value="admin">
-                                                {getRoleLabel("admin", tRoles)}
+                                                {tRoles("admin")}
                                             </SelectItem>
                                         </SelectContent>
                                     </Select>

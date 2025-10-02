@@ -35,7 +35,6 @@ import { Input } from "@/components/ui/input";
 import { inviteMemberAction } from "@/actions/organization.action";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { getRoleLabel } from "@/lib/constants";
 
 export default function AdminInviteMemberDialog({
     organizationId,
@@ -158,7 +157,7 @@ export default function AdminInviteMemberDialog({
                                         <SelectContent>
                                             {["member", "admin"].map(role => (
                                                 <SelectItem key={role} value={role}>
-                                                    {getRoleLabel(role, tRoles)}
+                                                    {tRoles(role)}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

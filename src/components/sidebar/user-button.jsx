@@ -19,8 +19,13 @@ import { HatGlasses } from "lucide-react";
 import { toast } from "sonner";
 import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
 import { useTranslations } from "next-intl";
+import LocalizationButton from "../localization-button";
 
-export default function UserButton({ user, isImpersonating = null }) {
+export default function UserButton({
+    user,
+    isImpersonating = null,
+    locale = "en",
+}) {
     const t = useTranslations("sidebar.user_button");
     const router = useRouter();
     const pathname = usePathname();
@@ -89,6 +94,7 @@ export default function UserButton({ user, isImpersonating = null }) {
                         {user.name || t("default_name")}
                     </div>
                     <div className="flex-1" />
+                    <LocalizationButton locale={locale} />
                     <AnimatedThemeToggler size={16} />
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />

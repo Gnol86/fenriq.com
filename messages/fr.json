@@ -1,5 +1,11 @@
 {
     "auth": {
+        "buttons": {
+            "sign_in": "Se connecter",
+            "sign_up": "S'inscrire",
+            "sign_out": "Se déconnecter",
+            "go_to_app": "Aller à l'application"
+        },
         "signin": {
             "page_title": "Se connecter",
             "page_description": "Connectez-vous à votre compte pour accéder à l'application",
