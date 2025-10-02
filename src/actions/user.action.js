@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 
 import { PrismaClient } from "@/generated/prisma";
 const prisma = new PrismaClient();
@@ -18,6 +19,8 @@ export async function updateUserAction({ name, email, image }) {
 }
 
 export async function deleteUserAction({ userId }) {
+    const t = await getTranslations("user.danger_zone");
+
     const userOwnerships = await prisma.member.findMany({
         where: {
             userId: userId,
@@ -36,7 +39,6 @@ export async function deleteUserAction({ userId }) {
         },
     });
 
-    // Trouver les organisations où l'utilisateur est le seul propriétaire
     const soleOwnerOrgs = userOwnerships.filter(
         membership => membership.organization.members.length === 1
     );
@@ -44,7 +46,7 @@ export async function deleteUserAction({ userId }) {
     if (soleOwnerOrgs.length > 0) {
         const orgNames = soleOwnerOrgs.map(m => m.organization.name).join(", ");
         throw new Error(
-            `Impossible de supprimer votre compte. Vous êtes le seul propriétaire de ces organisations : "${orgNames}". Veuillez transférer la propriété ou supprimer ces organisations avant de supprimer votre compte.`
+            t("error_sole_owner", { orgNames })
         );
     }
 

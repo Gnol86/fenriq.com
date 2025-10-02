@@ -29,7 +29,12 @@ export default function LocalizationButton({ currentLocale, size = 20 }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuLabel className="flex items-center justify-between">
-                    <ReactCountryFlag svg countryCode="US" />
+                    <ReactCountryFlag
+                        svg
+                        countryCode={
+                            currentLocale === "en" ? "gb" : currentLocale
+                        }
+                    />
                     {localeNames[currentLocale]}
                     <Check className="h-4 w-4 text-primary" />
                 </DropdownMenuLabel>
@@ -53,7 +58,10 @@ export default function LocalizationButton({ currentLocale, size = 20 }) {
                             className="flex items-center gap-2 text-sm"
                             disabled={isPending}
                         >
-                            <ReactCountryFlag svg countryCode={locale} />
+                            <ReactCountryFlag
+                                svg
+                                countryCode={locale === "en" ? "gb" : locale}
+                            />
                             {localeNames[locale] ?? locale}
                         </DropdownMenuItem>
                     );

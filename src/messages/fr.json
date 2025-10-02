@@ -139,7 +139,8 @@
             "alert_description": "Cette action ne peut pas être annulée. Cela supprimera définitivement votre compte et toutes vos données associées.",
             "alert_cancel": "Annuler",
             "alert_confirm": "Supprimer définitivement",
-            "success_message": "Compte supprimé avec succès"
+            "success_message": "Compte supprimé avec succès",
+            "error_sole_owner": "Impossible de supprimer votre compte. Vous êtes le seul propriétaire de ces organisations : \"{orgNames}\". Veuillez transférer la propriété ou supprimer ces organisations avant de supprimer votre compte."
         },
         "invitations": {
             "page_title": "Mes invitations",

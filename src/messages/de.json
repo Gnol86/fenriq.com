@@ -139,7 +139,8 @@
             "alert_description": "Diese Aktion kann nicht rückgängig gemacht werden. Ihr Konto und alle zugehörigen Daten werden dauerhaft gelöscht.",
             "alert_cancel": "Abbrechen",
             "alert_confirm": "Dauerhaft löschen",
-            "success_message": "Konto erfolgreich gelöscht"
+            "success_message": "Konto erfolgreich gelöscht",
+            "error_sole_owner": "Konto kann nicht gelöscht werden. Sie sind der einzige Eigentümer dieser Organisationen: \"{orgNames}\". Bitte übertragen Sie das Eigentum oder löschen Sie diese Organisationen, bevor Sie Ihr Konto löschen."
         },
         "invitations": {
             "page_title": "Meine Einladungen",

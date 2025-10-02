@@ -139,7 +139,8 @@
             "alert_description": "Deze actie kan niet ongedaan worden gemaakt. Uw account en alle bijbehorende gegevens worden permanent verwijderd.",
             "alert_cancel": "Annuleren",
             "alert_confirm": "Permanent verwijderen",
-            "success_message": "Account succesvol verwijderd"
+            "success_message": "Account succesvol verwijderd",
+            "error_sole_owner": "Kan uw account niet verwijderen. U bent de enige eigenaar van deze organisaties: \"{orgNames}\". Draag het eigendom over of verwijder deze organisaties voordat u uw account verwijdert."
         },
         "invitations": {
             "page_title": "Mijn uitnodigingen",

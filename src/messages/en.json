@@ -139,7 +139,8 @@
             "alert_description": "This action cannot be undone. This will permanently delete your account and all associated data.",
             "alert_cancel": "Cancel",
             "alert_confirm": "Delete Permanently",
-            "success_message": "Account deleted successfully"
+            "success_message": "Account deleted successfully",
+            "error_sole_owner": "Unable to delete your account. You are the sole owner of these organizations: \"{orgNames}\". Please transfer ownership or delete these organizations before deleting your account."
         },
         "invitations": {
             "page_title": "My Invitations",
