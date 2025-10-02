@@ -39,6 +39,7 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 - `src/actions/` - Actions server
 - `src/components/email/` - Email templates using React Email
 - `prisma/` - Database schema and migrations
+- `src/messages/` - Internationalization messages
 
 ### Key Features
 
@@ -212,10 +213,10 @@ This project uses **next-intl** for internationalization with French (fr) as the
 
 - `@lib/i18n/config.js` - Locale configuration (locales array, defaultLocale)
 - `@lib/i18n/request.js` - Request configuration for loading translations based on cookie
-- `messages/fr.json` - French translations
-- `messages/en.json` - English translations
-- `messages/nl.json` - Dutch translations
-- `messages/de.json` - German translations
+- `@/messages/fr.json` - French translations
+- `@/messages/en.json` - English translations
+- `@/messages/nl.json` - Dutch translations
+- `@/messages/de.json` - German translations
 - Cookie: `NEXT_LOCALE` stores user's locale preference
 
 ## Translation Patterns

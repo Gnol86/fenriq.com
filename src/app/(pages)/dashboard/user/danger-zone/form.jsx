@@ -58,7 +58,7 @@ export default function DangerZoneForm({ user }) {
     };
 
     const handleDeleteConfirmation = async () => {
-        await execute(() => deleteUserAction(), {
+        await execute(() => deleteUserAction({ userId: user.id }), {
             successMessage: t("success_message"),
             redirectOnSuccess: "/",
         });
@@ -84,7 +84,9 @@ export default function DangerZoneForm({ user }) {
                         <FormItem>
                             <FormLabel>{t("confirm_label")}</FormLabel>
                             <FormDescription>
-                                {t("confirm_description", { email: user.email })}
+                                {t("confirm_description", {
+                                    email: user.email,
+                                })}
                             </FormDescription>
                             <FormControl>
                                 <Input

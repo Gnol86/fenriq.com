@@ -26,6 +26,31 @@ async function getActiveOrganization(userId) {
     return userMembership?.organization ?? null;
 }
 
+// Détecte la locale depuis le cookie NEXT_LOCALE de next-intl
+function getLocaleFromRequest(request) {
+    const cookieHeader = request.headers.get("cookie");
+    if (!cookieHeader) return null;
+
+    const cookies = cookieHeader.split(";").reduce((acc, cookie) => {
+        const [key, value] = cookie.trim().split("=");
+        acc[key] = value;
+        return acc;
+    }, {});
+
+    return cookies["NEXT_LOCALE"] ?? null;
+}
+
+// Mapper les codes de locale next-intl vers better-auth-localization
+function mapLocaleToBetterAuth(locale) {
+    const localeMap = {
+        fr: "fr-FR",
+        en: "en-US",
+        nl: "nl-NL",
+        de: "de-DE",
+    };
+    return localeMap[locale] ?? "en-US";
+}
+
 export const auth = betterAuth({
     database: prismaAdapter(prisma, { provider: "postgres" }),
     baseURL: getServerUrl(),
@@ -95,7 +120,7 @@ export const auth = betterAuth({
 
             if (!ok?.success)
                 throw new APIError("FORBIDDEN", {
-                    message: "Permission manquante",
+                    message: "Denied",
                 });
         }),
     },
@@ -134,9 +159,9 @@ export const auth = betterAuth({
                     const orgNames = soleOwnerOrgs
                         .map(m => m.organization.name)
                         .join(", ");
-                    throw new Error(
-                        `Impossible de supprimer votre compte. Vous êtes le seul propriétaire de ces organisations : ${orgNames}. Veuillez transférer la propriété ou supprimer ces organisations avant de supprimer votre compte.`
-                    );
+                    throw new APIError("FORBIDDEN", {
+                        message: "Denied",
+                    });
                 }
             },
             afterDelete: async user => {
@@ -169,8 +194,20 @@ export const auth = betterAuth({
     },
     plugins: [
         localization({
-            defaultLocale: "fr-FR",
+            defaultLocale: "en-US",
             fallbackLocale: "default",
+            getLocale: async request => {
+                try {
+                    const nextIntlLocale = getLocaleFromRequest(request);
+                    return mapLocaleToBetterAuth(nextIntlLocale ?? "en");
+                } catch (error) {
+                    console.warn(
+                        "Error detecting locale from NEXT_LOCALE cookie:",
+                        error
+                    );
+                    return "en-US";
+                }
+            },
             translations,
         }),
         admin({
@@ -216,9 +253,7 @@ export const auth = betterAuth({
                         email,
                         organizationName: organization.name,
                         inviterName:
-                            inviter?.user?.name ||
-                            inviter?.user?.email ||
-                            "Un membre de votre organisation",
+                            inviter?.user?.name || inviter?.user?.email || "--",
                         invitationUrl,
                         expiresAt: invitation.expiresAt,
                     });
