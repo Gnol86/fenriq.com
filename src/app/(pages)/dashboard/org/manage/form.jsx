@@ -18,11 +18,12 @@ import ImageUpload from "./image-upload-orgs";
 import { useServerAction } from "@/hooks/use-server-action";
 import { updateOrganizationAction } from "@/actions/organization.action";
 import { useTranslations } from "next-intl";
+import ChangeInput from "@/components/change-input";
 
 export default function ManageOrganizationForm({ organization }) {
     const t = useTranslations("organization.manage");
     const tValidation = useTranslations("validation.organization_name");
-    const { execute, isPending } = useServerAction();
+    const { execute, isPending, isSuccess } = useServerAction();
 
     const formSchema = z.object({
         name: z
@@ -64,34 +65,24 @@ export default function ManageOrganizationForm({ organization }) {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="flex flex-col gap-6"
             >
-                <ImageUpload organization={organization} />
-
                 <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>{t("name_label")}</FormLabel>
                             <FormControl>
-                                <Input
+                                <ChangeInput
+                                    label={t("name_label")}
+                                    description={t("name_description")}
+                                    loading={isPending}
+                                    isSuccess={isSuccess}
+                                    type="text"
                                     {...field}
-                                    autoFocus
-                                    disabled={isPending}
                                 />
                             </FormControl>
-                            <FormDescription>
-                                {t("name_description")}
-                            </FormDescription>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
-
-                <div className="flex justify-end">
-                    <FormButton type="submit" loading={isPending}>
-                        {t("save_button")}
-                    </FormButton>
-                </div>
             </form>
         </Form>
     ) : (

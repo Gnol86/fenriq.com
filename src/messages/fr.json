@@ -119,6 +119,7 @@
         "settings": {
             "page_title": "Paramètres du compte",
             "page_description": "Modifiez vos informations personnelles et préférences de compte.",
+            "profile_image_label": "Image de profil",
             "name_label": "Nom",
             "name_placeholder": "Votre nom",
             "name_description": "Ce nom sera affiché dans votre profil.",
@@ -172,6 +173,7 @@
         "manage": {
             "page_title": "Gérer l'organisation",
             "page_description": "Modifiez les informations principales de votre organisation.",
+            "logo_label": "Logo de l'organisation",
             "name_label": "Nom de l'organisation",
             "name_description": "Ce nom est visible par tous les membres.",
             "save_button": "Enregistrer les modifications",
@@ -223,7 +225,8 @@
             "remove_dialog_description": "Cette action retirera l'accès de {name} à l'organisation.",
             "remove_dialog_description_fallback": "Cette action retirera l'accès de ce membre à l'organisation.",
             "remove_dialog_cancel": "Annuler",
-            "remove_dialog_confirm": "Supprimer"
+            "remove_dialog_confirm": "Supprimer",
+            "stats_label": "{count, plural, one {# membre actif} other {# membres actifs}}"
         },
         "invitations": {
             "page_title": "Invitations",

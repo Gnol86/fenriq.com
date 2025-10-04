@@ -119,6 +119,7 @@
         "settings": {
             "page_title": "Account Settings",
             "page_description": "Modify your personal information and account preferences.",
+            "profile_image_label": "Profile Picture",
             "name_label": "Name",
             "name_placeholder": "Your name",
             "name_description": "This name will be displayed in your profile.",
@@ -172,6 +173,7 @@
         "manage": {
             "page_title": "Manage Organization",
             "page_description": "Edit your organization's main information.",
+            "logo_label": "Organization Logo",
             "name_label": "Organization Name",
             "name_description": "This name is visible to all members.",
             "save_button": "Save Changes",

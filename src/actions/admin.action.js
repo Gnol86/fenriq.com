@@ -137,6 +137,12 @@ export async function impersonateUserAction({ userId }) {
     });
 }
 
+export async function stopImpersonateUserAction() {
+    return await auth.api.stopImpersonating({
+        headers: await headers(),
+    });
+}
+
 // Organisation actions
 export async function createOrganizationAction({
     name,

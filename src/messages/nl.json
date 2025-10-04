@@ -119,6 +119,7 @@
         "settings": {
             "page_title": "Accountinstellingen",
             "page_description": "Pas uw persoonlijke gegevens en accountvoorkeuren aan.",
+            "profile_image_label": "Profielfoto",
             "name_label": "Naam",
             "name_placeholder": "Uw naam",
             "name_description": "Deze naam wordt getoond in uw profiel.",
@@ -172,6 +173,7 @@
         "manage": {
             "page_title": "Organisatie beheren",
             "page_description": "Bewerk de belangrijkste informatie van uw organisatie.",
+            "logo_label": "Organisatielogo",
             "name_label": "Naam van de organisatie",
             "name_description": "Deze naam is zichtbaar voor alle leden.",
             "save_button": "Wijzigingen opslaan",

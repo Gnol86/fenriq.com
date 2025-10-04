@@ -95,7 +95,7 @@ export default function OrgButton({
                         {tAdminOrganizations("no_organizations")}
                     </DropdownMenuItem>
                 )}
-                <DropdownMenuSeparator />
+
                 <CreateOrganizationDialog />
             </DropdownMenuContent>
         </DropdownMenu>

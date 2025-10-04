@@ -11,6 +11,8 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { hasPermissionAction } from "@/actions/organization.action";
 import { getTranslations } from "next-intl/server";
+import { Label } from "@/components/ui/label";
+import ImageUpload from "./image-upload-orgs";
 
 export default async function OrganizationManagePage() {
     const t = await getTranslations("organization.manage");
@@ -38,7 +40,12 @@ export default async function OrganizationManagePage() {
                     <CardTitle>{t("page_title")}</CardTitle>
                     <CardDescription>{t("page_description")}</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                        <Label className="font-bold">{t("logo_label")}</Label>
+
+                        <ImageUpload organization={activeUserOrganization} />
+                    </div>
                     <ManageOrganizationForm
                         organization={activeUserOrganization}
                     />

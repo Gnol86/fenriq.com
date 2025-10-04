@@ -100,7 +100,6 @@ export default function UserButton({
                     />
                     <AnimatedThemeToggler size={16} />
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
                 {!isOnApp && (
                     <DropdownMenuItem asChild>
                         <Link href="/app" className="flex items-center gap-2">

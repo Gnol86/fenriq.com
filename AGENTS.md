@@ -323,10 +323,18 @@ Utilities like `getInvitationDisplayStatus` return status keys (`pending`, `outd
 When adding new user-facing text:
 
 1. **Never hardcode text** - Always use translation keys
-2. **Add to both** `messages/fr.json` AND `messages/en.json`
-3. **Use appropriate namespace** based on the feature
-4. **Keep keys consistent** across languages
-5. **Test both languages** to ensure translations work
+2. **🚨 CRITICAL: Add to ALL language files** - `messages/fr.json`, `messages/en.json`, `messages/nl.json`, AND `messages/de.json`
+3. **ALWAYS verify all language files exist** - Use `ls src/messages/` or `Glob` to list all .json files before adding translations
+4. **Use appropriate namespace** based on the feature
+5. **Keep keys consistent** across all languages
+6. **Test all languages** to ensure translations work
+
+### Supported Languages
+
+- 🇫🇷 French (`fr.json`) - Default language
+- 🇬🇧 English (`en.json`)
+- 🇳🇱 Dutch (`nl.json`)
+- 🇩🇪 German (`de.json`)
 
 ## Example: Complete Page Translation
 
