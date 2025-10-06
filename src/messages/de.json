@@ -275,7 +275,10 @@
             "stats": {
                 "pending": "{count} Einladung{count, plural, =1 {} other {en}} offen",
                 "total": "Gesamt: {count} Einladung{count, plural, =1 {} other {en}}"
-            }
+            },
+            "remove_dialog_title": "Diese Einladung stornieren?",
+            "remove_dialog_description": "Diese Aktion storniert die Einladung für {email}.",
+            "remove_dialog_description_fallback": "Diese Aktion storniert diese Einladung."
         },
         "create_dialog": {
             "title": "Organisation erstellen",

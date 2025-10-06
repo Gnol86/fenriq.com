@@ -275,7 +275,10 @@
             "stats": {
                 "pending": "{count} invitation{count, plural, =1 {} other {s}} en attente",
                 "total": "Total : {count} invitation{count, plural, =1 {} other {s}}"
-            }
+            },
+            "remove_dialog_title": "Annuler cette invitation ?",
+            "remove_dialog_description": "Cette action annulera l'invitation de {email}.",
+            "remove_dialog_description_fallback": "Cette action annulera cette invitation."
         },
         "create_dialog": {
             "title": "Créer une organisation",

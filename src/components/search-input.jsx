@@ -9,7 +9,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { Spinner } from "./ui/spinner";
 
 export default function SearchInput({
-    placeholder = "Rechercher...",
+    placeholder = "Search...",
     searchParam = "search",
     debounceMs = 300,
 }) {

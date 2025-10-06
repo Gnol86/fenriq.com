@@ -16,6 +16,7 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { useTranslations } from "next-intl";
 import { useCallback, useMemo } from "react";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { Trash2 } from "lucide-react";
 
 export default function MembersActionMenu({
     member,
@@ -131,11 +132,11 @@ export default function MembersActionMenu({
             {canDelete && (
                 <Button
                     variant="destructive"
-                    size="sm"
+                    size="icon-sm"
                     disabled={isPending}
                     onClick={handleRemoveMember}
                 >
-                    {t("menu_remove")}
+                    <Trash2 />
                 </Button>
             )}
         </ButtonGroup>

@@ -78,12 +78,17 @@ export async function inviteMemberAction({ email, role, organizationId }) {
             email: email,
             role: role,
             organizationId: organizationId,
+            resend: true,
         },
         headers: await headers(),
     });
 }
 
-export async function updateMemberRoleAction({ memberId, role, organizationId }) {
+export async function updateMemberRoleAction({
+    memberId,
+    role,
+    organizationId,
+}) {
     return await auth.api.updateMemberRole({
         body: {
             memberId,

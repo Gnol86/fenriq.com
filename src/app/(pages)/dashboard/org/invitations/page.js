@@ -27,6 +27,8 @@ import { Mail } from "lucide-react";
 import { PrismaClient } from "@/generated/prisma";
 import SearchInput from "@/components/search-input";
 import { Pagination } from "@/components/pagination";
+import { ButtonGroup } from "@/components/ui/button-group";
+import ToggleViewButton from "./components/toggle-view-button";
 
 const prisma = new PrismaClient();
 const INVITATIONS_PER_PAGE = 10;
@@ -34,9 +36,21 @@ const INVITATIONS_PER_PAGE = 10;
 export default async function OrganizationInvitationsPage({ searchParams }) {
     const t = await getTranslations("organization.invitations");
     const resolvedSearchParams = await searchParams;
-    const searchValue = resolvedSearchParams?.search || "";
+    const rawSearchParam = resolvedSearchParams?.search;
+    const searchValue = Array.isArray(rawSearchParam)
+        ? (rawSearchParam[rawSearchParam.length - 1] ?? "")
+        : (rawSearchParam ?? "");
+    const rawPageParam = resolvedSearchParams?.page;
+    const pageParam = Array.isArray(rawPageParam)
+        ? (rawPageParam[rawPageParam.length - 1] ?? "1")
+        : (rawPageParam ?? "1");
+    const viewParam = resolvedSearchParams?.view;
+    const currentView = Array.isArray(viewParam)
+        ? viewParam[viewParam.length - 1]
+        : viewParam;
+    const isShowingAllInvitations = currentView === "all";
     const limit = INVITATIONS_PER_PAGE;
-    const page = parseInt(resolvedSearchParams?.page || "1", 10);
+    const page = parseInt(pageParam, 10);
     const offset = (page - 1) * INVITATIONS_PER_PAGE;
 
     const session = await auth.api.getSession({
@@ -67,17 +81,18 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
         permissions: { invitation: ["cancel"] },
     });
 
-    const whereClause = searchValue
-        ? {
-              organizationId: activeUserOrganization.id,
-              email: {
-                  contains: searchValue,
-                  mode: "insensitive",
-              },
-          }
-        : {
-              organizationId: activeUserOrganization.id,
-          };
+    const whereClause = {
+        organizationId: activeUserOrganization.id,
+        ...(isShowingAllInvitations ? {} : { status: "pending" }),
+        ...(searchValue
+            ? {
+                  email: {
+                      contains: searchValue,
+                      mode: "insensitive",
+                  },
+              }
+            : {}),
+    };
 
     const lengthTotalInvitations = await prisma.invitation.count({
         where: whereClause,
@@ -94,6 +109,22 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
 
     // Get the user's locale for date formatting
     const locale = session.user?.locale ?? "fr";
+
+    const toggleButtonLabel = isShowingAllInvitations
+        ? t("filter.show_pending")
+        : t("filter.show_all");
+    const filterStatusMessage = t(
+        isShowingAllInvitations
+            ? "filter.showing_all"
+            : "filter.showing_pending",
+        { count: lengthTotalInvitations }
+    );
+    const emptyStateTitleKey = searchValue
+        ? "filter.no_invitations"
+        : isShowingAllInvitations
+          ? "filter.no_invitations"
+          : "filter.no_pending_invitations";
+    const emptyStateTitle = t(emptyStateTitleKey);
 
     return (
         <div className="flex flex-col gap-6">
@@ -112,31 +143,39 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
                 </CardHeader>
 
                 <CardContent>
+                    <ButtonGroup className="w-full mb-4">
+                        <SearchInput placeholder={t("search_placeholder")} />
+                        <ToggleViewButton label={toggleButtonLabel} />
+                    </ButtonGroup>
                     {!invitations.length ? (
                         <Empty className="border border-dashed">
                             <EmptyHeader>
                                 <EmptyMedia variant="icon">
                                     <Mail />
                                 </EmptyMedia>
-                                <EmptyTitle>{t("no_invitations")}</EmptyTitle>
+                                <EmptyTitle>{emptyStateTitle}</EmptyTitle>
                                 <EmptyDescription>
                                     {t("invite_members_description")}
                                 </EmptyDescription>
                             </EmptyHeader>
-                            <EmptyContent>
-                                <InviteMemberDialog
-                                    organizationId={activeUserOrganization.id}
-                                    organizationName={
-                                        activeUserOrganization.name
-                                    }
-                                />
-                            </EmptyContent>
+                            {canInvitationCreate && (
+                                <EmptyContent>
+                                    <InviteMemberDialog
+                                        organizationId={
+                                            activeUserOrganization.id
+                                        }
+                                        organizationName={
+                                            activeUserOrganization.name
+                                        }
+                                    />
+                                </EmptyContent>
+                            )}
                         </Empty>
                     ) : (
                         <>
-                            <SearchInput
-                                placeholder={t("search_placeholder")}
-                            />
+                            <p className="text-sm text-muted-foreground">
+                                {filterStatusMessage}
+                            </p>
                             <ItemGroup>
                                 {invitations.map((invitation, index) => (
                                     <React.Fragment key={invitation.id}>

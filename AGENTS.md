@@ -83,6 +83,46 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 - Use `resolveActionResult` helper for mutations
 - Follow form creation pattern in `/src/features/form/`
 
+### Dialogs and Confirmations
+
+- **ALWAYS** use `useConfirm` hook for confirmation dialogs
+- The `useConfirm` hook provides a centralized dialog system via `DialogProvider`
+- Pattern: Import hook, initialize it, then call `confirm()` with config and callback
+
+**✅ REQUIRED Pattern:**
+
+```js
+import { useConfirm } from "@/hooks/use-confirm";
+
+const confirm = useConfirm();
+const { execute } = useServerAction();
+
+// Usage with server action
+await confirm(
+    {
+        title: t("dialog_title"),
+        description: t("dialog_description"),
+        variant: "destructive", // or "default"
+    },
+    () =>
+        execute(
+            () => myServerAction(data),
+            {
+                successMessage: t("success"),
+                errorMessage: t("error"),
+            }
+        )
+);
+```
+
+**Key Points:**
+
+- `confirm()` takes 2 arguments: config object and callback function
+- Config object: `{ title, description, variant }` where variant can be `"default"` or `"destructive"`
+- The callback is executed only if user confirms
+- Returns a Promise that resolves when user confirms/cancels
+- Must be used within `DialogProvider` context
+
 ### Authentication
 
 #### **🎯 CRITICAL - Use New System Only**
@@ -108,6 +148,11 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 ### **🚨 CRITICAL - Server Actions System**
 
 - `src/hooks/use-server-action.js` - **PRIMARY** hook for server actions - ALWAYS use this in client components
+
+### **Dialog System**
+
+- `src/hooks/use-confirm.js` - Hook for confirmation dialogs - ALWAYS use this for confirmations
+- `src/components/providers/dialog-provider.jsx` - Global dialog provider
 
 ### **Agent Rules for Auth**
 
@@ -203,6 +248,18 @@ await execute(() => myServerAction(data), {
     successMessage: "Succès!",
     errorMessage: "Erreur",
 });
+
+// ✅ ALWAYS use useConfirm hook for confirmation dialogs
+import { useConfirm } from "@/hooks/use-confirm";
+const confirm = useConfirm();
+await confirm(
+    {
+        title: t("dialog_title"),
+        description: t("dialog_description"),
+        variant: "destructive",
+    },
+    () => execute(() => myServerAction(data), { successMessage: "...", errorMessage: "..." })
+);
 ```
 
 # **Internationalization (i18n)**

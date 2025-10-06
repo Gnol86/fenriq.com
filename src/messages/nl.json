@@ -275,7 +275,10 @@
             "stats": {
                 "pending": "{count} uitnodiging{count, plural, =1 {} other {en}} lopend",
                 "total": "Totaal: {count} uitnodiging{count, plural, =1 {} other {en}}"
-            }
+            },
+            "remove_dialog_title": "Deze uitnodiging annuleren?",
+            "remove_dialog_description": "Deze actie annuleert de uitnodiging voor {email}.",
+            "remove_dialog_description_fallback": "Deze actie annuleert deze uitnodiging."
         },
         "create_dialog": {
             "title": "Organisatie aanmaken",

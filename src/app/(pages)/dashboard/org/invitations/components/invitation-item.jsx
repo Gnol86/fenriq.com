@@ -28,7 +28,7 @@ export default function InvitationItem({
 
     const statusKey = getInvitationDisplayStatus(invitation);
     const normalizedStatusKey =
-        statusKey === "unknown" ? invitation?.status ?? "pending" : statusKey;
+        statusKey === "unknown" ? (invitation?.status ?? "pending") : statusKey;
 
     let statusLabel = normalizedStatusKey;
     try {
@@ -39,22 +39,22 @@ export default function InvitationItem({
 
     const invitationRole = invitation.role ?? "member";
     const roleLabel = tRoles(invitationRole);
-    const showActions = canCreate || canCancel;
+    const showActions =
+        invitation.status === "pending" && (canCreate || canCancel);
 
     return (
         <Item>
-            <ItemMedia>
-                <div className="flex size-10 items-center justify-center rounded-full border bg-muted">
-                    <Mail className="size-4" />
-                </div>
+            <ItemMedia variant="icon">
+                <Mail className="size-4" />
             </ItemMedia>
             <ItemContent>
                 <ItemTitle>
                     {invitation.email}
-                    {invitationRole !== "member" && (
-                        <Badge>{roleLabel}</Badge>
-                    )}
-                    <StatusBadge status={normalizedStatusKey} variant="invitation">
+                    {invitationRole !== "member" && <Badge>{roleLabel}</Badge>}
+                    <StatusBadge
+                        status={normalizedStatusKey}
+                        variant="invitation"
+                    >
                         {statusLabel}
                     </StatusBadge>
                 </ItemTitle>
