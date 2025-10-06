@@ -1,3 +1,4 @@
+import { hasPermissionAction } from "@/actions/organization.action";
 import {
     Card,
     CardAction,
@@ -6,22 +7,24 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { ItemGroup, ItemSeparator } from "@/components/ui/item";
 import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+    Empty,
+    EmptyContent,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from "@/components/ui/empty";
 import { auth } from "@/lib/auth";
+import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import InviteMemberDialog from "../invitations/components/invite-member-dialog";
+import MemberItem from "./components/member-item";
 import MemberStats from "./components/member-stats";
-import MemberTableRow from "./components/member-table-row";
-import { hasPermissionAction } from "@/actions/organization.action";
-import { getTranslations } from "next-intl/server";
+import React from "react";
+import { Users } from "lucide-react";
 
 export default async function OrganizationMembersPage() {
     const t = await getTranslations("organization.members");
@@ -84,35 +87,46 @@ export default async function OrganizationMembersPage() {
                 </CardHeader>
 
                 <CardContent>
-                    <Table>
-                        {!members.length && (
-                            <TableCaption>{t("no_members")}</TableCaption>
-                        )}
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>{t("table_user")}</TableHead>
-                                <TableHead>{t("table_role")}</TableHead>
-                                <TableHead>{t("table_since")}</TableHead>
-                                {(canMemberUpdate || canMemberDelete) && (
-                                    <TableHead className="text-right">
-                                        {t("table_action")}
-                                    </TableHead>
-                                )}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {members.map(member => (
-                                <MemberTableRow
-                                    key={member.id}
-                                    member={member}
+                    {!members.length ? (
+                        <Empty className="border border-dashed">
+                            <EmptyHeader>
+                                <EmptyMedia variant="icon">
+                                    <Users />
+                                </EmptyMedia>
+                                <EmptyTitle>{t("no_members")}</EmptyTitle>
+                                <EmptyDescription>
+                                    {t("invit_members")}
+                                </EmptyDescription>
+                            </EmptyHeader>
+                            <EmptyContent>
+                                <InviteMemberDialog
                                     organizationId={activeUserOrganization.id}
-                                    currentUserId={user.id}
-                                    canUpdate={canMemberUpdate}
-                                    canDelete={canMemberDelete}
+                                    organizationName={
+                                        activeUserOrganization.name
+                                    }
                                 />
+                            </EmptyContent>
+                        </Empty>
+                    ) : (
+                        <ItemGroup>
+                            {members.map((member, index) => (
+                                <React.Fragment key={member.id}>
+                                    <MemberItem
+                                        member={member}
+                                        organizationId={
+                                            activeUserOrganization.id
+                                        }
+                                        currentUserId={user.id}
+                                        canUpdate={canMemberUpdate}
+                                        canDelete={canMemberDelete}
+                                    />
+                                    {index !== members.length - 1 && (
+                                        <ItemSeparator />
+                                    )}
+                                </React.Fragment>
                             ))}
-                        </TableBody>
-                    </Table>
+                        </ItemGroup>
+                    )}
                 </CardContent>
             </Card>
         </div>

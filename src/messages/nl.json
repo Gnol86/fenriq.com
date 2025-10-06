@@ -215,6 +215,8 @@
             "table_since": "Sinds",
             "table_action": "Actie",
             "no_members": "Geen leden in de organisatie.",
+            "invit_members": "Nodig leden uit om lid te worden van uw organisatie.",
+            "action": "Acties",
             "menu_change_role": "Rol wijzigen",
             "menu_remove": "Verwijderen",
             "success_role_updated": "Rol bijgewerkt",

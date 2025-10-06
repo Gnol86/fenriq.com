@@ -215,6 +215,8 @@
             "table_since": "Since",
             "table_action": "Action",
             "no_members": "No members in the organization.",
+            "invit_members": "Invite members to join your organization.",
+            "action": "Actions",
             "menu_change_role": "Change Role",
             "menu_remove": "Remove",
             "success_role_updated": "Role updated",

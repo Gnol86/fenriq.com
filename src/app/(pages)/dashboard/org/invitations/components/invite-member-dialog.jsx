@@ -78,7 +78,7 @@ export default function InviteMemberDialog({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button type="button" className="self-start" size="sm">
+                <Button type="button" size="sm">
                     <MailPlus className="mr-2 h-4 w-4" aria-hidden="true" />
                     {t("invite_button")}
                 </Button>

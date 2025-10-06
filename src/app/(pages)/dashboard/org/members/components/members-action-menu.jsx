@@ -1,25 +1,24 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
-import { MoreHorizontal } from "lucide-react";
+import {
+    removeMemberAction,
+    updateMemberRoleAction,
+} from "@/actions/organization.action";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuSeparator,
     DropdownMenuSub,
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import RemoveMemberDialog from "./remove-member-dialog";
 import { useServerAction } from "@/hooks/use-server-action";
-import {
-    updateMemberRoleAction,
-    removeMemberAction,
-} from "@/actions/organization.action";
 import { useTranslations } from "next-intl";
+import { useCallback, useMemo, useState } from "react";
+import RemoveMemberDialog from "./remove-member-dialog";
+import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
 
 export default function MembersActionMenu({
     member,
@@ -97,64 +96,51 @@ export default function MembersActionMenu({
         ],
         [tRoles]
     );
-    const roleChangeDisabled = isSelf || isPending;
+
+    if (isSelf) return null;
 
     return (
-        <>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        aria-label="Actions du membre"
-                        disabled={isSelf}
-                    >
-                        <MoreHorizontal
-                            className="h-4 w-4"
-                            aria-hidden="true"
-                        />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    {canUpdate && (
-                        <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>
-                                {t("menu_change_role")}
-                            </DropdownMenuSubTrigger>
-                            <DropdownMenuSubContent>
-                                {roleOptions.map(([role, label]) => (
-                                    <DropdownMenuItem
-                                        key={role}
-                                        onSelect={event => {
-                                            event.preventDefault();
-                                            handleRoleChange(role);
-                                        }}
-                                        disabled={
-                                            roleChangeDisabled ||
-                                            memberRole === role
-                                        }
-                                    >
-                                        <span className="text-sm">{label}</span>
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuSubContent>
-                        </DropdownMenuSub>
-                    )}
-                    {canDelete && (
-                        <DropdownMenuItem
-                            variant="destructive"
-                            onSelect={event => {
-                                event.preventDefault();
-                                setRemovalTarget(true);
-                            }}
-                            disabled={memberRole === "owner" || isSelf}
+        <ButtonGroup>
+            {canUpdate && (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            aria-label="Actions du membre"
+                            disabled={isPending}
                         >
-                            {t("menu_remove")}
-                        </DropdownMenuItem>
-                    )}
-                </DropdownMenuContent>
-            </DropdownMenu>
+                            {t("menu_change_role")}
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        {roleOptions.map(([role, label]) => (
+                            <DropdownMenuItem
+                                key={role}
+                                onSelect={event => {
+                                    event.preventDefault();
+                                    handleRoleChange(role);
+                                }}
+                                disabled={isPending}
+                            >
+                                <span className="text-sm">{label}</span>
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )}
+            {canDelete && (
+                <Button
+                    variant="destructive"
+                    size="sm"
+                    disabled={isPending}
+                    onClick={() => {
+                        setRemovalTarget(true);
+                    }}
+                >
+                    {t("menu_remove")}
+                </Button>
+            )}
 
             <RemoveMemberDialog
                 open={removalTarget}
@@ -163,6 +149,6 @@ export default function MembersActionMenu({
                 onConfirm={confirmRemoval}
                 onCancel={closeRemovalDialog}
             />
-        </>
+        </ButtonGroup>
     );
 }

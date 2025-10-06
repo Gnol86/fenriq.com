@@ -215,6 +215,8 @@
             "table_since": "Seit",
             "table_action": "Aktion",
             "no_members": "Keine Mitglieder in der Organisation.",
+            "invit_members": "Laden Sie Mitglieder ein, Ihrer Organisation beizutreten.",
+            "action": "Aktionen",
             "menu_change_role": "Rolle ändern",
             "menu_remove": "Entfernen",
             "success_role_updated": "Rolle aktualisiert",
