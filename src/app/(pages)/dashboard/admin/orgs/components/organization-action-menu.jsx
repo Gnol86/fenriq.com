@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Trash2, Edit3, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useServerAction } from "@/hooks/use-server-action";
+import { useConfirm } from "@/hooks/use-confirm";
 import { deleteOrganizationAction } from "@/actions/admin.action";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -11,17 +12,20 @@ import { useTranslations } from "next-intl";
 export default function OrganizationActionMenu({ organization }) {
     const t = useTranslations("admin.organizations");
     const { execute } = useServerAction();
+    const confirm = useConfirm();
 
     const handleDeleteOrganization = async () => {
-        if (!confirm(t("confirm_delete", { name: organization.name }))) {
-            return;
-        }
-
-        await execute(
-            () => deleteOrganizationAction({ organizationId: organization.id }),
+        await confirm(
             {
-                successMessage: t("success_deleted"),
-            }
+                title: t("confirm_delete", { name: organization.name }),
+                variant: "destructive",
+            },
+            () => execute(
+                () => deleteOrganizationAction({ organizationId: organization.id }),
+                {
+                    successMessage: t("success_deleted"),
+                }
+            )
         );
     };
 

@@ -8,6 +8,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useServerAction } from "@/hooks/use-server-action";
+import { useConfirm } from "@/hooks/use-confirm";
 import { formatDate } from "@/lib/utils";
 import {
     Calendar,
@@ -30,6 +31,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
     const [sessions, setSessions] = useState([]);
     const [loadingSessions, setLoadingSessions] = useState(false);
     const { execute } = useServerAction();
+    const confirm = useConfirm();
     const tUsers = useTranslations("admin.users");
     const tCommon = useTranslations("common");
     const locale = useLocale();
@@ -66,21 +68,20 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
     };
 
     const handleRevokeAllSessions = async () => {
-        if (
-            !confirm(
-                tUsers("sessions_revoke_confirm", {
+        await confirm(
+            {
+                title: tUsers("sessions_revoke_confirm", {
                     name: user.name || user.email,
-                })
-            )
-        ) {
-            return;
-        }
-
-        await execute(() => revokeUserSessionsAction({ userId: user.id }), {
-            successMessage: tUsers("sessions_revoke_all_success"),
-        });
-
-        setSessions([]);
+                }),
+                variant: "destructive",
+            },
+            async () => {
+                await execute(() => revokeUserSessionsAction({ userId: user.id }), {
+                    successMessage: tUsers("sessions_revoke_all_success"),
+                });
+                setSessions([]);
+            }
+        );
     };
 
     const formatSessionDate = date => {

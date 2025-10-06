@@ -11,6 +11,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { useServerAction } from "@/hooks/use-server-action";
+import { useConfirm } from "@/hooks/use-confirm";
 import {
     setUserRoleAction,
     banUserAction,
@@ -29,6 +30,7 @@ export default function UserActionMenu({ user, isCurrentUser }) {
     const tRoles = useTranslations("roles");
     const router = useRouter();
     const { execute } = useServerAction();
+    const confirm = useConfirm();
 
     const handleRoleChange = async newRole => {
         if (newRole === user.role) return;
@@ -80,17 +82,15 @@ export default function UserActionMenu({ user, isCurrentUser }) {
     };
 
     const handleRemoveUser = async () => {
-        if (
-            !confirm(
-                t("confirm_delete", { name: user.name || user.email })
-            )
-        ) {
-            return;
-        }
-
-        await execute(() => removeUserAction({ userId: user.id }), {
-            successMessage: t("success_deleted"),
-        });
+        await confirm(
+            {
+                title: t("confirm_delete", { name: user.name || user.email }),
+                variant: "destructive",
+            },
+            () => execute(() => removeUserAction({ userId: user.id }), {
+                successMessage: t("success_deleted"),
+            })
+        );
     };
 
     if (isCurrentUser) {
