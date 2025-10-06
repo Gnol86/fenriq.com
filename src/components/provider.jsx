@@ -6,7 +6,11 @@ import { NextIntlClientProvider } from "next-intl";
 
 export function Provider({ children, locale, messages }) {
     return (
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider
+            locale={locale}
+            messages={messages}
+            timeZone="UTC"
+        >
             <NextThemesProvider
                 attribute="class"
                 defaultTheme="system"
