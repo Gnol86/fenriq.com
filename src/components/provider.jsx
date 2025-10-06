@@ -3,6 +3,7 @@
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 import { NextIntlClientProvider } from "next-intl";
+import { DialogProvider } from "@/components/providers/dialog-provider";
 
 export function Provider({ children, locale, messages }) {
     return (
@@ -17,8 +18,10 @@ export function Provider({ children, locale, messages }) {
                 enableSystem
                 disableTransitionOnChange
             >
-                {children}
-                <Toaster position="bottom-right" richColors closeButton />
+                <DialogProvider>
+                    {children}
+                    <Toaster position="bottom-right" richColors closeButton />
+                </DialogProvider>
             </NextThemesProvider>
         </NextIntlClientProvider>
     );

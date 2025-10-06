@@ -600,7 +600,11 @@
         "filter": "Filteren",
         "actions": "Acties",
         "yes": "Ja",
-        "no": "Nee"
+        "no": "Nee",
+        "dialog": {
+            "cancel": "Annuleren",
+            "confirm": "Bevestigen"
+        }
     },
     "better_auth": {
         "ORGANIZATION_NOT_FOUND": "Organisatie niet gevonden.",

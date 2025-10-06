@@ -600,7 +600,11 @@
         "filter": "Filtern",
         "actions": "Aktionen",
         "yes": "Ja",
-        "no": "Nein"
+        "no": "Nein",
+        "dialog": {
+            "cancel": "Abbrechen",
+            "confirm": "Bestätigen"
+        }
     },
     "better_auth": {
         "ORGANIZATION_NOT_FOUND": "Organisation nicht gefunden.",

@@ -9,16 +9,13 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useServerAction } from "@/hooks/use-server-action";
+import { useConfirm } from "@/hooks/use-confirm";
 import { useTranslations } from "next-intl";
-import { useCallback, useMemo, useState } from "react";
-import RemoveMemberDialog from "./remove-member-dialog";
-import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
+import { useCallback, useMemo } from "react";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 export default function MembersActionMenu({
     member,
@@ -31,8 +28,7 @@ export default function MembersActionMenu({
     const t = useTranslations("organization.members");
     const tRoles = useTranslations("roles");
     const { execute, isPending } = useServerAction();
-    const [removalTarget, setRemovalTarget] = useState(false);
-    const [isRemovingMember, setIsRemovingMember] = useState(false);
+    const confirm = useConfirm();
 
     const isSelf = useMemo(() => {
         const memberUserId = member?.user?.id ?? member?.userId;
@@ -58,35 +54,38 @@ export default function MembersActionMenu({
                 }
             );
         },
-        [member?.id, memberRole, organizationId, execute]
+        [member?.id, memberRole, organizationId, execute, t]
     );
 
-    const confirmRemoval = useCallback(async () => {
+    const handleRemoveMember = useCallback(async () => {
         if (!organizationId || !member?.id) {
             return;
         }
 
-        setIsRemovingMember(true);
-        await execute(
-            () =>
-                removeMemberAction({
-                    memberIdOrEmail: member.id,
-                    organizationId,
-                }),
-            {
-                successMessage: t("success_member_removed"),
-                errorMessage: t("error_member_remove"),
-            }
-        );
-        setIsRemovingMember(false);
-        setRemovalTarget(false);
-    }, [member?.id, organizationId, execute]);
+        const memberName = member?.user?.name;
 
-    const closeRemovalDialog = useCallback(() => {
-        if (!isRemovingMember) {
-            setRemovalTarget(false);
-        }
-    }, [isRemovingMember]);
+        await confirm(
+            {
+                title: t("remove_dialog_title"),
+                description: memberName
+                    ? t("remove_dialog_description", { name: memberName })
+                    : t("remove_dialog_description_fallback"),
+                variant: "destructive",
+            },
+            () =>
+                execute(
+                    () =>
+                        removeMemberAction({
+                            memberIdOrEmail: member.id,
+                            organizationId,
+                        }),
+                    {
+                        successMessage: t("success_member_removed"),
+                        errorMessage: t("error_member_remove"),
+                    }
+                )
+        );
+    }, [member, organizationId, confirm, execute, t]);
 
     const roleOptions = useMemo(
         () => [
@@ -134,21 +133,11 @@ export default function MembersActionMenu({
                     variant="destructive"
                     size="sm"
                     disabled={isPending}
-                    onClick={() => {
-                        setRemovalTarget(true);
-                    }}
+                    onClick={handleRemoveMember}
                 >
                     {t("menu_remove")}
                 </Button>
             )}
-
-            <RemoveMemberDialog
-                open={removalTarget}
-                member={member}
-                isRemoving={isRemovingMember}
-                onConfirm={confirmRemoval}
-                onCancel={closeRemovalDialog}
-            />
         </ButtonGroup>
     );
 }
