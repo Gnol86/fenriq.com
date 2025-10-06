@@ -19,20 +19,34 @@ import {
 import { auth } from "@/lib/auth";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import InviteMemberDialog from "../invitations/components/invite-member-dialog";
 import MemberItem from "./components/member-item";
-import MemberStats from "./components/member-stats";
 import React from "react";
 import { Users } from "lucide-react";
+import { PrismaClient } from "@/generated/prisma";
+import SearchInput from "@/components/search-input";
+import { Pagination } from "@/components/pagination";
 
-export default async function OrganizationMembersPage() {
+const prisma = new PrismaClient();
+const MEMBRES_PER_PAGE = 10;
+
+export default async function OrganizationMembersPage({ searchParams }) {
     const t = await getTranslations("organization.members");
+    const resolvedSearchParams = await searchParams;
+    const searchValue = resolvedSearchParams?.search || "";
+    const limit = MEMBRES_PER_PAGE;
+    const page = parseInt(resolvedSearchParams?.page || "1", 10);
+    const offset = (page - 1) * MEMBRES_PER_PAGE;
+    const sortBy = resolvedSearchParams?.sortBy || "name";
+    const sortDirection = resolvedSearchParams?.sortDirection || "asc";
+
     const session = await auth.api.getSession({
         headers: await headers(),
     });
 
     const user = session.user;
+    if (!user) notFound();
 
     const userOrganizations = await auth.api.listOrganizations({
         headers: await headers(),
@@ -45,7 +59,7 @@ export default async function OrganizationMembersPage() {
     const canMemberRead = await hasPermissionAction({
         permissions: { member: ["read"] },
     });
-    if (!canMemberRead) redirect("/dashboard");
+    if (!canMemberRead) notFound();
 
     const canInvitationCreate = await hasPermissionAction({
         permissions: { invitation: ["create"] },
@@ -59,23 +73,47 @@ export default async function OrganizationMembersPage() {
         permissions: { member: ["delete"] },
     });
 
-    const members = activeUserOrganization
-        ? (
-              await auth.api.listMembers({
-                  headers: await headers(),
-              })
-          ).members
-        : [];
+    const whereClause = searchValue
+        ? {
+              organizationId: activeUserOrganization.id,
+              user: {
+                  name: {
+                      contains: searchValue,
+                      mode: "insensitive",
+                  },
+              },
+          }
+        : {
+              organizationId: activeUserOrganization.id,
+          };
+
+    const lengthTotalMembres = await prisma.member.count({
+        where: whereClause,
+    });
+
+    console.log(lengthTotalMembres);
+
+    const members = await prisma.member.findMany({
+        where: whereClause,
+        orderBy: {
+            user: {
+                name: sortDirection,
+            },
+        },
+        include: {
+            user: true,
+        },
+        skip: offset,
+        take: limit,
+    });
+    const totalPages = Math.ceil(lengthTotalMembres / MEMBRES_PER_PAGE);
 
     return (
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
                     <CardTitle>{t("page_title")}</CardTitle>
-                    <CardDescription>
-                        {t("page_description")}
-                        <MemberStats members={members} />
-                    </CardDescription>
+                    <CardDescription>{t("page_description")}</CardDescription>
                     {canInvitationCreate && (
                         <CardAction>
                             <InviteMemberDialog
@@ -108,24 +146,30 @@ export default async function OrganizationMembersPage() {
                             </EmptyContent>
                         </Empty>
                     ) : (
-                        <ItemGroup>
-                            {members.map((member, index) => (
-                                <React.Fragment key={member.id}>
-                                    <MemberItem
-                                        member={member}
-                                        organizationId={
-                                            activeUserOrganization.id
-                                        }
-                                        currentUserId={user.id}
-                                        canUpdate={canMemberUpdate}
-                                        canDelete={canMemberDelete}
-                                    />
-                                    {index !== members.length - 1 && (
-                                        <ItemSeparator />
-                                    )}
-                                </React.Fragment>
-                            ))}
-                        </ItemGroup>
+                        <>
+                            <SearchInput
+                                placeholder={t("search_placeholder")}
+                            />
+                            <ItemGroup>
+                                {members.map((member, index) => (
+                                    <React.Fragment key={member.id}>
+                                        <MemberItem
+                                            member={member}
+                                            organizationId={
+                                                activeUserOrganization.id
+                                            }
+                                            currentUserId={user.id}
+                                            canUpdate={canMemberUpdate}
+                                            canDelete={canMemberDelete}
+                                        />
+                                        {index !== members.length - 1 && (
+                                            <ItemSeparator />
+                                        )}
+                                    </React.Fragment>
+                                ))}
+                            </ItemGroup>
+                            <Pagination totalPages={totalPages} page={page} />
+                        </>
                     )}
                 </CardContent>
             </Card>

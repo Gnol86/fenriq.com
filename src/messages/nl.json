@@ -210,6 +210,7 @@
         "members": {
             "page_title": "Organisatieleden",
             "page_description": "Beheer actieve leden van uw organisatie, hun rollen en rechten.",
+            "search_placeholder": "Zoek op naam...",
             "table_user": "Gebruiker",
             "table_role": "Rol",
             "table_since": "Sinds",

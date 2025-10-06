@@ -210,6 +210,7 @@
         "members": {
             "page_title": "Membres de l'organisation",
             "page_description": "Gérez les membres actifs de votre organisation, leurs rôles et leurs permissions.",
+            "search_placeholder": "Rechercher par nom...",
             "table_user": "Utilisateur",
             "table_role": "Rôle",
             "table_since": "Depuis",

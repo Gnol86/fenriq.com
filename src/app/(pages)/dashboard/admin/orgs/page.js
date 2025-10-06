@@ -28,6 +28,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
 
+const prisma = new PrismaClient();
 const ORGS_PER_PAGE = 10;
 
 export default async function AdminOrganizationsPage({ searchParams }) {
@@ -52,8 +53,6 @@ export default async function AdminOrganizationsPage({ searchParams }) {
     const sortDirection = resolvedSearchParams?.sortDirection || "asc";
 
     // Fetch organizations avec leurs membres - optimisation pour éviter les doublons
-
-    const prisma = new PrismaClient();
 
     const whereClause = searchValue
         ? {
