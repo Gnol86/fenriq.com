@@ -234,6 +234,9 @@
         "invitations": {
             "page_title": "Invitations",
             "page_description": "Gérez les invitations en cours et invitez de nouveaux membres à rejoindre votre organisation.",
+            "search_placeholder": "Rechercher par email...",
+            "no_invitations": "Aucune invitation en attente.",
+            "invite_members_description": "Invitez des membres à rejoindre votre organisation.",
             "invite_dialog_title": "Inviter un membre",
             "invite_dialog_description": "Saisissez l'adresse email de la personne à inviter dans l'organisation {name}.",
             "email_label": "Adresse email",

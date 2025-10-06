@@ -234,6 +234,9 @@
         "invitations": {
             "page_title": "Einladungen",
             "page_description": "Verwalten Sie offene Einladungen und laden Sie neue Mitglieder in Ihre Organisation ein.",
+            "search_placeholder": "Nach E-Mail suchen...",
+            "no_invitations": "Keine offenen Einladungen.",
+            "invite_members_description": "Laden Sie Mitglieder in Ihre Organisation ein.",
             "invite_dialog_title": "Mitglied einladen",
             "invite_dialog_description": "Geben Sie die E-Mail-Adresse der Person ein, die Sie zur Organisation {name} einladen möchten.",
             "email_label": "E-Mail-Adresse",

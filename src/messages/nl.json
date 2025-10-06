@@ -234,6 +234,9 @@
         "invitations": {
             "page_title": "Uitnodigingen",
             "page_description": "Beheer lopende uitnodigingen en nodig nieuwe leden uit voor uw organisatie.",
+            "search_placeholder": "Zoeken op e-mail...",
+            "no_invitations": "Geen openstaande uitnodigingen.",
+            "invite_members_description": "Nodig leden uit voor uw organisatie.",
             "invite_dialog_title": "Lid uitnodigen",
             "invite_dialog_description": "Voer het e-mailadres in van de persoon die u wilt uitnodigen voor organisatie {name}.",
             "email_label": "E-mailadres",

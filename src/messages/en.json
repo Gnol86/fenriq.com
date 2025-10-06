@@ -234,6 +234,9 @@
         "invitations": {
             "page_title": "Invitations",
             "page_description": "Manage pending invitations and invite new members to join your organization.",
+            "search_placeholder": "Search by email...",
+            "no_invitations": "No pending invitations.",
+            "invite_members_description": "Invite members to join your organization.",
             "invite_dialog_title": "Invite Member",
             "invite_dialog_description": "Enter the email address of the person to invite to organization {name}.",
             "email_label": "Email Address",
