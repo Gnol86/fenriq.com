@@ -5,19 +5,16 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "./ui/button";
 import { useCallback } from "react";
 import { cn } from "@/lib/utils";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "./ui/select";
 import { ScrollArea } from "./ui/scroll-area";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
-    ButtonGroup,
-    ButtonGroupSeparator,
-    ButtonGroupText,
-} from "@/components/ui/button-group";
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Check } from "lucide-react";
+import { Hash } from "lucide-react";
 
 export function Pagination({ totalPages, page }) {
     const router = useRouter();
@@ -37,124 +34,166 @@ export function Pagination({ totalPages, page }) {
     );
 
     return (
-        <div className="w-full flex justify-center items-center gap-2">
+        <div className="w-full flex justify-center">
             <ButtonGroup>
-                <Button
-                    variant={cn(page == 1 ? "default" : "secondary")}
-                    size="icon"
-                    onClick={() => {
-                        router.push(
-                            pathname + "?" + createQueryString("page", 1)
-                        );
-                    }}
-                >
-                    1
-                </Button>
-
-                {(() => {
-                    const elems = [];
-                    const tp = Number(totalPages);
-                    const p = Number(page);
-
-                    if (tp <= 1) {
-                        return null;
-                    }
-
-                    // For larger totals, show up to 3 middle pages around current page
-                    const start = Math.max(2, Math.min(p - 1, tp - 3));
-                    const end = Math.min(tp - 1, start + 2);
-
-                    if (start > 2) {
-                        elems.push(
-                            <ButtonGroupText key="ellipsis-start">
-                                <Ellipsis size={16} />
-                            </ButtonGroupText>
-                        );
-                    }
-
-                    for (let i = start; i <= end; i++) {
-                        elems.push(
-                            <Button
-                                key={i}
-                                size="icon"
-                                variant={cn(
-                                    page == i ? "default" : "secondary"
-                                )}
-                                onClick={() => {
-                                    router.push(
-                                        pathname +
-                                            "?" +
-                                            createQueryString("page", i)
-                                    );
-                                }}
-                            >
-                                {i}
-                            </Button>
-                        );
-                    }
-
-                    if (end < tp - 1) {
-                        elems.push(
-                            <ButtonGroupText key="ellipsis-start">
-                                <Ellipsis size={16} />
-                            </ButtonGroupText>
-                        );
-                    }
-
-                    return elems;
-                })()}
-
-                {totalPages > 1 && (
+                <ButtonGroup>
                     <Button
-                        variant={cn(
-                            page == totalPages ? "default" : "secondary"
-                        )}
-                        size="icon"
+                        variant="secondary"
+                        size="icon-sm"
+                        disabled={page === 1}
                         onClick={() => {
                             router.push(
                                 pathname +
                                     "?" +
-                                    createQueryString("page", totalPages)
+                                    createQueryString("page", page - 1)
                             );
                         }}
                     >
-                        {totalPages}
+                        <ChevronLeft />
                     </Button>
-                )}
-                {totalPages > 5 && (
-                    <Select
-                        value={String(page)}
-                        onValueChange={value => {
-                            router.push(
-                                pathname +
-                                    "?" +
-                                    createQueryString("page", value)
-                            );
-                        }}
-                    >
-                        <SelectTrigger className="w-9 flex justify-center">
-                            {/* <SelectValue>{page}</SelectValue>*/}
-                        </SelectTrigger>
-                        <SelectContent className="min-w-9">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="secondary" size="icon-sm">
+                                <Hash />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent side="top">
                             <ScrollArea className="h-48 pr-3">
                                 {Array.from(
                                     { length: Number(totalPages) },
                                     (_, i) => {
                                         const p = i + 1;
                                         return (
-                                            <SelectItem
+                                            <DropdownMenuItem
+                                                className="flex justify-between"
                                                 key={p}
-                                                value={p.toString()}
+                                                onClick={() => {
+                                                    router.push(
+                                                        pathname +
+                                                            "?" +
+                                                            createQueryString(
+                                                                "page",
+                                                                p
+                                                            )
+                                                    );
+                                                }}
                                             >
                                                 {p}
-                                            </SelectItem>
+                                                {p === page && <Check />}
+                                            </DropdownMenuItem>
                                         );
                                     }
                                 )}
                             </ScrollArea>
-                        </SelectContent>
-                    </Select>
-                )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button
+                        variant="secondary"
+                        size="icon-sm"
+                        disabled={page === totalPages}
+                        onClick={() => {
+                            router.push(
+                                pathname +
+                                    "?" +
+                                    createQueryString("page", page + 1)
+                            );
+                        }}
+                    >
+                        <ChevronRight />
+                    </Button>
+                </ButtonGroup>
+                <ButtonGroup>
+                    <Button
+                        variant={cn(page == 1 ? "default" : "secondary")}
+                        size="icon-sm"
+                        onClick={() => {
+                            router.push(
+                                pathname + "?" + createQueryString("page", 1)
+                            );
+                        }}
+                    >
+                        1
+                    </Button>
+
+                    {(() => {
+                        const elems = [];
+                        const tp = Number(totalPages);
+                        const p = Number(page);
+
+                        if (tp <= 1) {
+                            return null;
+                        }
+
+                        // For larger totals, show up to 3 middle pages around current page
+                        const start = Math.max(2, Math.min(p - 1, tp - 3));
+                        const end = Math.min(tp - 1, start + 2);
+
+                        if (start > 2) {
+                            elems.push(
+                                <Button
+                                    key="ellipsis-start"
+                                    variant="secondary"
+                                    size="icon-sm"
+                                >
+                                    <Ellipsis />
+                                </Button>
+                            );
+                        }
+
+                        for (let i = start; i <= end; i++) {
+                            elems.push(
+                                <Button
+                                    key={i}
+                                    size="icon-sm"
+                                    variant={cn(
+                                        page == i ? "default" : "secondary"
+                                    )}
+                                    onClick={() => {
+                                        router.push(
+                                            pathname +
+                                                "?" +
+                                                createQueryString("page", i)
+                                        );
+                                    }}
+                                >
+                                    {i}
+                                </Button>
+                            );
+                        }
+
+                        if (end < tp - 1) {
+                            elems.push(
+                                <Button
+                                    key="ellipsis-end"
+                                    variant="secondary"
+                                    size="icon-sm"
+                                >
+                                    <Ellipsis />
+                                </Button>
+                            );
+                        }
+
+                        return elems;
+                    })()}
+
+                    {totalPages > 1 && (
+                        <Button
+                            variant={cn(
+                                page == totalPages ? "default" : "secondary"
+                            )}
+                            size="icon-sm"
+                            onClick={() => {
+                                router.push(
+                                    pathname +
+                                        "?" +
+                                        createQueryString("page", totalPages)
+                                );
+                            }}
+                        >
+                            {totalPages}
+                        </Button>
+                    )}
+                </ButtonGroup>
             </ButtonGroup>
         </div>
     );

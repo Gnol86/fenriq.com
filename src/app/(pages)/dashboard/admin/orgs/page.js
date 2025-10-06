@@ -9,7 +9,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import SearchInput from "@/components/ui/search-input";
+import SearchInput from "@/components/search-input";
 import {
     Table,
     TableBody,
@@ -27,7 +27,6 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
-import { ButtonGroup } from "@/components/ui/button-group";
 
 const ORGS_PER_PAGE = 10;
 
@@ -95,12 +94,6 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                 <CardContent className="flex flex-col w-full gap-4">
                     {/* Search */}
                     <SearchInput placeholder={t("search_placeholder")} />
-                    <ButtonGroup>
-                        <Button variant="outline">1</Button>
-                        <Button variant="outline">2</Button>
-                        <Button variant="outline">3</Button>
-                        <Button variant="outline">4</Button>
-                    </ButtonGroup>
 
                     {/* Organizations table */}
                     <Table>

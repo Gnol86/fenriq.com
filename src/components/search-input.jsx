@@ -5,6 +5,8 @@ import { Search } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
+import { Spinner } from "./ui/spinner";
 
 export default function SearchInput({
     placeholder = "Rechercher...",
@@ -50,16 +52,18 @@ export default function SearchInput({
     }, [searchParams, searchParam]);
 
     return (
-        <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-            <Input
+        <InputGroup>
+            <InputGroupAddon>
+                {isPending && <Spinner />}
+                <Search />
+            </InputGroupAddon>
+            <InputGroupInput
                 type="text"
                 placeholder={placeholder}
                 value={searchValue}
                 onChange={handleInputChange}
-                className="pl-9"
                 disabled={isPending}
             />
-        </div>
+        </InputGroup>
     );
 }
