@@ -19,6 +19,10 @@ const eslintConfig = [
             "build/**",
             "next-env.d.ts",
         ],
+        rules: {
+            "no-undef": "error", // Erreur si une variable ou composant n'est pas défini
+            "react/jsx-no-undef": "error", // Spécifique à React/JSX
+        },
     },
 ];
 

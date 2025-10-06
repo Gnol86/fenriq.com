@@ -23,6 +23,24 @@ import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { getTranslations, getLocale } from "next-intl/server";
+import {
+    Empty,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from "@/components/ui/empty";
+import { Mail } from "lucide-react";
+import {
+    Item,
+    ItemActions,
+    ItemContent,
+    ItemDescription,
+    ItemGroup,
+    ItemMedia,
+    ItemTitle,
+} from "@/components/ui/item";
+import React from "react";
+import ImageProfile from "@/components/image-profile";
 
 export default async function Page() {
     const t = await getTranslations("user.invitations");
@@ -63,65 +81,74 @@ export default async function Page() {
                     <CardDescription>{t("page_description")}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>{t("table_organization")}</TableHead>
-                                <TableHead>{t("table_invited_by")}</TableHead>
-                                <TableHead>{t("table_role")}</TableHead>
-                                <TableHead>{t("table_expiration")}</TableHead>
-                                <TableHead className="text-right">
-                                    {t("table_action")}
-                                </TableHead>
-                            </TableRow>
-                        </TableHeader>
-
-                        {invitations.length > 0 ? (
-                            invitations.map(invitation => {
-                                return (
-                                    <TableBody key={invitation.id}>
-                                        <TableRow>
-                                            <TableCell>
-                                                {invitation.organization?.name ||
-                                                    tCommon("n_a")}
-                                            </TableCell>
-                                            <TableCell>
-                                                {invitation.user?.name ||
-                                                    invitation.user?.email ||
-                                                    tCommon("n_a")}
-                                            </TableCell>
-                                            <TableCell>
-                                                {invitation.role}
-                                            </TableCell>
-                                            <TableCell>
-                                                {formatDate(
-                                                    invitation.expiresAt,
-                                                    locale
-                                                )}
-                                            </TableCell>
-                                            <TableCell className="flex justify-end items-center gap-2">
-                                                <Button
-                                                    size="sm"
-                                                    className="flex items-center gap-2"
-                                                    asChild
+                    {!invitations.length ? (
+                        <Empty className="border border-dashed">
+                            <EmptyHeader>
+                                <EmptyMedia variant="icon">
+                                    <Mail />
+                                </EmptyMedia>
+                                <EmptyTitle>{t("no_invitations")}</EmptyTitle>
+                            </EmptyHeader>
+                        </Empty>
+                    ) : (
+                        <ItemGroup>
+                            {invitations.map((invitation, index) => (
+                                <React.Fragment key={invitation.id}>
+                                    <Item variant="outline" size="sm">
+                                        <ItemMedia>
+                                            <ImageProfile
+                                                entity={invitation.organization}
+                                            />
+                                        </ItemMedia>
+                                        <ItemContent>
+                                            <ItemTitle>
+                                                {invitation.organization.name}
+                                            </ItemTitle>
+                                            <ItemDescription className="flex flex-col">
+                                                <span>
+                                                    {t("table_invited_by")}
+                                                    {" : "}
+                                                    {invitation.user?.name ||
+                                                        invitation.user
+                                                            ?.email ||
+                                                        tCommon("n_a")}
+                                                </span>
+                                                <span>
+                                                    {t("table_role")}
+                                                    {" : "}
+                                                    {invitation.role}
+                                                </span>
+                                                <span>
+                                                    {t("table_expiration")}
+                                                    {" : "}
+                                                    {formatDate(
+                                                        invitation.expiresAt,
+                                                        locale
+                                                    )}
+                                                </span>
+                                            </ItemDescription>
+                                        </ItemContent>
+                                        <ItemActions>
+                                            <Button
+                                                size="sm"
+                                                className="flex items-center gap-2"
+                                                asChild
+                                            >
+                                                <Link
+                                                    href={`/invitations/${invitation.id}`}
                                                 >
-                                                    <Link
-                                                        href={`/invitations/${invitation.id}`}
-                                                    >
-                                                        <Eye /> {t("view_button")}
-                                                    </Link>
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                );
-                            })
-                        ) : (
-                            <TableCaption className="text-center">
-                                {t("no_invitations")}
-                            </TableCaption>
-                        )}
-                    </Table>
+                                                    <Eye /> {t("view_button")}
+                                                </Link>
+                                            </Button>
+                                        </ItemActions>
+                                    </Item>
+                                    {index !== invitations.length - 1 && (
+                                        <ItemSeparator />
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </ItemGroup>
+                    )}
                 </CardContent>
             </Card>
         </div>
