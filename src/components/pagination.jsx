@@ -33,6 +33,8 @@ export function Pagination({ totalPages, page }) {
         [searchParams]
     );
 
+    if (!totalPages || totalPages <= 1) return null;
+
     return (
         <div className="w-full flex justify-center">
             <ButtonGroup>
@@ -42,7 +44,7 @@ export function Pagination({ totalPages, page }) {
                         size="icon-sm"
                         disabled={page === 1}
                         onClick={() => {
-                            router.push(
+                            router.replace(
                                 pathname +
                                     "?" +
                                     createQueryString("page", page - 1)
@@ -54,7 +56,7 @@ export function Pagination({ totalPages, page }) {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="secondary" size="icon-sm">
-                                <Hash />
+                                <Hash className="w-4 h-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent side="top">
@@ -68,7 +70,7 @@ export function Pagination({ totalPages, page }) {
                                                 className="flex justify-between"
                                                 key={p}
                                                 onClick={() => {
-                                                    router.push(
+                                                    router.replace(
                                                         pathname +
                                                             "?" +
                                                             createQueryString(
@@ -92,7 +94,7 @@ export function Pagination({ totalPages, page }) {
                         size="icon-sm"
                         disabled={page === totalPages}
                         onClick={() => {
-                            router.push(
+                            router.replace(
                                 pathname +
                                     "?" +
                                     createQueryString("page", page + 1)
@@ -107,7 +109,7 @@ export function Pagination({ totalPages, page }) {
                         variant={cn(page == 1 ? "default" : "secondary")}
                         size="icon-sm"
                         onClick={() => {
-                            router.push(
+                            router.replace(
                                 pathname + "?" + createQueryString("page", 1)
                             );
                         }}
@@ -149,7 +151,7 @@ export function Pagination({ totalPages, page }) {
                                         page == i ? "default" : "secondary"
                                     )}
                                     onClick={() => {
-                                        router.push(
+                                        router.replace(
                                             pathname +
                                                 "?" +
                                                 createQueryString("page", i)
@@ -183,7 +185,7 @@ export function Pagination({ totalPages, page }) {
                             )}
                             size="icon-sm"
                             onClick={() => {
-                                router.push(
+                                router.replace(
                                     pathname +
                                         "?" +
                                         createQueryString("page", totalPages)

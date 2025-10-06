@@ -24,7 +24,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import SearchInput from "@/components/ui/search-input";
+import SearchInput from "@/components/search-input";
 import UserTableRow from "./components/user-table-row";
 import { getTranslations } from "next-intl/server";
 

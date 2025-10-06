@@ -54,8 +54,7 @@ export default function SearchInput({
     return (
         <InputGroup>
             <InputGroupAddon>
-                {isPending && <Spinner />}
-                <Search />
+                {isPending ? <Spinner /> : <Search />}
             </InputGroupAddon>
             <InputGroupInput
                 type="text"

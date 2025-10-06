@@ -54,14 +54,22 @@ export default async function AdminOrganizationsPage({ searchParams }) {
     // Fetch organizations avec leurs membres - optimisation pour éviter les doublons
 
     const prisma = new PrismaClient();
-    const lengthTotalOrgs = await prisma.organization.count();
+
+    const whereClause = searchValue
+        ? {
+              name: {
+                  contains: searchValue,
+                  mode: "insensitive",
+              },
+          }
+        : {};
+
+    const lengthTotalOrgs = await prisma.organization.count({
+        where: whereClause,
+    });
 
     const organizations = await prisma.organization.findMany({
-        where: {
-            name: {
-                contains: searchValue,
-            },
-        },
+        where: whereClause,
         orderBy: {
             [sortBy]: sortDirection,
         },
