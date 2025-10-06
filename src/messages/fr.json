@@ -328,6 +328,7 @@
             "sessions_browser": "Navigateur",
             "sessions_unknown": "Inconnu",
             "details_title": "Informations détaillées",
+            "details_id": "ID",
             "details_email": "Email",
             "details_created": "Créé le",
             "details_updated": "Mis à jour le",

@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import {
@@ -38,7 +38,7 @@ export default async function AdminUsersPage({ searchParams }) {
 
     const user = session.user;
     if (user.role !== "admin") {
-        redirect("/dashboard");
+        notFound();
     }
 
     // Parse search parameters

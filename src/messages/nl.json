@@ -328,6 +328,7 @@
             "sessions_browser": "Browser",
             "sessions_unknown": "Onbekend",
             "details_title": "Gedetailleerde informatie",
+            "details_id": "ID",
             "details_email": "E-mail",
             "details_created": "Aangemaakt op",
             "details_updated": "Bijgewerkt op",

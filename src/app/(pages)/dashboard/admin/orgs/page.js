@@ -25,12 +25,22 @@ import { formatDate } from "@/lib/utils";
 import { Eye } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 const ORGS_PER_PAGE = 10;
 
 export default async function AdminOrganizationsPage({ searchParams }) {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    const user = session.user;
+    if (user.role !== "admin") {
+        notFound();
+    }
+
     const t = await getTranslations("admin.organizations");
     const locale = await getLocale();
     // Parse search parameters
@@ -41,15 +51,6 @@ export default async function AdminOrganizationsPage({ searchParams }) {
     const offset = (page - 1) * ORGS_PER_PAGE;
     const sortBy = resolvedSearchParams?.sortBy || "name";
     const sortDirection = resolvedSearchParams?.sortDirection || "asc";
-
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
-
-    const user = session.user;
-    if (user.role !== "admin") {
-        redirect("/dashboard");
-    }
 
     // Fetch organizations avec leurs membres - optimisation pour éviter les doublons
 
@@ -94,6 +95,12 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                 <CardContent className="flex flex-col w-full gap-4">
                     {/* Search */}
                     <SearchInput placeholder={t("search_placeholder")} />
+                    <ButtonGroup>
+                        <Button variant="outline">1</Button>
+                        <Button variant="outline">2</Button>
+                        <Button variant="outline">3</Button>
+                        <Button variant="outline">4</Button>
+                    </ButtonGroup>
 
                     {/* Organizations table */}
                     <Table>
