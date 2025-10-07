@@ -179,6 +179,7 @@
             "plan_title": "Plan",
             "plan_not_configured": "No plan is configured at the moment",
             "plan_description": "Choose your subscription",
+            "members_total_notice": "{count, plural, =0 {Your organization has no members.} =1 {Your organization has 1 member.} other {Your organization has # members.}} The total due will be:",
             "once": "once",
             "management_title": "Subscription Management",
             "management_description": "Manage your subscription and view your invoices",
@@ -587,7 +588,8 @@
             "administration": "Administration",
             "users": "Users",
             "organizations": "Organizations",
-            "settings": "Settings"
+            "settings": "Settings",
+            "subscription": "Subscription"
         },
         "user_button": {
             "default_name": "User",

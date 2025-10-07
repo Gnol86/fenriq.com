@@ -57,8 +57,9 @@ export default async function PlanCard({ organization, lengthTotalMembres }) {
                     </span>
                 </div>
                 <div className="text-sm">
-                    Votre organisation comporte {lengthTotalMembres} membres. Le
-                    total à payer sera de :
+                    {t("members_total_notice", {
+                        count: lengthTotalMembres,
+                    })}
                 </div>
                 <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-bold">

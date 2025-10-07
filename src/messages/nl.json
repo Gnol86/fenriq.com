@@ -179,6 +179,7 @@
             "plan_title": "Plan",
             "plan_not_configured": "Er is momenteel geen plan geconfigureerd",
             "plan_description": "Kies uw abonnement",
+            "members_total_notice": "{count, plural, =0 {Uw organisatie heeft geen leden.} =1 {Uw organisatie heeft 1 lid.} other {Uw organisatie heeft # leden.}} Het totaal te betalen bedrag is:",
             "once": "eenmalig",
             "management_title": "Abonnementsbeheer",
             "management_description": "Beheer uw abonnement en bekijk uw facturen",
@@ -587,7 +588,8 @@
             "administration": "Beheer",
             "users": "Gebruikers",
             "organizations": "Organisaties",
-            "settings": "Instellingen"
+            "settings": "Instellingen",
+            "subscription": "Abonnement"
         },
         "user_button": {
             "default_name": "Gebruiker",

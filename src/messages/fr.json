@@ -179,6 +179,7 @@
             "plan_title": "Plan",
             "plan_not_configured": "Aucun plan n'est configuré pour le moment",
             "plan_description": "Choisissez votre abonnement",
+            "members_total_notice": "{count, plural, =0 {Votre organisation ne comporte aucun membre.} =1 {Votre organisation comporte 1 membre.} other {Votre organisation comporte # membres.}} Le total à payer sera de :",
             "once": "une fois",
             "management_title": "Gestion de l'abonnement",
             "management_description": "Gérez votre abonnement et consultez vos factures",

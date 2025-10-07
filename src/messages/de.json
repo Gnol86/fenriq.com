@@ -179,6 +179,7 @@
             "plan_title": "Plan",
             "plan_not_configured": "Derzeit ist kein Plan konfiguriert",
             "plan_description": "Wählen Sie Ihr Abonnement",
+            "members_total_notice": "{count, plural, =0 {Ihre Organisation hat keine Mitglieder.} =1 {Ihre Organisation hat 1 Mitglied.} other {Ihre Organisation hat # Mitglieder.}} Der zu zahlende Gesamtbetrag beträgt:",
             "once": "einmalig",
             "management_title": "Abonnementverwaltung",
             "management_description": "Verwalten Sie Ihr Abonnement und sehen Sie Ihre Rechnungen ein",
@@ -587,7 +588,8 @@
             "administration": "Verwaltung",
             "users": "Benutzer",
             "organizations": "Organisationen",
-            "settings": "Einstellungen"
+            "settings": "Einstellungen",
+            "subscription": "Abonnement"
         },
         "user_button": {
             "default_name": "Benutzer",

@@ -7,6 +7,7 @@ import Plan from "./components/plan";
 import SubscriptionManagement from "./components/subscription-management";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import StripeLoader from "./components/stripe-loader";
 
 const prisma = new PrismaClient();
 
@@ -46,12 +47,17 @@ export default async function OrganizationSubscriptionPage() {
         ["active", "trialing", "past_due"].includes(subscription.status)
     ) {
         return (
-            <Suspense fallback={<Skeleton className="h-96 w-full" />}>
+            <Suspense fallback={<StripeLoader />}>
                 <SubscriptionManagement organization={activeUserOrganization} />
             </Suspense>
         );
     }
 
     // Show plan selection if no subscription or subscription is canceled
-    return <Plan organization={activeUserOrganization} lengthTotalMembres={lengthTotalMembres} />;
+    return (
+        <Plan
+            organization={activeUserOrganization}
+            lengthTotalMembres={lengthTotalMembres}
+        />
+    );
 }

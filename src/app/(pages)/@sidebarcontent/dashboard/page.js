@@ -1,3 +1,4 @@
+import { hasPermissionAction } from "@/actions/organization.action";
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -7,20 +8,21 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { MailPlus } from "lucide-react";
-import { LayoutDashboard } from "lucide-react";
-import { Plus, Settings, AlertTriangle, Users } from "lucide-react";
-import Link from "next/link";
 import { PrismaClient } from "@/generated/prisma";
-import { MailPlusIcon } from "lucide-react";
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { hasPermissionAction } from "@/actions/organization.action";
-import { Building } from "lucide-react";
-import { Shield } from "lucide-react";
-import { User } from "lucide-react";
+import {
+    AlertTriangle,
+    Building,
+    Euro,
+    LayoutDashboard,
+    MailPlus,
+    MailPlusIcon,
+    Settings,
+    Users,
+} from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { Euro } from "lucide-react";
+import { headers } from "next/headers";
+import Link from "next/link";
 
 export default async function SideBarContent() {
     const t = await getTranslations("sidebar.dashboard");
@@ -90,24 +92,13 @@ export default async function SideBarContent() {
                     canInvitationsRead ||
                     canOrgsDelete) && (
                     <SidebarGroup>
-                        <SidebarGroupLabel className="flex gap-1 items-center">
-                            <Building />
+                        <SidebarGroupLabel className="flex gap-1 items-center uppercase">
                             {activeUserOrganization?.name ??
                                 t("organization_fallback")}
                         </SidebarGroupLabel>
 
                         <SidebarGroupContent>
                             <SidebarMenu>
-                                {canOrgsUpdate && (
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild>
-                                            <Link href="/dashboard/org/manage">
-                                                <Settings className="opacity-60" />
-                                                {t("manage_organization")}
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                )}
                                 {canMembresRead && (
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
@@ -138,6 +129,16 @@ export default async function SideBarContent() {
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
                                 )}
+                                {canOrgsUpdate && (
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link href="/dashboard/org/manage">
+                                                <Settings className="opacity-60" />
+                                                {t("manage_organization")}
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )}
                                 {canOrgsDelete && (
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
@@ -158,8 +159,8 @@ export default async function SideBarContent() {
 
             {user.role === "admin" && (
                 <SidebarGroup>
-                    <SidebarGroupLabel className="flex gap-1 items-center">
-                        <Shield /> {t("administration")}
+                    <SidebarGroupLabel className="flex gap-1 items-center uppercase">
+                        {t("administration")}
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
@@ -185,8 +186,7 @@ export default async function SideBarContent() {
             )}
 
             <SidebarGroup>
-                <SidebarGroupLabel className="flex gap-1 items-center">
-                    <User />
+                <SidebarGroupLabel className="flex gap-1 items-center uppercase">
                     {user.name}
                 </SidebarGroupLabel>
                 <SidebarGroupContent>

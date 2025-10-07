@@ -172,7 +172,10 @@ export async function upsertSubscriptionFromStripeAction({
         interval: price?.recurring?.interval ?? null,
     };
 
-    console.log("Subscription data to upsert:", JSON.stringify(subscriptionData, null, 2));
+    console.log(
+        "Subscription data to upsert:",
+        JSON.stringify(subscriptionData, null, 2)
+    );
 
     try {
         const subscription = await prisma.subscription.upsert({
@@ -186,7 +189,10 @@ export async function upsertSubscriptionFromStripeAction({
             },
         });
 
-        console.log("✅ Subscription upserted successfully with ID:", subscription.id);
+        console.log(
+            "✅ Subscription upserted successfully with ID:",
+            subscription.id
+        );
         return subscription;
     } catch (error) {
         console.error("❌ Error upserting subscription:", error);
@@ -340,7 +346,10 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
         throw new Error("Unauthorized");
     }
 
-    console.log("🔍 Getting license movements for organization:", organizationId);
+    console.log(
+        "🔍 Getting license movements for organization:",
+        organizationId
+    );
 
     // Get subscription
     const subscription = await prisma.subscription.findFirst({
@@ -349,7 +358,10 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
         },
     });
 
-    if (!subscription?.stripeCustomerId || !subscription?.stripeSubscriptionId) {
+    if (
+        !subscription?.stripeCustomerId ||
+        !subscription?.stripeSubscriptionId
+    ) {
         console.log("❌ No subscription found");
         return null;
     }
@@ -386,7 +398,9 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
 
     // Try to derive the quantity billed on the last invoice for this price
     const lastInvoiceQuantity =
-        lastInvoice.lines?.data?.find(line => !line.proration && line.price?.id === price?.id)?.quantity ??
+        lastInvoice.lines?.data?.find(
+            line => !line.proration && line.price?.id === price?.id
+        )?.quantity ??
         lastInvoice.lines?.data?.[0]?.quantity ??
         0;
 
@@ -418,56 +432,139 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
 
     const lastInvoiceTimestamp = lastInvoice.created;
 
-    const prorationLines = upcomingInvoice?.lines?.data?.filter(line => {
+    const allLines = upcomingInvoice?.lines?.data ?? [];
+
+    const baseLineItems = allLines
+        .filter(line => !line.proration)
+        .map(line => ({
+            id: line.id,
+            amount: line.amount ?? 0,
+            quantity: line.quantity ?? 0,
+            unitAmount: line.price?.unit_amount ?? null,
+            currency: line.currency ?? currency,
+            description: line.description ?? null,
+            periodStart: line.period?.start ?? null,
+            periodEnd: line.period?.end ?? null,
+        }));
+
+    const baseAmountFromPreview = baseLineItems.reduce(
+        (sum, item) => sum + (item.amount ?? 0),
+        0
+    );
+
+    const prorationLines = allLines.filter(line => {
         if (!line.proration) {
             return false;
         }
 
-        if (line.period?.start && line.period.start <= lastInvoiceTimestamp) {
+        if (
+            line.period?.start &&
+            line.period.start <= lastInvoiceTimestamp
+        ) {
             // Ignore proration rows that happened before the last invoice
             return false;
         }
 
         return true;
-    }) ?? [];
+    });
+
+    const eventMap = new Map();
+
+    prorationLines.forEach(line => {
+        const eventKey = line.period?.start ?? line.id;
+        if (!eventMap.has(eventKey)) {
+            eventMap.set(eventKey, {
+                key: eventKey,
+                occurredAt: new Date(
+                    (line.period?.start ??
+                        stripeSubscription.current_period_start) * 1000
+                ).toISOString(),
+                lines: [],
+            });
+        }
+
+        eventMap.get(eventKey).lines.push(line);
+    });
 
     const addedMembers = [];
     const removedMembers = [];
 
-    prorationLines.forEach(line => {
-        const quantity = Math.max(Math.abs(line.quantity ?? 1), 1);
-        const shares = splitAmountAcrossQuantity(line.amount, quantity);
-        const movementDate = new Date(
-            (line.period?.start ?? stripeSubscription.current_period_start) * 1000
-        ).toISOString();
+    Array.from(eventMap.values())
+        .sort((a, b) => new Date(a.occurredAt) - new Date(b.occurredAt))
+        .forEach(event => {
+            const { lines, occurredAt, key } = event;
 
-        shares.forEach((share, index) => {
-            const baseMovement = {
-                id: `${line.id}-${index}`,
-                amount: share,
-                description: line.description ?? null,
-                lineAmount: line.amount,
-                lineQuantity: quantity,
-                lineId: line.id,
-                occurredAt: movementDate,
+            const totalAmount = lines.reduce(
+                (sum, line) => sum + line.amount,
+                0
+            );
+            if (totalAmount === 0) {
+                return;
+            }
+
+            const positiveLines = lines.filter(line => line.amount > 0);
+            const negativeLines = lines.filter(line => line.amount < 0);
+
+            const positiveQuantity = positiveLines.reduce(
+                (sum, line) => sum + (line.quantity ?? 0),
+                0
+            );
+            const negativeQuantity = negativeLines.reduce(
+                (sum, line) => sum + (line.quantity ?? 0),
+                0
+            );
+
+            const seatDelta = positiveQuantity - negativeQuantity;
+
+            if (seatDelta === 0) {
+                // Quantity change canceled out (price change, etc.)
+                return;
+            }
+
+            const description =
+                positiveLines[0]?.description ??
+                negativeLines[0]?.description ??
+                lines[0]?.description ??
+                null;
+
+            const distributeAmount = (amount, count, type) => {
+                const seatAmounts = splitAmountAcrossQuantity(amount, count);
+                seatAmounts.forEach((share, index) => {
+                    const baseMovement = {
+                        id: `${key}-${type}-${index}`,
+                        amount: share,
+                        description,
+                        lineAmount: amount,
+                        lineQuantity: count,
+                        lineId: String(key),
+                        occurredAt,
+                    };
+
+                    if (type === "added") {
+                        addedMembers.push({
+                            ...baseMovement,
+                            addedAt: occurredAt,
+                        });
+                    } else {
+                        removedMembers.push({
+                            ...baseMovement,
+                            removedAt: occurredAt,
+                        });
+                    }
+                });
             };
 
-            if (share >= 0) {
-                addedMembers.push({
-                    ...baseMovement,
-                    addedAt: movementDate,
-                });
+            if (seatDelta > 0) {
+                distributeAmount(totalAmount, seatDelta, "added");
             } else {
-                removedMembers.push({
-                    ...baseMovement,
-                    removedAt: movementDate,
-                });
+                distributeAmount(totalAmount, Math.abs(seatDelta), "removed");
             }
         });
-    });
 
     addedMembers.sort((a, b) => new Date(a.addedAt) - new Date(b.addedAt));
-    removedMembers.sort((a, b) => new Date(a.removedAt) - new Date(b.removedAt));
+    removedMembers.sort(
+        (a, b) => new Date(a.removedAt) - new Date(b.removedAt)
+    );
 
     const totalCharges = prorationLines
         .filter(line => line.amount > 0)
@@ -498,5 +595,8 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
         currency,
         nextBillingDate,
         amount: unitAmount,
+        baseLineItems,
+        baseAmount: baseAmountFromPreview,
+        hasUpcomingInvoice: Boolean(upcomingInvoice),
     };
 }
