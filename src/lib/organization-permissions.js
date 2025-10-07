@@ -22,7 +22,7 @@ export const ac = createAccessControl(statements);
 export const ownerPermissions = ac.newRole({
     app: ["use"],
     organization: ["update", "delete"],
-    member: ["create", "update", "delete", "read"],
+    member: ["update", "delete", "read"],
     invitation: ["read", "create", "cancel"],
     billing: ["read", "update"],
 });
@@ -30,7 +30,7 @@ export const ownerPermissions = ac.newRole({
 // ADMIN: presque tout, sauf delete org / changer owner
 export const adminPermissions = ac.newRole({
     app: ["use"],
-    member: ["create", "update", "delete", "read"],
+    member: ["update", "delete", "read"],
     invitation: ["read", "create", "cancel"],
     billing: ["read"],
 });

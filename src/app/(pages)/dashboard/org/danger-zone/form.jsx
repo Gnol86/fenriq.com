@@ -30,7 +30,7 @@ import { useServerAction } from "@/hooks/use-server-action";
 import { TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-export default function DangerZoneForm({ organization }) {
+export default function DangerZoneForm({ organization, hasActiveSubscription }) {
     const t = useTranslations("organization.danger_zone");
     const tValidation = useTranslations("validation.confirmation");
     const { execute, isPending } = useServerAction();
@@ -76,14 +76,25 @@ export default function DangerZoneForm({ organization }) {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="flex flex-col gap-6"
             >
-                <div className="rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
-                    <p className="font-medium">
-                        {t("warning_title", { name: organization.name })}
-                    </p>
-                    <p className="text-destructive/70">
-                        {t("warning_subtitle")}
-                    </p>
-                </div>
+                {hasActiveSubscription ? (
+                    <div className="rounded-md border border-yellow-400/40 bg-yellow-400/10 p-4 text-sm text-yellow-600 dark:text-yellow-400">
+                        <p className="font-medium">
+                            {t("subscription_warning_title")}
+                        </p>
+                        <p className="text-yellow-600/70 dark:text-yellow-400/70">
+                            {t("subscription_warning_description")}
+                        </p>
+                    </div>
+                ) : (
+                    <div className="rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+                        <p className="font-medium">
+                            {t("warning_title", { name: organization.name })}
+                        </p>
+                        <p className="text-destructive/70">
+                            {t("warning_subtitle")}
+                        </p>
+                    </div>
+                )}
 
                 <FormField
                     control={form.control}
@@ -101,21 +112,21 @@ export default function DangerZoneForm({ organization }) {
                                     {...field}
                                     autoFocus
                                     placeholder={organization.name}
-                                    disabled={isPending}
+                                    disabled={isPending || hasActiveSubscription}
                                 />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                {form.formState.isValid && (
+                {form.formState.isValid && !hasActiveSubscription && (
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <FormButton
                                 type="button"
                                 variant="destructive"
                                 loading={isPending}
-                                disabled={!form.formState.isValid}
+                                disabled={!form.formState.isValid || hasActiveSubscription}
                             >
                                 <TriangleAlert /> {t("delete_button")}
                                 <TriangleAlert />

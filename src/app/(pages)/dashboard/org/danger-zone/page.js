@@ -12,6 +12,9 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { hasPermissionAction } from "@/actions/organization.action";
 import { getTranslations } from "next-intl/server";
+import { PrismaClient } from "@/generated/prisma";
+
+const prisma = new PrismaClient();
 
 export default async function DangerZonePage() {
     const tBreadcrumbs = await getTranslations("breadcrumbs");
@@ -33,6 +36,16 @@ export default async function DangerZonePage() {
     });
     if (!canOrgsDelete) redirect("/dashboard");
 
+    // Check if organization has active subscription
+    const subscription = await prisma.subscription.findFirst({
+        where: {
+            referenceId: activeUserOrganization.id,
+            status: {
+                in: ["active", "trialing", "past_due"],
+            },
+        },
+    });
+
     return (
         <div className="flex flex-col gap-6">
             <Card>
@@ -46,7 +59,10 @@ export default async function DangerZonePage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <DangerZoneForm organization={activeUserOrganization} />
+                    <DangerZoneForm
+                        organization={activeUserOrganization}
+                        hasActiveSubscription={!!subscription}
+                    />
                 </CardContent>
             </Card>
         </div>

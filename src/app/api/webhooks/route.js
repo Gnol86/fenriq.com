@@ -7,8 +7,11 @@ import {
 } from "@/actions/stripe.action";
 
 export async function POST(req) {
+    console.log("=== Stripe Webhook Received ===");
     const body = await req.text();
     const signature = (await headers()).get("stripe-signature");
+
+    console.log("Webhook signature present:", !!signature);
 
     let event;
 
@@ -18,8 +21,10 @@ export async function POST(req) {
             signature,
             process.env.STRIPE_WEBHOOK_SECRET
         );
+        console.log("✅ Webhook signature verified successfully");
+        console.log("Event type:", event.type);
     } catch (err) {
-        console.error("Webhook signature verification failed:", err.message);
+        console.error("❌ Webhook signature verification failed:", err.message);
         return NextResponse.json(
             { error: "Webhook signature verification failed" },
             { status: 400 }
@@ -30,28 +35,47 @@ export async function POST(req) {
         switch (event.type) {
             case "checkout.session.completed": {
                 const session = event.data.object;
-                console.log("Checkout session completed:", session.id);
+                console.log("📦 Checkout session completed:", session.id);
+                console.log("Session metadata:", JSON.stringify(session.metadata));
+                console.log("Session subscription ID:", session.subscription);
 
                 // Get organization ID from metadata
                 const organizationId = session.metadata?.organizationId;
 
-                if (organizationId && session.subscription) {
-                    // Fetch the subscription details from Stripe
-                    const subscription = await stripe.subscriptions.retrieve(
-                        session.subscription
-                    );
-
-                    // Store subscription in database
-                    await upsertSubscriptionFromStripeAction({
-                        stripeSubscription: subscription,
-                        organizationId,
-                    });
-
-                    console.log(
-                        "Subscription created in DB for organization:",
-                        organizationId
-                    );
+                if (!organizationId) {
+                    console.error("❌ No organizationId in metadata");
+                    break;
                 }
+
+                if (!session.subscription) {
+                    console.error("❌ No subscription in session");
+                    break;
+                }
+
+                console.log("✅ Organization ID:", organizationId);
+
+                // Fetch the subscription details from Stripe
+                const subscription = await stripe.subscriptions.retrieve(
+                    session.subscription,
+                    { expand: ["items.data.price"] }
+                );
+
+                console.log("✅ Retrieved subscription from Stripe:", subscription.id);
+                console.log("Subscription status:", subscription.status);
+                console.log("Subscription items count:", subscription.items.data.length);
+
+                // Store subscription in database
+                const result = await upsertSubscriptionFromStripeAction({
+                    stripeSubscription: subscription,
+                    organizationId,
+                });
+
+                console.log(
+                    "✅ Subscription upserted in DB with ID:",
+                    result.id,
+                    "for organization:",
+                    organizationId
+                );
                 break;
             }
 

@@ -1,23 +1,16 @@
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { hasPermissionAction } from "@/actions/organization.action";
-import { getTranslations } from "next-intl/server";
 import { PrismaClient } from "@/generated/prisma";
 import Plan from "./components/plan";
+import SubscriptionManagement from "./components/subscription-management";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const prisma = new PrismaClient();
 
 export default async function OrganizationSubscriptionPage() {
-    const t = await getTranslations("organization.subscription");
-
     const canBillingRead = await hasPermissionAction({
         permissions: { billing: ["read"] },
     });
@@ -47,22 +40,18 @@ export default async function OrganizationSubscriptionPage() {
         },
     });
 
-    return (
-        <div className="flex flex-col gap-6">
-            <Card>
-                <CardHeader>
-                    <CardTitle>{t("page_title")}</CardTitle>
-                    <CardDescription>{t("page_description")}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-4">
-                    {!subscription && (
-                        <Plan
-                            organization={activeUserOrganization}
-                            lengthTotalMembres={lengthTotalMembres}
-                        />
-                    )}
-                </CardContent>
-            </Card>
-        </div>
-    );
+    // Show subscription management if subscription exists and is active
+    if (
+        subscription &&
+        ["active", "trialing", "past_due"].includes(subscription.status)
+    ) {
+        return (
+            <Suspense fallback={<Skeleton className="h-96 w-full" />}>
+                <SubscriptionManagement organization={activeUserOrganization} />
+            </Suspense>
+        );
+    }
+
+    // Show plan selection if no subscription or subscription is canceled
+    return <Plan organization={activeUserOrganization} lengthTotalMembres={lengthTotalMembres} />;
 }

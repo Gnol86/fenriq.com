@@ -124,17 +124,25 @@ model Invitation {
 }
 
 model Subscription {
-    id                   String       @id
+    id                   String       @id @default(cuid())
     plan                 String
     referenceId          String       @unique
     organization         Organization @relation(fields: [referenceId], references: [id], onDelete: Cascade)
-    stripeCustomerId     String?
-    stripeSubscriptionId String?
+    stripeCustomerId     String?      @unique
+    stripeSubscriptionId String?      @unique
     status               String?
-    periodStart          DateTime?
-    periodEnd            DateTime?
-    cancelAtPeriodEnd    Boolean?
-    seats                Int?
+    currentPeriodStart   DateTime?
+    currentPeriodEnd     DateTime?
+    cancelAtPeriodEnd    Boolean?     @default(false)
+    canceledAt           DateTime?
+    trialStart           DateTime?
+    trialEnd             DateTime?
+    seats                Int?         @default(1)
+    currency             String?
+    amount               Int?
+    interval             String?
+    createdAt            DateTime     @default(now())
+    updatedAt            DateTime     @updatedAt
 
     @@map("subscription")
 }

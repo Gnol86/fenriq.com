@@ -82,9 +82,7 @@ export default async function DashboardPage() {
                             </div>
                         ) : (
                             <div className="flex flex-col gap-3 text-sm text-muted-foreground">
-                                <p>
-                                    {t("no_active_organization")}
-                                </p>
+                                <p>{t("no_active_organization")}</p>
                             </div>
                         )}
                     </CardAction>
@@ -108,7 +106,9 @@ export default async function DashboardPage() {
                                                 <div className="flex flex-col gap-0.5 min-w-0">
                                                     <span className="text-sm font-medium text-foreground truncate">
                                                         {contact?.user.name ??
-                                                            t("contact_fallback")}
+                                                            t(
+                                                                "contact_fallback"
+                                                            )}
                                                     </span>
                                                     <span className="text-sm font-bold -mt-1 text-foreground truncate">
                                                         {contact?.user.email ? (

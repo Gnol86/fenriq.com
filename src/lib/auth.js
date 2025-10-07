@@ -1,5 +1,5 @@
 // src/lib/auth.js
-import { betterAuth } from "better-auth";
+import { betterAuth, APIError } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, createAuthMiddleware, organization } from "better-auth/plugins";
 import { localization } from "better-auth-localization";
@@ -232,9 +232,107 @@ export const auth = betterAuth({
             },
 
             organizationHooks: {
+                beforeDeleteOrganization: async data => {
+                    // Vérifier si l'organisation a un abonnement actif
+                    const subscription = await prisma.subscription.findFirst({
+                        where: {
+                            referenceId: data.organizationId,
+                            status: {
+                                in: ["active", "trialing", "past_due"],
+                            },
+                        },
+                    });
+
+                    if (subscription) {
+                        throw new APIError("FORBIDDEN", {
+                            message: "Cannot delete organization with active subscription",
+                        });
+                    }
+                },
                 afterDeleteOrganization: async data => {
                     // Supprimer le logo de l'organisation du blob s'il existe
                     await deleteFile(data.organization.logo);
+                },
+                afterAddMember: async ({ member, user, organization }) => {
+                    // Mettre à jour la quantité de licences sur Stripe
+                    try {
+                        const { updateSubscriptionQuantityAction } = await import(
+                            "@/actions/stripe.action"
+                        );
+                        const memberCount = await prisma.member.count({
+                            where: {
+                                organizationId: organization.id,
+                            },
+                        });
+                        await updateSubscriptionQuantityAction({
+                            organizationId: organization.id,
+                            quantity: memberCount,
+                        });
+                        console.log(
+                            "Subscription quantity updated after adding member:",
+                            memberCount
+                        );
+                    } catch (error) {
+                        console.error(
+                            "Error updating subscription quantity after adding member:",
+                            error
+                        );
+                        // Ne pas bloquer l'ajout du membre si la mise à jour Stripe échoue
+                    }
+                },
+                afterRemoveMember: async ({ member, user, organization }) => {
+                    // Mettre à jour la quantité de licences sur Stripe
+                    try {
+                        const { updateSubscriptionQuantityAction } = await import(
+                            "@/actions/stripe.action"
+                        );
+                        const memberCount = await prisma.member.count({
+                            where: {
+                                organizationId: organization.id,
+                            },
+                        });
+                        await updateSubscriptionQuantityAction({
+                            organizationId: organization.id,
+                            quantity: memberCount,
+                        });
+                        console.log(
+                            "Subscription quantity updated after removing member:",
+                            memberCount
+                        );
+                    } catch (error) {
+                        console.error(
+                            "Error updating subscription quantity after removing member:",
+                            error
+                        );
+                        // Ne pas bloquer la suppression du membre si la mise à jour Stripe échoue
+                    }
+                },
+                afterAcceptInvitation: async ({ invitation, member, user, organization }) => {
+                    // Mettre à jour la quantité de licences sur Stripe
+                    try {
+                        const { updateSubscriptionQuantityAction } = await import(
+                            "@/actions/stripe.action"
+                        );
+                        const memberCount = await prisma.member.count({
+                            where: {
+                                organizationId: organization.id,
+                            },
+                        });
+                        await updateSubscriptionQuantityAction({
+                            organizationId: organization.id,
+                            quantity: memberCount,
+                        });
+                        console.log(
+                            "Subscription quantity updated after accepting invitation:",
+                            memberCount
+                        );
+                    } catch (error) {
+                        console.error(
+                            "Error updating subscription quantity after accepting invitation:",
+                            error
+                        );
+                        // Ne pas bloquer l'acceptation de l'invitation si la mise à jour Stripe échoue
+                    }
                 },
             },
 
