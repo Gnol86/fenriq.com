@@ -170,6 +170,12 @@
         }
     },
     "organization": {
+        "subscription": {
+            "page_title": "Abonnement",
+            "page_description": "Gérer votre abonnement à notre service.",
+            "subscribe_button": "S'abonner",
+            "subscribe_success": "Abonnement réussi"
+        },
         "manage": {
             "page_title": "Gérer l'organisation",
             "page_description": "Modifiez les informations principales de votre organisation.",
@@ -514,7 +520,8 @@
             "administration": "Administration",
             "users": "Utilisateurs",
             "organizations": "Organisations",
-            "settings": "Paramètres"
+            "settings": "Paramètres",
+            "subscription": "Abonnement"
         },
         "user_button": {
             "default_name": "Utilisateur",
@@ -555,7 +562,8 @@
         "invitations": "Invitations",
         "users": "Utilisateurs",
         "admin": "Administration",
-        "settings": "Paramètres"
+        "settings": "Paramètres",
+        "subscription": "Abonnement"
     },
     "roles": {
         "owner": "Propriétaire",

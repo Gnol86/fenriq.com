@@ -20,6 +20,7 @@ import { Building } from "lucide-react";
 import { Shield } from "lucide-react";
 import { User } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { Euro } from "lucide-react";
 
 export default async function SideBarContent() {
     const t = await getTranslations("sidebar.dashboard");
@@ -49,6 +50,10 @@ export default async function SideBarContent() {
 
     const canOrgsDelete = await hasPermissionAction({
         permissions: { organization: ["delete"] },
+    });
+
+    const canBillingRead = await hasPermissionAction({
+        permissions: { billing: ["read"] },
     });
 
     const prisma = new PrismaClient();
@@ -87,7 +92,8 @@ export default async function SideBarContent() {
                     <SidebarGroup>
                         <SidebarGroupLabel className="flex gap-1 items-center">
                             <Building />
-                            {activeUserOrganization?.name ?? t("organization_fallback")}
+                            {activeUserOrganization?.name ??
+                                t("organization_fallback")}
                         </SidebarGroupLabel>
 
                         <SidebarGroupContent>
@@ -118,6 +124,16 @@ export default async function SideBarContent() {
                                             <Link href="/dashboard/org/invitations">
                                                 <MailPlusIcon className="opacity-60" />
                                                 {t("invitations")}
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )}
+                                {canBillingRead && (
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link href="/dashboard/org/subscription">
+                                                <Euro className="opacity-60" />
+                                                {t("subscription")}
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>

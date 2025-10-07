@@ -555,7 +555,8 @@
         "invitations": "Invitations",
         "users": "Users",
         "admin": "Administration",
-        "settings": "Settings"
+        "settings": "Settings",
+        "subscription": "Subscription"
     },
     "roles": {
         "owner": "Owner",
