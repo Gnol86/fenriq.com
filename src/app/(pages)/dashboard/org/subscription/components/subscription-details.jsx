@@ -59,7 +59,9 @@ export default async function SubscriptionDetails({ subscription }) {
                     <Users className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div className="flex flex-col gap-1">
-                    <div className="text-sm font-medium">{t("seats_label")}</div>
+                    <div className="text-sm font-medium">
+                        {t("seats_label")}
+                    </div>
                     <div className="text-sm text-muted-foreground">
                         {subscription.seats ?? tCommon("n_a")} {t("seats_unit")}
                     </div>
@@ -71,31 +73,47 @@ export default async function SubscriptionDetails({ subscription }) {
                     <CreditCard className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div className="flex flex-col gap-1">
-                    <div className="text-sm font-medium">{t("amount_label")}</div>
+                    <div className="text-sm font-medium">
+                        {t("amount_label")}
+                    </div>
                     <div className="text-sm text-muted-foreground">
-                        {formatAmount(subscription.amount, subscription.currency)} /{" "}
-                        {subscription.interval
-                            ? t(`interval_${subscription.interval}`)
-                            : tCommon("n_a")}
+                        {formatAmount(
+                            subscription.amount,
+                            subscription.currency
+                        )}
+                        {" x "}
+                        {subscription.seats}
+                        {" = "}
+                        <span className="font-bold">
+                            {formatAmount(
+                                subscription.amount * subscription.seats,
+                                subscription.currency
+                            )}
+                            {" / "}
+                            {subscription.interval
+                                ? t(`interval_${subscription.interval}`)
+                                : tCommon("n_a")}
+                        </span>
                     </div>
                 </div>
             </div>
 
-            {subscription.trialEnd && new Date(subscription.trialEnd) > new Date() && (
-                <div className="flex items-start gap-3 md:col-span-2">
-                    <div className="rounded-lg border p-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                        <div className="text-sm font-medium">
-                            {t("trial_end_label")}
+            {subscription.trialEnd &&
+                new Date(subscription.trialEnd) > new Date() && (
+                    <div className="flex items-start gap-3 md:col-span-2">
+                        <div className="rounded-lg border p-2">
+                            <Calendar className="h-4 w-4 text-muted-foreground" />
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                            {formatDate(subscription.trialEnd)}
+                        <div className="flex flex-col gap-1">
+                            <div className="text-sm font-medium">
+                                {t("trial_end_label")}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                {formatDate(subscription.trialEnd)}
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
         </div>
     );
 }

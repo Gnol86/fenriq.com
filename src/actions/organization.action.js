@@ -5,8 +5,10 @@ import { headers } from "next/headers";
 import { nameToSlug } from "@/lib/utils";
 
 export async function hasPermissionAction({ permissions }) {
+    const h = await headers();
+
     const session = await auth.api.getSession({
-        headers: await headers(), // you need to pass the headers object.
+        headers: h, // you need to pass the headers object.
     });
 
     if (!session) {
@@ -21,11 +23,23 @@ export async function hasPermissionAction({ permissions }) {
         return false;
     }
 
+    const userOrganizations = await auth.api.listOrganizations({
+        headers: h,
+    });
+
+    if (
+        !userOrganizations.find(
+            org => org.id === session.session.activeOrganizationId
+        )
+    ) {
+        return false;
+    }
+
     const response = await auth.api.hasPermission({
         body: {
             permissions: permissions,
         },
-        headers: await headers(),
+        headers: h,
     });
     return response.success;
 }
