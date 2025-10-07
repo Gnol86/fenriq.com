@@ -26,15 +26,65 @@ export default async function LicenseMovements({ movements }) {
     };
 
     const formatAmount = (amount, currency) => {
-        if (!amount || !currency) return tCommon("n_a");
+        if (amount === undefined || amount === null || !currency) {
+            return tCommon("n_a");
+        }
+
         return new Intl.NumberFormat("fr-FR", {
             style: "currency",
             currency: currency.toUpperCase(),
         }).format(amount / 100);
     };
 
+    const formatSignedAmount = amount => {
+        const formatted = formatAmount(amount, movements.currency);
+        if (formatted === tCommon("n_a")) {
+            return formatted;
+        }
+
+        if (amount > 0) {
+            return `+${formatted}`;
+        }
+
+        return formatted;
+    };
+
+    const groupMovements = entries => {
+        if (!entries?.length) {
+            return [];
+        }
+
+        const map = new Map();
+
+        for (const entry of entries) {
+            const key = entry.lineId ?? entry.id;
+            const occurredAt = entry.addedAt ?? entry.removedAt ?? entry.occurredAt;
+
+            if (!map.has(key)) {
+                map.set(key, {
+                    id: key,
+                    occurredAt,
+                    description: entry.description ?? null,
+                    amounts: [],
+                });
+            }
+
+            const group = map.get(key);
+            group.amounts.push(entry.amount);
+            group.totalAmount = (group.totalAmount ?? 0) + entry.amount;
+            group.count = (group.count ?? 0) + 1;
+        }
+
+        return Array.from(map.values()).sort(
+            (a, b) => new Date(a.occurredAt) - new Date(b.occurredAt)
+        );
+    };
+
     const hasChanges =
         movements.addedMembers.length > 0 || movements.removedCount > 0;
+
+    const groupedAdded = groupMovements(movements.addedMembers);
+    const groupedRemoved = groupMovements(movements.removedMembers);
 
     // Calculate base subscription amount for next invoice
     const baseAmount = (movements.amount ?? 0) * movements.currentSeats;
@@ -111,7 +161,7 @@ export default async function LicenseMovements({ movements }) {
                         {t("movements_details")}
                     </div>
                     {/* Added licenses */}
-                    {movements.addedMembers.length > 0 && (
+                    {groupedAdded.length > 0 && (
                         <div className="flex flex-col gap-2">
                             <div className="flex items-center gap-2">
                                 <UserPlus className="h-4 w-4 text-destructive" />
@@ -123,26 +173,54 @@ export default async function LicenseMovements({ movements }) {
                             </div>
 
                             <div className="flex flex-col gap-2">
-                                {movements.addedMembers.map(license => (
+                                {groupedAdded.map(group => (
                                     <Item
                                         variant="muted"
-                                        key={license.id}
+                                        key={group.id}
                                         size="sm"
                                     >
                                         <ItemHeader>
                                             <ItemTitle>
-                                                {formatAmount(
-                                                    license.amount,
-                                                    movements.currency
+                                                {formatSignedAmount(
+                                                    group.totalAmount
                                                 )}
                                             </ItemTitle>
+                                            <div className="flex flex-wrap gap-1">
+                                                <Badge variant="outline">
+                                                    {t("licenses_added", {
+                                                        count: group.count,
+                                                    })}
+                                                </Badge>
+                                            </div>
                                             <ItemDescription>
                                                 {t("license_added_on", {
                                                     date: formatDate(
-                                                        license.addedAt
+                                                        group.occurredAt
                                                     ),
                                                 })}
                                             </ItemDescription>
+                                            {group.description && (
+                                                <ItemDescription className="text-xs text-muted-foreground">
+                                                    {group.description}
+                                                </ItemDescription>
+                                            )}
+                                            {group.amounts.length > 0 && (
+                                                <ItemDescription className="text-xs text-muted-foreground">
+                                                    {t(
+                                                        "license_amounts_detail",
+                                                        {
+                                                            count: group.count,
+                                                            amounts: group.amounts
+                                                                .map(value =>
+                                                                    formatSignedAmount(
+                                                                        value
+                                                                    )
+                                                                )
+                                                                .join(" • "),
+                                                        }
+                                                    )}
+                                                </ItemDescription>
+                                            )}
                                         </ItemHeader>
                                     </Item>
                                 ))}
@@ -151,7 +229,7 @@ export default async function LicenseMovements({ movements }) {
                     )}
 
                     {/* Removed licenses */}
-                    {movements.removedMembers?.length > 0 && (
+                    {groupedRemoved.length > 0 && (
                         <div className="flex flex-col gap-2">
                             <div className="flex items-center gap-2">
                                 <UserMinus className="h-4 w-4 text-green-600" />
@@ -163,33 +241,56 @@ export default async function LicenseMovements({ movements }) {
                             </div>
 
                             <div className="flex flex-col gap-2">
-                                {movements.removedMembers.map(license => (
+                                {groupedRemoved.map(group => (
                                     <Item
                                         variant="muted"
-                                        key={license.id}
+                                        key={group.id}
                                         size="sm"
                                     >
                                         <ItemHeader>
                                             <ItemTitle>
-                                                {movements.creditPerRemoval > 0 ? (
-                                                    <span className="text-green-600">
-                                                        -
-                                                        {formatAmount(
-                                                            movements.creditPerRemoval,
-                                                            movements.currency
-                                                        )}
-                                                    </span>
-                                                ) : (
-                                                    tCommon("n_a")
-                                                )}
+                                                <span className="text-green-600">
+                                                    {formatSignedAmount(
+                                                        group.totalAmount
+                                                    )}
+                                                </span>
                                             </ItemTitle>
+                                            <div className="flex flex-wrap gap-1">
+                                                <Badge variant="outline">
+                                                    {t("licenses_removed", {
+                                                        count: group.count,
+                                                    })}
+                                                </Badge>
+                                            </div>
                                             <ItemDescription>
                                                 {t("license_removed_on", {
                                                     date: formatDate(
-                                                        license.removedAt
+                                                        group.occurredAt
                                                     ),
                                                 })}
                                             </ItemDescription>
+                                            {group.description && (
+                                                <ItemDescription className="text-xs text-muted-foreground">
+                                                    {group.description}
+                                                </ItemDescription>
+                                            )}
+                                            {group.amounts.length > 0 && (
+                                                <ItemDescription className="text-xs text-muted-foreground">
+                                                    {t(
+                                                        "license_amounts_detail",
+                                                        {
+                                                            count: group.count,
+                                                            amounts: group.amounts
+                                                                .map(value =>
+                                                                    formatSignedAmount(
+                                                                        value
+                                                                    )
+                                                                )
+                                                                .join(" • "),
+                                                        }
+                                                    )}
+                                                </ItemDescription>
+                                            )}
                                         </ItemHeader>
                                     </Item>
                                 ))}

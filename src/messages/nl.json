@@ -235,6 +235,7 @@
             "license_added_on": "Toegevoegd op {date}",
             "member_removed_on": "Verwijderd op {date}",
             "license_removed_on": "Verwijderd op {date}",
+            "license_amounts_detail": "{count, plural, =1 {Bedrag per licentie: {amounts}} other {Bedragen per licentie: {amounts}}}",
             "next_invoice_calculation": "Berekening van de volgende factuur van {date}",
             "base_subscription": "Basisabonnement",
             "adjustments": "Aanpassingen",

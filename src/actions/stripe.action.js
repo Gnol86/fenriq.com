@@ -354,11 +354,25 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
         return null;
     }
 
-    // Get last invoice from Stripe
+    const stripeSubscription = await stripe.subscriptions.retrieve(
+        subscription.stripeSubscriptionId,
+        {
+            expand: ["items.data.price"],
+        }
+    );
+
+    const subscriptionItem = stripeSubscription.items.data[0];
+    const price = subscriptionItem?.price ?? null;
+    const currency = price?.currency ?? subscription.currency ?? null;
+    const unitAmount = price?.unit_amount ?? subscription.amount ?? 0;
+    const currentSeats = subscriptionItem?.quantity ?? 0;
+
+    // Get last invoice from Stripe (paid)
     const invoices = await stripe.invoices.list({
         customer: subscription.stripeCustomerId,
         limit: 1,
         status: "paid",
+        expand: ["data.lines"],
     });
 
     const lastInvoice = invoices.data[0];
@@ -369,146 +383,104 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
     }
 
     const lastInvoiceDate = new Date(lastInvoice.created * 1000);
-    console.log("📅 Last invoice date:", lastInvoiceDate);
 
-    // Get quantity from last invoice (seats at that time)
-    const lastInvoiceQuantity = lastInvoice.lines.data[0]?.quantity ?? 0;
-    console.log("📊 Last invoice quantity:", lastInvoiceQuantity);
+    // Try to derive the quantity billed on the last invoice for this price
+    const lastInvoiceQuantity =
+        lastInvoice.lines?.data?.find(line => !line.proration && line.price?.id === price?.id)?.quantity ??
+        lastInvoice.lines?.data?.[0]?.quantity ??
+        0;
 
-    // Get current subscription seats
-    const currentSeats = subscription.seats ?? 0;
-    console.log("📊 Current seats:", currentSeats);
+    // Helper to split a total amount (in cents) across N licenses without losing cents
+    const splitAmountAcrossQuantity = (totalAmount, quantity) => {
+        const qty = Math.max(Math.abs(quantity ?? 1), 1);
+        const base = Math.trunc(totalAmount / qty);
+        const remainder = totalAmount - base * qty;
 
-    // Get subscription update events since last invoice to track quantity changes
-    const events = await stripe.events.list({
-        type: "customer.subscription.updated",
-        created: {
-            gte: lastInvoice.created,
-        },
-        limit: 100,
-    });
-
-    console.log("📋 Subscription update events found:", events.data.length);
-
-    // Parse events to find quantity changes
-    const addedLicenses = [];
-    const removedLicenses = [];
-
-    for (const event of events.data) {
-        const subscription = event.data.object;
-        const previousAttributes = event.data.previous_attributes;
-
-        // Check if quantity changed in items
-        if (previousAttributes?.items?.data) {
-            const currentQuantity = subscription.items?.data[0]?.quantity ?? 0;
-            const previousQuantity = previousAttributes.items.data[0]?.quantity ?? 0;
-
-            if (currentQuantity > previousQuantity) {
-                const quantityAdded = currentQuantity - previousQuantity;
-                console.log(`➕ Event ${event.id}: Added ${quantityAdded} licenses at ${new Date(event.created * 1000)}`);
-
-                for (let i = 0; i < quantityAdded; i++) {
-                    addedLicenses.push({
-                        id: `${event.id}-${i}`,
-                        addedAt: new Date(event.created * 1000).toISOString(),
-                        eventId: event.id,
-                    });
-                }
-            } else if (currentQuantity < previousQuantity) {
-                const quantityRemoved = previousQuantity - currentQuantity;
-                console.log(`➖ Event ${event.id}: Removed ${quantityRemoved} licenses at ${new Date(event.created * 1000)}`);
-
-                for (let i = 0; i < quantityRemoved; i++) {
-                    removedLicenses.push({
-                        id: `${event.id}-${i}`,
-                        removedAt: new Date(event.created * 1000).toISOString(),
-                        eventId: event.id,
-                    });
-                }
+        return Array.from({ length: qty }, (_, index) => {
+            if (totalAmount >= 0) {
+                return base + (index < remainder ? 1 : 0);
             }
-        }
-    }
 
-    console.log("➕ Total licenses added:", addedLicenses.length);
-    console.log("➖ Total licenses removed:", removedLicenses.length);
+            return base - (index < Math.abs(remainder) ? 1 : 0);
+        });
+    };
 
-    // Calculate period length for proration
-    const periodStart = new Date(subscription.currentPeriodStart);
-    const periodEnd = new Date(subscription.currentPeriodEnd);
-    const totalPeriodDays = Math.ceil((periodEnd - periodStart) / (1000 * 60 * 60 * 24));
-
-    console.log("📅 Period start:", periodStart);
-    console.log("📅 Period end:", periodEnd);
-    console.log("📅 Total period days:", totalPeriodDays);
-
-    // Calculate proration amounts for each added license
-    const addedLicensesWithAmount = addedLicenses.map(license => {
-        const licenseAddedDate = new Date(license.addedAt);
-        const daysRemaining = Math.ceil((periodEnd - licenseAddedDate) / (1000 * 60 * 60 * 24));
-
-        // Proration: (price_per_license × days_remaining) / total_days
-        const proratedAmount = Math.round(
-            (subscription.amount * daysRemaining) / totalPeriodDays
-        );
-
-        console.log(`💰 License added at ${license.addedAt}: ${daysRemaining} days remaining, prorated amount: ${proratedAmount}`);
-
-        return {
-            ...license,
-            amount: proratedAmount,
-        };
-    });
-
-    // Calculate total charges and credits from invoice preview
-    let totalCredits = 0;
-    let totalCharges = 0;
-    let creditPerRemoval = 0;
+    let upcomingInvoice = null;
 
     try {
-        // Use the correct method to retrieve upcoming invoice (preview)
-        const upcomingInvoice = await stripe.invoices.createPreview({
+        upcomingInvoice = await stripe.invoices.createPreview({
             customer: subscription.stripeCustomerId,
             subscription: subscription.stripeSubscriptionId,
         });
-
-        console.log("📋 Upcoming invoice lines:", upcomingInvoice.lines.data.length);
-
-        // Filter proration items created since last invoice
-        const prorationItems = upcomingInvoice.lines.data.filter(item => {
-            return item.proration === true && item.period.start > lastInvoice.created;
-        });
-
-        console.log("📋 Proration items:", prorationItems.length);
-
-        // Calculate totals from Stripe's proration items
-        prorationItems.forEach(item => {
-            console.log(`📋 Proration item: amount=${item.amount}, description=${item.description}`);
-            if (item.amount < 0) {
-                totalCredits += Math.abs(item.amount);
-            } else {
-                totalCharges += item.amount;
-            }
-        });
-
-        // Calculate credit per removal based on proration
-        if (removedLicenses.length > 0 && totalCredits > 0) {
-            creditPerRemoval = Math.round(totalCredits / removedLicenses.length);
-        }
-
-        console.log("💰 Total credits from Stripe:", totalCredits);
-        console.log("💰 Total charges from Stripe:", totalCharges);
-        console.log("💰 Credit per removal:", creditPerRemoval);
     } catch (error) {
-        console.log("⚠️ Could not retrieve upcoming invoice:", error.message);
-        // Continue without invoice items if there's an error
+        console.log("❌ Could not retrieve invoice preview:", error.message);
     }
 
-    // Calculate net amount to pay (charges - credits)
+    const lastInvoiceTimestamp = lastInvoice.created;
+
+    const prorationLines = upcomingInvoice?.lines?.data?.filter(line => {
+        if (!line.proration) {
+            return false;
+        }
+
+        if (line.period?.start && line.period.start <= lastInvoiceTimestamp) {
+            // Ignore proration rows that happened before the last invoice
+            return false;
+        }
+
+        return true;
+    }) ?? [];
+
+    const addedMembers = [];
+    const removedMembers = [];
+
+    prorationLines.forEach(line => {
+        const quantity = Math.max(Math.abs(line.quantity ?? 1), 1);
+        const shares = splitAmountAcrossQuantity(line.amount, quantity);
+        const movementDate = new Date(
+            (line.period?.start ?? stripeSubscription.current_period_start) * 1000
+        ).toISOString();
+
+        shares.forEach((share, index) => {
+            const baseMovement = {
+                id: `${line.id}-${index}`,
+                amount: share,
+                description: line.description ?? null,
+                lineAmount: line.amount,
+                lineQuantity: quantity,
+                lineId: line.id,
+                occurredAt: movementDate,
+            };
+
+            if (share >= 0) {
+                addedMembers.push({
+                    ...baseMovement,
+                    addedAt: movementDate,
+                });
+            } else {
+                removedMembers.push({
+                    ...baseMovement,
+                    removedAt: movementDate,
+                });
+            }
+        });
+    });
+
+    addedMembers.sort((a, b) => new Date(a.addedAt) - new Date(b.addedAt));
+    removedMembers.sort((a, b) => new Date(a.removedAt) - new Date(b.removedAt));
+
+    const totalCharges = prorationLines
+        .filter(line => line.amount > 0)
+        .reduce((sum, line) => sum + line.amount, 0);
+
+    const totalCredits = prorationLines
+        .filter(line => line.amount < 0)
+        .reduce((sum, line) => sum + Math.abs(line.amount), 0);
+
     const netAmountToPay = totalCharges - totalCredits;
 
-    // Get next billing date from subscription
-    const nextBillingDate = subscription.currentPeriodEnd
-        ? new Date(subscription.currentPeriodEnd).toISOString()
+    const nextBillingDate = stripeSubscription.current_period_end
+        ? new Date(stripeSubscription.current_period_end * 1000).toISOString()
         : null;
 
     return {
@@ -516,16 +488,15 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
         lastInvoiceNumber: lastInvoice.number ?? lastInvoice.id,
         lastInvoiceQuantity,
         currentSeats,
-        addedMembers: addedLicensesWithAmount,
-        removedMembers: removedLicenses,
-        removedCount: removedLicenses.length,
-        creditPerRemoval,
+        addedMembers,
+        removedMembers,
+        removedCount: removedMembers.length,
         netChange: currentSeats - lastInvoiceQuantity,
         totalCredits,
         totalCharges,
         netAmountToPay,
-        currency: subscription.currency,
+        currency,
         nextBillingDate,
-        amount: subscription.amount,
+        amount: unitAmount,
     };
 }

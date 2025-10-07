@@ -235,6 +235,7 @@
             "license_added_on": "Hinzugefügt am {date}",
             "member_removed_on": "Entfernt am {date}",
             "license_removed_on": "Entfernt am {date}",
+            "license_amounts_detail": "{count, plural, =1 {Betrag pro Lizenz: {amounts}} other {Beträge pro Lizenz: {amounts}}}",
             "next_invoice_calculation": "Berechnung der nächsten Rechnung vom {date}",
             "base_subscription": "Basisabonnement",
             "adjustments": "Anpassungen",
