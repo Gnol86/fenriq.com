@@ -37,6 +37,7 @@ import {
     ItemDescription,
     ItemGroup,
     ItemMedia,
+    ItemSeparator,
     ItemTitle,
 } from "@/components/ui/item";
 import React from "react";
