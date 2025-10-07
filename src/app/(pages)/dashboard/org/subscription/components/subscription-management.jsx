@@ -10,9 +10,11 @@ import { hasPermissionAction } from "@/actions/organization.action";
 import {
     getOrganizationSubscriptionAction,
     getOrganizationInvoicesAction,
+    getLicenseMovementsSinceLastInvoiceAction,
 } from "@/actions/stripe.action";
 import SubscriptionDetails from "./subscription-details";
 import InvoicesList from "./invoices-list";
+import LicenseMovements from "./license-movements";
 import ManageSubscriptionButton from "./manage-subscription-button";
 import { Badge } from "@/components/ui/badge";
 
@@ -34,6 +36,10 @@ export default async function SubscriptionManagement({ organization }) {
     const invoices = await getOrganizationInvoicesAction({
         organizationId: organization.id,
         limit: 10,
+    });
+
+    const movements = await getLicenseMovementsSinceLastInvoiceAction({
+        organizationId: organization.id,
     });
 
     const statusColorMap = {
@@ -74,6 +80,18 @@ export default async function SubscriptionManagement({ organization }) {
                     <SubscriptionDetails subscription={subscription} />
                 </CardContent>
             </Card>
+
+            {movements && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{t("movements_title")}</CardTitle>
+                        <CardDescription>{t("movements_description")}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <LicenseMovements movements={movements} />
+                    </CardContent>
+                </Card>
+            )}
 
             {invoices && invoices.length > 0 && (
                 <Card>
