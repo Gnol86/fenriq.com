@@ -134,16 +134,7 @@ export async function upsertSubscriptionFromStripeAction({
     stripeSubscription,
     organizationId,
 }) {
-    console.log("🔄 upsertSubscriptionFromStripeAction called");
-    console.log("Organization ID:", organizationId);
-    console.log("Stripe Subscription ID:", stripeSubscription.id);
-    console.log("Stripe Customer ID:", stripeSubscription.customer);
-    console.log("Subscription status:", stripeSubscription.status);
-
     const price = stripeSubscription.items.data[0]?.price;
-    console.log("Price ID:", price?.id);
-    console.log("Price amount:", price?.unit_amount);
-    console.log("Price currency:", price?.currency);
 
     const subscriptionData = {
         plan: price?.id ?? "default",
@@ -172,11 +163,6 @@ export async function upsertSubscriptionFromStripeAction({
         interval: price?.recurring?.interval ?? null,
     };
 
-    console.log(
-        "Subscription data to upsert:",
-        JSON.stringify(subscriptionData, null, 2)
-    );
-
     try {
         const subscription = await prisma.subscription.upsert({
             where: {
@@ -189,10 +175,6 @@ export async function upsertSubscriptionFromStripeAction({
             },
         });
 
-        console.log(
-            "✅ Subscription upserted successfully with ID:",
-            subscription.id
-        );
         return subscription;
     } catch (error) {
         console.error("❌ Error upserting subscription:", error);
@@ -216,10 +198,6 @@ export async function updateSubscriptionQuantityAction({
 
     if (!subscription?.stripeSubscriptionId) {
         // Pas d'abonnement actif, ne rien faire silencieusement
-        console.log(
-            "No active subscription found for organization:",
-            organizationId
-        );
         return { success: false, reason: "no_subscription" };
     }
 
@@ -346,11 +324,6 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
         throw new Error("Unauthorized");
     }
 
-    console.log(
-        "🔍 Getting license movements for organization:",
-        organizationId
-    );
-
     // Get subscription
     const subscription = await prisma.subscription.findFirst({
         where: {
@@ -362,7 +335,6 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
         !subscription?.stripeCustomerId ||
         !subscription?.stripeSubscriptionId
     ) {
-        console.log("❌ No subscription found");
         return null;
     }
 
@@ -390,7 +362,6 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
     const lastInvoice = invoices.data[0];
 
     if (!lastInvoice) {
-        console.log("❌ No invoice found");
         return null;
     }
 
@@ -427,7 +398,7 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
             subscription: subscription.stripeSubscriptionId,
         });
     } catch (error) {
-        console.log("❌ Could not retrieve invoice preview:", error.message);
+        // Silently handle error
     }
 
     const lastInvoiceTimestamp = lastInvoice.created;

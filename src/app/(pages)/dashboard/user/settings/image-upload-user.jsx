@@ -68,7 +68,6 @@ export default function ImageUploadUser({ user }) {
 
         await execute(
             async () => {
-                console.log("uploading user image");
                 const url = await uploadFile(file, "user", user?.image);
                 await updateUserAction({
                     image: url,

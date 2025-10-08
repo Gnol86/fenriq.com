@@ -39,8 +39,6 @@ export default async function AdminOrganizationPage({ params }) {
 
     const organization = await getOrganizationBySlugAsAdminAction({ slug });
 
-    console.log(organization);
-
     if (!organization || organization.error) {
         notFound();
     }

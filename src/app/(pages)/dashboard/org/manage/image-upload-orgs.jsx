@@ -69,7 +69,6 @@ export default function ImageUpload({ organization }) {
 
         await execute(
             async () => {
-                console.log("uploading image");
                 const url = await uploadFile(
                     file,
                     "organization",

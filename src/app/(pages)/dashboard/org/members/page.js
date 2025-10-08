@@ -91,8 +91,6 @@ export default async function OrganizationMembersPage({ searchParams }) {
         where: whereClause,
     });
 
-    console.log(lengthTotalMembres);
-
     const members = await prisma.member.findMany({
         where: whereClause,
         orderBy: {

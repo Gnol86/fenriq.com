@@ -59,7 +59,11 @@ export const auth = betterAuth({
         disabled: false,
         level: "debug", // ou "info" pour moins de verbosité
         log: (level, message, ...args) => {
-            console.log(`[Better-Auth ${level.toUpperCase()}]`, message, ...args);
+            console.log(
+                `[Better-Auth ${level.toUpperCase()}]`,
+                message,
+                ...args
+            );
         },
     },
     onAPIError: {
@@ -89,15 +93,29 @@ export const auth = betterAuth({
         max: 100, // 100 requêtes par minute
     },
     databaseHooks: {
+        user: {
+            create: {
+                after: async user => {
+                    // Vérifier si c'est le premier utilisateur
+                    const userCount = await prisma.user.count();
+
+                    if (userCount === 1) {
+                        console.info(
+                            "Premier utilisateur inscrit - Attribution du rôle admin"
+                        );
+                        await prisma.user.update({
+                            where: { id: user.id },
+                            data: { role: "admin" },
+                        });
+                    }
+                },
+            },
+        },
         session: {
             create: {
                 before: async session => {
                     const organization = await getActiveOrganization(
                         session.userId
-                    );
-                    console.log(
-                        "Auto Active organisation :",
-                        organization?.name
                     );
                     return {
                         data: {
@@ -264,7 +282,8 @@ export const auth = betterAuth({
 
                     if (subscription) {
                         throw new APIError("FORBIDDEN", {
-                            message: "Cannot delete organization with active subscription",
+                            message:
+                                "Cannot delete organization with active subscription",
                         });
                     }
                 },
@@ -275,9 +294,8 @@ export const auth = betterAuth({
                 afterAddMember: async ({ member, user, organization }) => {
                     // Mettre à jour la quantité de licences sur Stripe
                     try {
-                        const { updateSubscriptionQuantityAction } = await import(
-                            "@/actions/stripe.action"
-                        );
+                        const { updateSubscriptionQuantityAction } =
+                            await import("@/actions/stripe.action");
                         const memberCount = await prisma.member.count({
                             where: {
                                 organizationId: organization.id,
@@ -287,10 +305,6 @@ export const auth = betterAuth({
                             organizationId: organization.id,
                             quantity: memberCount,
                         });
-                        console.log(
-                            "Subscription quantity updated after adding member:",
-                            memberCount
-                        );
                     } catch (error) {
                         console.error(
                             "Error updating subscription quantity after adding member:",
@@ -302,9 +316,8 @@ export const auth = betterAuth({
                 afterRemoveMember: async ({ member, user, organization }) => {
                     // Mettre à jour la quantité de licences sur Stripe
                     try {
-                        const { updateSubscriptionQuantityAction } = await import(
-                            "@/actions/stripe.action"
-                        );
+                        const { updateSubscriptionQuantityAction } =
+                            await import("@/actions/stripe.action");
                         const memberCount = await prisma.member.count({
                             where: {
                                 organizationId: organization.id,
@@ -314,10 +327,6 @@ export const auth = betterAuth({
                             organizationId: organization.id,
                             quantity: memberCount,
                         });
-                        console.log(
-                            "Subscription quantity updated after removing member:",
-                            memberCount
-                        );
                     } catch (error) {
                         console.error(
                             "Error updating subscription quantity after removing member:",
@@ -326,12 +335,16 @@ export const auth = betterAuth({
                         // Ne pas bloquer la suppression du membre si la mise à jour Stripe échoue
                     }
                 },
-                afterAcceptInvitation: async ({ invitation, member, user, organization }) => {
+                afterAcceptInvitation: async ({
+                    invitation,
+                    member,
+                    user,
+                    organization,
+                }) => {
                     // Mettre à jour la quantité de licences sur Stripe
                     try {
-                        const { updateSubscriptionQuantityAction } = await import(
-                            "@/actions/stripe.action"
-                        );
+                        const { updateSubscriptionQuantityAction } =
+                            await import("@/actions/stripe.action");
                         const memberCount = await prisma.member.count({
                             where: {
                                 organizationId: organization.id,
@@ -341,10 +354,6 @@ export const auth = betterAuth({
                             organizationId: organization.id,
                             quantity: memberCount,
                         });
-                        console.log(
-                            "Subscription quantity updated after accepting invitation:",
-                            memberCount
-                        );
                     } catch (error) {
                         console.error(
                             "Error updating subscription quantity after accepting invitation:",

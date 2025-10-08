@@ -30,7 +30,6 @@ export async function POST(req) {
         switch (event.type) {
             case "checkout.session.completed": {
                 const session = event.data.object;
-                console.log("Checkout session completed:", session.id);
 
                 // Get organization ID from metadata
                 const organizationId = session.metadata?.organizationId;
@@ -46,18 +45,12 @@ export async function POST(req) {
                         stripeSubscription: subscription,
                         organizationId,
                     });
-
-                    console.log(
-                        "Subscription created in DB for organization:",
-                        organizationId
-                    );
                 }
                 break;
             }
 
             case "customer.subscription.created": {
                 const subscription = event.data.object;
-                console.log("Subscription created:", subscription.id);
 
                 // Find organization by customer ID
                 const organizationId = subscription.metadata?.organizationId;
@@ -73,7 +66,6 @@ export async function POST(req) {
 
             case "customer.subscription.updated": {
                 const subscription = event.data.object;
-                console.log("Subscription updated:", subscription.id);
 
                 // Find organization by subscription ID
                 const { PrismaClient } = await import("@/generated/prisma");
@@ -98,7 +90,6 @@ export async function POST(req) {
 
             case "customer.subscription.deleted": {
                 const subscription = event.data.object;
-                console.log("Subscription deleted:", subscription.id);
 
                 // Find and delete subscription from database
                 const { PrismaClient } = await import("@/generated/prisma");
@@ -121,21 +112,16 @@ export async function POST(req) {
             }
 
             case "invoice.payment_succeeded": {
-                const invoice = event.data.object;
-                console.log("Invoice payment succeeded:", invoice.id);
                 // Could be used to send receipt emails or update payment status
                 break;
             }
 
             case "invoice.payment_failed": {
-                const invoice = event.data.object;
-                console.log("Invoice payment failed:", invoice.id);
                 // Could be used to notify organization about payment failure
                 break;
             }
 
             default:
-                console.log(`Unhandled event type: ${event.type}`);
         }
 
         return NextResponse.json({ received: true });

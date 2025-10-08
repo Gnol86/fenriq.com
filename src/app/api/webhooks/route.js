@@ -7,11 +7,8 @@ import {
 } from "@/actions/stripe.action";
 
 export async function POST(req) {
-    console.log("=== Stripe Webhook Received ===");
     const body = await req.text();
     const signature = (await headers()).get("stripe-signature");
-
-    console.log("Webhook signature present:", !!signature);
 
     let event;
 
@@ -21,8 +18,6 @@ export async function POST(req) {
             signature,
             process.env.STRIPE_WEBHOOK_SECRET
         );
-        console.log("✅ Webhook signature verified successfully");
-        console.log("Event type:", event.type);
     } catch (err) {
         console.error("❌ Webhook signature verification failed:", err.message);
         return NextResponse.json(
@@ -35,9 +30,6 @@ export async function POST(req) {
         switch (event.type) {
             case "checkout.session.completed": {
                 const session = event.data.object;
-                console.log("📦 Checkout session completed:", session.id);
-                console.log("Session metadata:", JSON.stringify(session.metadata));
-                console.log("Session subscription ID:", session.subscription);
 
                 // Get organization ID from metadata
                 const organizationId = session.metadata?.organizationId;
@@ -52,36 +44,23 @@ export async function POST(req) {
                     break;
                 }
 
-                console.log("✅ Organization ID:", organizationId);
-
                 // Fetch the subscription details from Stripe
                 const subscription = await stripe.subscriptions.retrieve(
                     session.subscription,
                     { expand: ["items.data.price"] }
                 );
 
-                console.log("✅ Retrieved subscription from Stripe:", subscription.id);
-                console.log("Subscription status:", subscription.status);
-                console.log("Subscription items count:", subscription.items.data.length);
-
                 // Store subscription in database
-                const result = await upsertSubscriptionFromStripeAction({
+                await upsertSubscriptionFromStripeAction({
                     stripeSubscription: subscription,
                     organizationId,
                 });
 
-                console.log(
-                    "✅ Subscription upserted in DB with ID:",
-                    result.id,
-                    "for organization:",
-                    organizationId
-                );
                 break;
             }
 
             case "customer.subscription.created": {
                 const subscription = event.data.object;
-                console.log("Subscription created:", subscription.id);
 
                 // Find organization by customer ID
                 const organizationId = subscription.metadata?.organizationId;
@@ -97,7 +76,6 @@ export async function POST(req) {
 
             case "customer.subscription.updated": {
                 const subscription = event.data.object;
-                console.log("Subscription updated:", subscription.id);
 
                 // Find organization by subscription ID
                 const { PrismaClient } = await import("@/generated/prisma");
@@ -122,7 +100,6 @@ export async function POST(req) {
 
             case "customer.subscription.deleted": {
                 const subscription = event.data.object;
-                console.log("Subscription deleted:", subscription.id);
 
                 // Find and delete subscription from database
                 const { PrismaClient } = await import("@/generated/prisma");
@@ -145,21 +122,16 @@ export async function POST(req) {
             }
 
             case "invoice.payment_succeeded": {
-                const invoice = event.data.object;
-                console.log("Invoice payment succeeded:", invoice.id);
                 // Could be used to send receipt emails or update payment status
                 break;
             }
 
             case "invoice.payment_failed": {
-                const invoice = event.data.object;
-                console.log("Invoice payment failed:", invoice.id);
                 // Could be used to notify organization about payment failure
                 break;
             }
 
             default:
-                console.log(`Unhandled event type: ${event.type}`);
         }
 
         return NextResponse.json({ received: true });
