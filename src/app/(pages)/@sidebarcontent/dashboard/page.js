@@ -174,17 +174,17 @@ export default async function SideBarContent() {
                         <SidebarMenu>
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
-                                    <Link href="/dashboard/admin/users" prefetch={false}>
+                                    <Link href="/dashboard/admin/orgs">
                                         <Building className="opacity-60" />
-                                        Users Test
+                                        {t("organizations")}
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
-                                    <Link href="/dashboard/admin/orgs">
+                                    <Link href="/dashboard/admin/users" prefetch={false}>
                                         <Building className="opacity-60" />
-                                        {t("organizations")}
+                                        Users Test
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
