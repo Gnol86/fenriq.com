@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/sidebar";
 import { PrismaClient } from "@/generated/prisma";
 import { auth } from "@/lib/auth";
-import { UserCog } from "lucide-react";
 import {
     AlertTriangle,
     Building,
@@ -170,7 +169,7 @@ export default async function SideBarContent() {
                                 <SidebarMenuButton asChild>
                                     <Link href="/dashboard/admin/users">
                                         <Users className="opacity-60" />
-                                        {t("users")}
+                                        <span>{t("users")}</span>
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -178,7 +177,7 @@ export default async function SideBarContent() {
                                 <SidebarMenuButton asChild>
                                     <Link href="/dashboard/admin/orgs">
                                         <Building className="opacity-60" />
-                                        {t("organizations")}
+                                        <span>{t("organizations")}</span>
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
