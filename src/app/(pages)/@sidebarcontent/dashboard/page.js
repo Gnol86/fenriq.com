@@ -18,7 +18,6 @@ import {
     MailPlus,
     MailPlusIcon,
     Settings,
-    UserCog,
     Users,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
@@ -176,8 +175,8 @@ export default async function SideBarContent() {
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
                                     <Link href="/dashboard/admin/users">
-                                        <UserCog className="opacity-60" />
-                                        {t("users")}
+                                        <Building className="opacity-60" />
+                                        Users Test
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
