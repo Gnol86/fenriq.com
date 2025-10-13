@@ -174,7 +174,7 @@ export default async function SideBarContent() {
                         <SidebarMenu>
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
-                                    <Link href="/dashboard/admin/users">
+                                    <Link href="/dashboard/admin/users" prefetch={false}>
                                         <Building className="opacity-60" />
                                         Users Test
                                     </Link>
