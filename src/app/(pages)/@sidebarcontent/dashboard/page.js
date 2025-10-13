@@ -79,7 +79,7 @@ export default async function SideBarContent() {
                             <SidebarMenuButton asChild>
                                 <Link href="/dashboard">
                                     <LayoutDashboard className="opacity-60" />
-                                    {t("dashboard")}
+                                    <span>{t("dashboard")}</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -105,7 +105,7 @@ export default async function SideBarContent() {
                                         <SidebarMenuButton asChild>
                                             <Link href="/dashboard/org/members">
                                                 <Users className="opacity-60" />
-                                                {t("members")}
+                                                <span>{t("members")}</span>
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -115,7 +115,7 @@ export default async function SideBarContent() {
                                         <SidebarMenuButton asChild>
                                             <Link href="/dashboard/org/invitations">
                                                 <MailPlusIcon className="opacity-60" />
-                                                {t("invitations")}
+                                                <span>{t("invitations")}</span>
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -125,7 +125,7 @@ export default async function SideBarContent() {
                                         <SidebarMenuButton asChild>
                                             <Link href="/dashboard/org/subscription">
                                                 <Euro className="opacity-60" />
-                                                {t("subscription")}
+                                                <span>{t("subscription")}</span>
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -135,7 +135,9 @@ export default async function SideBarContent() {
                                         <SidebarMenuButton asChild>
                                             <Link href="/dashboard/org/manage">
                                                 <Settings className="opacity-60" />
-                                                {t("manage_organization")}
+                                                <span>
+                                                    {t("manage_organization")}
+                                                </span>
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -148,7 +150,7 @@ export default async function SideBarContent() {
                                                 className="text-destructive"
                                             >
                                                 <AlertTriangle className="opacity-60" />
-                                                {t("danger")}
+                                                <span>{t("danger")}</span>
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -196,7 +198,7 @@ export default async function SideBarContent() {
                             <SidebarMenuButton asChild>
                                 <Link href="/dashboard/user/settings">
                                     <Settings className="opacity-60" />
-                                    {t("settings")}
+                                    <span>{t("settings")}</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -204,7 +206,7 @@ export default async function SideBarContent() {
                             <SidebarMenuButton asChild>
                                 <Link href="/dashboard/user/invitations">
                                     <MailPlus className="opacity-60" />
-                                    {t("invitations")}
+                                    <span>{t("invitations")}</span>
                                 </Link>
                             </SidebarMenuButton>
                             {invitations.length > 0 && (
@@ -220,7 +222,7 @@ export default async function SideBarContent() {
                                     className="text-destructive"
                                 >
                                     <AlertTriangle className="opacity-60" />
-                                    {t("danger")}
+                                    <span>{t("danger")}</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
