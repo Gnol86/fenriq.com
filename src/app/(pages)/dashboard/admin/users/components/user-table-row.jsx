@@ -29,10 +29,7 @@ export default function UserTableRow({ user, currentUserId }) {
 
     return (
         <Fragment>
-            <TableRow
-                className="cursor-pointer hover:bg-muted/50"
-                onClick={toggleExpanded}
-            >
+            <TableRow className="cursor-pointer" onClick={toggleExpanded}>
                 {/* Utilisateur avec avatar et informations */}
                 <TableCell>
                     <div className="flex items-center gap-2">
@@ -45,21 +42,21 @@ export default function UserTableRow({ user, currentUserId }) {
                         </div>
                         <ImageProfile entity={user} size="sm" />
                         <div className="flex flex-col">
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium text-foreground">
-                                {user.name || tUsers("table_user")}
-                            </span>
-                            {isCurrentUser && (
-                                <Badge
-                                    variant="secondary"
-                                    className="text-xs"
-                                >
-                                    {tUsers("badge_you")}
-                                </Badge>
-                            )}
-                        </div>
-                        <span className="text-xs text-muted-foreground">
-                            {user.email}
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-foreground">
+                                    {user.name || tUsers("table_user")}
+                                </span>
+                                {isCurrentUser && (
+                                    <Badge
+                                        variant="secondary"
+                                        className="text-xs"
+                                    >
+                                        {tUsers("badge_you")}
+                                    </Badge>
+                                )}
+                            </div>
+                            <span className="text-xs text-muted-foreground">
+                                {user.email}
                             </span>
                         </div>
                     </div>

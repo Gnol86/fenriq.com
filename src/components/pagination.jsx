@@ -60,7 +60,7 @@ export function Pagination({ totalPages, page }) {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent side="top">
-                            <ScrollArea className="h-48 pr-3">
+                            <ScrollArea onCard className="h-48 pr-3">
                                 {Array.from(
                                     { length: Number(totalPages) },
                                     (_, i) => {
