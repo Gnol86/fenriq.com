@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/sidebar";
 import { PrismaClient } from "@/generated/prisma";
 import { auth } from "@/lib/auth";
+import { UserCog } from "lucide-react";
 import {
     AlertTriangle,
     Building,
@@ -31,13 +32,6 @@ export default async function SideBarContent() {
     });
     const user = session?.user;
 
-    // DEBUG: Log pour diagnostiquer le problème en production
-    console.error("[SIDEBAR DEBUG]", {
-        userRole: user?.role,
-        isAdmin: user?.role === "admin",
-        usersTranslation: t("users"),
-        orgsTranslation: t("organizations"),
-    });
     const userOrganizations = await auth.api.listOrganizations({
         headers: await headers(),
     });
@@ -173,20 +167,20 @@ export default async function SideBarContent() {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem>
-                                <Link href="/dashboard/admin/users">
-                                    <SidebarMenuButton>
-                                        <Building className="opacity-60" />
-                                        Users Test
-                                    </SidebarMenuButton>
-                                </Link>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/dashboard/admin/users">
+                                        <Users className="opacity-60" />
+                                        {t("users")}
+                                    </Link>
+                                </SidebarMenuButton>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
-                                <Link href="/dashboard/admin/orgs">
-                                    <SidebarMenuButton>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/dashboard/admin/orgs">
                                         <Building className="opacity-60" />
                                         {t("organizations")}
-                                    </SidebarMenuButton>
-                                </Link>
+                                    </Link>
+                                </SidebarMenuButton>
                             </SidebarMenuItem>
                         </SidebarMenu>
                     </SidebarGroupContent>
