@@ -32,7 +32,7 @@ export default async function SideBarContent() {
     const user = session?.user;
 
     // DEBUG: Log pour diagnostiquer le problème en production
-    console.error('[SIDEBAR DEBUG]', {
+    console.error("[SIDEBAR DEBUG]", {
         userRole: user?.role,
         isAdmin: user?.role === "admin",
         usersTranslation: t("users"),
@@ -173,20 +173,20 @@ export default async function SideBarContent() {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem>
-                                <SidebarMenuButton asChild>
-                                    <Link href="/dashboard/admin/orgs">
-                                        <Building className="opacity-60" />
-                                        {t("organizations")}
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild>
-                                    <Link href="/dashboard/admin/users" prefetch={false}>
+                                <Link href="/dashboard/admin/users">
+                                    <SidebarMenuButton>
                                         <Building className="opacity-60" />
                                         Users Test
-                                    </Link>
-                                </SidebarMenuButton>
+                                    </SidebarMenuButton>
+                                </Link>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <Link href="/dashboard/admin/orgs">
+                                    <SidebarMenuButton>
+                                        <Building className="opacity-60" />
+                                        {t("organizations")}
+                                    </SidebarMenuButton>
+                                </Link>
                             </SidebarMenuItem>
                         </SidebarMenu>
                     </SidebarGroupContent>
