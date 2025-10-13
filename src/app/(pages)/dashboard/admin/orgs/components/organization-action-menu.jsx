@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Trash2, Edit3, Settings } from "lucide-react";
+import { Trash2, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useServerAction } from "@/hooks/use-server-action";
 import { useConfirm } from "@/hooks/use-confirm";

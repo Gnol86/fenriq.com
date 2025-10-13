@@ -1,13 +1,4 @@
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-    TableCaption,
-} from "@/components/ui/table";
-import {
     Card,
     CardContent,
     CardDescription,

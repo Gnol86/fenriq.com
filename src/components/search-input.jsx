@@ -1,6 +1,5 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";

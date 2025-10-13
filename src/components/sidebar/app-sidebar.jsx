@@ -4,12 +4,11 @@ import {
     SidebarFooter,
     SidebarHeader,
 } from "@/components/ui/sidebar";
-import UserButton from "./user-button";
-import OrgButton from "./org-button";
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { cookies } from "next/headers";
 import { defaultLocale } from "@lib/i18n/config";
+import { cookies, headers } from "next/headers";
+import OrgButton from "./org-button";
+import UserButton from "./user-button";
 
 export async function AppSidebar({ children }) {
     const cookieStore = await cookies();
@@ -20,12 +19,17 @@ export async function AppSidebar({ children }) {
 
     const user = session?.user;
 
-    const userOrganizations = await auth.api.listOrganizations({
-        headers: await headers(),
-    });
+    // Only fetch organizations if we have a valid session
+    const userOrganizations = session
+        ? await auth.api.listOrganizations({
+              headers: await headers(),
+          })
+        : [];
+
     const activeUserOrganization = userOrganizations?.find(
-        org => org.id === session.session.activeOrganizationId
+        org => org.id === session?.session?.activeOrganizationId
     );
+
     return (
         <Sidebar>
             <SidebarHeader>

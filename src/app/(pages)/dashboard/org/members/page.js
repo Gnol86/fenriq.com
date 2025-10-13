@@ -38,7 +38,6 @@ export default async function OrganizationMembersPage({ searchParams }) {
     const limit = MEMBRES_PER_PAGE;
     const page = parseInt(resolvedSearchParams?.page || "1", 10);
     const offset = (page - 1) * MEMBRES_PER_PAGE;
-    const sortBy = resolvedSearchParams?.sortBy || "name";
     const sortDirection = resolvedSearchParams?.sortDirection || "asc";
 
     const session = await auth.api.getSession({

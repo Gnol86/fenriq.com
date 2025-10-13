@@ -31,7 +31,7 @@ export function VerificationEmailTemplate({ name, verificationUrl }) {
                 <a href={verificationUrl}>{verificationUrl}</a>
             </p>
             <p>Ce lien expirera dans 24 heures.</p>
-            <p>Si vous n'avez pas créé de compte, ignorez cet email.</p>
+            <p>Si vous n&apos;avez pas créé de compte, ignorez cet email.</p>
             <p>Cordialement,</p>
             <p>{SiteConfig.mail.signature}</p>
         </div>

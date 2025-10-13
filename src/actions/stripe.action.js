@@ -397,7 +397,7 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
             customer: subscription.stripeCustomerId,
             subscription: subscription.stripeSubscriptionId,
         });
-    } catch (error) {
+    } catch (_error) {
         // Silently handle error
     }
 

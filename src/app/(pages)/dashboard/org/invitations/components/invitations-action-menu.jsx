@@ -10,7 +10,6 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { useServerAction } from "@/hooks/use-server-action";
 import { Ban, Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
 export default function InvitationsActionMenu({
@@ -20,7 +19,6 @@ export default function InvitationsActionMenu({
     canCancel,
 }) {
     const t = useTranslations("organization.invitations");
-    const router = useRouter();
     const confirm = useConfirm();
     const { execute, isPending } = useServerAction();
 
@@ -36,7 +34,7 @@ export default function InvitationsActionMenu({
                 successMessage: t("success_resent"),
             }
         );
-    }, [invitation, organizationId, router, t]);
+    }, [invitation, organizationId, t, execute]);
 
     const cancelInvitation = useCallback(async () => {
         await confirm(
@@ -59,7 +57,7 @@ export default function InvitationsActionMenu({
                     }
                 )
         );
-    }, [invitation, organizationId, router, t, confirm, execute]);
+    }, [invitation, organizationId, t, confirm, execute]);
 
     if (invitation.status !== "pending") return null;
 

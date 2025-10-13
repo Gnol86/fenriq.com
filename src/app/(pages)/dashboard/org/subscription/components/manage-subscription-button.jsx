@@ -8,7 +8,7 @@ import { Settings } from "lucide-react";
 
 export default function ManageSubscriptionButton({ customerId }) {
     const t = useTranslations("organization.subscription");
-    const { execute, isPending } = useServerAction();
+    const { isPending } = useServerAction();
 
     const handleManage = async () => {
         const result = await createPortalSessionAction({

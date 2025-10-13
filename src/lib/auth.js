@@ -59,7 +59,7 @@ export const auth = betterAuth({
         disabled: false,
         level: "debug", // ou "info" pour moins de verbosité
         log: (level, message, ...args) => {
-            console.log(
+            console.warn(
                 `[Better-Auth ${level.toUpperCase()}]`,
                 message,
                 ...args
@@ -100,8 +100,8 @@ export const auth = betterAuth({
                     const userCount = await prisma.user.count();
 
                     if (userCount === 1) {
-                        console.info(
-                            "Premier utilisateur inscrit - Attribution du rôle admin"
+                        console.warn(
+                            "First user signed up, assigning admin role."
                         );
                         await prisma.user.update({
                             where: { id: user.id },
@@ -193,9 +193,6 @@ export const auth = betterAuth({
                 );
 
                 if (soleOwnerOrgs.length > 0) {
-                    const orgNames = soleOwnerOrgs
-                        .map(m => m.organization.name)
-                        .join(", ");
                     throw new APIError("FORBIDDEN", {
                         message: "Denied",
                     });
@@ -291,7 +288,7 @@ export const auth = betterAuth({
                     // Supprimer le logo de l'organisation du blob s'il existe
                     await deleteFile(data.organization.logo);
                 },
-                afterAddMember: async ({ member, user, organization }) => {
+                afterAddMember: async ({ organization }) => {
                     // Mettre à jour la quantité de licences sur Stripe
                     try {
                         const { updateSubscriptionQuantityAction } =
@@ -313,7 +310,7 @@ export const auth = betterAuth({
                         // Ne pas bloquer l'ajout du membre si la mise à jour Stripe échoue
                     }
                 },
-                afterRemoveMember: async ({ member, user, organization }) => {
+                afterRemoveMember: async ({ organization }) => {
                     // Mettre à jour la quantité de licences sur Stripe
                     try {
                         const { updateSubscriptionQuantityAction } =
@@ -335,12 +332,7 @@ export const auth = betterAuth({
                         // Ne pas bloquer la suppression du membre si la mise à jour Stripe échoue
                     }
                 },
-                afterAcceptInvitation: async ({
-                    invitation,
-                    member,
-                    user,
-                    organization,
-                }) => {
+                afterAcceptInvitation: async ({ organization }) => {
                     // Mettre à jour la quantité de licences sur Stripe
                     try {
                         const { updateSubscriptionQuantityAction } =

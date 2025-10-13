@@ -11,7 +11,7 @@ export default function SubscribeButton({
     lengthTotalMembres,
 }) {
     const t = useTranslations("organization.subscription");
-    const { execute, isPending } = useServerAction();
+    const { isPending } = useServerAction();
 
     const handleSubscribe = async () => {
         const result = await createCheckoutSessionAction({

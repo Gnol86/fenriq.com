@@ -1,6 +1,5 @@
 import ImageProfile from "@/components/image-profile";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
     Item,
     ItemActions,

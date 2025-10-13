@@ -55,7 +55,7 @@ export function DialogProvider({ children }) {
             dialogState.resolve?.(true);
         }
         setDialogState(prev => ({ ...prev, isOpen: false }));
-    }, [dialogState.resolve, dialogState.onConfirm]);
+    }, [dialogState]);
 
     const handleCancel = useCallback(() => {
         if (dialogState.onConfirm) {
@@ -64,7 +64,7 @@ export function DialogProvider({ children }) {
             dialogState.resolve?.(false);
         }
         setDialogState(prev => ({ ...prev, isOpen: false }));
-    }, [dialogState.resolve, dialogState.onConfirm]);
+    }, [dialogState]);
 
     const handleOpenChange = useCallback(
         open => {
@@ -77,7 +77,7 @@ export function DialogProvider({ children }) {
                 setDialogState(prev => ({ ...prev, isOpen: false }));
             }
         },
-        [dialogState.resolve, dialogState.onConfirm]
+        [dialogState]
     );
 
     return (

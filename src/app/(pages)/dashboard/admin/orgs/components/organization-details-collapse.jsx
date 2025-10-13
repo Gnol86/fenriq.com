@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import {
     Calendar,
-    Clock,
     Building2,
     Users,
     Globe,

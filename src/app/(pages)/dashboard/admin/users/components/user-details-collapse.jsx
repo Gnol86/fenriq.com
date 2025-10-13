@@ -22,7 +22,7 @@ import {
     Trash2,
     UserLock,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import UserActionMenu from "./user-action-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslations, useLocale } from "next-intl";

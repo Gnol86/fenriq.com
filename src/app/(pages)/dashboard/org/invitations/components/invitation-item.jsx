@@ -33,7 +33,7 @@ export default function InvitationItem({
     let statusLabel = normalizedStatusKey;
     try {
         statusLabel = tInvitationStatus(normalizedStatusKey);
-    } catch (error) {
+    } catch (_error) {
         statusLabel = normalizedStatusKey;
     }
 

@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -22,6 +21,7 @@ import { getOrganizationBySlugAsAdminAction } from "@/actions/admin.action";
 import { getTranslations, getLocale } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { formatDate } from "@/lib/utils";
 
 export default async function AdminOrganizationPage({ params }) {
     const session = await auth.api.getSession({

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Trash2, Ban, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +16,6 @@ import {
     banUserAction,
     unbanUserAction,
     removeUserAction,
-    impersonateUserAction,
 } from "@/actions/admin.action";
 import { HatGlasses } from "lucide-react";
 import { authClient } from "@/lib/auth-client";

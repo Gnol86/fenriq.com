@@ -65,7 +65,7 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
         try {
             await animation.finished;
             await transition.finished;
-        } catch (error) {
+        } catch (_error) {
             // Animation may be cancelled; we still show feedback at the end of handler
         }
 

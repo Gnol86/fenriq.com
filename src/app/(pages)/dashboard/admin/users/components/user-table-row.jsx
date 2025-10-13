@@ -7,7 +7,6 @@ import ImageProfile from "@/components/image-profile";
 import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import UserActionMenu from "./user-action-menu";
 import UserDetailsCollapse from "./user-details-collapse";
 import { useTranslations, useLocale } from "next-intl";
 

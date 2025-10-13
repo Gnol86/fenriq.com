@@ -6,7 +6,6 @@ import { PrismaClient } from "@/generated/prisma";
 import Plan from "./components/plan";
 import SubscriptionManagement from "./components/subscription-management";
 import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import StripeLoader from "./components/stripe-loader";
 
 const prisma = new PrismaClient();

@@ -21,7 +21,7 @@ export function RoleBadge({ role, className, children, ...props }) {
     if (role) {
         try {
             roleLabel = tRoles(role);
-        } catch (error) {
+        } catch (_error) {
             roleLabel = role;
         }
     }

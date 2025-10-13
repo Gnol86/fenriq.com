@@ -5,7 +5,6 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { Plus } from "lucide-react";
 import Link from "next/link";

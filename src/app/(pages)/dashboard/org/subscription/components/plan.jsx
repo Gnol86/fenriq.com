@@ -3,6 +3,12 @@ import { getTranslations } from "next-intl/server";
 import { hasPermissionAction } from "@/actions/organization.action";
 import SubscribeButton from "./subscribe-button";
 import { BorderBeam } from "@components/ui/border-beam";
+import {
+    Card,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 
 export default async function PlanCard({ organization, lengthTotalMembres }) {
     const t = await getTranslations("organization.subscription");

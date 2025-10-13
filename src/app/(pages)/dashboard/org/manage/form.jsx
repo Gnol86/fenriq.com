@@ -6,15 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
-    FormLabel,
-    FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import FormButton from "@/components/ui/form-button";
-import ImageUpload from "./image-upload-orgs";
 import { useServerAction } from "@/hooks/use-server-action";
 import { updateOrganizationAction } from "@/actions/organization.action";
 import { useTranslations } from "next-intl";
