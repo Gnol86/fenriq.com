@@ -18,6 +18,7 @@ import {
     MailPlus,
     MailPlusIcon,
     Settings,
+    UserCog,
     Users,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
@@ -30,6 +31,14 @@ export default async function SideBarContent() {
         headers: await headers(), // you need to pass the headers object.
     });
     const user = session?.user;
+
+    // DEBUG: Log pour diagnostiquer le problème en production
+    console.error('[SIDEBAR DEBUG]', {
+        userRole: user?.role,
+        isAdmin: user?.role === "admin",
+        usersTranslation: t("users"),
+        orgsTranslation: t("organizations"),
+    });
     const userOrganizations = await auth.api.listOrganizations({
         headers: await headers(),
     });
@@ -167,7 +176,7 @@ export default async function SideBarContent() {
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>
                                     <Link href="/dashboard/admin/users">
-                                        <Users className="opacity-60" />
+                                        <UserCog className="opacity-60" />
                                         {t("users")}
                                     </Link>
                                 </SidebarMenuButton>
