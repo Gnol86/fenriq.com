@@ -240,7 +240,17 @@
             "next_invoice_calculation": "Berekening van de volgende factuur van {date}",
             "base_subscription": "Basisabonnement",
             "adjustments": "Aanpassingen",
-            "total_next_invoice": "Totaal volgende factuur"
+            "total_next_invoice": "Totaal volgende factuur",
+            "usage_limit_label": "Gebruikslimiet",
+            "usage_limit_unit": "eenhe(i)d(en)",
+            "plan_base_price": "Basisprijs van het plan",
+            "plan_base_includes": "Inclusief {limit} eenheden",
+            "plan_addons_available": "Extra pakketten zijn beschikbaar via het beheerportaal",
+            "pack_selector_label": "Extra pakketten",
+            "pack_selector_description": "Elk pakket voegt {limit} eenheden toe aan uw gebruikslimiet",
+            "pack_price_info": "{count, plural, =1 {1 pakket × {amount} {currency} = {total} {currency}} other {# pakketten × {amount} {currency} = {total} {currency}}}",
+            "total_usage_limit": "Totale gebruikslimiet",
+            "total_price_label": "Totale prijs"
         },
         "manage": {
             "page_title": "Organisatie beheren",

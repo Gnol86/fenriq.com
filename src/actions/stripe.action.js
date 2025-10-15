@@ -11,6 +11,9 @@ const prisma = new PrismaClient();
 
 export async function createCheckoutSessionAction({
     priceId,
+    basePriceId,
+    packPriceId,
+    packQuantity,
     organizationId,
     quantity,
     successUrl,
@@ -27,11 +30,40 @@ export async function createCheckoutSessionAction({
     // En mode "subscription", toujours utiliser quantity = 1
     const finalQuantity = SiteConfig.billing.type === "subscription" ? 1 : quantity ?? 1;
 
-    const baseUrl = getServerUrl();
-    const checkoutSession = await stripe.checkout.sessions.create({
-        mode: "subscription",
-        payment_method_types: ["card"],
-        line_items: [
+    // En mode "plan" avec packs additionnels, créer plusieurs line_items
+    let lineItems;
+    if (basePriceId && packPriceId && packQuantity > 0) {
+        // Mode "plan" avec packs
+        lineItems = [
+            {
+                price: basePriceId,
+                quantity: 1,
+                adjustable_quantity: {
+                    enabled: false,
+                },
+            },
+            {
+                price: packPriceId,
+                quantity: packQuantity,
+                adjustable_quantity: {
+                    enabled: false,
+                },
+            },
+        ];
+    } else if (basePriceId) {
+        // Mode "plan" sans packs additionnels
+        lineItems = [
+            {
+                price: basePriceId,
+                quantity: 1,
+                adjustable_quantity: {
+                    enabled: false,
+                },
+            },
+        ];
+    } else {
+        // Mode "seat" ou "subscription" (comportement par défaut)
+        lineItems = [
             {
                 price: priceId,
                 quantity: finalQuantity,
@@ -39,7 +71,14 @@ export async function createCheckoutSessionAction({
                     enabled: false,
                 },
             },
-        ],
+        ];
+    }
+
+    const baseUrl = getServerUrl();
+    const checkoutSession = await stripe.checkout.sessions.create({
+        mode: "subscription",
+        payment_method_types: ["card"],
+        line_items: lineItems,
         success_url: successUrl ?? `${baseUrl}/dashboard`,
         cancel_url: cancelUrl ?? `${baseUrl}/dashboard`,
         client_reference_id: organizationId,
@@ -140,6 +179,37 @@ export async function upsertSubscriptionFromStripeAction({
 }) {
     const price = stripeSubscription.items.data[0]?.price;
 
+    // Calculer la limite totale selon le mode de facturation
+    let totalSeats;
+
+    if (SiteConfig.billing.type === "plan") {
+        // Mode "plan": calculer la limite totale (base + addons)
+        totalSeats = 0;
+
+        // Récupérer tous les items avec leurs metadata
+        const subscriptionWithProducts = await stripe.subscriptions.retrieve(
+            stripeSubscription.id,
+            { expand: ["items.data.price.product"] }
+        );
+
+        for (const item of subscriptionWithProducts.items.data) {
+            const metadata = item.price?.product?.metadata ?? {};
+            const usageLimit = parseInt(metadata.usage_limit || 0);
+            const quantity = item.quantity ?? 1;
+
+            if (metadata.is_base === "true") {
+                // Plan de base (toujours quantity = 1)
+                totalSeats += usageLimit;
+            } else if (metadata.is_addon === "true") {
+                // Pack additionnel (multiplié par quantity)
+                totalSeats += usageLimit * quantity;
+            }
+        }
+    } else {
+        // Mode "seat" ou "subscription": utiliser la quantité standard
+        totalSeats = stripeSubscription.items.data[0]?.quantity ?? 1;
+    }
+
     const subscriptionData = {
         plan: price?.id ?? "default",
         stripeCustomerId: stripeSubscription.customer,
@@ -161,7 +231,7 @@ export async function upsertSubscriptionFromStripeAction({
         trialEnd: stripeSubscription.trial_end
             ? new Date(stripeSubscription.trial_end * 1000)
             : null,
-        seats: stripeSubscription.items.data[0]?.quantity ?? 1,
+        seats: totalSeats,
         currency: price?.currency ?? null,
         amount: price?.unit_amount ?? null,
         interval: price?.recurring?.interval ?? null,

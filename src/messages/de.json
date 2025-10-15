@@ -240,7 +240,17 @@
             "next_invoice_calculation": "Berechnung der nächsten Rechnung vom {date}",
             "base_subscription": "Basisabonnement",
             "adjustments": "Anpassungen",
-            "total_next_invoice": "Gesamtsumme nächste Rechnung"
+            "total_next_invoice": "Gesamtsumme nächste Rechnung",
+            "usage_limit_label": "Nutzungslimit",
+            "usage_limit_unit": "Einheit(en)",
+            "plan_base_price": "Basispreis des Plans",
+            "plan_base_includes": "Enthält {limit} Einheiten",
+            "plan_addons_available": "Zusätzliche Pakete sind über das Verwaltungsportal verfügbar",
+            "pack_selector_label": "Zusätzliche Pakete",
+            "pack_selector_description": "Jedes Paket fügt {limit} Einheiten zu Ihrem Nutzungslimit hinzu",
+            "pack_price_info": "{count, plural, =1 {1 Paket × {amount} {currency} = {total} {currency}} other {# Pakete × {amount} {currency} = {total} {currency}}}",
+            "total_usage_limit": "Gesamtes Nutzungslimit",
+            "total_price_label": "Gesamtpreis"
         },
         "manage": {
             "page_title": "Organisation verwalten",

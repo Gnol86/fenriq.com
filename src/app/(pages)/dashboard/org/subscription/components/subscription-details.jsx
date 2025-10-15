@@ -6,6 +6,7 @@ export default async function SubscriptionDetails({ subscription }) {
     const t = await getTranslations("organization.subscription");
     const tCommon = await getTranslations("common");
     const isSeatBased = SiteConfig.billing.type === "seat";
+    const isPlanBased = SiteConfig.billing.type === "plan";
 
     const formatDate = date => {
         if (!date) return tCommon("n_a");
@@ -56,17 +57,17 @@ export default async function SubscriptionDetails({ subscription }) {
                 </div>
             </div>
 
-            {isSeatBased && (
+            {(isSeatBased || isPlanBased) && (
                 <div className="flex items-start gap-3">
                     <div className="rounded-lg border p-2">
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div className="flex flex-col gap-1">
                         <div className="text-sm font-medium">
-                            {t("seats_label")}
+                            {isPlanBased ? t("usage_limit_label") : t("seats_label")}
                         </div>
                         <div className="text-sm text-muted-foreground">
-                            {subscription.seats ?? tCommon("n_a")} {t("seats_unit")}
+                            {subscription.seats ?? tCommon("n_a")} {isPlanBased ? t("usage_limit_unit") : t("seats_unit")}
                         </div>
                     </div>
                 </div>
@@ -101,6 +102,22 @@ export default async function SubscriptionDetails({ subscription }) {
                                         : tCommon("n_a")}
                                 </span>
                             </>
+                        ) : isPlanBased ? (
+                            <div className="flex flex-col gap-1">
+                                <span className="font-bold">
+                                    {formatAmount(
+                                        subscription.amount,
+                                        subscription.currency
+                                    )}
+                                    {" / "}
+                                    {subscription.interval
+                                        ? t(`interval_${subscription.interval}`)
+                                        : tCommon("n_a")}
+                                </span>
+                                <span className="text-xs">
+                                    {t("plan_base_price")}
+                                </span>
+                            </div>
                         ) : (
                             <span className="font-bold">
                                 {formatAmount(

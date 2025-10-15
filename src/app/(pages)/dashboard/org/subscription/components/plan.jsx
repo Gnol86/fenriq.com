@@ -2,6 +2,7 @@ import { stripe } from "@/lib/stripe";
 import { getTranslations } from "next-intl/server";
 import { hasPermissionAction } from "@/actions/organization.action";
 import SubscribeButton from "./subscribe-button";
+import PackSelector from "./pack-selector";
 import { BorderBeam } from "@components/ui/border-beam";
 import {
     Card,
@@ -14,6 +15,7 @@ import { SiteConfig } from "@/site-config";
 export default async function PlanCard({ organization, lengthTotalMembres }) {
     const t = await getTranslations("organization.subscription");
     const isSeatBased = SiteConfig.billing.type === "seat";
+    const isPlanBased = SiteConfig.billing.type === "plan";
 
     const canBillingUpdate = await hasPermissionAction({
         permissions: { billing: ["update"] },
@@ -39,6 +41,21 @@ export default async function PlanCard({ organization, lengthTotalMembres }) {
     });
 
     const product = price.product;
+
+    // En mode "plan", récupérer aussi l'ID du pack additionnel
+    let packPrice = null;
+    if (isPlanBased && process.env.STRIPE_PACK_ID) {
+        try {
+            packPrice = await stripe.prices.retrieve(
+                process.env.STRIPE_PACK_ID,
+                {
+                    expand: ["product"],
+                }
+            );
+        } catch (error) {
+            console.error("❌ Error retrieving pack price:", error);
+        }
+    }
 
     return (
         <div className="flex gap-4 w-full justify-center">
@@ -84,6 +101,26 @@ export default async function PlanCard({ organization, lengthTotalMembres }) {
                             </span>
                         </div>
                     </>
+                ) : isPlanBased ? (
+                    <>
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-3xl font-bold">
+                                {(price.unit_amount / 100).toFixed(2)}
+                            </span>
+                            <span className="text-muted-foreground">
+                                {price.currency.toUpperCase()} /{" "}
+                                {price.recurring?.interval ?? t("once")}
+                            </span>
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                            {t("plan_base_includes", {
+                                limit: product.metadata?.usage_limit ?? "N/A",
+                            })}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                            {t("plan_addons_available")}
+                        </div>
+                    </>
                 ) : (
                     <div className="flex items-baseline gap-2">
                         <span className="text-3xl font-bold">
@@ -98,8 +135,16 @@ export default async function PlanCard({ organization, lengthTotalMembres }) {
                 <div>
                     {typeof product === "object" && product.metadata && (
                         <div className="flex flex-col gap-2">
-                            {Object.entries(product.metadata).map(
-                                ([key, value]) => (
+                            {Object.entries(product.metadata)
+                                .filter(
+                                    ([key]) =>
+                                        ![
+                                            "is_base",
+                                            "is_addon",
+                                            "usage_limit",
+                                        ].includes(key)
+                                )
+                                .map(([key, value]) => (
                                     <div
                                         key={key}
                                         className="flex items-center gap-2"
@@ -109,17 +154,52 @@ export default async function PlanCard({ organization, lengthTotalMembres }) {
                                         </span>
                                         <span className="text-sm">{value}</span>
                                     </div>
-                                )
-                            )}
+                                ))}
                         </div>
                     )}
                 </div>
                 {canBillingUpdate && (
-                    <SubscribeButton
-                        priceId={priceId}
-                        organization={organization}
-                        lengthTotalMembres={lengthTotalMembres}
-                    />
+                    <>
+                        {isPlanBased && packPrice ? (
+                            (() => {
+                                const baseUsageLimit = parseInt(
+                                    product.metadata?.usage_limit ?? 0
+                                );
+
+                                // Chercher usage_limit d'abord sur le product, puis sur le price en fallback
+                                const packProductMetadata =
+                                    packPrice.product?.metadata ?? {};
+                                const packPriceMetadata =
+                                    packPrice.metadata ?? {};
+                                const packUsageLimitStr =
+                                    packProductMetadata.usage_limit ??
+                                    packPriceMetadata.usage_limit ??
+                                    "0";
+                                const packUsageLimit =
+                                    parseInt(packUsageLimitStr);
+
+                                return (
+                                    <PackSelector
+                                        basePriceId={priceId}
+                                        packPriceId={process.env.STRIPE_PACK_ID}
+                                        organization={organization}
+                                        lengthTotalMembres={lengthTotalMembres}
+                                        baseUsageLimit={baseUsageLimit}
+                                        packUsageLimit={packUsageLimit}
+                                        basePriceAmount={price.unit_amount}
+                                        packPriceAmount={packPrice.unit_amount}
+                                        currency={price.currency}
+                                    />
+                                );
+                            })()
+                        ) : (
+                            <SubscribeButton
+                                priceId={priceId}
+                                organization={organization}
+                                lengthTotalMembres={lengthTotalMembres}
+                            />
+                        )}
+                    </>
                 )}
                 <BorderBeam
                     duration={6}

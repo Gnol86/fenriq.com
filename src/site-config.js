@@ -33,6 +33,6 @@ export const SiteConfig = {
         },
     },
     billing: {
-        type: "seat", // "seat" or "usage" or "subscription"
+        type: "plan", // "seat" or "plan" or "subscription"
     },
 };
