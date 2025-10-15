@@ -9,9 +9,11 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { SiteConfig } from "@/site-config";
 
 export default async function PlanCard({ organization, lengthTotalMembres }) {
     const t = await getTranslations("organization.subscription");
+    const isSeatBased = SiteConfig.billing.type === "seat";
 
     const canBillingUpdate = await hasPermissionAction({
         permissions: { billing: ["update"] },
@@ -53,32 +55,46 @@ export default async function PlanCard({ organization, lengthTotalMembres }) {
                             : t("plan_description")}
                     </div>
                 </div>
-                <div className="flex items-baseline gap-2">
-                    <span className="text-xl font-bold">
-                        {(price.unit_amount / 100).toFixed(2)}
-                    </span>
-                    <span className="text-muted-foreground">
-                        {price.currency.toUpperCase()} /{" "}
-                        {price.recurring?.interval ?? t("once")}
-                    </span>
-                </div>
-                <div className="text-sm">
-                    {t("members_total_notice", {
-                        count: lengthTotalMembres,
-                    })}
-                </div>
-                <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-bold">
-                        {(
-                            (price.unit_amount / 100) *
-                            lengthTotalMembres
-                        ).toFixed(2)}
-                    </span>
-                    <span className="text-muted-foreground">
-                        {price.currency.toUpperCase()} /{" "}
-                        {price.recurring?.interval ?? t("once")}
-                    </span>
-                </div>
+                {isSeatBased ? (
+                    <>
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-xl font-bold">
+                                {(price.unit_amount / 100).toFixed(2)}
+                            </span>
+                            <span className="text-muted-foreground">
+                                {price.currency.toUpperCase()} /{" "}
+                                {price.recurring?.interval ?? t("once")}
+                            </span>
+                        </div>
+                        <div className="text-sm">
+                            {t("members_total_notice", {
+                                count: lengthTotalMembres,
+                            })}
+                        </div>
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-3xl font-bold">
+                                {(
+                                    (price.unit_amount / 100) *
+                                    lengthTotalMembres
+                                ).toFixed(2)}
+                            </span>
+                            <span className="text-muted-foreground">
+                                {price.currency.toUpperCase()} /{" "}
+                                {price.recurring?.interval ?? t("once")}
+                            </span>
+                        </div>
+                    </>
+                ) : (
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-3xl font-bold">
+                            {(price.unit_amount / 100).toFixed(2)}
+                        </span>
+                        <span className="text-muted-foreground">
+                            {price.currency.toUpperCase()} /{" "}
+                            {price.recurring?.interval ?? t("once")}
+                        </span>
+                    </div>
+                )}
                 <div>
                     {typeof product === "object" && product.metadata && (
                         <div className="flex flex-col gap-2">

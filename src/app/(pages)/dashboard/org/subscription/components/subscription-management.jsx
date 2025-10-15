@@ -17,9 +17,11 @@ import InvoicesList from "./invoices-list";
 import LicenseMovements from "./license-movements";
 import ManageSubscriptionButton from "./manage-subscription-button";
 import { Badge } from "@/components/ui/badge";
+import { SiteConfig } from "@/site-config";
 
 export default async function SubscriptionManagement({ organization }) {
     const t = await getTranslations("organization.subscription");
+    const isSeatBased = SiteConfig.billing.type === "seat";
 
     const canBillingUpdate = await hasPermissionAction({
         permissions: { billing: ["update"] },
@@ -38,9 +40,12 @@ export default async function SubscriptionManagement({ organization }) {
         limit: 10,
     });
 
-    const movements = await getLicenseMovementsSinceLastInvoiceAction({
-        organizationId: organization.id,
-    });
+    // Récupérer les mouvements de licences uniquement en mode "seat"
+    const movements = isSeatBased
+        ? await getLicenseMovementsSinceLastInvoiceAction({
+              organizationId: organization.id,
+          })
+        : null;
 
     const statusColorMap = {
         active: "bg-green-500",

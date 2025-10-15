@@ -1,9 +1,11 @@
 import { getTranslations } from "next-intl/server";
 import { Calendar, CreditCard, Users } from "lucide-react";
+import { SiteConfig } from "@/site-config";
 
 export default async function SubscriptionDetails({ subscription }) {
     const t = await getTranslations("organization.subscription");
     const tCommon = await getTranslations("common");
+    const isSeatBased = SiteConfig.billing.type === "seat";
 
     const formatDate = date => {
         if (!date) return tCommon("n_a");
@@ -54,19 +56,21 @@ export default async function SubscriptionDetails({ subscription }) {
                 </div>
             </div>
 
-            <div className="flex items-start gap-3">
-                <div className="rounded-lg border p-2">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <div className="flex flex-col gap-1">
-                    <div className="text-sm font-medium">
-                        {t("seats_label")}
+            {isSeatBased && (
+                <div className="flex items-start gap-3">
+                    <div className="rounded-lg border p-2">
+                        <Users className="h-4 w-4 text-muted-foreground" />
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                        {subscription.seats ?? tCommon("n_a")} {t("seats_unit")}
+                    <div className="flex flex-col gap-1">
+                        <div className="text-sm font-medium">
+                            {t("seats_label")}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                            {subscription.seats ?? tCommon("n_a")} {t("seats_unit")}
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             <div className="flex items-start gap-3">
                 <div className="rounded-lg border p-2">
@@ -77,23 +81,38 @@ export default async function SubscriptionDetails({ subscription }) {
                         {t("amount_label")}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                        {formatAmount(
-                            subscription.amount,
-                            subscription.currency
+                        {isSeatBased ? (
+                            <>
+                                {formatAmount(
+                                    subscription.amount,
+                                    subscription.currency
+                                )}
+                                {" x "}
+                                {subscription.seats}
+                                {" = "}
+                                <span className="font-bold">
+                                    {formatAmount(
+                                        subscription.amount * subscription.seats,
+                                        subscription.currency
+                                    )}
+                                    {" / "}
+                                    {subscription.interval
+                                        ? t(`interval_${subscription.interval}`)
+                                        : tCommon("n_a")}
+                                </span>
+                            </>
+                        ) : (
+                            <span className="font-bold">
+                                {formatAmount(
+                                    subscription.amount,
+                                    subscription.currency
+                                )}
+                                {" / "}
+                                {subscription.interval
+                                    ? t(`interval_${subscription.interval}`)
+                                    : tCommon("n_a")}
+                            </span>
                         )}
-                        {" x "}
-                        {subscription.seats}
-                        {" = "}
-                        <span className="font-bold">
-                            {formatAmount(
-                                subscription.amount * subscription.seats,
-                                subscription.currency
-                            )}
-                            {" / "}
-                            {subscription.interval
-                                ? t(`interval_${subscription.interval}`)
-                                : tCommon("n_a")}
-                        </span>
                     </div>
                 </div>
             </div>

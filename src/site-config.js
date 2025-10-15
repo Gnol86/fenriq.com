@@ -32,4 +32,7 @@ export const SiteConfig = {
             invitationExpiresIn: 60 * 60 * 24 * 30,
         },
     },
+    billing: {
+        type: "seat", // "seat" or "usage" or "subscription"
+    },
 };

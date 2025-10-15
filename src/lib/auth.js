@@ -289,6 +289,11 @@ export const auth = betterAuth({
                     await deleteFile(data.organization.logo);
                 },
                 afterAddMember: async ({ organization }) => {
+                    // Ne mettre à jour la quantité que pour le mode "seat"
+                    if (SiteConfig.billing.type !== "seat") {
+                        return;
+                    }
+
                     // Mettre à jour la quantité de licences sur Stripe
                     try {
                         const { updateSubscriptionQuantityAction } =
@@ -311,6 +316,11 @@ export const auth = betterAuth({
                     }
                 },
                 afterRemoveMember: async ({ organization }) => {
+                    // Ne mettre à jour la quantité que pour le mode "seat"
+                    if (SiteConfig.billing.type !== "seat") {
+                        return;
+                    }
+
                     // Mettre à jour la quantité de licences sur Stripe
                     try {
                         const { updateSubscriptionQuantityAction } =
@@ -333,6 +343,11 @@ export const auth = betterAuth({
                     }
                 },
                 afterAcceptInvitation: async ({ organization }) => {
+                    // Ne mettre à jour la quantité que pour le mode "seat"
+                    if (SiteConfig.billing.type !== "seat") {
+                        return;
+                    }
+
                     // Mettre à jour la quantité de licences sur Stripe
                     try {
                         const { updateSubscriptionQuantityAction } =

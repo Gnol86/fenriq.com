@@ -4,6 +4,7 @@ import { stripe } from "@/lib/stripe";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { getServerUrl } from "@/lib/server-url";
+import { SiteConfig } from "@/site-config";
 import { PrismaClient } from "@/generated/prisma";
 
 const prisma = new PrismaClient();
@@ -23,6 +24,9 @@ export async function createCheckoutSessionAction({
         throw new Error("Unauthorized");
     }
 
+    // En mode "subscription", toujours utiliser quantity = 1
+    const finalQuantity = SiteConfig.billing.type === "subscription" ? 1 : quantity ?? 1;
+
     const baseUrl = getServerUrl();
     const checkoutSession = await stripe.checkout.sessions.create({
         mode: "subscription",
@@ -30,7 +34,7 @@ export async function createCheckoutSessionAction({
         line_items: [
             {
                 price: priceId,
-                quantity: quantity ?? 1,
+                quantity: finalQuantity,
                 adjustable_quantity: {
                     enabled: false,
                 },
@@ -190,6 +194,11 @@ export async function updateSubscriptionQuantityAction({
     organizationId,
     quantity,
 }) {
+    // Ne rien faire en mode "subscription" ou "plan"
+    if (SiteConfig.billing.type !== "seat") {
+        return { success: false, reason: "not_seat_based" };
+    }
+
     const subscription = await prisma.subscription.findFirst({
         where: {
             referenceId: organizationId,
