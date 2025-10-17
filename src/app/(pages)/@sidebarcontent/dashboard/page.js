@@ -23,6 +23,7 @@ import {
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import Link from "next/link";
+import AddOnSideBarContent from "./add-on-side-bar-content";
 
 export default async function SideBarContent() {
     const t = await getTranslations("sidebar.dashboard");
@@ -86,6 +87,8 @@ export default async function SideBarContent() {
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>
+
+            <AddOnSideBarContent />
 
             {activeUserOrganization &&
                 (canOrgsUpdate ||
