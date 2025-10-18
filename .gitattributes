@@ -15,17 +15,42 @@
 # BOILERPLATE FILES - Always take upstream version
 # ============================================================
 
+# Root
+.env.example merge=ours
+.next.config.js merge=ours
+.tailwind.config.js merge=ours
+.postcss.config.js merge=ours
+.vscode/** merge=ours
+.gitignore merge=ours
+.gitattributes merge=ours
+.prettierrc merge=ours
+AGENTS.md merge=ours
+CLAUDE.md merge=ours
+components.json merge=ours
+eslint.config.js merge=ours
+jsconfig.json merge=ours
+next.config.mjs merge=ours
+postcss.config.mjs merge=ours
+
 # Source code - boilerplate managed
 src/actions/*.action.js merge=ours
 src/components/** merge=ours
 src/lib/** merge=ours
 src/hooks/** merge=ours
 src/features/** merge=ours
+src/middleware.js merge=ours
 
 # App structure - boilerplate managed
-src/app/(pages)/** merge=ours
+src/app/dashboard/** merge=ours
 src/app/(auth)/** merge=ours
+src/app/api/** merge=ours
 src/app/layout.js merge=ours
+src/app/globals.css merge=ours
+src/app/error.js merge=ours
+src/app/global-error.js merge=ours
+src/app/loading.js merge=ours
+src/app/manifest.js merge=ours
+src/app/not-found.js merge=ours
 
 # Prisma schema - base (boilerplate)
 prisma/schema/base.prisma merge=ours
@@ -35,6 +60,7 @@ src/messages/fr.json merge=ours
 src/messages/en.json merge=ours
 src/messages/nl.json merge=ours
 src/messages/de.json merge=ours
+src/messages/get-better-auth-translations.js merge=ours
 
 # Documentation - boilerplate
 README.md merge=ours
@@ -46,6 +72,11 @@ AGENTS.md merge=ours
 # ============================================================
 
 # Project code directory
+src/app/apple-icon.png merge=theirs
+src/app/icon.png merge=theirs
+src/app/favicon.ico merge=theirs
+src/app/sitemap.jsx merge=theirs
+src/app/app/** merge=theirs
 src/project/** merge=theirs
 
 # Project translations
@@ -56,7 +87,6 @@ prisma/schema/project.prisma merge=theirs
 
 # Project-specific templates
 src/app/page.js merge=theirs
-src/app/globals.css merge=theirs
 src/site-config.js merge=theirs
 
 # Project assets

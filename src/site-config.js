@@ -20,37 +20,26 @@
 
 export const SiteConfig = {
     // ========== SITE INFORMATION ==========
-    title: "PolGPT", // ← TODO: Change to your project name
-    description: "Editeur booster par l'IA", // ← TODO: Change to your project description
-    prodUrl: "https://polgpt.be", // ← TODO: Change to your production URL
-    appId: "polgpt", // ← TODO: Change to your app identifier (lowercase, no spaces)
-    domain: "polgpt.be", // ← TODO: Change to your domain
+    title: "Boilerplate", // ← TODO: Change to your project name
+    description: "Boilerplate from Arnaud", // ← TODO: Change to your project description
+    prodUrl: "https://omka.cloud", // ← TODO: Change to your production URL
+    appId: "boilerplate", // ← TODO: Change to your app identifier (lowercase, no spaces)
     appIcon: "/images/logo.png", // ← TODO: Update with your logo path
-
-    // ========== COMPANY INFORMATION ==========
-    company: {
-        name: "PolGPT", // ← TODO: Change to your company name
-    },
 
     // ========== TEAM INFORMATION ==========
     team: {
-        website: "https://polgpt.be", // ← TODO: Change to your website
         name: "Arnaud Marchot", // ← TODO: Change to your team/contact name
-        email: "info@polgpt.be", // ← TODO: Change to your contact email
     },
 
     // ========== EMAIL CONFIGURATION ==========
     mail: {
         from: "PolGPT <noreply@polgpt.be>", // ← TODO: Change sender email
-        name: "PolGPT", // ← TODO: Change sender name
-        email: "noreply@polgpt.be", // ← TODO: Change no-reply email
-        replyTo: "info@polgpt.be", // ← TODO: Change reply-to email
         signature: "L'équipe de PolGPT", // ← TODO: Change email signature
     },
 
     // ========== BRAND STYLING ==========
     brand: {
-        primary: "#6366F1", // ← TODO: Change to your primary brand color
+        primary: "#000000", // ← TODO: Change to your primary brand color
     },
 
     // ========== ORGANIZATION SETTINGS ==========

@@ -86,17 +86,11 @@ export const SiteConfig = {
     description: "My description",  // ← Change
     prodUrl: "https://myapp.com",  // ← Change
     appId: "myapp",                // ← Change
-    domain: "myapp.com",           // ← Change
-    company: {
-        name: "My Company",        // ← Change
-    },
     team: {
         name: "My Team",           // ← Change
-        email: "info@myapp.com",   // ← Change
     },
     mail: {
         from: "My App <noreply@myapp.com>",     // ← Change
-        replyTo: "support@myapp.com",           // ← Change
         signature: "The My App Team",           // ← Change
     },
     // ... review and customize all other values
