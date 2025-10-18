@@ -11,7 +11,6 @@ import {
 import { MessageSquare, CheckCircle, Trash2, Eye, Award } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 
 export default function FeedbackDetailsCollapse({ feedback }) {
     const { execute } = useServerAction();
@@ -87,9 +86,6 @@ export default function FeedbackDetailsCollapse({ feedback }) {
                             <span className="text-sm font-medium text-green-900 dark:text-green-100">
                                 {t("testimonial_allowed_title")}
                             </span>
-                            <Badge variant="secondary" className="text-xs">
-                                {t("testimonial_allowed_badge")}
-                            </Badge>
                         </div>
                         <p className="text-xs text-green-700 dark:text-green-300">
                             {t("testimonial_allowed_description")}
