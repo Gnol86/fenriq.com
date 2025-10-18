@@ -1,0 +1,58 @@
+/**
+ * ============================================================
+ * 🎨 PROJECT CSS OVERRIDES - CUSTOMIZE YOUR THEME
+ * ============================================================
+ *
+ * This file is PROTECTED and will NOT be overwritten when you
+ * update from the boilerplate upstream.
+ *
+ * Use this file to override CSS variables defined in globals.css
+ * without modifying the boilerplate-managed globals.css file.
+ *
+ * Simply uncomment and customize the variables you want to override.
+ *
+ * ============================================================
+ */
+
+/*
+Example: Override primary color
+:root {
+    --primary: oklch(0.6 0.2 270);
+    --primary-foreground: oklch(1 0 0);
+}
+
+.dark {
+    --primary: oklch(0.7 0.2 270);
+    --primary-foreground: oklch(0 0 0);
+}
+*/
+
+/*
+Example: Override brand color
+:root {
+    --color-brand: #6366F1;
+}
+*/
+
+/*
+Example: Override fonts
+:root {
+    --font-sans: "Inter", sans-serif;
+    --font-mono: "Fira Code", monospace;
+}
+*/
+
+/*
+Example: Override radius
+:root {
+    --radius: 0.75rem;
+}
+*/
+
+/*
+Example: Custom project-specific styles
+.my-custom-class {
+    background: var(--primary);
+    color: var(--primary-foreground);
+}
+*/

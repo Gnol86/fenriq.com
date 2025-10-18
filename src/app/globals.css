@@ -1,12 +1,17 @@
 /**
  * ============================================================
- * 🚨 PROJECT TEMPLATE FILE - CUSTOMIZE YOUR THEME
+ * 🎨 GLOBAL CSS - BOILERPLATE MANAGED
  * ============================================================
  *
- * This file is PROTECTED and will NOT be overwritten when you
- * update from the boilerplate upstream.
+ * This file is MANAGED by the boilerplate and will be updated
+ * when you update from the upstream repository.
  *
- * Customize CSS variables below to match your brand:
+ * ⚠️ DO NOT modify this file directly for project customizations!
+ *
+ * To customize your theme, use src/project/project.css instead.
+ * That file is protected and will override variables defined here.
+ *
+ * Default theme variables:
  * - Colors (primary, secondary, accent, etc.)
  * - Fonts (sans, mono, serif)
  * - Border radius
@@ -222,3 +227,11 @@
     animation: none;
     mix-blend-mode: normal;
 }
+
+/* ============================================================
+ * PROJECT CSS OVERRIDES
+ * ============================================================
+ * Import project-specific CSS that can override variables above.
+ * This file is protected and won't be overwritten by boilerplate updates.
+ * ============================================================ */
+@import "../project/project.css";
