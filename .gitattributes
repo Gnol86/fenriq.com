@@ -1,0 +1,76 @@
+# ============================================================
+# GIT MERGE STRATEGY FOR BOILERPLATE + PROJECT ARCHITECTURE
+# ============================================================
+#
+# This file defines how Git merges files when updating from
+# the boilerplate upstream repository.
+#
+# merge=ours   : Always take upstream (boilerplate) version
+# merge=theirs : Always keep project version (never overwrite)
+# merge=union  : Attempt to merge both versions (manual resolution if conflict)
+#
+# ============================================================
+
+# ============================================================
+# BOILERPLATE FILES - Always take upstream version
+# ============================================================
+
+# Source code - boilerplate managed
+src/actions/*.action.js merge=ours
+src/components/** merge=ours
+src/lib/** merge=ours
+src/hooks/** merge=ours
+src/features/** merge=ours
+
+# App structure - boilerplate managed
+src/app/(pages)/** merge=ours
+src/app/(auth)/** merge=ours
+src/app/layout.js merge=ours
+
+# Prisma schema - base (boilerplate)
+prisma/schema/base.prisma merge=ours
+
+# Translations - base (boilerplate)
+src/messages/fr.json merge=ours
+src/messages/en.json merge=ours
+src/messages/nl.json merge=ours
+src/messages/de.json merge=ours
+
+# Documentation - boilerplate
+README.md merge=ours
+AGENTS.md merge=ours
+.github/** merge=ours
+
+# ============================================================
+# PROJECT FILES - Never touched by upstream
+# ============================================================
+
+# Project code directory
+src/project/** merge=theirs
+
+# Project translations
+src/messages/*.project.json merge=theirs
+
+# Project Prisma schema
+prisma/schema/project.prisma merge=theirs
+
+# Project-specific templates
+src/app/page.js merge=theirs
+src/app/globals.css merge=theirs
+src/site-config.js merge=theirs
+
+# Project assets
+public/images/logo.png merge=theirs
+public/images/icon.png merge=theirs
+
+# ============================================================
+# DEPENDENCIES - Union merge (manual resolution if needed)
+# ============================================================
+
+# Package files - merge both, resolve conflicts manually
+package.json merge=union
+pnpm-lock.yaml merge=union
+
+# ============================================================
+# END OF FILE
+# ============================================================

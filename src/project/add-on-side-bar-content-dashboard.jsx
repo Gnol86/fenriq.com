@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 
-export default function AddOnSideBarContent() {
+export default function AddOnSideBarContentDashboard() {
     return null;
     // return (
     //     <SidebarGroup>

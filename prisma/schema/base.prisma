@@ -1,18 +1,25 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// ============================================================
+// BOILERPLATE SCHEMA - DO NOT MODIFY IN PROJECTS
+// ============================================================
+// This file is managed by the boilerplate and will be updated
+// automatically when you merge from upstream.
+//
+// For project-specific models, use: prisma/schema/project.prisma
+// ============================================================
 
 generator client {
     provider = "prisma-client-js"
-    output   = "../src/generated/prisma"
+    output   = "../../src/generated/prisma"
 }
 
 datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
 }
+
+// ============================================================
+// AUTHENTICATION & USER MANAGEMENT
+// ============================================================
 
 model User {
     id            String       @id
@@ -82,6 +89,10 @@ model Verification {
     @@map("verification")
 }
 
+// ============================================================
+// ORGANIZATION MANAGEMENT
+// ============================================================
+
 model Organization {
     id            String         @id
     name          String
@@ -123,6 +134,10 @@ model Invitation {
     @@map("invitation")
 }
 
+// ============================================================
+// BILLING & SUBSCRIPTIONS
+// ============================================================
+
 model Subscription {
     id                   String       @id @default(cuid())
     plan                 String
@@ -146,6 +161,10 @@ model Subscription {
 
     @@map("subscription")
 }
+
+// ============================================================
+// FEEDBACK SYSTEM
+// ============================================================
 
 model Feedback {
     id                    String   @id @default(cuid())

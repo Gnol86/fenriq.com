@@ -1,0 +1,17 @@
+{
+    "example": {
+        "title": "Voorbeeld Component",
+        "description": "Dit is een voorbeeld component",
+        "action_button": "Klik op mij",
+        "processing": "Verwerken...",
+        "loading": "Laden...",
+        "success": "Actie succesvol voltooid!",
+        "error": "Er is een fout opgetreden"
+    },
+    "sidebar": {
+        "application": "Applicatie",
+        "products": "Producten",
+        "orders": "Bestellingen",
+        "analytics": "Analyse"
+    }
+}

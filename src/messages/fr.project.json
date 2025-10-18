@@ -1,0 +1,17 @@
+{
+    "example": {
+        "title": "Exemple de Composant",
+        "description": "Ceci est un exemple de composant",
+        "action_button": "Cliquez-moi",
+        "processing": "En cours...",
+        "loading": "Chargement...",
+        "success": "Action terminée avec succès !",
+        "error": "Une erreur s'est produite"
+    },
+    "sidebar": {
+        "application": "Application",
+        "products": "Produits",
+        "orders": "Commandes",
+        "analytics": "Analytique"
+    }
+}

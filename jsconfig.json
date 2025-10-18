@@ -25,7 +25,8 @@
             "@lib/*": ["./src/lib/*"],
             "@hooks/*": ["./src/hooks/*"],
             "@actions/*": ["./src/actions/*"],
-            "@email/*": ["./src/components/email/*"]
+            "@email/*": ["./src/components/email/*"],
+            "@project/*": ["./src/project/*"]
         }
     },
     "include": [

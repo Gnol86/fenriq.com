@@ -1,0 +1,17 @@
+{
+    "example": {
+        "title": "Example Component",
+        "description": "This is an example component",
+        "action_button": "Click Me",
+        "processing": "Processing...",
+        "loading": "Loading...",
+        "success": "Action completed successfully!",
+        "error": "An error occurred"
+    },
+    "sidebar": {
+        "application": "Application",
+        "products": "Products",
+        "orders": "Orders",
+        "analytics": "Analytics"
+    }
+}

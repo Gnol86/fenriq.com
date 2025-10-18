@@ -1,0 +1,51 @@
+// ============================================================
+// PROJECT SCHEMA - Add your project-specific models here
+// ============================================================
+// This file is protected and will NEVER be overwritten by
+// boilerplate updates from upstream.
+//
+// ✅ Safe to add your custom models here
+// ✅ Can reference models from base.prisma (User, Organization, etc.)
+// ⚠️ Do NOT duplicate generator/datasource blocks (already in base.prisma)
+// ============================================================
+
+// Example: Custom model for your project
+// Uncomment and modify as needed:
+
+// model Product {
+//     id             String       @id @default(cuid())
+//     name           String
+//     description    String?
+//     price          Int
+//     organizationId String
+//     organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+//     createdAt      DateTime     @default(now())
+//     updatedAt      DateTime     @updatedAt
+//
+//     @@map("product")
+// }
+
+// ============================================================
+// 📝 TIPS & CONVENTIONS
+// ============================================================
+//
+// 1. Relations to base models:
+//    - You can reference User, Organization, etc. from base.prisma
+//    - Example: userId String / user User @relation(...)
+//
+// 2. Naming conventions:
+//    - Use PascalCase for model names (Product, Order)
+//    - Use camelCase for field names (createdAt, userId)
+//    - Use snake_case for table names with @@map("my_table")
+//
+// 3. Common patterns:
+//    - Always add: id, createdAt, updatedAt
+//    - Use @default(cuid()) for IDs
+//    - Use @default(now()) for timestamps
+//    - Add @@map() to follow database naming
+//
+// 4. Multi-tenancy (if using organizations):
+//    - Add organizationId to scope data per organization
+//    - Add relation: organization Organization @relation(...)
+//
+// ============================================================

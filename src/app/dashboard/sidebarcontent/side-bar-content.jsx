@@ -24,7 +24,7 @@ import {
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import Link from "next/link";
-import AddOnSideBarContent from "./add-on-side-bar-content";
+import AddOnSideBarContent from "@/project/add-on-side-bar-content-dashboard";
 
 export default async function SideBarContent() {
     const t = await getTranslations("sidebar.dashboard");

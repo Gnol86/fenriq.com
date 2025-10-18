@@ -1,3 +1,18 @@
+/**
+ * ============================================================
+ * 🚨 PROJECT TEMPLATE FILE - CUSTOMIZE FOR YOUR PROJECT
+ * ============================================================
+ *
+ * This file is PROTECTED and will NOT be overwritten when you
+ * update from the boilerplate upstream.
+ *
+ * This is your landing page - customize it for your project!
+ *
+ * See examples in: src/project/examples/
+ * Documentation: .github/SETUP_NEW_PROJECT.md
+ * ============================================================
+ */
+
 import { AnimatedThemeToggler } from "@/components/animated-theme-toggler";
 import SignUpButton from "@/components/auth/SignUpButton";
 import SignInButton from "@/components/auth/SignInButton";
