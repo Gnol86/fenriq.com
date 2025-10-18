@@ -9,6 +9,7 @@ import { defaultLocale } from "@lib/i18n/config";
 import { cookies, headers } from "next/headers";
 import OrgButton from "./org-button";
 import UserButton from "./user-button";
+import { FeedbackButton } from "@/components/feedback-button";
 
 export async function AppSidebar({ children }) {
     const cookieStore = await cookies();
@@ -40,6 +41,7 @@ export async function AppSidebar({ children }) {
             </SidebarHeader>
             <SidebarContent>{children}</SidebarContent>
             <SidebarFooter>
+                <FeedbackButton />
                 <UserButton
                     user={user}
                     isImpersonating={session?.session?.impersonatedBy}

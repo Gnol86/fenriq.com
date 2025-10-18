@@ -146,3 +146,19 @@ model Subscription {
 
     @@map("subscription")
 }
+
+model Feedback {
+    id                    String   @id @default(cuid())
+    rating                Int
+    comment               String?
+    userId                String?
+    userName              String?
+    userEmail             String
+    isRead                Boolean  @default(false)
+    isResolved            Boolean  @default(false)
+    allowUseAsTestimonial Boolean  @default(false)
+    createdAt             DateTime @default(now())
+    updatedAt             DateTime @updatedAt
+
+    @@map("feedback")
+}

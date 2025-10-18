@@ -19,6 +19,7 @@ import {
     MailPlusIcon,
     Settings,
     Users,
+    MessageSquare,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
@@ -183,6 +184,14 @@ export default async function SideBarContent() {
                                     <Link href="/dashboard/admin/orgs">
                                         <Building className="opacity-60" />
                                         <span>{t("organizations")}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/dashboard/admin/feedbacks">
+                                        <MessageSquare className="opacity-60" />
+                                        <span>{t("feedbacks")}</span>
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
