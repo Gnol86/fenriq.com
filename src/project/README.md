@@ -24,6 +24,7 @@ src/project/
 ## 🎯 When to Use This Directory
 
 **✅ Use `src/project/` for:**
+
 - Custom components unique to your application
 - Server actions for your business logic
 - Custom hooks for your app state/logic
@@ -31,6 +32,7 @@ src/project/
 - Feature modules that combine components/actions/hooks
 
 **❌ Do NOT use `src/project/` for:**
+
 - Generic/reusable components (those go in boilerplate)
 - Modifications to existing boilerplate components
 - Auth, organization, or subscription logic (already in boilerplate)
@@ -87,21 +89,21 @@ import { db } from "@/lib/db"; // Boilerplate
 
 export async function getProducts() {
     const user = await getCurrentUser();
-    
+
     return db.product.findMany({
-        where: { organizationId: user.organizationId }
+        where: { organizationId: user.organizationId },
     });
 }
 
 export async function createProduct(formData) {
     const user = await getCurrentUser();
-    
+
     return db.product.create({
         data: {
             name: formData.get("name"),
             price: parseInt(formData.get("price")),
-            organizationId: user.organizationId
-        }
+            organizationId: user.organizationId,
+        },
     });
 }
 ```
@@ -118,11 +120,11 @@ import { useEffect } from "react";
 
 export function useProducts() {
     const { execute, data, isPending } = useServerAction();
-    
+
     useEffect(() => {
         execute(() => getProducts());
     }, []);
-    
+
     return { products: data, loading: isPending };
 }
 ```
@@ -206,6 +208,7 @@ src/project/features/
 ## 📚 Examples
 
 Check the `examples/` directory for complete, working examples:
+
 - `component.example.jsx` - Example component
 - `action.example.action.js` - Example server action
 - `hook.example.js` - Example custom hook

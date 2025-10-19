@@ -7,20 +7,21 @@ When setting up a new project, you **MUST** replace the following images with yo
 ### Required Images
 
 1. **`logo.png`** - Your project logo
-   - Used in: Navbar, emails, metadata
-   - Recommended size: 512x512px or larger
-   - Format: PNG with transparency preferred
-   - Current: Placeholder (replace immediately)
+    - Used in: Navbar, emails, metadata
+    - Recommended size: 512x512px or larger
+    - Format: PNG with transparency preferred
+    - Current: Placeholder (replace immediately)
 
 2. **`icon.png`** - Your project favicon/icon
-   - Used in: Browser tab, PWA icon, bookmarks
-   - Recommended size: 512x512px
-   - Format: PNG
-   - Current: Placeholder (replace immediately)
+    - Used in: Browser tab, PWA icon, bookmarks
+    - Recommended size: 512x512px
+    - Format: PNG
+    - Current: Placeholder (replace immediately)
 
 ### Protected Files
 
 These files are marked as **protected** in `.gitattributes`:
+
 - `logo.png` - merge=theirs (your version kept)
 - `icon.png` - merge=theirs (your version kept)
 
@@ -52,12 +53,14 @@ git commit -m "Add project branding images"
 ## 🎨 Design Tips
 
 **Logo (`logo.png`):**
+
 - Clear and readable at small sizes
 - Works on both light and dark backgrounds
 - Square or landscape orientation
 - High contrast colors
 
 **Icon (`icon.png`):**
+
 - Simple, recognizable symbol
 - Works at 16x16px (browser tab size)
 - Square aspect ratio (1:1)

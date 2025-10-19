@@ -247,7 +247,9 @@ export default function ImageUploadUser({ user }) {
             <Dialog open={isCropperOpen} onOpenChange={handleDialogOpenChange}>
                 <DialogContent className="sm:max-w-xl">
                     <DialogHeader>
-                        <DialogTitle>{tImageUpload("cropper_title")}</DialogTitle>
+                        <DialogTitle>
+                            {tImageUpload("cropper_title")}
+                        </DialogTitle>
                     </DialogHeader>
                     <div className="flex flex-col gap-4">
                         <div className="flex h-80 w-full items-center justify-center overflow-hidden rounded-lg bg-muted">

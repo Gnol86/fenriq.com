@@ -74,7 +74,7 @@ This boilerplate supports creating multiple projects (A, B, C) that can receive 
 - `src/lib/**` - Boilerplate utilities
 - `src/hooks/**` - Boilerplate hooks
 - `src/app/(pages)/**` - Dashboard pages
-- `src/messages/*.json` - Boilerplate translations (not *.project.json)
+- `src/messages/*.json` - Boilerplate translations (not \*.project.json)
 - `prisma/schema/base.prisma` - Boilerplate database models
 
 ### Import Paths
@@ -116,9 +116,10 @@ import { useMyHook } from "@project/hooks/use-my-hook";
 ```
 
 **Usage:**
+
 ```js
 const t = useTranslations("project.my_feature");
-t("title");  // "My Feature"
+t("title"); // "My Feature"
 ```
 
 **✅ Project database models in `prisma/schema/project.prisma`:**
@@ -129,7 +130,7 @@ model Product {
     name           String
     organizationId String
     organization   Organization @relation(fields: [organizationId], references: [id])
-    
+
     @@map("product")
 }
 ```
@@ -151,6 +152,7 @@ pnpm prisma generate
 ```
 
 **What happens:**
+
 - ✅ Boilerplate files automatically updated
 - ✅ Project files (`src/project/**`) never touched
 - ⚠️ `package.json` may need manual merge (keep both dependencies)
@@ -218,13 +220,10 @@ await confirm(
         variant: "destructive", // or "default"
     },
     () =>
-        execute(
-            () => myServerAction(data),
-            {
-                successMessage: t("success"),
-                errorMessage: t("error"),
-            }
-        )
+        execute(() => myServerAction(data), {
+            successMessage: t("success"),
+            errorMessage: t("error"),
+        })
 );
 ```
 
@@ -371,7 +370,11 @@ await confirm(
         description: t("dialog_description"),
         variant: "destructive",
     },
-    () => execute(() => myServerAction(data), { successMessage: "...", errorMessage: "..." })
+    () =>
+        execute(() => myServerAction(data), {
+            successMessage: "...",
+            errorMessage: "...",
+        })
 );
 ```
 
@@ -429,7 +432,8 @@ export default function MyForm() {
 
     // ✅ Schema inside component to access t()
     const formSchema = z.object({
-        name: z.string()
+        name: z
+            .string()
             .min(2, t("name.min_length"))
             .max(50, t("name.max_length")),
     });

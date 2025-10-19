@@ -3,12 +3,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useServerAction } from "@/hooks/use-server-action";
 import { updateOrganizationAction } from "@/actions/organization.action";
 import { useTranslations } from "next-intl";

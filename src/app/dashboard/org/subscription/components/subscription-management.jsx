@@ -79,7 +79,9 @@ export default async function SubscriptionManagement({ organization }) {
                             />
                         )}
                     </div>
-                    <CardDescription>{t("management_description")}</CardDescription>
+                    <CardDescription>
+                        {t("management_description")}
+                    </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-6">
                     <SubscriptionDetails subscription={subscription} />
@@ -90,7 +92,9 @@ export default async function SubscriptionManagement({ organization }) {
                 <Card>
                     <CardHeader>
                         <CardTitle>{t("movements_title")}</CardTitle>
-                        <CardDescription>{t("movements_description")}</CardDescription>
+                        <CardDescription>
+                            {t("movements_description")}
+                        </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <LicenseMovements movements={movements} />
@@ -102,7 +106,9 @@ export default async function SubscriptionManagement({ organization }) {
                 <Card>
                     <CardHeader>
                         <CardTitle>{t("invoices_title")}</CardTitle>
-                        <CardDescription>{t("invoices_description")}</CardDescription>
+                        <CardDescription>
+                            {t("invoices_description")}
+                        </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <InvoicesList invoices={invoices} />

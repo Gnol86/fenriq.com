@@ -38,8 +38,14 @@ export default function FormSignup() {
             password: z
                 .string()
                 .min(8, tValidation("password.min_length"))
-                .regex(/(?=.*[a-z])/, tValidation("password.lowercase_required"))
-                .regex(/(?=.*[A-Z])/, tValidation("password.uppercase_required"))
+                .regex(
+                    /(?=.*[a-z])/,
+                    tValidation("password.lowercase_required")
+                )
+                .regex(
+                    /(?=.*[A-Z])/,
+                    tValidation("password.uppercase_required")
+                )
                 .regex(/(?=.*\d)/, tValidation("password.digit_required")),
             password_confirm: z
                 .string()
@@ -75,9 +81,7 @@ export default function FormSignup() {
                         router.push("/verify-email?email=" + values.email);
                     },
                     onError: ctx => {
-                        toast.error(
-                            ctx.error.message || t("error_submission")
-                        );
+                        toast.error(ctx.error.message || t("error_submission"));
                     },
                 }
             );

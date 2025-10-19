@@ -23,9 +23,7 @@ export default async function Page() {
                 />
                 <div className="flex flex-col gap-2">
                     <CardTitle className="text-xl">{t("page_title")}</CardTitle>
-                    <CardDescription>
-                        {t("page_description")}
-                    </CardDescription>
+                    <CardDescription>{t("page_description")}</CardDescription>
                 </div>
             </CardHeader>
             <CardContent>

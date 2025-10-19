@@ -76,9 +76,12 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                 variant: "destructive",
             },
             async () => {
-                await execute(() => revokeUserSessionsAction({ userId: user.id }), {
-                    successMessage: tUsers("sessions_revoke_all_success"),
-                });
+                await execute(
+                    () => revokeUserSessionsAction({ userId: user.id }),
+                    {
+                        successMessage: tUsers("sessions_revoke_all_success"),
+                    }
+                );
                 setSessions([]);
             }
         );
@@ -175,13 +178,16 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                     {user.banReason && (
                                         <div className="flex items-center gap-1">
                                             <UserLock className="h-3 w-3" />
-                                            {tUsers("details_ban_reason")}: {user.banReason}
+                                            {tUsers("details_ban_reason")}:{" "}
+                                            {user.banReason}
                                         </div>
                                     )}
                                     {user.banExpiresIn && (
                                         <div className="flex items-center gap-1">
                                             <Clock className="h-3 w-3" />
-                                            {tUsers("details_ban_expires")}: {user.banExpiresIn}
+                                            {tUsers(
+                                                "details_ban_expires"
+                                            )}: {user.banExpiresIn}
                                         </div>
                                     )}
                                 </div>
@@ -194,7 +200,9 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                     <div className="flex items-center justify-between w-full ">
                         <div className="flex items-center gap-1.5 font-bold">
                             <Monitor className="h-4 w-4 mt-0.25" />
-                            {tUsers("sessions_title", { count: sessions.length })}
+                            {tUsers("sessions_title", {
+                                count: sessions.length,
+                            })}
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 text-sm">
@@ -243,12 +251,18 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                                 </div>
                                                 <div className="text-xs text-muted-foreground">
                                                     {tUsers("sessions_created")}{" "}
-                                                    {formatSessionDate(session.createdAt)}
+                                                    {formatSessionDate(
+                                                        session.createdAt
+                                                    )}
                                                 </div>
                                                 {session.expiresAt && (
                                                     <div className="text-xs text-muted-foreground">
-                                                        {tUsers("sessions_expires")}{" "}
-                                                        {formatSessionDate(session.expiresAt)}
+                                                        {tUsers(
+                                                            "sessions_expires"
+                                                        )}{" "}
+                                                        {formatSessionDate(
+                                                            session.expiresAt
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>

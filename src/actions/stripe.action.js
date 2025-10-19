@@ -28,7 +28,8 @@ export async function createCheckoutSessionAction({
     }
 
     // En mode "subscription", toujours utiliser quantity = 1
-    const finalQuantity = SiteConfig.billing.type === "subscription" ? 1 : quantity ?? 1;
+    const finalQuantity =
+        SiteConfig.billing.type === "subscription" ? 1 : (quantity ?? 1);
 
     // En mode "plan" avec packs additionnels, créer plusieurs line_items
     let lineItems;
@@ -507,10 +508,7 @@ export async function getLicenseMovementsSinceLastInvoiceAction({
             return false;
         }
 
-        if (
-            line.period?.start &&
-            line.period.start <= lastInvoiceTimestamp
-        ) {
+        if (line.period?.start && line.period.start <= lastInvoiceTimestamp) {
             // Ignore proration rows that happened before the last invoice
             return false;
         }

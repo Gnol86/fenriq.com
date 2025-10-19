@@ -19,12 +19,16 @@ export default function OrganizationActionMenu({ organization }) {
                 title: t("confirm_delete", { name: organization.name }),
                 variant: "destructive",
             },
-            () => execute(
-                () => deleteOrganizationAction({ organizationId: organization.id }),
-                {
-                    successMessage: t("success_deleted"),
-                }
-            )
+            () =>
+                execute(
+                    () =>
+                        deleteOrganizationAction({
+                            organizationId: organization.id,
+                        }),
+                    {
+                        successMessage: t("success_deleted"),
+                    }
+                )
         );
     };
 

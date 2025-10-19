@@ -64,10 +64,15 @@ export default async function SubscriptionDetails({ subscription }) {
                     </div>
                     <div className="flex flex-col gap-1">
                         <div className="text-sm font-medium">
-                            {isPlanBased ? t("usage_limit_label") : t("seats_label")}
+                            {isPlanBased
+                                ? t("usage_limit_label")
+                                : t("seats_label")}
                         </div>
                         <div className="text-sm text-muted-foreground">
-                            {subscription.seats ?? tCommon("n_a")} {isPlanBased ? t("usage_limit_unit") : t("seats_unit")}
+                            {subscription.seats ?? tCommon("n_a")}{" "}
+                            {isPlanBased
+                                ? t("usage_limit_unit")
+                                : t("seats_unit")}
                         </div>
                     </div>
                 </div>
@@ -93,7 +98,8 @@ export default async function SubscriptionDetails({ subscription }) {
                                 {" = "}
                                 <span className="font-bold">
                                     {formatAmount(
-                                        subscription.amount * subscription.seats,
+                                        subscription.amount *
+                                            subscription.seats,
                                         subscription.currency
                                     )}
                                     {" / "}

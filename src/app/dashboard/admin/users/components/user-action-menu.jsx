@@ -85,9 +85,10 @@ export default function UserActionMenu({ user, isCurrentUser }) {
                 title: t("confirm_delete", { name: user.name || user.email }),
                 variant: "destructive",
             },
-            () => execute(() => removeUserAction({ userId: user.id }), {
-                successMessage: t("success_deleted"),
-            })
+            () =>
+                execute(() => removeUserAction({ userId: user.id }), {
+                    successMessage: t("success_deleted"),
+                })
         );
     };
 
@@ -98,18 +99,13 @@ export default function UserActionMenu({ user, isCurrentUser }) {
     const isBanned = user.banned;
 
     const allowedRoles = ["user", "admin"];
-    const filteredRoles = allowedRoles.map(role => [
-        role,
-        tRoles(role),
-    ]);
+    const filteredRoles = allowedRoles.map(role => [role, tRoles(role)]);
 
     return (
         <div className="flex gap-2 justify-end items-center">
             <Select value={user.role} onValueChange={handleRoleChange}>
                 <SelectTrigger className="w-fit">
-                    <SelectValue>
-                        {tRoles(user.role)}
-                    </SelectValue>
+                    <SelectValue>{tRoles(user.role)}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                     {filteredRoles.map(([role, label]) => (

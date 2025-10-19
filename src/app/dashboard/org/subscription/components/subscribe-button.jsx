@@ -16,7 +16,8 @@ export default function SubscribeButton({
 
     const handleSubscribe = async () => {
         // En mode "subscription", toujours passer quantity = 1
-        const quantity = SiteConfig.billing.type === "subscription" ? 1 : lengthTotalMembres;
+        const quantity =
+            SiteConfig.billing.type === "subscription" ? 1 : lengthTotalMembres;
 
         const result = await createCheckoutSessionAction({
             priceId,

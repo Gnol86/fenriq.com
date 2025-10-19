@@ -23,7 +23,8 @@ function MemberRow({ member, currentUserId }) {
     const router = useRouter();
     const tMembers = useTranslations("admin.org_members");
     const tDetails = useTranslations("admin.org_details");
-    const fallbackName = member.user?.name || member.user?.email || tDetails("fallback_user");
+    const fallbackName =
+        member.user?.name || member.user?.email || tDetails("fallback_user");
 
     const handleImpersonateUser = async () => {
         try {
@@ -49,9 +50,7 @@ function MemberRow({ member, currentUserId }) {
         <div className="flex items-center justify-between p-3 border rounded-md">
             <div className="flex items-center gap-2">
                 <div className="flex flex-col">
-                    <span className="text-sm font-medium">
-                        {fallbackName}
-                    </span>
+                    <span className="text-sm font-medium">{fallbackName}</span>
                     <span className="text-xs text-muted-foreground">
                         {member.user?.email}
                     </span>

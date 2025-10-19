@@ -40,7 +40,12 @@ export default async function InvitationPage({ params }) {
                             {t("page_title")} {invitation.organization.name}
                         </CardTitle>
                         <CardDescription>
-                            {t("page_description_invited_by")} {invitation.user.name} {t("page_description_to_join")} {invitation.organization.name} {t("page_description_as_role")} &quot;{invitation.role}&quot;.
+                            {t("page_description_invited_by")}{" "}
+                            {invitation.user.name}{" "}
+                            {t("page_description_to_join")}{" "}
+                            {invitation.organization.name}{" "}
+                            {t("page_description_as_role")} &quot;
+                            {invitation.role}&quot;.
                         </CardDescription>
                     </div>
                 </CardHeader>

@@ -81,13 +81,12 @@ export async function POST(req) {
                 const { PrismaClient } = await import("@/generated/prisma");
                 const prisma = new PrismaClient();
 
-                const existingSubscription = await prisma.subscription.findFirst(
-                    {
+                const existingSubscription =
+                    await prisma.subscription.findFirst({
                         where: {
                             stripeSubscriptionId: subscription.id,
                         },
-                    }
-                );
+                    });
 
                 if (existingSubscription) {
                     await upsertSubscriptionFromStripeAction({
@@ -105,13 +104,12 @@ export async function POST(req) {
                 const { PrismaClient } = await import("@/generated/prisma");
                 const prisma = new PrismaClient();
 
-                const existingSubscription = await prisma.subscription.findFirst(
-                    {
+                const existingSubscription =
+                    await prisma.subscription.findFirst({
                         where: {
                             stripeSubscriptionId: subscription.id,
                         },
-                    }
-                );
+                    });
 
                 if (existingSubscription) {
                     await deleteSubscriptionAction({

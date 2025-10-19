@@ -43,13 +43,15 @@ export default async function InvoicesList({ invoices }) {
                         <div className="flex items-center gap-2">
                             <span className="text-sm font-medium">
                                 {t("invoice_number", {
-                                    number: invoice.number ?? invoice.id.slice(-8),
+                                    number:
+                                        invoice.number ?? invoice.id.slice(-8),
                                 })}
                             </span>
                             {invoice.status && (
                                 <Badge
                                     className={
-                                        statusColorMap[invoice.status] ?? "bg-gray-500"
+                                        statusColorMap[invoice.status] ??
+                                        "bg-gray-500"
                                     }
                                 >
                                     {t(`invoice_status_${invoice.status}`)}

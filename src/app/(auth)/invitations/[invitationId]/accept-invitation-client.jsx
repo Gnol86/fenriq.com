@@ -26,9 +26,7 @@ export default function AcceptInvitationClient({ invitationId }) {
             });
 
             if (result?.error) {
-                throw new Error(
-                    result.error.message || t("error_accept")
-                );
+                throw new Error(result.error.message || t("error_accept"));
             }
 
             const newOrganizationId = result?.data?.member?.organizationId;
@@ -58,9 +56,7 @@ export default function AcceptInvitationClient({ invitationId }) {
             router.refresh();
         } catch (error) {
             console.error("Failed to accept invitation", error);
-            toast.error(
-                error?.message || t("error_cannot_accept")
-            );
+            toast.error(error?.message || t("error_cannot_accept"));
         } finally {
             setIsAccepting(false);
         }
@@ -82,9 +78,7 @@ export default function AcceptInvitationClient({ invitationId }) {
             router.push("/app");
         } catch (error) {
             console.error("Failed to reject invitation", error);
-            toast.error(
-                error?.message || t("error_cannot_reject")
-            );
+            toast.error(error?.message || t("error_cannot_reject"));
         } finally {
             setIsRejecting(false);
         }

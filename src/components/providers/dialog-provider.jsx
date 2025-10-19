@@ -83,7 +83,10 @@ export function DialogProvider({ children }) {
     return (
         <DialogContext.Provider value={{ confirm }}>
             {children}
-            <AlertDialog open={dialogState.isOpen} onOpenChange={handleOpenChange}>
+            <AlertDialog
+                open={dialogState.isOpen}
+                onOpenChange={handleOpenChange}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>{dialogState.title}</AlertDialogTitle>

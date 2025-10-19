@@ -15,19 +15,19 @@ Prevents developers from editing boilerplate-managed files when working in a der
 The rule automatically detects:
 
 1. **Is this a project?** - Checks if the repository has an `upstream` git remote
-   - If YES → Rule is active (protection enabled)
-   - If NO → Rule is inactive (you're in the boilerplate itself)
+    - If YES → Rule is active (protection enabled)
+    - If NO → Rule is inactive (you're in the boilerplate itself)
 
 2. **Is this a boilerplate file?** - Checks if the file matches protected patterns:
-   - `src/actions/*.action.js`
-   - `src/components/**` (except `src/components/project/`)
-   - `src/lib/**`
-   - `src/hooks/**`
-   - `src/app/(pages)/**`
-   - `src/app/(auth)/**`
-   - `src/app/layout.js`
-   - `prisma/schema/base.prisma`
-   - `src/messages/{fr,en,nl,de}.json`
+    - `src/actions/*.action.js`
+    - `src/components/**` (except `src/components/project/`)
+    - `src/lib/**`
+    - `src/hooks/**`
+    - `src/app/(pages)/**`
+    - `src/app/(auth)/**`
+    - `src/app/layout.js`
+    - `prisma/schema/base.prisma`
+    - `src/messages/{fr,en,nl,de}.json`
 
 3. **If both conditions are true** → ESLint error is thrown
 
@@ -47,6 +47,7 @@ src/components/ui/button.jsx
 ### Protected Files
 
 **✅ Safe to edit** (never triggers error):
+
 - `src/project/**` - All project code
 - `src/messages/*.project.json` - Project translations
 - `prisma/schema/project.prisma` - Project database models
@@ -56,6 +57,7 @@ src/components/ui/button.jsx
 - Any files outside the patterns above
 
 **🚨 Protected** (triggers error in projects):
+
 - All boilerplate source code
 - Boilerplate translations
 - Base Prisma schema
@@ -66,18 +68,21 @@ src/components/ui/button.jsx
 If you absolutely need to disable this rule (not recommended):
 
 **For a specific file:**
+
 ```js
 /* eslint-disable boilerplate/no-edit-boilerplate */
 // Your code here
 ```
 
 **For a specific line:**
+
 ```js
 // eslint-disable-next-line boilerplate/no-edit-boilerplate
 const myVar = "something";
 ```
 
 **Globally (in eslint.config.mjs):**
+
 ```js
 rules: {
   "boilerplate/no-edit-boilerplate": "off", // or "warn"
@@ -87,12 +92,14 @@ rules: {
 ### Testing the Rule
 
 **In the boilerplate repository:**
+
 ```bash
 # No errors - rule is inactive (no upstream remote)
 pnpm lint
 ```
 
 **In a derived project:**
+
 ```bash
 # Setup project with upstream remote
 git remote rename origin upstream
@@ -114,6 +121,7 @@ pnpm lint
 **File:** `eslint-rules/no-edit-boilerplate.js`
 
 The rule:
+
 1. Runs a shell command `git remote` to check for `upstream`
 2. Compares the current file path against regex patterns
 3. Reports an ESLint error if both conditions match
@@ -134,6 +142,7 @@ const BOILERPLATE_PATTERNS = [
 ```
 
 **Pattern Tips:**
+
 - Use regex for flexible matching
 - Use negative lookahead `(?!project\/)` to exclude project folders
 - Test patterns thoroughly
@@ -144,13 +153,13 @@ const BOILERPLATE_PATTERNS = [
 ✅ **IDE integration** - Real-time feedback in VS Code, etc.  
 ✅ **No git hooks needed** - Works directly in your editor  
 ✅ **Self-documenting** - Error message explains what to do  
-✅ **Zero config** - Automatic detection of project vs boilerplate  
+✅ **Zero config** - Automatic detection of project vs boilerplate
 
 ## Limitations
 
 ⚠️ **Requires git** - Won't work if not using git  
 ⚠️ **Remote name dependency** - Assumes `upstream` remote name  
-⚠️ **Can be disabled** - Developers can bypass with eslint-disable comments  
+⚠️ **Can be disabled** - Developers can bypass with eslint-disable comments
 
 ## Alternatives
 
@@ -164,6 +173,7 @@ If this approach doesn't work for you:
 ---
 
 See also:
+
 - `.github/SETUP_NEW_PROJECT.md` - Project setup guide
 - `src/project/README.md` - Project structure documentation
 - `CLAUDE.md` - Full architecture documentation

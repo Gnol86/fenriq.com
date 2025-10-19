@@ -26,9 +26,7 @@ export default async function Page() {
                     <CardTitle className="text-xl text-green-600">
                         {t("page_title")}
                     </CardTitle>
-                    <CardDescription>
-                        {t("page_description")}
-                    </CardDescription>
+                    <CardDescription>{t("page_description")}</CardDescription>
                 </div>
             </CardHeader>
             <CardContent>

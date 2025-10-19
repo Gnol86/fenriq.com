@@ -41,7 +41,9 @@ export default function InvitationsActionMenu({
             {
                 title: t("remove_dialog_title"),
                 description: invitation.email
-                    ? t("remove_dialog_description", { email: invitation.email })
+                    ? t("remove_dialog_description", {
+                          email: invitation.email,
+                      })
                     : t("remove_dialog_description_fallback"),
                 variant: "destructive",
             },

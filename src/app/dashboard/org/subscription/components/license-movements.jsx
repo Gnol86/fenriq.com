@@ -101,7 +101,9 @@ export default async function LicenseMovements({ movements }) {
     );
 
     const hasInvoicePreview = Boolean(movements.hasUpcomingInvoice);
-    const baseLineItems = hasInvoicePreview ? movements.baseLineItems ?? [] : [];
+    const baseLineItems = hasInvoicePreview
+        ? (movements.baseLineItems ?? [])
+        : [];
     const hasBaseLines = baseLineItems.length > 0;
     const baseCurrency =
         baseLineItems[0]?.currency ?? movements.currency ?? movements.currency;
@@ -141,7 +143,10 @@ export default async function LicenseMovements({ movements }) {
         const quantity = first?.quantity;
         const unitAmount =
             first?.unitAmount !== null && first?.unitAmount !== undefined
-                ? formatAmountWithDefaultCurrency(first.unitAmount, first.currency)
+                ? formatAmountWithDefaultCurrency(
+                      first.unitAmount,
+                      first.currency
+                  )
                 : null;
 
         if (quantity && unitAmount) {
@@ -151,34 +156,36 @@ export default async function LicenseMovements({ movements }) {
         return description;
     };
 
-    const baseDetails = hasInvoicePreview && hasBaseLines
-        ? baseLineItems.map(item => {
-              const description = item.description ?? t("base_subscription");
-              const quantity = item.quantity;
-              const unitAmount =
-                  item.unitAmount !== null && item.unitAmount !== undefined
-                      ? formatAmountWithDefaultCurrency(
-                            item.unitAmount,
-                            item.currency
-                        )
-                      : null;
-              const total = formatAmountWithDefaultCurrency(
-                  item.amount,
-                  item.currency
-              );
+    const baseDetails =
+        hasInvoicePreview && hasBaseLines
+            ? baseLineItems.map(item => {
+                  const description =
+                      item.description ?? t("base_subscription");
+                  const quantity = item.quantity;
+                  const unitAmount =
+                      item.unitAmount !== null && item.unitAmount !== undefined
+                          ? formatAmountWithDefaultCurrency(
+                                item.unitAmount,
+                                item.currency
+                            )
+                          : null;
+                  const total = formatAmountWithDefaultCurrency(
+                      item.amount,
+                      item.currency
+                  );
 
-              const parts = [];
-              if (quantity && unitAmount) {
-                  parts.push(`${quantity} × ${unitAmount}`);
-              }
-              parts.push(total);
+                  const parts = [];
+                  if (quantity && unitAmount) {
+                      parts.push(`${quantity} × ${unitAmount}`);
+                  }
+                  parts.push(total);
 
-              return {
-                  id: item.id,
-                  text: `${description} • ${parts.join(" • ")}`,
-              };
-          })
-        : [];
+                  return {
+                      id: item.id,
+                      text: `${description} • ${parts.join(" • ")}`,
+                  };
+              })
+            : [];
 
     const formattedBaseAmount = hasInvoicePreview
         ? formatAmountWithDefaultCurrency(baseAmount, baseCurrency)
@@ -384,7 +391,9 @@ export default async function LicenseMovements({ movements }) {
                             {baseDetails.length > 1 && (
                                 <div className="flex flex-col gap-1 text-xs text-muted-foreground">
                                     {baseDetails.map(detail => (
-                                        <span key={detail.id}>{detail.text}</span>
+                                        <span key={detail.id}>
+                                            {detail.text}
+                                        </span>
                                     ))}
                                 </div>
                             )}

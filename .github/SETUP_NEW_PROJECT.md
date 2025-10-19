@@ -82,16 +82,16 @@ After cloning, you **MUST** customize these files:
 
 ```js
 export const SiteConfig = {
-    title: "My Project",           // ← Change
-    description: "My description",  // ← Change
-    prodUrl: "https://myapp.com",  // ← Change
-    appId: "myapp",                // ← Change
+    title: "My Project", // ← Change
+    description: "My description", // ← Change
+    prodUrl: "https://myapp.com", // ← Change
+    appId: "myapp", // ← Change
     team: {
-        name: "My Team",           // ← Change
+        name: "My Team", // ← Change
     },
     mail: {
-        from: "My App <noreply@myapp.com>",     // ← Change
-        signature: "The My App Team",           // ← Change
+        from: "My App <noreply@myapp.com>", // ← Change
+        signature: "The My App Team", // ← Change
     },
     // ... review and customize all other values
 };
@@ -111,9 +111,9 @@ Customize CSS variables to match your brand:
 
 ```css
 :root {
-  --primary: oklch(...);     /* Your primary color */
-  --secondary: oklch(...);   /* Your secondary color */
-  /* ... other brand colors */
+    --primary: oklch(...); /* Your primary color */
+    --secondary: oklch(...); /* Your secondary color */
+    /* ... other brand colors */
 }
 ```
 
@@ -122,6 +122,7 @@ Customize CSS variables to match your brand:
 **Directory:** `public/images/`
 
 Replace these images:
+
 - `logo.png` - Your project logo (512x512px recommended)
 - `icon.png` - Your favicon/icon (512x512px recommended)
 
@@ -136,9 +137,9 @@ cp /path/to/your-icon.png public/images/icon.png
 
 ```json
 {
-  "name": "my-project",      // ← Change
-  "version": "0.1.0",        // ← Update as needed
-  "description": "...",      // ← Change
+    "name": "my-project", // ← Change
+    "version": "0.1.0", // ← Update as needed
+    "description": "..." // ← Change
 }
 ```
 
@@ -220,7 +221,7 @@ prisma/schema/base.prisma       # Boilerplate database models
 // src/project/components/product-card.jsx
 "use client";
 
-import { Card } from "@/components/ui/card";  // Use boilerplate components
+import { Card } from "@/components/ui/card"; // Use boilerplate components
 
 export default function ProductCard({ product }) {
     return (
@@ -233,6 +234,7 @@ export default function ProductCard({ product }) {
 ```
 
 **Usage:**
+
 ```jsx
 import ProductCard from "@project/components/product-card";
 ```
@@ -243,18 +245,19 @@ import ProductCard from "@project/components/product-card";
 // src/project/actions/product.action.js
 "use server";
 
-import { getCurrentUser } from "@/lib/auth";  // Use boilerplate utilities
+import { getCurrentUser } from "@/lib/auth"; // Use boilerplate utilities
 import { db } from "@/lib/db";
 
 export async function getProducts() {
     const user = await getCurrentUser();
     return db.product.findMany({
-        where: { organizationId: user.organizationId }
+        where: { organizationId: user.organizationId },
     });
 }
 ```
 
 **Usage:**
+
 ```jsx
 import { getProducts } from "@project/actions/product.action";
 ```
@@ -265,7 +268,7 @@ import { getProducts } from "@project/actions/product.action";
 // src/project/hooks/use-products.js
 "use client";
 
-import { useServerAction } from "@/hooks/use-server-action";  // Use boilerplate hook
+import { useServerAction } from "@/hooks/use-server-action"; // Use boilerplate hook
 import { getProducts } from "@project/actions/product.action";
 
 export function useProducts() {
@@ -288,9 +291,10 @@ export function useProducts() {
 ```
 
 **Usage:**
+
 ```jsx
 const t = useTranslations("project.products");
-t("page_title");  // "My Products"
+t("page_title"); // "My Products"
 ```
 
 #### 5. Database Models
@@ -311,6 +315,7 @@ model Product {
 ```
 
 Then run:
+
 ```bash
 pnpm prisma generate
 pnpm prisma migrate dev --name add_product_model
@@ -324,15 +329,12 @@ import { SidebarGroup, SidebarMenu } from "@/components/ui/sidebar";
 import Link from "next/link";
 
 export default async function AppSideBar() {
-    return (
-        <SidebarGroup>
-            {/* Your custom navigation */}
-        </SidebarGroup>
-    );
+    return <SidebarGroup>{/* Your custom navigation */}</SidebarGroup>;
 }
 ```
 
 Then integrate in `src/app/(pages)/@sidebarcontent/app/page.js`:
+
 ```jsx
 import AppSideBar from "@project/sidebar/app-sidebar";
 
@@ -373,12 +375,12 @@ pnpm dev
 
 ### What Happens During Merge
 
-| File Type | Behavior | Action Required |
-|-----------|----------|-----------------|
-| Boilerplate files (`src/components/`, `src/lib/`, etc.) | Automatically updated | ✅ None |
-| Project files (`src/project/**`, `*.project.json`) | Kept unchanged | ✅ None |
-| Template files (`page.js`, `globals.css`, `site-config.js`) | Kept unchanged | ✅ None |
-| `package.json` | Union merge | ⚠️ May need manual resolution |
+| File Type                                                   | Behavior              | Action Required               |
+| ----------------------------------------------------------- | --------------------- | ----------------------------- |
+| Boilerplate files (`src/components/`, `src/lib/`, etc.)     | Automatically updated | ✅ None                       |
+| Project files (`src/project/**`, `*.project.json`)          | Kept unchanged        | ✅ None                       |
+| Template files (`page.js`, `globals.css`, `site-config.js`) | Kept unchanged        | ✅ None                       |
+| `package.json`                                              | Union merge           | ⚠️ May need manual resolution |
 
 ---
 
@@ -425,11 +427,11 @@ When updating from upstream, `package.json` uses **union merge**, which may crea
 
 ```json
 {
-  "dependencies": {
-    "framer-motion": "^11.0.0",    // Your dependency
-    "next": "15.5.3",              // Common dependency
-    "zod": "^4.2.0"                // Boilerplate dependency
-  }
+    "dependencies": {
+        "framer-motion": "^11.0.0", // Your dependency
+        "next": "15.5.3", // Common dependency
+        "zod": "^4.2.0" // Boilerplate dependency
+    }
 }
 ```
 

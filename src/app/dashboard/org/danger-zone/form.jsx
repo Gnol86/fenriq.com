@@ -30,7 +30,10 @@ import { useServerAction } from "@/hooks/use-server-action";
 import { TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-export default function DangerZoneForm({ organization, hasActiveSubscription }) {
+export default function DangerZoneForm({
+    organization,
+    hasActiveSubscription,
+}) {
     const t = useTranslations("organization.danger_zone");
     const tValidation = useTranslations("validation.confirmation");
     const { execute, isPending } = useServerAction();
@@ -112,7 +115,9 @@ export default function DangerZoneForm({ organization, hasActiveSubscription }) 
                                     {...field}
                                     autoFocus
                                     placeholder={organization.name}
-                                    disabled={isPending || hasActiveSubscription}
+                                    disabled={
+                                        isPending || hasActiveSubscription
+                                    }
                                 />
                             </FormControl>
                             <FormMessage />
@@ -126,7 +131,10 @@ export default function DangerZoneForm({ organization, hasActiveSubscription }) 
                                 type="button"
                                 variant="destructive"
                                 loading={isPending}
-                                disabled={!form.formState.isValid || hasActiveSubscription}
+                                disabled={
+                                    !form.formState.isValid ||
+                                    hasActiveSubscription
+                                }
                             >
                                 <TriangleAlert /> {t("delete_button")}
                                 <TriangleAlert />

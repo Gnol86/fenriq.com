@@ -45,9 +45,7 @@ export async function deleteUserAction({ userId }) {
 
     if (soleOwnerOrgs.length > 0) {
         const orgNames = soleOwnerOrgs.map(m => m.organization.name).join(", ");
-        throw new Error(
-            t("error_sole_owner", { orgNames })
-        );
+        throw new Error(t("error_sole_owner", { orgNames }));
     }
 
     return await auth.api.deleteUser({
