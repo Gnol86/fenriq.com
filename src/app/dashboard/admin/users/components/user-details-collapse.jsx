@@ -114,17 +114,17 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
 
     return (
         <div className="flex flex-col gap-4 p-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="flex flex-col gap-2 w-full">
-                    <div className="flex items-center justify-between w-full ">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div className="flex w-full flex-col gap-2">
+                    <div className="flex w-full items-center justify-between">
                         <div className="flex items-center gap-1.5 font-bold">
-                            <Shield className="h-4 w-4 mt-0.25" />
+                            <Shield className="mt-0.25 h-4 w-4" />
                             {tUsers("details_title")}
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 text-sm">
                         <div className="flex items-center gap-1">
-                            <div className="font-medium text-muted-foreground">
+                            <div className="text-muted-foreground font-medium">
                                 {tUsers("details_id")}
                             </div>
                             <p className="font-mono text-xs break-all">
@@ -132,7 +132,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                             </p>
                         </div>
                         <div className="flex items-center gap-1">
-                            <div className="font-medium text-muted-foreground">
+                            <div className="text-muted-foreground font-medium">
                                 {tUsers("details_email")}
                             </div>
                             <div className="flex items-center gap-1">
@@ -152,7 +152,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                             </div>
                         </div>
                         <div className="flex items-center gap-1">
-                            <div className="font-medium text-muted-foreground">
+                            <div className="text-muted-foreground font-medium">
                                 {tUsers("details_created")}
                             </div>
                             <div className="flex items-center gap-1">
@@ -161,7 +161,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                             </div>
                         </div>
                         <div className="flex items-center gap-1">
-                            <div className="font-medium text-muted-foreground">
+                            <div className="text-muted-foreground font-medium">
                                 {tUsers("details_updated")}
                             </div>
                             <div className="flex items-center gap-1">
@@ -171,7 +171,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                         </div>
                         {user.banned && (
                             <div className="flex gap-1">
-                                <div className="font-medium text-destructive">
+                                <div className="text-destructive font-medium">
                                     {tUsers("details_banned")}
                                 </div>
                                 <div className="flex flex-col gap-1">
@@ -196,10 +196,10 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-2 w-full">
-                    <div className="flex items-center justify-between w-full ">
+                <div className="flex w-full flex-col gap-2">
+                    <div className="flex w-full items-center justify-between">
                         <div className="flex items-center gap-1.5 font-bold">
-                            <Monitor className="h-4 w-4 mt-0.25" />
+                            <Monitor className="mt-0.25 h-4 w-4" />
                             {tUsers("sessions_title", {
                                 count: sessions.length,
                             })}
@@ -212,28 +212,28 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                 size="sm"
                                 onClick={handleRevokeAllSessions}
                             >
-                                <Trash2 className="h-3 w-3 mr-1" />
+                                <Trash2 className="mr-1 h-3 w-3" />
                                 {tUsers("sessions_revoke_all")}
                             </Button>
                         )}
                         {loadingSessions ? (
-                            <div className="text-center py-4 text-muted-foreground">
+                            <div className="text-muted-foreground py-4 text-center">
                                 {tUsers("sessions_loading")}
                             </div>
                         ) : sessions.length === 0 ? (
-                            <div className="text-center py-4 text-muted-foreground">
+                            <div className="text-muted-foreground py-4 text-center">
                                 {tUsers("sessions_empty")}
                             </div>
                         ) : (
-                            <ScrollArea onCard className="max-h-40 ">
+                            <ScrollArea onCard className="max-h-40">
                                 <div className="flex flex-col gap-2">
                                     {sessions.map(session => (
                                         <div
                                             key={session.id}
-                                            className="flex items-center justify-between p-3 border rounded-md"
+                                            className="flex items-center justify-between rounded-md border p-3"
                                         >
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 mb-1">
+                                            <div className="min-w-0 flex-1">
+                                                <div className="mb-1 flex items-center gap-2">
                                                     <Badge
                                                         variant="outline"
                                                         className="text-xs"
@@ -243,20 +243,20 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                                         )}
                                                     </Badge>
                                                     {session.ipAddress && (
-                                                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                                        <span className="text-muted-foreground flex items-center gap-1 text-xs">
                                                             <MapPin className="h-3 w-3" />
                                                             {session.ipAddress}
                                                         </span>
                                                     )}
                                                 </div>
-                                                <div className="text-xs text-muted-foreground">
+                                                <div className="text-muted-foreground text-xs">
                                                     {tUsers("sessions_created")}{" "}
                                                     {formatSessionDate(
                                                         session.createdAt
                                                     )}
                                                 </div>
                                                 {session.expiresAt && (
-                                                    <div className="text-xs text-muted-foreground">
+                                                    <div className="text-muted-foreground text-xs">
                                                         {tUsers(
                                                             "sessions_expires"
                                                         )}{" "}

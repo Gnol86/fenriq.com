@@ -31,8 +31,8 @@ export default function OrganizationSelectorButton({
     if (isActive) {
         return (
             <div className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-primary" />
-                <span className="text-sm text-primary font-medium">Active</span>
+                <Check className="text-primary h-4 w-4" />
+                <span className="text-primary text-sm font-medium">Active</span>
             </div>
         );
     }

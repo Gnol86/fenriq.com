@@ -58,7 +58,7 @@ export default async function InvoicesList({ invoices }) {
                                 </Badge>
                             )}
                         </div>
-                        <div className="text-sm text-muted-foreground">
+                        <div className="text-muted-foreground text-sm">
                             {formatDate(invoice.created)} •{" "}
                             {formatAmount(invoice.amount_due, invoice.currency)}
                         </div>

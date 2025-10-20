@@ -89,7 +89,7 @@ export default function DangerZoneForm({
                         </p>
                     </div>
                 ) : (
-                    <div className="rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+                    <div className="border-destructive/40 bg-destructive/10 text-destructive rounded-md border p-4 text-sm">
                         <p className="font-medium">
                             {t("warning_title", { name: organization.name })}
                         </p>

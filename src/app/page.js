@@ -28,8 +28,8 @@ export default async function Home() {
     const locale = cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
     return (
         <>
-            <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-                <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+            <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-sans sm:p-20">
+                <main className="row-start-2 flex flex-col items-center gap-[32px] sm:items-start">
                     <h1 className="text-4xl font-bold">
                         👋 Hello, I&apos;m Arnaud
                     </h1>
@@ -39,11 +39,11 @@ export default async function Home() {
                     </p>
                 </main>
             </div>
-            <footer className="absolute bottom-0 left-0 right-0 p-4 flex gap-2 justify-between items-center text-sm">
+            <footer className="absolute right-0 bottom-0 left-0 flex items-center justify-between gap-2 p-4 text-sm">
                 <div>
                     © {new Date().getFullYear()} {SiteConfig.team.name}
                 </div>
-                <div className="flex gap-2 items-center">
+                <div className="flex items-center gap-2">
                     <LocalizationButton currentLocale={locale} />
                     <AnimatedThemeToggler />
                     <SignUpButton />

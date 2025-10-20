@@ -73,14 +73,14 @@ export default async function DashboardPage() {
                                         entity={activeUserOrganization}
                                         size="lg"
                                     />
-                                    <span className="font-semibold truncate">
+                                    <span className="truncate font-semibold">
                                         {activeUserOrganization?.name ??
                                             t("organization_fallback")}
                                     </span>
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex flex-col gap-3 text-sm text-muted-foreground">
+                            <div className="text-muted-foreground flex flex-col gap-3 text-sm">
                                 <p>{t("no_active_organization")}</p>
                             </div>
                         )}
@@ -90,26 +90,26 @@ export default async function DashboardPage() {
                     <CardContent className="flex flex-col gap-4">
                         {t("contact_persons_title")}
                         {contacts?.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 {contacts.map(contact => {
                                     return (
                                         <div
                                             key={contact.id}
                                             className="flex items-center justify-between"
                                         >
-                                            <div className="flex items-center gap-3 min-w-0">
+                                            <div className="flex min-w-0 items-center gap-3">
                                                 <ImageProfile
                                                     entity={contact?.user}
                                                     size="md"
                                                 />
-                                                <div className="flex flex-col gap-0.5 min-w-0">
-                                                    <span className="text-sm font-medium text-foreground truncate">
+                                                <div className="flex min-w-0 flex-col gap-0.5">
+                                                    <span className="text-foreground truncate text-sm font-medium">
                                                         {contact?.user.name ??
                                                             t(
                                                                 "contact_fallback"
                                                             )}
                                                     </span>
-                                                    <span className="text-sm font-bold -mt-1 text-foreground truncate">
+                                                    <span className="text-foreground -mt-1 truncate text-sm font-bold">
                                                         {contact?.user.email ? (
                                                             <Link
                                                                 href={`mailto:${contact?.user.email}`}
@@ -131,7 +131,7 @@ export default async function DashboardPage() {
                                 })}
                             </div>
                         ) : (
-                            <div className="rounded-lg border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">
+                            <div className="text-muted-foreground rounded-lg border border-dashed px-4 py-6 text-center text-sm">
                                 {t("no_contacts")}
                             </div>
                         )}
@@ -156,12 +156,12 @@ export default async function DashboardPage() {
                                     }
                                     className="flex items-center justify-between gap-3 rounded-lg border px-4 py-3"
                                 >
-                                    <div className="flex items-center gap-3 min-w-0">
+                                    <div className="flex min-w-0 items-center gap-3">
                                         <ImageProfile
                                             entity={organization}
                                             size="md"
                                         />
-                                        <span className="font-bold truncate">
+                                        <span className="truncate font-bold">
                                             {organization?.name ??
                                                 t("organization_fallback")}
                                         </span>
@@ -180,7 +180,7 @@ export default async function DashboardPage() {
                             );
                         })
                     ) : (
-                        <div className="rounded-lg border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">
+                        <div className="text-muted-foreground rounded-lg border border-dashed px-4 py-6 text-center text-sm">
                             {t("no_organizations")}
                         </div>
                     )}

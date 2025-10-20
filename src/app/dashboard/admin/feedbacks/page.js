@@ -61,7 +61,7 @@ export default async function AdminFeedbacksPage() {
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className="flex flex-col w-full gap-4">
+                <CardContent className="flex w-full flex-col gap-4">
                     <Table>
                         {!feedbacks.length && (
                             <TableCaption>{t("no_feedbacks")}</TableCaption>

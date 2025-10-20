@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -6,9 +6,9 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { MailCheck } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import Link from "next/link";
 
 export default async function Page() {
     const t = await getTranslations("auth.email_verified");
@@ -16,26 +16,23 @@ export default async function Page() {
     return (
         <Card className="w-sm">
             <CardHeader className="flex items-start gap-4">
-                <Image
-                    src="/images/logo.png"
-                    alt="Logo"
-                    width={75}
-                    height={75}
-                />
-                <div className="flex flex-col gap-2">
-                    <CardTitle className="text-xl text-green-600">
+                <div>
+                    <CardTitle className="text-success text-xl">
                         {t("page_title")}
                     </CardTitle>
                     <CardDescription>{t("page_description")}</CardDescription>
                 </div>
+                <div>
+                    <MailCheck size={42} className="text-success" />
+                </div>
             </CardHeader>
             <CardContent>
                 <div className="flex gap-2">
-                    <Link href="/app" className="flex-1">
-                        <Button className="w-full">
+                    <Button className="w-full" asChild>
+                        <Link href="/app" className="flex-1">
                             {t("go_to_app_button")}
-                        </Button>
-                    </Link>
+                        </Link>
+                    </Button>
                 </div>
             </CardContent>
         </Card>

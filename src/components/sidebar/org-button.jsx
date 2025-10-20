@@ -26,17 +26,17 @@ export default function OrgButton({
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-2 p-2 cursor-pointer">
+            <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2 p-2">
                 <ImageProfile
                     entity={activeUserOrganization}
                     size="md"
                     defaultImage="/images/logo.png"
                 />
-                <div className="flex flex-col justify-start items-start flex-1 text-left overflow-hidden min-w-0">
-                    <span className="text-lg font-bold truncate w-full">
+                <div className="flex min-w-0 flex-1 flex-col items-start justify-start overflow-hidden text-left">
+                    <span className="w-full truncate text-lg font-bold">
                         {SiteConfig.title}
                     </span>
-                    <span className="text-xs font-medium text-muted-foreground -mt-1 truncate w-full">
+                    <span className="text-muted-foreground -mt-1 w-full truncate text-xs font-medium">
                         {activeUserOrganization?.name ||
                             tDashboard("no_active_organization")}
                     </span>
@@ -46,7 +46,7 @@ export default function OrgButton({
                 className="w-56"
                 onCloseAutoFocus={event => event.preventDefault()}
             >
-                <DropdownMenuLabel className="text-xs text-muted-foreground flex items-center gap-2">
+                <DropdownMenuLabel className="text-muted-foreground flex items-center gap-2 text-xs">
                     {tDashboard("my_organizations_title")}
                 </DropdownMenuLabel>
                 {userOrganizations && userOrganizations.length > 0 ? (
@@ -80,11 +80,11 @@ export default function OrgButton({
                                 disabled={isPending}
                             >
                                 <ImageProfile entity={organization} size="xs" />
-                                <span className="truncate text-sm flex-1">
+                                <span className="flex-1 truncate text-sm">
                                     {organization.name}
                                 </span>
                                 {isActive ? (
-                                    <Check className="h-4 w-4 text-primary" />
+                                    <Check className="text-primary h-4 w-4" />
                                 ) : null}
                             </DropdownMenuItem>
                         );

@@ -6,8 +6,8 @@ export default async function NotFound() {
     const t = await getTranslations("errors.page_404");
 
     return (
-        <main className="flex flex-col gap-4 items-center justify-center h-dvh">
-            <div className="flex gap-2 justify-center items-center">
+        <main className="flex h-dvh flex-col items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-2">
                 <div className="text-2xl font-bold">404</div>
                 <div className="text-sm">{t("title")}</div>
             </div>

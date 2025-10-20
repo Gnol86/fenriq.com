@@ -5,14 +5,22 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { auth } from "@/lib/auth";
 import { PrismaClient } from "@root/prisma/generated";
+import { Mailbox } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import Image from "next/image";
+import { headers } from "next/headers";
+import { notFound, redirect } from "next/navigation";
 import AcceptInvitationClient from "./accept-invitation-client";
 
 export default async function InvitationPage({ params }) {
-    const { invitationId } = params;
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    const { invitationId } = await params;
     const t = await getTranslations("auth.invitation");
+    const tRoles = await getTranslations("roles");
 
     const prisma = new PrismaClient();
     const invitation = await prisma.invitation.findUnique({
@@ -25,28 +33,40 @@ export default async function InvitationPage({ params }) {
         },
     });
 
+    if (!invitation) {
+        notFound();
+    }
+
+    if (!session) {
+        redirect(
+            `/signin?callback=${encodeURIComponent(`/invitations/${invitationId}`)}`
+        );
+    }
+
+    if (session && session.user.email !== invitation.email) {
+        notFound();
+    }
+
     return (
-        <div className="min-h-dvh flex flex-col items-center justify-center px-4 py-12">
-            <Card className="w-full max-w-lg">
+        <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-12">
+            <Card className="w-sm">
                 <CardHeader className="flex items-start gap-4">
-                    <Image
-                        src="/images/logo.png"
-                        alt="Logo"
-                        width={75}
-                        height={75}
-                    />
-                    <div className="flex flex-col gap-2">
-                        <CardTitle>
-                            {t("page_title")} {invitation.organization.name}
+                    <div>
+                        <CardTitle className="text-xl">
+                            {t("page_title", {
+                                orgName: invitation.organization.name,
+                            })}
                         </CardTitle>
                         <CardDescription>
-                            {t("page_description_invited_by")}{" "}
-                            {invitation.user.name}{" "}
-                            {t("page_description_to_join")}{" "}
-                            {invitation.organization.name}{" "}
-                            {t("page_description_as_role")} &quot;
-                            {invitation.role}&quot;.
+                            {t("page_description", {
+                                userName: invitation.user.name,
+                                orgName: invitation.organization.name,
+                                role: tRoles(invitation.role),
+                            })}
                         </CardDescription>
+                    </div>
+                    <div>
+                        <Mailbox size={42} className="text-primary" />
                     </div>
                 </CardHeader>
                 <CardContent>

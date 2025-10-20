@@ -53,10 +53,8 @@
             "go_to_app_button": "Go to Application"
         },
         "invitation": {
-            "page_title": "Invitation to Join",
-            "page_description_invited_by": "You were invited by",
-            "page_description_to_join": "to join the organization",
-            "page_description_as_role": "as",
+            "page_title": "Invitation to Join {orgName}",
+            "page_description": "You were invited by {userName} to join the organization {orgName} as {role}.",
             "confirm_message": "You are about to join the organization. Confirm your choice.",
             "accept_button": "Accept Invitation",
             "reject_button": "Reject",

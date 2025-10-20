@@ -25,7 +25,7 @@ export default function FeedbackTableRow({ feedback, isExpanded, onToggle }) {
                 {/* Utilisateur */}
                 <TableCell>
                     <div className="flex items-center gap-2">
-                        <div className="flex items-center justify-center w-4">
+                        <div className="flex w-4 items-center justify-center">
                             {isExpanded ? (
                                 <ChevronDown className="text-muted-foreground" />
                             ) : (
@@ -33,10 +33,10 @@ export default function FeedbackTableRow({ feedback, isExpanded, onToggle }) {
                             )}
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-sm font-medium text-foreground">
+                            <span className="text-foreground text-sm font-medium">
                                 {feedback.userName}
                             </span>
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-muted-foreground text-xs">
                                 {feedback.userEmail}
                             </span>
                         </div>
@@ -66,19 +66,19 @@ export default function FeedbackTableRow({ feedback, isExpanded, onToggle }) {
                         {!feedback.isRead && (
                             <Badge
                                 variant="secondary"
-                                className="text-xs w-fit"
+                                className="w-fit text-xs"
                             >
                                 {t("status_unread")}
                             </Badge>
                         )}
                         {feedback.isResolved ? (
-                            <Badge variant="outline" className="text-xs w-fit">
+                            <Badge variant="outline" className="w-fit text-xs">
                                 {t("status_resolved")}
                             </Badge>
                         ) : (
                             <Badge
                                 variant="destructive"
-                                className="text-xs w-fit"
+                                className="w-fit text-xs"
                             >
                                 {t("status_pending")}
                             </Badge>
@@ -88,7 +88,7 @@ export default function FeedbackTableRow({ feedback, isExpanded, onToggle }) {
 
                 {/* Date */}
                 <TableCell>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-muted-foreground text-sm">
                         {formatDate(feedback.createdAt, locale)}
                     </span>
                 </TableCell>

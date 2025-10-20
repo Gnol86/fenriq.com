@@ -53,10 +53,8 @@
             "go_to_app_button": "Accéder à l'application"
         },
         "invitation": {
-            "page_title": "Invitation à rejoindre",
-            "page_description_invited_by": "Vous avez été invité(e) par",
-            "page_description_to_join": "à rejoindre l'organisation",
-            "page_description_as_role": "en tant que",
+            "page_title": "Invitation à rejoindre {orgName}",
+            "page_description": "Vous avez été invité(e) par {userName} à rejoindre l'organisation {orgName} en tant que {role}.",
             "confirm_message": "Vous êtes sur le point de rejoindre l'organisation. Confirmez votre choix.",
             "accept_button": "Accepter l'invitation",
             "reject_button": "Refuser",

@@ -59,7 +59,7 @@ export default function ChangeInput({
     };
 
     return (
-        <div className="flex flex-col gap-1 group cursor-pointer">
+        <div className="group flex cursor-pointer flex-col gap-1">
             <FormLabel>{label}</FormLabel>
             {changeMode ? (
                 <div onClick={e => e.stopPropagation()}>
@@ -112,7 +112,7 @@ export default function ChangeInput({
                 <Tooltip>
                     <TooltipTrigger>
                         <span
-                            className="flex items-center gap-1 group"
+                            className="group flex items-center gap-1"
                             onClick={handleOpenChangeMode}
                         >
                             {value}

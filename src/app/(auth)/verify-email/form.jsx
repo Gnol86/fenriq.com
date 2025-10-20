@@ -84,7 +84,7 @@ export default function FormResendVerification() {
                     </Link>
                 </div>
 
-                <div className="text-xs flex gap-2 justify-center items-center">
+                <div className="flex items-center justify-center gap-2 text-xs">
                     {t("already_verified_text")}
                     <Link
                         href="/signin"

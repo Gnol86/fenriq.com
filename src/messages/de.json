@@ -53,10 +53,8 @@
             "go_to_app_button": "Zur Anwendung"
         },
         "invitation": {
-            "page_title": "Einladung zum Beitreten",
-            "page_description_invited_by": "Sie wurden eingeladen von",
-            "page_description_to_join": "der Organisation beizutreten",
-            "page_description_as_role": "als",
+            "page_title": "Einladung zum Beitreten zu {orgName}",
+            "page_description": "Sie wurden von {userName} eingeladen, der Organisation {orgName} als {role} beizutreten.",
             "confirm_message": "Sie sind dabei, der Organisation beizutreten. Bestätigen Sie Ihre Auswahl.",
             "accept_button": "Einladung annehmen",
             "reject_button": "Ablehnen",

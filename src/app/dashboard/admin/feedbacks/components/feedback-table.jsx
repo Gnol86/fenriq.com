@@ -32,14 +32,14 @@ export default function FeedbackTable({ feedbacks, resolvedCount }) {
                         >
                             {showResolved ? (
                                 <>
-                                    <EyeOff className="size-4 mr-2" />
+                                    <EyeOff className="mr-2 size-4" />
                                     {t("hide_resolved", {
                                         count: resolvedCount,
                                     })}
                                 </>
                             ) : (
                                 <>
-                                    <Eye className="size-4 mr-2" />
+                                    <Eye className="mr-2 size-4" />
                                     {t("show_resolved", {
                                         count: resolvedCount,
                                     })}

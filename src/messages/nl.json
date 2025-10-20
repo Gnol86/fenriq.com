@@ -53,10 +53,8 @@
             "go_to_app_button": "Naar de applicatie"
         },
         "invitation": {
-            "page_title": "Uitnodiging om deel te nemen",
-            "page_description_invited_by": "U bent uitgenodigd door",
-            "page_description_to_join": "om lid te worden van de organisatie",
-            "page_description_as_role": "als",
+            "page_title": "Uitnodiging om deel te nemen aan {orgName}",
+            "page_description": "U bent uitgenodigd door {userName} om lid te worden van de organisatie {orgName} als {role}.",
             "confirm_message": "U staat op het punt de organisatie te vervoegen. Bevestig uw keuze.",
             "accept_button": "Uitnodiging accepteren",
             "reject_button": "Weigeren",

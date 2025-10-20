@@ -1,18 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { toast } from "sonner";
-import { Loader2, ShieldCheck, ShieldOff } from "lucide-react";
-import { authClient, useSession } from "@/lib/auth-client";
-import { Button } from "@/components/ui/button";
 import FormButton from "@/components/ui/form-button";
+import { authClient } from "@/lib/auth-client";
+import { Loader2, ShieldCheck, ShieldOff } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function AcceptInvitationClient({ invitationId }) {
     const router = useRouter();
-    const { data: session, isPending } = useSession();
     const [isAccepting, setIsAccepting] = useState(false);
     const [isRejecting, setIsRejecting] = useState(false);
     const [status, setStatus] = useState(null);
@@ -84,42 +81,9 @@ export default function AcceptInvitationClient({ invitationId }) {
         }
     };
 
-    if (isPending) {
-        return (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                {t("verifying_session")}
-            </div>
-        );
-    }
-
-    if (!session?.user) {
-        return (
-            <div className="flex flex-col gap-4 text-sm text-muted-foreground">
-                <p>{t("must_signin")}</p>
-                <div className="flex gap-2">
-                    <Button asChild>
-                        <Link
-                            href={`/signin?redirect=/invitations/${invitationId}`}
-                        >
-                            {t("signin_button")}
-                        </Link>
-                    </Button>
-                    <Button asChild variant="outline">
-                        <Link
-                            href={`/signup?redirect=/invitations/${invitationId}`}
-                        >
-                            {t("create_account_button")}
-                        </Link>
-                    </Button>
-                </div>
-            </div>
-        );
-    }
-
     if (status === "accepted") {
         return (
-            <div className="flex flex-col items-start gap-3 text-sm text-muted-foreground">
+            <div className="text-muted-foreground flex flex-col items-start gap-3 text-sm">
                 <div className="flex items-center gap-2 text-emerald-600">
                     <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                     <span>{t("accepted_message")}</span>
@@ -130,8 +94,8 @@ export default function AcceptInvitationClient({ invitationId }) {
 
     if (status === "rejected") {
         return (
-            <div className="flex flex-col items-start gap-3 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2 text-destructive">
+            <div className="text-muted-foreground flex flex-col items-start gap-3 text-sm">
+                <div className="text-destructive flex items-center gap-2">
                     <ShieldOff className="h-4 w-4" aria-hidden="true" />
                     <span>{t("rejected_message")}</span>
                 </div>
@@ -141,9 +105,6 @@ export default function AcceptInvitationClient({ invitationId }) {
 
     return (
         <div className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground">
-                {t("confirm_message")}
-            </p>
             <div className="flex flex-col gap-2 sm:flex-row">
                 <FormButton
                     onClick={handleAccept}

@@ -70,7 +70,7 @@ export default function DangerZoneForm({ user }) {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="flex flex-col gap-6"
             >
-                <div className="rounded-md border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+                <div className="border-destructive/40 bg-destructive/10 text-destructive rounded-md border p-4 text-sm">
                     <p className="font-medium">{t("warning_title")}</p>
                     <p className="text-destructive/70">
                         {t("warning_subtitle")}

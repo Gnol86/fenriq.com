@@ -69,7 +69,7 @@ const PasswordStrengthInput = React.forwardRef(
                     />
                     <button
                         type="button"
-                        className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex items-center justify-center transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                        className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute top-0 right-0 flex h-full items-center justify-center px-3 py-2 transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                         onClick={toggleVisibility}
                         disabled={disabled}
                         aria-label={

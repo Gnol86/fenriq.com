@@ -50,7 +50,7 @@ export default async function DangerZonePage() {
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-destructive">
+                    <CardTitle className="text-destructive flex items-center gap-2">
                         <AlertTriangle className="h-5 w-5" />
                         {tBreadcrumbs("danger_zone")}
                     </CardTitle>

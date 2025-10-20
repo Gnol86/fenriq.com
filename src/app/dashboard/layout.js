@@ -9,12 +9,12 @@ export default async function Layout({ children }) {
             <AppSidebar>
                 <SideBarContent />
             </AppSidebar>
-            <main className="relative p-0 w-full h-dvh">
-                <div className="inline-flex items-center gap-2 mt-4 mx-4">
+            <main className="relative h-dvh w-full p-0">
+                <div className="mx-4 mt-4 inline-flex items-center gap-2">
                     <SidebarTrigger className="lg:hidden" />
                     <BreadcrumbSlot />
                 </div>
-                <div className="flex flex-col gap-6 p-6 max-w-4xl mx-auto">
+                <div className="mx-auto flex max-w-4xl flex-col gap-6 p-6">
                     {children}
                 </div>
             </main>

@@ -1,5 +1,3 @@
-import Image from "next/image";
-import FormSignup from "./form";
 import {
     Card,
     CardContent,
@@ -7,7 +5,9 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { ScrollText } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import FormSignup from "./form";
 
 export default async function Page() {
     const t = await getTranslations("auth.signup");
@@ -15,15 +15,12 @@ export default async function Page() {
     return (
         <Card className="w-sm">
             <CardHeader className="flex items-start gap-4">
-                <Image
-                    src="/images/logo.png"
-                    alt="Logo"
-                    width={75}
-                    height={75}
-                />
-                <div className="flex flex-col gap-2">
+                <div>
                     <CardTitle className="text-xl">{t("page_title")}</CardTitle>
                     <CardDescription>{t("page_description")}</CardDescription>
+                </div>
+                <div>
+                    <ScrollText size={42} className="text-primary" />
                 </div>
             </CardHeader>
             <CardContent>

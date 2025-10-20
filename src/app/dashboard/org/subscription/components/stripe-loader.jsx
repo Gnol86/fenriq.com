@@ -11,7 +11,7 @@ export default function StripeLoader() {
 
     return (
         <div
-            className="relative flex items-center justify-between w-64 mx-auto"
+            className="relative mx-auto flex w-64 items-center justify-between"
             ref={containerRef}
         >
             <AnimatedBeam

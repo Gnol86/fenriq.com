@@ -1,6 +1,6 @@
 export default function WindowSize() {
     return (
-        <div className="absolute z-50 top-0 right-0 p-1 text-foreground text-xs font-bold flex items-center gap-2">
+        <div className="text-foreground absolute top-0 right-0 z-50 flex items-center gap-2 p-1 text-xs font-bold">
             <div>
                 <div className="sm:hidden">{"<"} SM</div>
                 <div className="hidden sm:block md:hidden">SM</div>

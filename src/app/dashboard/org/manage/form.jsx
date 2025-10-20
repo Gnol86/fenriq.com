@@ -75,7 +75,7 @@ export default function ManageOrganizationForm({ organization }) {
             </form>
         </Form>
     ) : (
-        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+        <div className="text-muted-foreground flex flex-col gap-2 text-sm">
             <p>{t("no_org_error")}</p>
             <p>{t("select_org_message")}</p>
         </div>

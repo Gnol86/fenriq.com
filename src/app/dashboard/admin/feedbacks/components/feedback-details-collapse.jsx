@@ -57,7 +57,7 @@ export default function FeedbackDetailsCollapse({ feedback }) {
     };
 
     return (
-        <div className="flex flex-col gap-4 p-4 bg-muted/30">
+        <div className="bg-muted/30 flex flex-col gap-4 p-4">
             {/* Commentaire */}
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-1.5 font-bold">
@@ -66,12 +66,12 @@ export default function FeedbackDetailsCollapse({ feedback }) {
                 </div>
                 {feedback.comment ? (
                     <ScrollArea className="max-h-32">
-                        <div className="text-sm whitespace-pre-wrap p-3 bg-background rounded-md border">
+                        <div className="bg-background rounded-md border p-3 text-sm whitespace-pre-wrap">
                             {feedback.comment}
                         </div>
                     </ScrollArea>
                 ) : (
-                    <div className="text-sm text-muted-foreground italic">
+                    <div className="text-muted-foreground text-sm italic">
                         {t("no_comment")}
                     </div>
                 )}
@@ -79,7 +79,7 @@ export default function FeedbackDetailsCollapse({ feedback }) {
 
             {/* Statut témoignage */}
             {feedback.allowUseAsTestimonial && (
-                <div className="flex items-center gap-2 rounded-md border border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950 p-3">
+                <div className="flex items-center gap-2 rounded-md border border-green-200 bg-green-50 p-3 dark:border-green-900 dark:bg-green-950">
                     <Award className="size-5 text-green-600 dark:text-green-400" />
                     <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
@@ -102,7 +102,7 @@ export default function FeedbackDetailsCollapse({ feedback }) {
                         size="sm"
                         onClick={handleMarkAsRead}
                     >
-                        <Eye className="size-4 mr-2" />
+                        <Eye className="mr-2 size-4" />
                         {t("action_mark_read")}
                     </Button>
                 )}
@@ -112,12 +112,12 @@ export default function FeedbackDetailsCollapse({ feedback }) {
                         size="sm"
                         onClick={handleMarkAsResolved}
                     >
-                        <CheckCircle className="size-4 mr-2" />
+                        <CheckCircle className="mr-2 size-4" />
                         {t("action_mark_resolved")}
                     </Button>
                 )}
                 <Button variant="destructive" size="sm" onClick={handleDelete}>
-                    <Trash2 className="size-4 mr-2" />
+                    <Trash2 className="mr-2 size-4" />
                     {t("action_delete")}
                 </Button>
             </div>

@@ -47,11 +47,11 @@ function MemberRow({ member, currentUserId }) {
     };
 
     return (
-        <div className="flex items-center justify-between p-3 border rounded-md">
+        <div className="flex items-center justify-between rounded-md border p-3">
             <div className="flex items-center gap-2">
                 <div className="flex flex-col">
                     <span className="text-sm font-medium">{fallbackName}</span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                         {member.user?.email}
                     </span>
                 </div>
@@ -66,7 +66,7 @@ function MemberRow({ member, currentUserId }) {
                         onClick={handleImpersonateUser}
                         size="sm"
                     >
-                        <HatGlasses className="h-4 w-4 mr-2" />
+                        <HatGlasses className="mr-2 h-4 w-4" />
                         {tMembers("owners_impersonate")}
                     </Button>
                 ) : (
@@ -96,17 +96,17 @@ export default function OrganizationDetailsCollapse({
 
     return (
         <div className="flex flex-col gap-4 p-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="flex flex-col gap-2 w-full">
-                    <div className="flex items-center justify-between w-full ">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div className="flex w-full flex-col gap-2">
+                    <div className="flex w-full items-center justify-between">
                         <div className="flex items-center gap-1.5 font-bold">
-                            <Building2 className="h-4 w-4 mt-0.25" />
+                            <Building2 className="mt-0.25 h-4 w-4" />
                             {tDetails("details_title")}
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 text-sm">
                         <div className="flex items-center gap-1">
-                            <div className="font-medium text-muted-foreground">
+                            <div className="text-muted-foreground font-medium">
                                 {tDetails("field_id")}
                             </div>
                             <p className="font-mono text-xs break-all">
@@ -114,7 +114,7 @@ export default function OrganizationDetailsCollapse({
                             </p>
                         </div>
                         <div className="flex items-center gap-1">
-                            <div className="font-medium text-muted-foreground">
+                            <div className="text-muted-foreground font-medium">
                                 {tDetails("field_name")}
                             </div>
                             <div className="flex items-center gap-1">
@@ -123,7 +123,7 @@ export default function OrganizationDetailsCollapse({
                             </div>
                         </div>
                         <div className="flex items-center gap-1">
-                            <div className="font-medium text-muted-foreground">
+                            <div className="text-muted-foreground font-medium">
                                 {tDetails("field_slug")}
                             </div>
                             <div className="flex items-center gap-1">
@@ -133,7 +133,7 @@ export default function OrganizationDetailsCollapse({
                         </div>
                         {organization.description && (
                             <div className="flex gap-1">
-                                <div className="font-medium text-muted-foreground">
+                                <div className="text-muted-foreground font-medium">
                                     {tDetails("field_description")}
                                 </div>
                                 <div className="flex items-center gap-1">
@@ -145,7 +145,7 @@ export default function OrganizationDetailsCollapse({
                             </div>
                         )}
                         <div className="flex items-center gap-1">
-                            <div className="font-medium text-muted-foreground">
+                            <div className="text-muted-foreground font-medium">
                                 {tDetails("field_created")}
                             </div>
                             <div className="flex items-center gap-1">
@@ -156,10 +156,10 @@ export default function OrganizationDetailsCollapse({
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-2 w-full">
-                    <div className="flex items-center justify-between w-full ">
+                <div className="flex w-full flex-col gap-2">
+                    <div className="flex w-full items-center justify-between">
                         <div className="flex items-center gap-1.5 font-bold">
-                            <Users className="h-4 w-4 mt-0.25" />
+                            <Users className="mt-0.25 h-4 w-4" />
                             {tMembers("owners_title", {
                                 count:
                                     organization.members?.filter(
@@ -172,7 +172,7 @@ export default function OrganizationDetailsCollapse({
                         {!organization.members?.filter(
                             member => member.role === "owner"
                         ).length ? (
-                            <div className="text-center py-4 text-muted-foreground">
+                            <div className="text-muted-foreground py-4 text-center">
                                 {tMembers("owners_empty")}
                             </div>
                         ) : (

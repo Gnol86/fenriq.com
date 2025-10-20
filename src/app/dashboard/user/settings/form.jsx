@@ -69,7 +69,7 @@ export default function UserSettingsForm({ user }) {
             </form>
         </Form>
     ) : (
-        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+        <div className="text-muted-foreground flex flex-col gap-2 text-sm">
             <p>{t("no_user_error")}</p>
             <p>{t("reconnect_message")}</p>
         </div>

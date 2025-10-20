@@ -35,7 +35,7 @@ export default async function AdminOrganizationPage({ params }) {
 
     const t = await getTranslations("admin.organizations");
     const locale = await getLocale();
-    const { slug } = params;
+    const { slug } = await params;
 
     const organization = await getOrganizationBySlugAsAdminAction({ slug });
 
@@ -75,7 +75,7 @@ export default async function AdminOrganizationPage({ params }) {
             </Card>
 
             {/* Statistiques */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <Card>
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium">
@@ -84,7 +84,7 @@ export default async function AdminOrganizationPage({ params }) {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{memberCount}</div>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-muted-foreground text-xs">
                             {t("stats_admins", {
                                 count: adminCount,
                                 s: adminCount > 1 ? "s" : "",
@@ -103,7 +103,7 @@ export default async function AdminOrganizationPage({ params }) {
                         <div className="text-2xl font-bold text-green-600">
                             {t("stats_status_active")}
                         </div>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-muted-foreground text-xs">
                             {t("stats_status_description")}
                         </p>
                     </CardContent>
@@ -119,7 +119,7 @@ export default async function AdminOrganizationPage({ params }) {
                         <div className="text-2xl font-bold">
                             {t("stats_type_standard")}
                         </div>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-muted-foreground text-xs">
                             {t("stats_type_description")}
                         </p>
                     </CardContent>
@@ -127,7 +127,7 @@ export default async function AdminOrganizationPage({ params }) {
             </div>
 
             {/* Navigation vers les sections */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
@@ -191,7 +191,7 @@ export default async function AdminOrganizationPage({ params }) {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-destructive">
+                        <CardTitle className="text-destructive flex items-center gap-2">
                             <AlertTriangle className="h-5 w-5" />
                             {t("danger_zone_title")}
                         </CardTitle>
@@ -225,7 +225,7 @@ export default async function AdminOrganizationPage({ params }) {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <pre className="text-sm bg-muted p-4 rounded">
+                        <pre className="bg-muted rounded p-4 text-sm">
                             {JSON.stringify(organization.metadata, null, 2)}
                         </pre>
                     </CardContent>

@@ -62,12 +62,12 @@ export default function UserButton({
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-2 p-2 cursor-pointer">
+            <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2 p-2">
                 <ImageProfile entity={user} />
-                <div className="flex flex-col justify-start items-start flex-1 text-left overflow-hidden min-w-0">
-                    <span className="font-medium truncate w-full">
+                <div className="flex min-w-0 flex-1 flex-col items-start justify-start overflow-hidden text-left">
+                    <span className="w-full truncate font-medium">
                         {isImpersonating ? (
-                            <span className="text-destructive truncate flex items-center gap-1">
+                            <span className="text-destructive flex items-center gap-1 truncate">
                                 {user.name || t("default_name")}{" "}
                                 <HatGlasses
                                     className="text-foreground"
@@ -78,7 +78,7 @@ export default function UserButton({
                             user.name || t("default_name")
                         )}
                     </span>
-                    <span className="text-xs font-medium text-muted-foreground -mt-1 truncate w-full">
+                    <span className="text-muted-foreground -mt-1 w-full truncate text-xs font-medium">
                         {user.email || ""}
                     </span>
                 </div>
@@ -141,7 +141,7 @@ export default function UserButton({
                         {isStoppingImpersonation ? (
                             <Loader2
                                 size={16}
-                                className="opacity-60 animate-spin"
+                                className="animate-spin opacity-60"
                                 aria-hidden="true"
                             />
                         ) : (
@@ -168,7 +168,7 @@ export default function UserButton({
                         {isSigningOut ? (
                             <Loader2
                                 size={16}
-                                className="opacity-60 animate-spin"
+                                className="animate-spin opacity-60"
                                 aria-hidden="true"
                             />
                         ) : (

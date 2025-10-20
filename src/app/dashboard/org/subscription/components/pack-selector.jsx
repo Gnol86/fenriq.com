@@ -56,13 +56,13 @@ export default function PackSelector({
     return (
         <div className="flex flex-col gap-4">
             {/* Pack selection */}
-            <div className="flex flex-col gap-3 p-4 border rounded-lg">
+            <div className="flex flex-col gap-3 rounded-lg border p-4">
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col gap-1">
                         <span className="text-sm font-medium">
                             {t("pack_selector_label")}
                         </span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-muted-foreground text-xs">
                             {t("pack_selector_description", {
                                 limit: packUsageLimit,
                             })}
@@ -87,7 +87,7 @@ export default function PackSelector({
                                     );
                                     setPackQuantity(value);
                                 }}
-                                className="font-bold w-12 text-center px-0"
+                                className="w-12 px-0 text-center font-bold"
                             />
                             <Button
                                 variant="outline"
@@ -102,7 +102,7 @@ export default function PackSelector({
                 </div>
 
                 {packQuantity > 0 && (
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-muted-foreground text-xs">
                         {t("pack_price_info", {
                             count: packQuantity,
                             amount: (packPriceAmount / 100).toFixed(2),
@@ -117,7 +117,7 @@ export default function PackSelector({
             </div>
 
             {/* Total summary */}
-            <div className="flex flex-col gap-2 p-4 bg-muted rounded-lg">
+            <div className="bg-muted flex flex-col gap-2 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">
                         {t("total_usage_limit")}

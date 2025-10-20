@@ -1,8 +1,4 @@
 "use client";
-import { toast } from "sonner";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -12,18 +8,23 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import FormButton from "@/components/ui/form-button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import FormButton from "@/components/ui/form-button";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export default function FormSignin() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const email = searchParams.get("email");
+    const callbackURL = searchParams.get("callback") || "/app";
     const t = useTranslations("auth.signin");
     const tValidation = useTranslations("validation");
 
@@ -49,7 +50,7 @@ export default function FormSignin() {
                 {
                     email: values.email,
                     password: values.password,
-                    callbackURL: "/app",
+                    callbackURL: callbackURL,
                 },
                 {
                     onSuccess: () => {
@@ -127,7 +128,7 @@ export default function FormSignin() {
                         <Button variant="ghost">{t("cancel_button")}</Button>
                     </Link>
                 </div>
-                <div className="text-xs flex gap-2 justify-center items-center">
+                <div className="flex items-center justify-center gap-2 text-xs">
                     {t("no_account_text")}
                     <Link
                         href={

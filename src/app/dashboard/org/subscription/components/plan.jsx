@@ -58,8 +58,8 @@ export default async function PlanCard({ organization, lengthTotalMembres }) {
     }
 
     return (
-        <div className="flex gap-4 w-full justify-center">
-            <div className="relative border rounded-2xl w-[350px] p-5 flex flex-col gap-4">
+        <div className="flex w-full justify-center gap-4">
+            <div className="relative flex w-[350px] flex-col gap-4 rounded-2xl border p-5">
                 <div className="flex flex-col gap-1">
                     <div className="text-2xl font-bold">
                         {typeof product === "object"
@@ -112,12 +112,12 @@ export default async function PlanCard({ organization, lengthTotalMembres }) {
                                 {price.recurring?.interval ?? t("once")}
                             </span>
                         </div>
-                        <div className="text-sm text-muted-foreground">
+                        <div className="text-muted-foreground text-sm">
                             {t("plan_base_includes", {
                                 limit: product.metadata?.usage_limit ?? "N/A",
                             })}
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-muted-foreground text-xs">
                             {t("plan_addons_available")}
                         </div>
                     </>
@@ -149,7 +149,7 @@ export default async function PlanCard({ organization, lengthTotalMembres }) {
                                         key={key}
                                         className="flex items-center gap-2"
                                     >
-                                        <span className="text-sm text-muted-foreground">
+                                        <span className="text-muted-foreground text-sm">
                                             {key}:
                                         </span>
                                         <span className="text-sm">{value}</span>
@@ -206,7 +206,7 @@ export default async function PlanCard({ organization, lengthTotalMembres }) {
                     delay={3}
                     size={200}
                     borderWidth={2}
-                    className="from-transparent via-primary to-transparent"
+                    className="via-primary from-transparent to-transparent"
                 />
             </div>
         </div>

@@ -98,7 +98,7 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className="flex flex-col w-full gap-4">
+                <CardContent className="flex w-full flex-col gap-4">
                     {/* Search */}
                     <SearchInput placeholder={t("search_placeholder")} />
 
@@ -133,10 +133,10 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                                 size="sm"
                                             />
                                             <div className="flex flex-col">
-                                                <span className="text-sm font-medium text-foreground">
+                                                <span className="text-foreground text-sm font-medium">
                                                     {org.name}
                                                 </span>
-                                                <span className="text-xs text-muted-foreground">
+                                                <span className="text-muted-foreground text-xs">
                                                     {org.slug}
                                                 </span>
                                             </div>
@@ -158,7 +158,7 @@ export default async function AdminOrganizationsPage({ searchParams }) {
 
                                     {/* Date de création */}
                                     <TableCell>
-                                        <span className="text-sm text-muted-foreground">
+                                        <span className="text-muted-foreground text-sm">
                                             {formatDate(org.createdAt, locale)}
                                         </span>
                                     </TableCell>

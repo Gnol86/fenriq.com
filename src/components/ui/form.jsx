@@ -123,7 +123,7 @@ function FormMessage({ className, ...props }) {
         <p
             data-slot="form-message"
             id={formMessageId}
-            className={cn("text-destructive text-sm -mt-1", className)}
+            className={cn("text-destructive -mt-1 text-sm", className)}
             {...props}
         >
             {body}

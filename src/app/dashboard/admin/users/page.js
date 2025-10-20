@@ -81,7 +81,7 @@ export default async function AdminUsersPage({ searchParams }) {
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className="flex flex-col w-full gap-4">
+                <CardContent className="flex w-full flex-col gap-4">
                     {/* Search */}
                     <SearchInput placeholder={tUsers("search_placeholder")} />
 

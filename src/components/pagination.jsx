@@ -36,7 +36,7 @@ export function Pagination({ totalPages, page }) {
     if (!totalPages || totalPages <= 1) return null;
 
     return (
-        <div className="w-full flex justify-center">
+        <div className="flex w-full justify-center">
             <ButtonGroup>
                 <ButtonGroup>
                     <Button
@@ -56,7 +56,7 @@ export function Pagination({ totalPages, page }) {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="secondary" size="icon-sm">
-                                <Hash className="w-4 h-4" />
+                                <Hash className="h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent side="top">

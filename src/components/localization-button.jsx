@@ -36,7 +36,7 @@ export default function LocalizationButton({ currentLocale, size = 20 }) {
                         }
                     />
                     {localeNames[currentLocale]}
-                    <Check className="h-4 w-4 text-primary" />
+                    <Check className="text-primary h-4 w-4" />
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {sortedLocales.map(locale => {

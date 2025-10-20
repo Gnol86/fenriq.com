@@ -143,7 +143,7 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
                 </CardHeader>
 
                 <CardContent>
-                    <ButtonGroup className="w-full mb-4">
+                    <ButtonGroup className="mb-4 w-full">
                         <SearchInput placeholder={t("search_placeholder")} />
                         <ToggleViewButton label={toggleButtonLabel} />
                     </ButtonGroup>
@@ -173,7 +173,7 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
                         </Empty>
                     ) : (
                         <>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-muted-foreground text-sm">
                                 {filterStatusMessage}
                             </p>
                             <ItemGroup>

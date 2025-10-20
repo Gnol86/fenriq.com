@@ -29,13 +29,13 @@ export default async function SubscriptionDetails({ subscription }) {
         <div className="grid gap-4 md:grid-cols-2">
             <div className="flex items-start gap-3">
                 <div className="rounded-lg border p-2">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <Calendar className="text-muted-foreground h-4 w-4" />
                 </div>
                 <div className="flex flex-col gap-1">
                     <div className="text-sm font-medium">
                         {t("period_start_label")}
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-muted-foreground text-sm">
                         {formatDate(subscription.currentPeriodStart)}
                     </div>
                 </div>
@@ -43,7 +43,7 @@ export default async function SubscriptionDetails({ subscription }) {
 
             <div className="flex items-start gap-3">
                 <div className="rounded-lg border p-2">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <Calendar className="text-muted-foreground h-4 w-4" />
                 </div>
                 <div className="flex flex-col gap-1">
                     <div className="text-sm font-medium">
@@ -51,7 +51,7 @@ export default async function SubscriptionDetails({ subscription }) {
                             ? t("period_end_cancel_label")
                             : t("period_end_renew_label")}
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-muted-foreground text-sm">
                         {formatDate(subscription.currentPeriodEnd)}
                     </div>
                 </div>
@@ -60,7 +60,7 @@ export default async function SubscriptionDetails({ subscription }) {
             {(isSeatBased || isPlanBased) && (
                 <div className="flex items-start gap-3">
                     <div className="rounded-lg border p-2">
-                        <Users className="h-4 w-4 text-muted-foreground" />
+                        <Users className="text-muted-foreground h-4 w-4" />
                     </div>
                     <div className="flex flex-col gap-1">
                         <div className="text-sm font-medium">
@@ -68,7 +68,7 @@ export default async function SubscriptionDetails({ subscription }) {
                                 ? t("usage_limit_label")
                                 : t("seats_label")}
                         </div>
-                        <div className="text-sm text-muted-foreground">
+                        <div className="text-muted-foreground text-sm">
                             {subscription.seats ?? tCommon("n_a")}{" "}
                             {isPlanBased
                                 ? t("usage_limit_unit")
@@ -80,13 +80,13 @@ export default async function SubscriptionDetails({ subscription }) {
 
             <div className="flex items-start gap-3">
                 <div className="rounded-lg border p-2">
-                    <CreditCard className="h-4 w-4 text-muted-foreground" />
+                    <CreditCard className="text-muted-foreground h-4 w-4" />
                 </div>
                 <div className="flex flex-col gap-1">
                     <div className="text-sm font-medium">
                         {t("amount_label")}
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-muted-foreground text-sm">
                         {isSeatBased ? (
                             <>
                                 {formatAmount(
@@ -144,13 +144,13 @@ export default async function SubscriptionDetails({ subscription }) {
                 new Date(subscription.trialEnd) > new Date() && (
                     <div className="flex items-start gap-3 md:col-span-2">
                         <div className="rounded-lg border p-2">
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
+                            <Calendar className="text-muted-foreground h-4 w-4" />
                         </div>
                         <div className="flex flex-col gap-1">
                             <div className="text-sm font-medium">
                                 {t("trial_end_label")}
                             </div>
-                            <div className="text-sm text-muted-foreground">
+                            <div className="text-muted-foreground text-sm">
                                 {formatDate(subscription.trialEnd)}
                             </div>
                         </div>

@@ -33,7 +33,7 @@ export default function UserTableRow({ user, currentUserId }) {
                 {/* Utilisateur avec avatar et informations */}
                 <TableCell>
                     <div className="flex items-center gap-2">
-                        <div className="flex items-center justify-center w-4">
+                        <div className="flex w-4 items-center justify-center">
                             {isExpanded ? (
                                 <ChevronDown className="text-muted-foreground" />
                             ) : (
@@ -43,7 +43,7 @@ export default function UserTableRow({ user, currentUserId }) {
                         <ImageProfile entity={user} size="sm" />
                         <div className="flex flex-col">
                             <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-foreground">
+                                <span className="text-foreground text-sm font-medium">
                                     {user.name || tUsers("table_user")}
                                 </span>
                                 {isCurrentUser && (
@@ -55,7 +55,7 @@ export default function UserTableRow({ user, currentUserId }) {
                                     </Badge>
                                 )}
                             </div>
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-muted-foreground text-xs">
                                 {user.email}
                             </span>
                         </div>
@@ -89,7 +89,7 @@ export default function UserTableRow({ user, currentUserId }) {
 
                 {/* Date de création */}
                 <TableCell>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-muted-foreground text-sm">
                         {formatDate(user.createdAt, locale)}
                     </span>
                 </TableCell>

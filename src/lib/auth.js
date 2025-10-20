@@ -66,18 +66,6 @@ export const auth = betterAuth({
             );
         },
     },
-    onAPIError: {
-        throw: true,
-        onError: (error, request) => {
-            console.error("=== Better-Auth API Error ===");
-            console.error("Path:", request.path);
-            console.error("Method:", request.method);
-            console.error("Error:", error.message);
-            console.error("Status:", error.status);
-            console.error("Stack:", error.stack);
-            console.error("============================");
-        },
-    },
     session: {
         expiresIn: 60 * 60 * 24 * 7, // 7 jours
         updateAge: 60 * 60 * 24, // Refresh après 24h

@@ -102,7 +102,7 @@ export default function UserActionMenu({ user, isCurrentUser }) {
     const filteredRoles = allowedRoles.map(role => [role, tRoles(role)]);
 
     return (
-        <div className="flex gap-2 justify-end items-center">
+        <div className="flex items-center justify-end gap-2">
             <Select value={user.role} onValueChange={handleRoleChange}>
                 <SelectTrigger className="w-fit">
                     <SelectValue>{tRoles(user.role)}</SelectValue>
@@ -118,23 +118,23 @@ export default function UserActionMenu({ user, isCurrentUser }) {
 
             {isBanned ? (
                 <Button onClick={handleUnbanUser} size="sm">
-                    <UserCheck className="h-4 w-4 mr-2" />
+                    <UserCheck className="mr-2 h-4 w-4" />
                     {t("unban_button")}
                 </Button>
             ) : (
                 <Button onClick={handleBanUser} size="sm">
-                    <Ban className="h-4 w-4 mr-2" />
+                    <Ban className="mr-2 h-4 w-4" />
                     {t("ban_button")}
                 </Button>
             )}
 
             <Button variant="outline" onClick={handleImpersonateUser} size="sm">
-                <HatGlasses className="h-4 w-4 mr-2" />
+                <HatGlasses className="mr-2 h-4 w-4" />
                 {t("impersonate_button")}
             </Button>
 
             <Button variant="destructive" onClick={handleRemoveUser} size="sm">
-                <Trash2 className="h-4 w-4 mr-2" />
+                <Trash2 className="mr-2 h-4 w-4" />
                 {t("delete_button")}
             </Button>
         </div>

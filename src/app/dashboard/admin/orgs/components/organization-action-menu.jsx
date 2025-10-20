@@ -33,10 +33,10 @@ export default function OrganizationActionMenu({ organization }) {
     };
 
     return (
-        <div className="flex gap-2 justify-end items-center">
+        <div className="flex items-center justify-end gap-2">
             <Link href={`/dashboard/admin/orgs/${organization.slug}`}>
                 <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
+                    <Settings className="mr-2 h-4 w-4" />
                     {t("settings_button")}
                 </Button>
             </Link>
@@ -46,7 +46,7 @@ export default function OrganizationActionMenu({ organization }) {
                 onClick={handleDeleteOrganization}
                 size="sm"
             >
-                <Trash2 className="h-4 w-4 mr-2" />
+                <Trash2 className="mr-2 h-4 w-4" />
                 {t("delete_button")}
             </Button>
         </div>

@@ -112,7 +112,7 @@ export function FeedbackButton() {
                             />
                         </div>
                         {rating === 5 && comment.trim().length > 0 && (
-                            <div className="flex items-start gap-2 rounded-md border border-primary/20 bg-primary/5 p-3">
+                            <div className="border-primary/20 bg-primary/5 flex items-start gap-2 rounded-md border p-3">
                                 <Checkbox
                                     id="testimonial"
                                     checked={allowUseAsTestimonial}
@@ -121,11 +121,11 @@ export function FeedbackButton() {
                                 <div className="flex flex-col gap-1">
                                     <Label
                                         htmlFor="testimonial"
-                                        className="text-sm font-medium leading-none cursor-pointer"
+                                        className="cursor-pointer text-sm leading-none font-medium"
                                     >
                                         {t("testimonial_label")}
                                     </Label>
-                                    <p className="text-xs text-muted-foreground">
+                                    <p className="text-muted-foreground text-xs">
                                         {t("testimonial_description")}
                                     </p>
                                 </div>

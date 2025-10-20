@@ -204,13 +204,13 @@ export default async function LicenseMovements({ movements }) {
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                     {/* Last billing date */}
                     <div className="flex flex-col gap-1 rounded-lg border p-3">
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-muted-foreground text-xs">
                             {t("last_billing_date")}
                         </div>
                         <div className="text-lg font-semibold">
                             {formatDate(movements.lastInvoiceDate)}
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-muted-foreground text-xs">
                             {t("invoice_number", {
                                 number: movements.lastInvoiceNumber,
                             })}
@@ -219,7 +219,7 @@ export default async function LicenseMovements({ movements }) {
 
                     {/* Next billing date */}
                     <div className="flex flex-col gap-1 rounded-lg border p-3">
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-muted-foreground text-xs">
                             {t("next_billing_date")}
                         </div>
                         <div className="text-lg font-semibold">
@@ -235,7 +235,7 @@ export default async function LicenseMovements({ movements }) {
                     {/* Licenses at start of period */}
                     <div className="flex items-center gap-3 rounded-lg border p-3">
                         <div className="flex flex-col gap-0.5">
-                            <div className="text-xs text-muted-foreground">
+                            <div className="text-muted-foreground text-xs">
                                 {t("licenses_at_start")}
                             </div>
                             <div className="text-2xl font-semibold">
@@ -247,7 +247,7 @@ export default async function LicenseMovements({ movements }) {
                     {/* Current licenses */}
                     <div className="flex items-center gap-3 rounded-lg border p-3">
                         <div className="flex flex-col gap-0.5">
-                            <div className="text-xs text-muted-foreground">
+                            <div className="text-muted-foreground text-xs">
                                 {t("current_licenses")}
                             </div>
                             <div className="text-2xl font-semibold">
@@ -281,7 +281,7 @@ export default async function LicenseMovements({ movements }) {
                         {movements.removedMembers?.length > 0 && (
                             <Badge
                                 variant="outline"
-                                className="text-green-600 border-green-600/40"
+                                className="border-green-600/40 text-green-600"
                             >
                                 <div className="flex items-center gap-1">
                                     <UserMinus className="h-3 w-3" />
@@ -363,7 +363,7 @@ export default async function LicenseMovements({ movements }) {
                     </div>
                 </div>
             ) : (
-                <div className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
+                <div className="text-muted-foreground rounded-lg border border-dashed p-4 text-center text-sm">
                     {t("no_movements")}
                 </div>
             )}
@@ -389,7 +389,7 @@ export default async function LicenseMovements({ movements }) {
                                 </span>
                             </div>
                             {baseDetails.length > 1 && (
-                                <div className="flex flex-col gap-1 text-xs text-muted-foreground">
+                                <div className="text-muted-foreground flex flex-col gap-1 text-xs">
                                     {baseDetails.map(detail => (
                                         <span key={detail.id}>
                                             {detail.text}

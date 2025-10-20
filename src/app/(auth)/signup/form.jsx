@@ -179,7 +179,7 @@ export default function FormSignup() {
                         <Button variant="ghost">{t("cancel_button")}</Button>
                     </Link>
                 </div>
-                <div className="text-xs flex gap-2 justify-center items-center">
+                <div className="flex items-center justify-center gap-2 text-xs">
                     {t("already_account_text")}
                     <Link
                         href={

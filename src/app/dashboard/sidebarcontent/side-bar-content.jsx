@@ -97,7 +97,7 @@ export default async function SideBarContent() {
                     canInvitationsRead ||
                     canOrgsDelete) && (
                     <SidebarGroup>
-                        <SidebarGroupLabel className="flex gap-1 items-center uppercase">
+                        <SidebarGroupLabel className="flex items-center gap-1 uppercase">
                             {activeUserOrganization?.name ??
                                 t("organization_fallback")}
                         </SidebarGroupLabel>
@@ -166,7 +166,7 @@ export default async function SideBarContent() {
 
             {user.role === "admin" && (
                 <SidebarGroup>
-                    <SidebarGroupLabel className="flex gap-1 items-center uppercase">
+                    <SidebarGroupLabel className="flex items-center gap-1 uppercase">
                         {t("administration")}
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
@@ -201,7 +201,7 @@ export default async function SideBarContent() {
             )}
 
             <SidebarGroup>
-                <SidebarGroupLabel className="flex gap-1 items-center uppercase">
+                <SidebarGroupLabel className="flex items-center gap-1 uppercase">
                     {user.name}
                 </SidebarGroupLabel>
                 <SidebarGroupContent>

@@ -198,7 +198,7 @@ export default function ImageUploadUser({ user }) {
 
     if (!user) {
         return (
-            <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+            <div className="text-muted-foreground flex flex-col gap-2 text-sm">
                 <p>{tImageUpload("no_user")}</p>
             </div>
         );
@@ -210,8 +210,8 @@ export default function ImageUploadUser({ user }) {
                 {/* Zone de drag & drop */}
                 <div
                     className={cn(
-                        "cursor-pointer transition-colors w-fit rounded-full",
-                        "hover:ring-2 ring-primary/50",
+                        "w-fit cursor-pointer rounded-full transition-colors",
+                        "ring-primary/50 hover:ring-2",
                         (isPending || isCropping) &&
                             "pointer-events-none opacity-50"
                     )}
@@ -236,7 +236,7 @@ export default function ImageUploadUser({ user }) {
                         variant="ghost"
                         size="icon"
                         onClick={handleDeleteImage}
-                        className="absolute -top-2 -right-4 rounded-full text-destructive"
+                        className="text-destructive absolute -top-2 -right-4 rounded-full"
                         disabled={isPending}
                     >
                         <Trash2 />
@@ -252,7 +252,7 @@ export default function ImageUploadUser({ user }) {
                         </DialogTitle>
                     </DialogHeader>
                     <div className="flex flex-col gap-4">
-                        <div className="flex h-80 w-full items-center justify-center overflow-hidden rounded-lg bg-muted">
+                        <div className="bg-muted flex h-80 w-full items-center justify-center overflow-hidden rounded-lg">
                             {previewUrl ? (
                                 <Cropper
                                     image={previewUrl}
@@ -271,7 +271,7 @@ export default function ImageUploadUser({ user }) {
                                     <CropperCropArea className="rounded-full" />
                                 </Cropper>
                             ) : (
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-muted-foreground text-sm">
                                     {tImageUpload("cropper_loading")}
                                 </p>
                             )}
@@ -289,7 +289,7 @@ export default function ImageUploadUser({ user }) {
                                 value={zoom}
                                 onChange={handleZoomSliderChange}
                                 disabled={isPending || isCropping}
-                                className="w-full cursor-pointer accent-primary"
+                                className="accent-primary w-full cursor-pointer"
                             />
                         </div>
                     </div>
