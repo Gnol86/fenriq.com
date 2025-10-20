@@ -1,20 +1,20 @@
 // src/lib/auth.js
-import { betterAuth, APIError } from "better-auth";
+import { deleteFile } from "@/actions/file.action";
+import { getBetterAuthTranslations } from "@/messages/get-better-auth-translations.js";
+import { SiteConfig } from "@/site-config";
+import { APIError, betterAuth } from "better-auth";
+import { localization } from "better-auth-localization";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, createAuthMiddleware, organization } from "better-auth/plugins";
-import { localization } from "better-auth-localization";
-import { getServerUrl } from "./server-url";
-import { SiteConfig } from "@/site-config";
 import {
     ac,
-    ownerPermissions,
     adminPermissions,
     memberPermissions,
+    ownerPermissions,
 } from "./organization-permissions.js";
-import { getBetterAuthTranslations } from "@/messages/get-better-auth-translations.js";
-import { deleteFile } from "@/actions/file.action";
+import { getServerUrl } from "./server-url";
 
-import { PrismaClient } from "../generated/prisma";
+import { PrismaClient } from "@root/prisma/generated";
 const prisma = new PrismaClient();
 
 async function getActiveOrganization(userId) {

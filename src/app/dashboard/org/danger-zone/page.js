@@ -1,4 +1,4 @@
-import DangerZoneForm from "./form";
+import { hasPermissionAction } from "@/actions/organization.action";
 import {
     Card,
     CardContent,
@@ -7,12 +7,12 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { auth } from "@/lib/auth";
+import { PrismaClient } from "@root/prisma/generated";
 import { AlertTriangle } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { hasPermissionAction } from "@/actions/organization.action";
-import { getTranslations } from "next-intl/server";
-import { PrismaClient } from "@/generated/prisma";
+import DangerZoneForm from "./form";
 
 const prisma = new PrismaClient();
 

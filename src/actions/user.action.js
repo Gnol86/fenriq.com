@@ -1,10 +1,10 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
+import { headers } from "next/headers";
 
-import { PrismaClient } from "@/generated/prisma";
+import { PrismaClient } from "@root/prisma/generated";
 const prisma = new PrismaClient();
 
 export async function updateUserAction({ name, email, image }) {

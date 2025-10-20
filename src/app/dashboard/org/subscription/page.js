@@ -1,12 +1,12 @@
-import { notFound } from "next/navigation";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import { hasPermissionAction } from "@/actions/organization.action";
-import { PrismaClient } from "@/generated/prisma";
-import Plan from "./components/plan";
-import SubscriptionManagement from "./components/subscription-management";
+import { auth } from "@/lib/auth";
+import { PrismaClient } from "@root/prisma/generated";
+import { headers } from "next/headers";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import Plan from "./components/plan";
 import StripeLoader from "./components/stripe-loader";
+import SubscriptionManagement from "./components/subscription-management";
 
 const prisma = new PrismaClient();
 

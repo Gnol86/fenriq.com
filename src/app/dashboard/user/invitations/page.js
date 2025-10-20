@@ -1,3 +1,5 @@
+import ImageProfile from "@/components/image-profile";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -5,22 +7,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { PrismaClient } from "@/generated/prisma";
-import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/utils";
-import Link from "next/link";
-import { Eye } from "lucide-react";
-import { notFound } from "next/navigation";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { getTranslations, getLocale } from "next-intl/server";
 import {
     Empty,
     EmptyHeader,
     EmptyMedia,
     EmptyTitle,
 } from "@/components/ui/empty";
-import { Mail } from "lucide-react";
 import {
     Item,
     ItemActions,
@@ -31,8 +23,15 @@ import {
     ItemSeparator,
     ItemTitle,
 } from "@/components/ui/item";
+import { auth } from "@/lib/auth";
+import { formatDate } from "@/lib/utils";
+import { PrismaClient } from "@root/prisma/generated";
+import { Eye, Mail } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
+import { headers } from "next/headers";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import React from "react";
-import ImageProfile from "@/components/image-profile";
 
 export default async function Page() {
     const t = await getTranslations("user.invitations");

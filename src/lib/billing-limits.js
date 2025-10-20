@@ -1,6 +1,6 @@
 // src/lib/billing-limits.js
-import { PrismaClient } from "@/generated/prisma";
 import { SiteConfig } from "@/site-config";
+import { PrismaClient } from "@root/prisma/generated";
 
 const prisma = new PrismaClient();
 

@@ -1,4 +1,6 @@
 import { hasPermissionAction } from "@/actions/organization.action";
+import { Pagination } from "@/components/pagination";
+import SearchInput from "@/components/search-input";
 import {
     Card,
     CardAction,
@@ -7,7 +9,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { ItemGroup, ItemSeparator } from "@/components/ui/item";
 import {
     Empty,
     EmptyContent,
@@ -16,17 +17,16 @@ import {
     EmptyMedia,
     EmptyTitle,
 } from "@/components/ui/empty";
+import { ItemGroup, ItemSeparator } from "@/components/ui/item";
 import { auth } from "@/lib/auth";
+import { PrismaClient } from "@root/prisma/generated";
+import { Users } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
+import React from "react";
 import InviteMemberDialog from "../invitations/components/invite-member-dialog";
 import MemberItem from "./components/member-item";
-import React from "react";
-import { Users } from "lucide-react";
-import { PrismaClient } from "@/generated/prisma";
-import SearchInput from "@/components/search-input";
-import { Pagination } from "@/components/pagination";
 
 const prisma = new PrismaClient();
 const MEMBRES_PER_PAGE = 10;

@@ -1,5 +1,3 @@
-import Image from "next/image";
-import AcceptInvitationClient from "./accept-invitation-client";
 import {
     Card,
     CardContent,
@@ -7,8 +5,10 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { PrismaClient } from "@/generated/prisma";
+import { PrismaClient } from "@root/prisma/generated";
 import { getTranslations } from "next-intl/server";
+import Image from "next/image";
+import AcceptInvitationClient from "./accept-invitation-client";
 
 export default async function InvitationPage({ params }) {
     const { invitationId } = params;

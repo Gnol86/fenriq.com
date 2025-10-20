@@ -1,11 +1,11 @@
 "use server";
 
-import { stripe } from "@/lib/stripe";
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import { getServerUrl } from "@/lib/server-url";
+import { stripe } from "@/lib/stripe";
 import { SiteConfig } from "@/site-config";
-import { PrismaClient } from "@/generated/prisma";
+import { PrismaClient } from "@root/prisma/generated";
+import { headers } from "next/headers";
 
 const prisma = new PrismaClient();
 

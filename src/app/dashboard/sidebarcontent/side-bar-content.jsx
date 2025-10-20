@@ -8,8 +8,9 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { PrismaClient } from "@/generated/prisma";
 import { auth } from "@/lib/auth";
+import AddOnSideBarContent from "@/project/add-on-side-bar-content-dashboard";
+import { PrismaClient } from "@root/prisma/generated";
 import {
     AlertTriangle,
     Building,
@@ -17,14 +18,13 @@ import {
     LayoutDashboard,
     MailPlus,
     MailPlusIcon,
+    MessageSquare,
     Settings,
     Users,
-    MessageSquare,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import Link from "next/link";
-import AddOnSideBarContent from "@/project/add-on-side-bar-content-dashboard";
 
 export default async function SideBarContent() {
     const t = await getTranslations("sidebar.dashboard");

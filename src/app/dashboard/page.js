@@ -9,9 +9,8 @@ import {
 
 import ImageProfile from "@/components/image-profile";
 import OrganizationSelectorButton from "@/components/organization-selector-button";
-import { Badge } from "@/components/ui/badge";
-import { PrismaClient } from "@/generated/prisma";
 import { auth } from "@/lib/auth";
+import { PrismaClient } from "@root/prisma/generated";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -60,7 +59,6 @@ export default async function DashboardPage() {
                     {t("welcome", { name: user?.name ?? t("fallback_space") })}
                 </h1>
             </div>
-            <Badge>dfd</Badge>
             <Card>
                 <CardHeader>
                     <CardTitle>{t("active_organization_title")}</CardTitle>

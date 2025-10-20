@@ -1,4 +1,7 @@
 import { hasPermissionAction } from "@/actions/organization.action";
+import { Pagination } from "@/components/pagination";
+import SearchInput from "@/components/search-input";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
     Card,
     CardAction,
@@ -7,7 +10,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { ItemGroup, ItemSeparator } from "@/components/ui/item";
 import {
     Empty,
     EmptyContent,
@@ -16,18 +18,16 @@ import {
     EmptyMedia,
     EmptyTitle,
 } from "@/components/ui/empty";
+import { ItemGroup, ItemSeparator } from "@/components/ui/item";
 import { auth } from "@/lib/auth";
+import { PrismaClient } from "@root/prisma/generated";
+import { Mail } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
-import InviteMemberDialog from "./components/invite-member-dialog";
-import InvitationItem from "./components/invitation-item";
 import React from "react";
-import { Mail } from "lucide-react";
-import { PrismaClient } from "@/generated/prisma";
-import SearchInput from "@/components/search-input";
-import { Pagination } from "@/components/pagination";
-import { ButtonGroup } from "@/components/ui/button-group";
+import InvitationItem from "./components/invitation-item";
+import InviteMemberDialog from "./components/invite-member-dialog";
 import ToggleViewButton from "./components/toggle-view-button";
 
 const prisma = new PrismaClient();

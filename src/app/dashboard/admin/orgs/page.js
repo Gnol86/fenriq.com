@@ -1,5 +1,6 @@
 import ImageProfile from "@/components/image-profile";
 import { Pagination } from "@/components/pagination";
+import SearchInput from "@/components/search-input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +10,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import SearchInput from "@/components/search-input";
 import {
     Table,
     TableBody,
@@ -19,14 +19,14 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { PrismaClient } from "@/generated/prisma";
 import { auth } from "@/lib/auth";
 import { formatDate } from "@/lib/utils";
+import { PrismaClient } from "@root/prisma/generated";
 import { Eye } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTranslations, getLocale } from "next-intl/server";
 
 const prisma = new PrismaClient();
 const ORGS_PER_PAGE = 10;
