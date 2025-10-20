@@ -132,3 +132,12 @@ export async function cancelInvitationAction({ invitationId, organizationId }) {
         headers: await headers(),
     });
 }
+
+export async function leaveOrganizationAction({ organizationId }) {
+    return await auth.api.leaveOrganization({
+        body: {
+            organizationId,
+        },
+        headers: await headers(),
+    });
+}

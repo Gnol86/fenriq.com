@@ -8,9 +8,11 @@ import {
 } from "@/components/ui/card";
 
 import ImageProfile from "@/components/image-profile";
+import LeaveOrganizationButton from "@/components/leave-organization-button";
 import OrganizationSelectorButton from "@/components/organization-selector-button";
 import { auth } from "@/lib/auth";
 import { PrismaClient } from "@root/prisma/generated";
+import { ButtonGroup } from "@root/src/components/ui/button-group";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -166,16 +168,27 @@ export default async function DashboardPage() {
                                                 t("organization_fallback")}
                                         </span>
                                     </div>
-                                    <OrganizationSelectorButton
-                                        organization={organization}
-                                        isActive={
-                                            organization?.id ===
-                                            activeUserOrganization?.id
-                                        }
-                                        activeOrganizationId={
-                                            activeUserOrganization?.id
-                                        }
-                                    />
+                                    <div className="flex items-center gap-2">
+                                        <ButtonGroup>
+                                            <OrganizationSelectorButton
+                                                organization={organization}
+                                                isActive={
+                                                    organization?.id ===
+                                                    activeUserOrganization?.id
+                                                }
+                                                activeOrganizationId={
+                                                    activeUserOrganization?.id
+                                                }
+                                            />
+                                            <LeaveOrganizationButton
+                                                organization={organization}
+                                                isActive={
+                                                    organization?.id ===
+                                                    activeUserOrganization?.id
+                                                }
+                                            />
+                                        </ButtonGroup>
+                                    </div>
                                 </div>
                             );
                         })

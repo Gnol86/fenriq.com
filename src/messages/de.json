@@ -289,6 +289,14 @@
             "alert_confirm": "Dauerhaft löschen",
             "success_message": "Organisation erfolgreich gelöscht"
         },
+        "leave": {
+            "button_aria_label": "Organisation verlassen",
+            "dialog_title": "Organisation verlassen?",
+            "dialog_description": "Sind Sie sicher, dass Sie die Organisation {orgName} verlassen möchten? Sie verlieren den Zugriff auf alle Daten.",
+            "success_message": "Sie haben die Organisation {orgName} verlassen",
+            "error_message": "Organisation kann nicht verlassen werden",
+            "error_sole_owner": "Sie können diese Organisation nicht verlassen, da Sie der einzige Eigentümer sind. Übertragen Sie zuerst das Eigentum auf ein anderes Mitglied."
+        },
         "members": {
             "page_title": "Organisationsmitglieder",
             "page_description": "Verwalten Sie aktive Mitglieder Ihrer Organisation, ihre Rollen und Berechtigungen.",

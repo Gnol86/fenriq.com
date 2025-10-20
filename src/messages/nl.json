@@ -289,6 +289,14 @@
             "alert_confirm": "Permanent verwijderen",
             "success_message": "Organisatie succesvol verwijderd"
         },
+        "leave": {
+            "button_aria_label": "Organisatie verlaten",
+            "dialog_title": "Organisatie verlaten?",
+            "dialog_description": "Weet u zeker dat u de organisatie {orgName} wilt verlaten? U verliest de toegang tot alle gegevens.",
+            "success_message": "U heeft de organisatie {orgName} verlaten",
+            "error_message": "Kan organisatie niet verlaten",
+            "error_sole_owner": "U kunt deze organisatie niet verlaten omdat u de enige eigenaar bent. Draag eerst het eigendom over aan een ander lid."
+        },
         "members": {
             "page_title": "Organisatieleden",
             "page_description": "Beheer actieve leden van uw organisatie, hun rollen en rechten.",

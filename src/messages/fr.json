@@ -289,6 +289,14 @@
             "alert_confirm": "Supprimer définitivement",
             "success_message": "Organisation supprimée avec succès"
         },
+        "leave": {
+            "button_aria_label": "Quitter l'organisation",
+            "dialog_title": "Quitter l'organisation ?",
+            "dialog_description": "Êtes-vous sûr de vouloir quitter l'organisation {orgName} ? Vous perdrez l'accès à toutes ses données.",
+            "success_message": "Vous avez quitté l'organisation {orgName}",
+            "error_message": "Impossible de quitter l'organisation",
+            "error_sole_owner": "Vous ne pouvez pas quitter cette organisation car vous êtes le seul propriétaire. Transférez d'abord la propriété à un autre membre."
+        },
         "members": {
             "page_title": "Membres de l'organisation",
             "page_description": "Gérez les membres actifs de votre organisation, leurs rôles et leurs permissions.",

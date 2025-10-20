@@ -289,6 +289,14 @@
             "alert_confirm": "Delete Permanently",
             "success_message": "Organization deleted successfully"
         },
+        "leave": {
+            "button_aria_label": "Leave organization",
+            "dialog_title": "Leave organization?",
+            "dialog_description": "Are you sure you want to leave the organization {orgName}? You will lose access to all its data.",
+            "success_message": "You left the organization {orgName}",
+            "error_message": "Unable to leave organization",
+            "error_sole_owner": "You cannot leave this organization because you are the sole owner. Transfer ownership to another member first."
+        },
         "members": {
             "page_title": "Organization Members",
             "page_description": "Manage active members of your organization, their roles and permissions.",
