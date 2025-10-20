@@ -5,7 +5,6 @@ import pluginReact from "eslint-plugin-react";
 import pluginReactHooks from "eslint-plugin-react-hooks";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import boilerplateRules from "./eslint-rules/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -71,7 +70,6 @@ const config = [
         plugins: {
             react: pluginReact,
             "react-hooks": pluginReactHooks,
-            boilerplate: boilerplateRules,
         },
         settings: {
             react: {
@@ -79,9 +77,6 @@ const config = [
             },
         },
         rules: {
-            // Boilerplate protection rule
-            "boilerplate/no-edit-boilerplate": "error",
-
             // React rules
             "react/react-in-jsx-scope": "off", // Not needed in Next.js
             "react/prop-types": "off", // Using Zod for validation

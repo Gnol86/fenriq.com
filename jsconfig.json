@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "target": "es2015",
+        "checkJs": true,
         "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,
         "skipLibCheck": true,
@@ -11,8 +12,9 @@
         "moduleResolution": "bundler",
         "resolveJsonModule": true,
         "isolatedModules": true,
-        "jsx": "preserve",
+        "jsx": "react-jsx",
         "incremental": true,
+        "baseUrl": ".",
         "plugins": [
             {
                 "name": "next"
@@ -30,10 +32,12 @@
         }
     },
     "include": [
-        "next-env.d.js",
+        "src",
         "**/*.js",
         "**/*.jsx",
-        ".next/types/**/*.js",
+        "**/*.d.ts",
+        "next-env.d.ts",
+        ".next/types/**/*.ts",
         "tailwind.config.js"
     ],
     "exclude": [
