@@ -1,6 +1,5 @@
 // src/lib/auth.js
 import { deleteFile } from "@/actions/file.action";
-import { getBetterAuthTranslations } from "@/messages/get-better-auth-translations.js";
 import { SiteConfig } from "@/site-config";
 import { APIError, betterAuth } from "better-auth";
 import { localization } from "better-auth-localization";
@@ -15,6 +14,8 @@ import {
 import { getServerUrl } from "./server-url";
 
 import { PrismaClient } from "@root/prisma/generated";
+import { cookies } from "next/headers";
+import { defaultLocale } from "./i18n/config.js";
 const prisma = new PrismaClient();
 
 async function getActiveOrganization(userId) {
@@ -26,29 +27,9 @@ async function getActiveOrganization(userId) {
     return userMembership?.organization ?? null;
 }
 
-// Détecte la locale depuis le cookie NEXT_LOCALE de next-intl
-function getLocaleFromRequest(request) {
-    const cookieHeader = request.headers.get("cookie");
-    if (!cookieHeader) return null;
-
-    const cookies = cookieHeader.split(";").reduce((acc, cookie) => {
-        const [key, value] = cookie.trim().split("=");
-        acc[key] = value;
-        return acc;
-    }, {});
-
-    return cookies["NEXT_LOCALE"] ?? null;
-}
-
-// Mapper les codes de locale next-intl vers better-auth-localization
-function mapLocaleToBetterAuth(locale) {
-    const localeMap = {
-        fr: "fr-FR",
-        en: "en-US",
-        nl: "nl-NL",
-        de: "de-DE",
-    };
-    return localeMap[locale] ?? "en-US";
+async function getLocale() {
+    const cookieStore = await cookies();
+    return cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
 }
 
 export const auth = betterAuth({
@@ -218,19 +199,7 @@ export const auth = betterAuth({
         localization({
             defaultLocale: "en-US",
             fallbackLocale: "default",
-            getLocale: async request => {
-                try {
-                    const nextIntlLocale = getLocaleFromRequest(request);
-                    return mapLocaleToBetterAuth(nextIntlLocale ?? "en");
-                } catch (error) {
-                    console.warn(
-                        "Error detecting locale from NEXT_LOCALE cookie:",
-                        error
-                    );
-                    return "en-US";
-                }
-            },
-            translations: getBetterAuthTranslations(),
+            getLocale: getLocale,
         }),
         admin({
             defaultRole: "user",

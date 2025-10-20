@@ -25,6 +25,7 @@ export const SiteConfig = {
     prodUrl: "https://omka.cloud", // ← TODO: Change to your production URL
     appId: "boilerplate", // ← TODO: Change to your app identifier (lowercase, no spaces)
     appIcon: "/images/logo.png", // ← TODO: Update with your logo path
+    timeZone: "Europe/Brussels",
 
     // ========== TEAM INFORMATION ==========
     team: {

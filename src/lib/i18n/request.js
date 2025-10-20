@@ -1,3 +1,4 @@
+import { SiteConfig } from "@root/src/site-config";
 import { getRequestConfig } from "next-intl/server";
 import { cookies } from "next/headers";
 import { defaultLocale } from "./config";
@@ -15,7 +16,7 @@ export default getRequestConfig(async () => {
         projectMessages = (await import(`@/messages/${locale}.project.json`))
             .default;
     } catch (_e) {
-        // No project messages, that's ok
+        console.warn(`No project messages found for locale "${locale}"`);
     }
 
     return {
@@ -24,6 +25,6 @@ export default getRequestConfig(async () => {
             ...baseMessages,
             project: projectMessages,
         },
-        timeZone: "UTC",
+        timeZone: SiteConfig.timeZone,
     };
 });
