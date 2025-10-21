@@ -1,5 +1,6 @@
 "use client";
 
+import { setLocaleAction } from "@/actions/locale.action";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -8,10 +9,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Check, Globe } from "lucide-react";
 import { useServerAction } from "@/hooks/use-server-action";
-import { setLocaleAction } from "@/actions/locale.action";
-import { localeNames, locales } from "@lib/i18n/config";
+import { flagId, localeNames, locales } from "@lib/i18n/config";
+import { Check, Globe } from "lucide-react";
 import ReactCountryFlag from "react-country-flag";
 
 export default function LocalizationButton({ currentLocale, size = 20 }) {
@@ -31,9 +31,7 @@ export default function LocalizationButton({ currentLocale, size = 20 }) {
                 <DropdownMenuLabel className="flex items-center justify-between">
                     <ReactCountryFlag
                         svg
-                        countryCode={
-                            currentLocale === "en" ? "gb" : currentLocale
-                        }
+                        countryCode={flagId[currentLocale] ?? currentLocale}
                     />
                     {localeNames[currentLocale]}
                     <Check className="text-primary h-4 w-4" />
@@ -60,7 +58,7 @@ export default function LocalizationButton({ currentLocale, size = 20 }) {
                         >
                             <ReactCountryFlag
                                 svg
-                                countryCode={locale === "en" ? "gb" : locale}
+                                countryCode={flagId[locale] ?? locale}
                             />
                             {localeNames[locale] ?? locale}
                         </DropdownMenuItem>

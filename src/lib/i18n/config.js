@@ -6,3 +6,9 @@ export const localeNames = {
     "de-DE": "Deutsch",
     "nl-NL": "Nederlands",
 };
+export const flagId = {
+    "en-US": "gb",
+    "fr-FR": "fr",
+    "de-DE": "de",
+    "nl-NL": "nl",
+};

@@ -15,6 +15,7 @@ import { getServerUrl } from "./server-url";
 
 import { PrismaClient } from "@root/prisma/generated";
 import { cookies } from "next/headers";
+import { translations } from "../messages/better-auth.js";
 import { defaultLocale } from "./i18n/config.js";
 const prisma = new PrismaClient();
 
@@ -200,6 +201,7 @@ export const auth = betterAuth({
             defaultLocale: "en-US",
             fallbackLocale: "default",
             getLocale: getLocale,
+            translations: translations,
         }),
         admin({
             defaultRole: "user",
