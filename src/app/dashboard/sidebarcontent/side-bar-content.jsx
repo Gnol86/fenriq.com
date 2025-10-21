@@ -13,8 +13,8 @@ import {
     checkPermission,
     requireAuth,
 } from "@/lib/access-control";
+import { prisma } from "@/lib/prisma-client";
 import AddOnSideBarContent from "@/project/add-on-side-bar-content-dashboard";
-import { PrismaClient } from "@root/prisma/generated";
 import {
     AlertTriangle,
     Building,
@@ -71,8 +71,6 @@ export default async function SideBarContent() {
     });
 
     const isAdmin = await checkAdmin();
-
-    const prisma = new PrismaClient();
     const invitations = await prisma.invitation.findMany({
         where: {
             email: user.email,

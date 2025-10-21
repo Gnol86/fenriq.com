@@ -1,11 +1,9 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma-client";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-
-import { PrismaClient } from "@root/prisma/generated";
-const prisma = new PrismaClient();
 
 export async function createFeedbackAction({
     rating,

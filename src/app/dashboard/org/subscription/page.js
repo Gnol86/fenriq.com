@@ -1,11 +1,9 @@
 import { requirePermission } from "@/lib/access-control";
-import { PrismaClient } from "@root/prisma/generated";
+import { prisma } from "@/lib/prisma-client";
 import { Suspense } from "react";
 import Plan from "./components/plan";
 import StripeLoader from "./components/stripe-loader";
 import SubscriptionManagement from "./components/subscription-management";
-
-const prisma = new PrismaClient();
 
 export default async function OrganizationSubscriptionPage() {
     // Vérifie les permissions et récupère les données nécessaires

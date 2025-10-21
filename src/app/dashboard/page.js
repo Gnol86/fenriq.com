@@ -10,10 +10,10 @@ import {
 import ImageProfile from "@/components/image-profile";
 import LeaveOrganizationButton from "@/components/leave-organization-button";
 import OrganizationSelectorButton from "@/components/organization-selector-button";
-import { requireAuth } from "@/lib/access-control";
 import { auth } from "@/lib/auth";
-import { PrismaClient } from "@root/prisma/generated";
+import { prisma } from "@/lib/prisma-client";
 import { ButtonGroup } from "@root/src/components/ui/button-group";
+import { requireActiveOrganization } from "@root/src/lib/access-control";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -22,23 +22,15 @@ export default async function DashboardPage() {
     const t = await getTranslations("dashboard.index");
 
     // Vérifie que l'utilisateur est authentifié
-    const { session, user } = await requireAuth();
+    const { session, user, organization } = await requireActiveOrganization();
 
     const userOrganizations = await auth.api.listOrganizations({
         headers: await headers(),
     });
-
-    const activeUserOrganization = session.activeOrganizationId
-        ? userOrganizations?.find(
-              org => org.id === session.activeOrganizationId
-          )
-        : null;
-
-    const prisma = new PrismaClient();
-    const contacts = activeUserOrganization
+    const contacts = organization
         ? await prisma.member.findMany({
               where: {
-                  organizationId: activeUserOrganization.id,
+                  organizationId: organization.id,
                   role: {
                       in: ["admin", "owner"],
                   },
@@ -69,15 +61,15 @@ export default async function DashboardPage() {
                         {t("active_organization_description")}
                     </CardDescription>
                     <CardAction>
-                        {activeUserOrganization ? (
+                        {organization ? (
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center gap-3">
                                     <ImageProfile
-                                        entity={activeUserOrganization}
+                                        entity={organization}
                                         size="lg"
                                     />
                                     <span className="truncate font-semibold">
-                                        {activeUserOrganization?.name ??
+                                        {organization?.name ??
                                             t("organization_fallback")}
                                     </span>
                                 </div>
@@ -89,7 +81,7 @@ export default async function DashboardPage() {
                         )}
                     </CardAction>
                 </CardHeader>
-                {activeUserOrganization && (
+                {contacts?.length && (
                     <CardContent className="flex flex-col gap-4">
                         {t("contact_persons_title")}
                         {contacts?.length > 0 ? (
@@ -150,42 +142,34 @@ export default async function DashboardPage() {
                 </CardHeader>
                 <CardContent className="flex flex-col gap-3">
                     {userOrganizations.length > 0 ? (
-                        userOrganizations.map((organization, index) => {
+                        userOrganizations.map((org, index) => {
                             return (
                                 <div
-                                    key={
-                                        organization?.id ??
-                                        `organization-${index}`
-                                    }
+                                    key={org?.id ?? `organization-${index}`}
                                     className="flex items-center justify-between gap-3 rounded-lg border px-4 py-3"
                                 >
                                     <div className="flex min-w-0 items-center gap-3">
-                                        <ImageProfile
-                                            entity={organization}
-                                            size="md"
-                                        />
+                                        <ImageProfile entity={org} size="md" />
                                         <span className="truncate font-bold">
-                                            {organization?.name ??
+                                            {org?.name ??
                                                 t("organization_fallback")}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <ButtonGroup>
                                             <OrganizationSelectorButton
-                                                organization={organization}
+                                                organization={org}
                                                 isActive={
-                                                    organization?.id ===
-                                                    activeUserOrganization?.id
+                                                    org?.id === organization?.id
                                                 }
                                                 activeOrganizationId={
-                                                    activeUserOrganization?.id
+                                                    organization?.id
                                                 }
                                             />
                                             <LeaveOrganizationButton
-                                                organization={organization}
+                                                organization={org}
                                                 isActive={
-                                                    organization?.id ===
-                                                    activeUserOrganization?.id
+                                                    org?.id === organization?.id
                                                 }
                                             />
                                         </ButtonGroup>

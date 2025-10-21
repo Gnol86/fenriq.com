@@ -1,13 +1,11 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma-client";
 import { getServerUrl } from "@/lib/server-url";
 import { stripe } from "@/lib/stripe";
 import { SiteConfig } from "@/site-config";
-import { PrismaClient } from "@root/prisma/generated";
 import { headers } from "next/headers";
-
-const prisma = new PrismaClient();
 
 export async function createCheckoutSessionAction({
     priceId,

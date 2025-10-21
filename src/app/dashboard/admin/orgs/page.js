@@ -20,13 +20,11 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { requireAdmin } from "@/lib/access-control";
+import { prisma } from "@/lib/prisma-client";
 import { formatDate } from "@/lib/utils";
-import { PrismaClient } from "@root/prisma/generated";
 import { Eye } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
-
-const prisma = new PrismaClient();
 const ORGS_PER_PAGE = 10;
 
 export default async function AdminOrganizationsPage({ searchParams }) {

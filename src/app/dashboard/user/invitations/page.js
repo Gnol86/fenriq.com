@@ -24,8 +24,8 @@ import {
     ItemTitle,
 } from "@/components/ui/item";
 import { requireAuth } from "@/lib/access-control";
+import { prisma } from "@/lib/prisma-client";
 import { formatDate } from "@/lib/utils";
-import { PrismaClient } from "@root/prisma/generated";
 import { Eye, Mail } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
@@ -38,8 +38,6 @@ export default async function Page() {
 
     // Vérifie que l'utilisateur est authentifié
     const { user } = await requireAuth();
-
-    const prisma = new PrismaClient();
     const invitations = await prisma.invitation.findMany({
         where: {
             email: user.email,

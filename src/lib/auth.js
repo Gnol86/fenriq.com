@@ -13,11 +13,10 @@ import {
 } from "./organization-permissions.js";
 import { getServerUrl } from "./server-url";
 
-import { PrismaClient } from "@root/prisma/generated";
 import { cookies } from "next/headers";
 import translations from "../messages/better-auth.json";
 import { defaultLocale } from "./i18n/config.js";
-const prisma = new PrismaClient();
+import { prisma } from "./prisma-client.js";
 
 async function getActiveOrganization(userId) {
     const userMembership = await prisma.member.findFirst({
@@ -37,17 +36,6 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, { provider: "postgres" }),
     baseURL: getServerUrl(),
     basePath: "/api/auth",
-    logger: {
-        disabled: false,
-        level: "debug", // ou "info" pour moins de verbosité
-        log: (level, message, ...args) => {
-            console.warn(
-                `[Better-Auth ${level.toUpperCase()}]`,
-                message,
-                ...args
-            );
-        },
-    },
     session: {
         expiresIn: 60 * 60 * 24 * 7, // 7 jours
         updateAge: 60 * 60 * 24, // Refresh après 24h

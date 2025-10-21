@@ -22,15 +22,13 @@ import {
     checkPermission,
     requirePermission,
 } from "@/lib/access-control";
-import { PrismaClient } from "@root/prisma/generated";
+import { prisma } from "@/lib/prisma-client";
 import { Mail } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import React from "react";
 import InvitationItem from "./components/invitation-item";
 import InviteMemberDialog from "./components/invite-member-dialog";
 import ToggleViewButton from "./components/toggle-view-button";
-
-const prisma = new PrismaClient();
 const INVITATIONS_PER_PAGE = 10;
 
 export default async function OrganizationInvitationsPage({ searchParams }) {

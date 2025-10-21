@@ -78,8 +78,7 @@ export async function POST(req) {
                 const subscription = event.data.object;
 
                 // Find organization by subscription ID
-                const { PrismaClient } = await import("@root/prisma/generated");
-                const prisma = new PrismaClient();
+                const { prisma } = await import("@/lib/prisma-client");
 
                 const existingSubscription =
                     await prisma.subscription.findFirst({
@@ -101,8 +100,7 @@ export async function POST(req) {
                 const subscription = event.data.object;
 
                 // Find and delete subscription from database
-                const { PrismaClient } = await import("@root/prisma/generated");
-                const prisma = new PrismaClient();
+                const { prisma } = await import("@/lib/prisma-client");
 
                 const existingSubscription =
                     await prisma.subscription.findFirst({

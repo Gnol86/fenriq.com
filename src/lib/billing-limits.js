@@ -1,8 +1,6 @@
 // src/lib/billing-limits.js
 import { SiteConfig } from "@/site-config";
-import { PrismaClient } from "@root/prisma/generated";
-
-const prisma = new PrismaClient();
+import { prisma } from "./prisma-client.js";
 
 /**
  * Get the usage limit for an organization

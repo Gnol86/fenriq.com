@@ -6,7 +6,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { auth } from "@/lib/auth";
-import { PrismaClient } from "@root/prisma/generated";
+import { prisma } from "@/lib/prisma-client";
 import { Mailbox } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
@@ -21,8 +21,6 @@ export default async function InvitationPage({ params }) {
     const { invitationId } = await params;
     const t = await getTranslations("auth.invitation");
     const tRoles = await getTranslations("roles");
-
-    const prisma = new PrismaClient();
     const invitation = await prisma.invitation.findUnique({
         where: {
             id: invitationId,

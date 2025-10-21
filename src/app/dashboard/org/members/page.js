@@ -21,14 +21,12 @@ import {
     checkPermission,
     requirePermission,
 } from "@/lib/access-control";
-import { PrismaClient } from "@root/prisma/generated";
+import { prisma } from "@/lib/prisma-client";
 import { Users } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import React from "react";
 import InviteMemberDialog from "../invitations/components/invite-member-dialog";
 import MemberItem from "./components/member-item";
-
-const prisma = new PrismaClient();
 const MEMBRES_PER_PAGE = 10;
 
 export default async function OrganizationMembersPage({ searchParams }) {

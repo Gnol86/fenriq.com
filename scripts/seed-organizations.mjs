@@ -1,8 +1,5 @@
-/* eslint-disable no-console */
-const { PrismaClient } = require("@root/prisma/generated");
-const crypto = require("crypto");
-
-const prisma = new PrismaClient();
+import { prisma } from "../src/lib/prisma-client.js";
+import crypto from "crypto";
 
 // Listes de noms fictifs pour générer des organisations réalistes
 const companyTypes = [

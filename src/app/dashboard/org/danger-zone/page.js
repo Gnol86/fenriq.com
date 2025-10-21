@@ -6,12 +6,10 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { requirePermission } from "@/lib/access-control";
-import { PrismaClient } from "@root/prisma/generated";
+import { prisma } from "@/lib/prisma-client";
 import { AlertTriangle } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import DangerZoneForm from "./form";
-
-const prisma = new PrismaClient();
 
 export default async function DangerZonePage() {
     const tBreadcrumbs = await getTranslations("breadcrumbs");
