@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-const { PrismaClient } = require("../src/generated/prisma");
+const { PrismaClient } = require("@root/prisma/generated");
 const crypto = require("crypto");
 
 const prisma = new PrismaClient();
