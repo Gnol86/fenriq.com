@@ -15,7 +15,7 @@ import { getServerUrl } from "./server-url";
 
 import { PrismaClient } from "@root/prisma/generated";
 import { cookies } from "next/headers";
-import { translations } from "../messages/better-auth.js";
+import translations from "../messages/better-auth.json";
 import { defaultLocale } from "./i18n/config.js";
 const prisma = new PrismaClient();
 
