@@ -8,7 +8,12 @@ export default getRequestConfig(async () => {
     const locale = cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
 
     // Load base messages (boilerplate)
-    const baseMessages = (await import(`@/messages/${locale}.json`)).default;
+    let baseMessages = {};
+    try {
+        baseMessages = (await import(`@/messages/${locale}.json`)).default;
+    } catch (_e) {
+        console.warn(`No base messages found for locale "${locale}"`);
+    }
 
     // Load project messages (if they exist)
     let projectMessages = {};
