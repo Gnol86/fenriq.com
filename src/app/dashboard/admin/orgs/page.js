@@ -19,27 +19,19 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { auth } from "@/lib/auth";
+import { requireAdmin } from "@/lib/access-control";
 import { formatDate } from "@/lib/utils";
 import { PrismaClient } from "@root/prisma/generated";
 import { Eye } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
-import { headers } from "next/headers";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
 const prisma = new PrismaClient();
 const ORGS_PER_PAGE = 10;
 
 export default async function AdminOrganizationsPage({ searchParams }) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
-
-    const user = session.user;
-    if (user.role !== "admin") {
-        notFound();
-    }
+    // Vérifie que l'utilisateur est admin
+    await requireAdmin();
 
     const t = await getTranslations("admin.organizations");
     const locale = await getLocale();

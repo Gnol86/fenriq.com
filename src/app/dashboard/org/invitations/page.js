@@ -1,4 +1,3 @@
-import { hasPermissionAction } from "@/actions/organization.action";
 import { Pagination } from "@/components/pagination";
 import SearchInput from "@/components/search-input";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -19,12 +18,13 @@ import {
     EmptyTitle,
 } from "@/components/ui/empty";
 import { ItemGroup, ItemSeparator } from "@/components/ui/item";
-import { auth } from "@/lib/auth";
+import {
+    checkPermission,
+    requirePermission,
+} from "@/lib/access-control";
 import { PrismaClient } from "@root/prisma/generated";
 import { Mail } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { headers } from "next/headers";
-import { notFound } from "next/navigation";
 import React from "react";
 import InvitationItem from "./components/invitation-item";
 import InviteMemberDialog from "./components/invite-member-dialog";
@@ -53,36 +53,22 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
     const page = parseInt(pageParam, 10);
     const offset = (page - 1) * INVITATIONS_PER_PAGE;
 
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
-
-    const user = session.user;
-    if (!user) notFound();
-
-    const userOrganizations = await auth.api.listOrganizations({
-        headers: await headers(),
-    });
-
-    const activeUserOrganization = userOrganizations?.find(
-        org => org.id === session.session.activeOrganizationId
-    );
-
-    const canInvitationRead = await hasPermissionAction({
+    // Vérifie les permissions et récupère les données nécessaires
+    const { user, organization } = await requirePermission({
         permissions: { invitation: ["read"] },
     });
-    if (!canInvitationRead) notFound();
 
-    const canInvitationCreate = await hasPermissionAction({
+    // Vérifie les permissions pour l'UI conditionnelle
+    const canInvitationCreate = await checkPermission({
         permissions: { invitation: ["create"] },
     });
 
-    const canInvitationCancel = await hasPermissionAction({
+    const canInvitationCancel = await checkPermission({
         permissions: { invitation: ["cancel"] },
     });
 
     const whereClause = {
-        organizationId: activeUserOrganization.id,
+        organizationId: organization.id,
         ...(isShowingAllInvitations ? {} : { status: "pending" }),
         ...(searchValue
             ? {
@@ -108,7 +94,7 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
     const totalPages = Math.ceil(lengthTotalInvitations / INVITATIONS_PER_PAGE);
 
     // Get the user's locale for date formatting
-    const locale = session.user?.locale ?? "fr";
+    const locale = user.locale ?? "fr";
 
     const toggleButtonLabel = isShowingAllInvitations
         ? t("filter.show_pending")
@@ -135,8 +121,8 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
                     {canInvitationCreate && (
                         <CardAction>
                             <InviteMemberDialog
-                                organizationId={activeUserOrganization.id}
-                                organizationName={activeUserOrganization.name}
+                                organizationId={organization.id}
+                                organizationName={organization.name}
                             />
                         </CardAction>
                     )}
@@ -161,12 +147,8 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
                             {canInvitationCreate && (
                                 <EmptyContent>
                                     <InviteMemberDialog
-                                        organizationId={
-                                            activeUserOrganization.id
-                                        }
-                                        organizationName={
-                                            activeUserOrganization.name
-                                        }
+                                        organizationId={organization.id}
+                                        organizationName={organization.name}
                                     />
                                 </EmptyContent>
                             )}
@@ -181,9 +163,7 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
                                     <React.Fragment key={invitation.id}>
                                         <InvitationItem
                                             invitation={invitation}
-                                            organizationId={
-                                                activeUserOrganization.id
-                                            }
+                                            organizationId={organization.id}
                                             canCreate={canInvitationCreate}
                                             canCancel={canInvitationCancel}
                                             locale={locale}

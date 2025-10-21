@@ -10,6 +10,7 @@ import {
 import ImageProfile from "@/components/image-profile";
 import LeaveOrganizationButton from "@/components/leave-organization-button";
 import OrganizationSelectorButton from "@/components/organization-selector-button";
+import { requireAuth } from "@/lib/access-control";
 import { auth } from "@/lib/auth";
 import { PrismaClient } from "@root/prisma/generated";
 import { ButtonGroup } from "@root/src/components/ui/button-group";
@@ -19,17 +20,17 @@ import Link from "next/link";
 
 export default async function DashboardPage() {
     const t = await getTranslations("dashboard.index");
-    const session = await auth.api.getSession({
-        headers: await headers(), // you need to pass the headers object.
-    });
-    const user = session?.user;
+
+    // Vérifie que l'utilisateur est authentifié
+    const { session, user } = await requireAuth();
+
     const userOrganizations = await auth.api.listOrganizations({
         headers: await headers(),
     });
 
-    const activeUserOrganization = session.session.activeOrganizationId
+    const activeUserOrganization = session.activeOrganizationId
         ? userOrganizations?.find(
-              org => org.id === session.session.activeOrganizationId
+              org => org.id === session.activeOrganizationId
           )
         : null;
 

@@ -1,4 +1,3 @@
-import { hasPermissionAction } from "@/actions/organization.action";
 import {
     Card,
     CardContent,
@@ -6,12 +5,10 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { auth } from "@/lib/auth";
+import { requirePermission } from "@/lib/access-control";
 import { PrismaClient } from "@root/prisma/generated";
 import { AlertTriangle } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import DangerZoneForm from "./form";
 
 const prisma = new PrismaClient();
@@ -19,27 +16,16 @@ const prisma = new PrismaClient();
 export default async function DangerZonePage() {
     const tBreadcrumbs = await getTranslations("breadcrumbs");
     const tDangerZone = await getTranslations("organization.danger_zone");
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
 
-    const userOrganizations = await auth.api.listOrganizations({
-        headers: await headers(),
-    });
-
-    const activeUserOrganization = userOrganizations?.find(
-        org => org.id === session.session.activeOrganizationId
-    );
-
-    const canOrgsDelete = await hasPermissionAction({
+    // Vérifie les permissions et récupère les données nécessaires
+    const { organization } = await requirePermission({
         permissions: { organization: ["delete"] },
     });
-    if (!canOrgsDelete) redirect("/dashboard");
 
     // Check if organization has active subscription
     const subscription = await prisma.subscription.findFirst({
         where: {
-            referenceId: activeUserOrganization.id,
+            referenceId: organization.id,
             status: {
                 in: ["active", "trialing", "past_due"],
             },
@@ -60,7 +46,7 @@ export default async function DangerZonePage() {
                 </CardHeader>
                 <CardContent>
                     <DangerZoneForm
-                        organization={activeUserOrganization}
+                        organization={organization}
                         hasActiveSubscription={!!subscription}
                     />
                 </CardContent>

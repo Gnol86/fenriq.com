@@ -1,4 +1,3 @@
-import { hasPermissionAction } from "@/actions/organization.action";
 import { Pagination } from "@/components/pagination";
 import SearchInput from "@/components/search-input";
 import {
@@ -18,12 +17,13 @@ import {
     EmptyTitle,
 } from "@/components/ui/empty";
 import { ItemGroup, ItemSeparator } from "@/components/ui/item";
-import { auth } from "@/lib/auth";
+import {
+    checkPermission,
+    requirePermission,
+} from "@/lib/access-control";
 import { PrismaClient } from "@root/prisma/generated";
 import { Users } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { headers } from "next/headers";
-import { notFound } from "next/navigation";
 import React from "react";
 import InviteMemberDialog from "../invitations/components/invite-member-dialog";
 import MemberItem from "./components/member-item";
@@ -40,41 +40,27 @@ export default async function OrganizationMembersPage({ searchParams }) {
     const offset = (page - 1) * MEMBRES_PER_PAGE;
     const sortDirection = resolvedSearchParams?.sortDirection || "asc";
 
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
-
-    const user = session.user;
-    if (!user) notFound();
-
-    const userOrganizations = await auth.api.listOrganizations({
-        headers: await headers(),
-    });
-
-    const activeUserOrganization = userOrganizations?.find(
-        org => org.id === session.session.activeOrganizationId
-    );
-
-    const canMemberRead = await hasPermissionAction({
+    // Vérifie les permissions et récupère les données nécessaires
+    const { user, organization } = await requirePermission({
         permissions: { member: ["read"] },
     });
-    if (!canMemberRead) notFound();
 
-    const canInvitationCreate = await hasPermissionAction({
+    // Vérifie les permissions pour l'UI conditionnelle
+    const canInvitationCreate = await checkPermission({
         permissions: { invitation: ["create"] },
     });
 
-    const canMemberUpdate = await hasPermissionAction({
+    const canMemberUpdate = await checkPermission({
         permissions: { member: ["update"] },
     });
 
-    const canMemberDelete = await hasPermissionAction({
+    const canMemberDelete = await checkPermission({
         permissions: { member: ["delete"] },
     });
 
     const whereClause = searchValue
         ? {
-              organizationId: activeUserOrganization.id,
+              organizationId: organization.id,
               user: {
                   name: {
                       contains: searchValue,
@@ -83,7 +69,7 @@ export default async function OrganizationMembersPage({ searchParams }) {
               },
           }
         : {
-              organizationId: activeUserOrganization.id,
+              organizationId: organization.id,
           };
 
     const lengthTotalMembres = await prisma.member.count({
@@ -114,8 +100,8 @@ export default async function OrganizationMembersPage({ searchParams }) {
                     {canInvitationCreate && (
                         <CardAction>
                             <InviteMemberDialog
-                                organizationId={activeUserOrganization.id}
-                                organizationName={activeUserOrganization.name}
+                                organizationId={organization.id}
+                                organizationName={organization.name}
                             />
                         </CardAction>
                     )}
@@ -135,10 +121,8 @@ export default async function OrganizationMembersPage({ searchParams }) {
                             </EmptyHeader>
                             <EmptyContent>
                                 <InviteMemberDialog
-                                    organizationId={activeUserOrganization.id}
-                                    organizationName={
-                                        activeUserOrganization.name
-                                    }
+                                    organizationId={organization.id}
+                                    organizationName={organization.name}
                                 />
                             </EmptyContent>
                         </Empty>
@@ -152,9 +136,7 @@ export default async function OrganizationMembersPage({ searchParams }) {
                                     <React.Fragment key={member.id}>
                                         <MemberItem
                                             member={member}
-                                            organizationId={
-                                                activeUserOrganization.id
-                                            }
+                                            organizationId={organization.id}
                                             currentUserId={user.id}
                                             canUpdate={canMemberUpdate}
                                             canDelete={canMemberDelete}

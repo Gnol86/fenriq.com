@@ -1,6 +1,3 @@
-import { notFound } from "next/navigation";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import {
     Card,
     CardContent,
@@ -16,20 +13,16 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { requireAdmin } from "@/lib/access-control";
 import { getTranslations } from "next-intl/server";
 import { getAllFeedbacksAction } from "@/actions/feedback.action";
 import FeedbackTable from "./components/feedback-table";
 
 export default async function AdminFeedbacksPage() {
     const t = await getTranslations("admin.feedbacks");
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
 
-    const user = session?.user;
-    if (user?.role !== "admin") {
-        notFound();
-    }
+    // Vérifie que l'utilisateur est admin
+    await requireAdmin();
 
     const feedbacks = await getAllFeedbacksAction();
 

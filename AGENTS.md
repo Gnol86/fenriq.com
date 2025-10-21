@@ -235,19 +235,124 @@ await confirm(
 - Returns a Promise that resolves when user confirms/cancels
 - Must be used within `DialogProvider` context
 
-### Authentication
+### Authentication & Access Control
 
-#### **🎯 CRITICAL - Use New System Only**
+#### **🎯 CRITICAL - Centralized Access Control System**
 
-- **NEVER** use legacy auth functions (`getUser`, `getRequiredUser`, etc.)
-- **ALWAYS** consider cache invalidation after mutations
+All authentication and permission checks MUST use the helpers from `src/lib/access-control.js`. This ensures consistency, security, and maintainability.
 
-#### **Patterns to Follow**
+**Available Helpers:**
 
-1. **Always** wrap sensitive operations with monitoring
-2. **Always** use cache-aware permission checks
-3. **Always** invalidate cache after permission changes
-4. **Always** use resilient wrappers for production code
+1. **`requireAuth()`** - Vérifie l'authentification
+   - Returns: `{ session, user }`
+   - Throws: `notFound()` if not authenticated
+   - Use: Pages requiring any authenticated user
+
+2. **`requireActiveOrganization()`** - Vérifie l'organisation active
+   - Returns: `{ session, user, organization }`
+   - Throws: `notFound()` if no active organization
+   - Use: Pages requiring organization context
+
+3. **`requirePermission({ permissions })`** - Vérifie les permissions
+   - Returns: `{ session, user, organization }`
+   - Throws: `notFound()` if insufficient permissions
+   - Use: Pages with specific organization permissions
+
+4. **`requireAdmin()`** - Vérifie le rôle admin
+   - Returns: `{ session, user }`
+   - Throws: `notFound()` if not admin
+   - Use: Admin-only pages
+
+5. **`checkPermission({ permissions })`** - Vérifie sans erreur
+   - Returns: `boolean`
+   - Use: Conditional UI rendering
+
+6. **`checkAdmin()`** - Vérifie admin sans erreur
+   - Returns: `boolean`
+   - Use: Conditional UI for admin features
+
+#### **Usage Patterns**
+
+**Server Components - Pages with Organization Permissions:**
+
+```js
+import { requirePermission, checkPermission } from "@/lib/access-control";
+
+export default async function MembersPage() {
+    // Vérifie les permissions ET récupère les données
+    const { user, organization } = await requirePermission({
+        permissions: { member: ["read"] }
+    });
+
+    // Pour l'UI conditionnelle
+    const canDelete = await checkPermission({
+        permissions: { member: ["delete"] }
+    });
+
+    return <div>...</div>;
+}
+```
+
+**Server Components - Admin Pages:**
+
+```js
+import { requireAdmin } from "@/lib/access-control";
+
+export default async function AdminPage() {
+    // Vérifie le rôle admin
+    const { user } = await requireAdmin();
+
+    return <div>...</div>;
+}
+```
+
+**Server Components - User Pages:**
+
+```js
+import { requireAuth } from "@/lib/access-control";
+
+export default async function UserSettingsPage() {
+    // Vérifie l'authentification
+    const { user } = await requireAuth();
+
+    return <div>...</div>;
+}
+```
+
+**Server Components - Sidebar/Navigation:**
+
+```js
+import { checkPermission, checkAdmin } from "@/lib/access-control";
+
+export default async function Sidebar() {
+    // Vérifications pour affichage conditionnel
+    const canManageOrg = await checkPermission({
+        permissions: { organization: ["update"] }
+    });
+    const isAdmin = await checkAdmin();
+
+    return (
+        <>
+            {canManageOrg && <Link href="/org/manage">Manage</Link>}
+            {isAdmin && <Link href="/admin">Admin</Link>}
+        </>
+    );
+}
+```
+
+#### **Security Note**
+
+- **Why `notFound()` instead of `unauthorized()`?**
+  - Better security: doesn't reveal page existence to unauthorized users
+  - Principle: "security through obscurity" + real security
+  - Unauthorized users see 404, not 401
+
+#### **Rules**
+
+2. **NEVER** manually check `user.role === "admin"` - use `checkAdmin()`
+3. **ALWAYS** use `require*` functions for page-level checks
+4. **ALWAYS** use `check*` functions for conditional UI
+5. **ALWAYS** consider cache invalidation after permission changes
 
 ### Database
 
@@ -256,6 +361,15 @@ await confirm(
 - Organization-based data access patterns
 
 ## Important Files
+
+### **🚨 CRITICAL - Access Control System**
+
+- `src/lib/access-control.js` - **CENTRALIZED** access control - ALWAYS use these helpers for auth/permissions
+  - `requireAuth()` - Pages requiring authentication
+  - `requirePermission()` - Pages requiring organization permissions
+  - `requireAdmin()` - Admin-only pages
+  - `checkPermission()` - Conditional UI based on permissions
+  - `checkAdmin()` - Conditional UI for admin features
 
 ### **🚨 CRITICAL - Server Actions System**
 
@@ -266,15 +380,11 @@ await confirm(
 - `src/hooks/use-confirm.js` - Hook for confirmation dialogs - ALWAYS use this for confirmations
 - `src/components/providers/dialog-provider.jsx` - Global dialog provider
 
-### **Agent Rules for Auth**
-
-1. **NEVER** use legacy auth patterns from existing code
-2. **ALWAYS** consider cache implications
-
 ### **Other Core Files**
 
 - `src/components/ui/form.jsx` - Form components
 - `prisma/schema.prisma` - Database schema
+- `src/lib/auth.js` - Better-Auth configuration (DO NOT import directly for auth checks)
 
 ## Development Notes
 
@@ -336,21 +446,36 @@ import { getUser, needUser } from "@/lib/auth"; // FORBIDDEN
 const user = await getUser(); // FORBIDDEN
 const user = await needUser(); // FORBIDDEN
 
-// ❌ NEVER create auth code without monitoring
-const user = await getCurrentUser(); // Missing monitoring
+// ❌ NEVER manually check user role
+if (user.role !== "admin") notFound(); // FORBIDDEN - use requireAdmin instead
+{user.role === "admin" && <AdminLink />} // FORBIDDEN - use checkAdmin instead
 
-// ❌ NEVER forget cache invalidation
-// Update permissions but forget to invalidate cache
+// ❌ NEVER manually get session and check auth
+const session = await auth.api.getSession({ headers: await headers() });
+if (!session?.user) notFound(); // FORBIDDEN - use requireAuth instead
 ```
 
 ### **✅ REQUIRED Patterns**
 
 ```js
-// ✅ ALWAYS consider cache implications
-await invalidateUserCache(userId, orgId);
+// ✅ ALWAYS use centralized access control helpers
+import { requireAuth, requirePermission, requireAdmin } from "@/lib/access-control";
+import { checkPermission, checkAdmin } from "@/lib/access-control";
 
-// ✅ ALWAYS use resilient patterns for production
-const resilientFunction = withResilientAuth(fallback)(operation);
+// ✅ For pages requiring authentication
+const { user } = await requireAuth();
+
+// ✅ For pages requiring organization permissions
+const { user, organization } = await requirePermission({
+    permissions: { member: ["read"] }
+});
+
+// ✅ For admin pages
+const { user } = await requireAdmin();
+
+// ✅ For conditional UI
+const canDelete = await checkPermission({ permissions: { member: ["delete"] } });
+const isAdmin = await checkAdmin();
 
 // ✅ ALWAYS use useServerAction hook for server actions in client components
 import { useServerAction } from "@/hooks/use-server-action";

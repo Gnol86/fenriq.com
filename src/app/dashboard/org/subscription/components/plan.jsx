@@ -1,6 +1,6 @@
 import { stripe } from "@/lib/stripe";
 import { getTranslations } from "next-intl/server";
-import { hasPermissionAction } from "@/actions/organization.action";
+import { checkPermission } from "@/lib/access-control";
 import SubscribeButton from "./subscribe-button";
 import PackSelector from "./pack-selector";
 import { BorderBeam } from "@components/ui/border-beam";
@@ -17,7 +17,7 @@ export default async function PlanCard({ organization, lengthTotalMembres }) {
     const isSeatBased = SiteConfig.billing.type === "seat";
     const isPlanBased = SiteConfig.billing.type === "plan";
 
-    const canBillingUpdate = await hasPermissionAction({
+    const canBillingUpdate = await checkPermission({
         permissions: { billing: ["update"] },
     });
 

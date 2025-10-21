@@ -23,29 +23,21 @@ import {
     ItemSeparator,
     ItemTitle,
 } from "@/components/ui/item";
-import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/access-control";
 import { formatDate } from "@/lib/utils";
 import { PrismaClient } from "@root/prisma/generated";
 import { Eye, Mail } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
-import { headers } from "next/headers";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import React from "react";
 
 export default async function Page() {
     const t = await getTranslations("user.invitations");
     const tCommon = await getTranslations("common");
     const locale = await getLocale();
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
 
-    const user = session?.user;
-
-    if (!user) {
-        notFound();
-    }
+    // Vérifie que l'utilisateur est authentifié
+    const { user } = await requireAuth();
 
     const prisma = new PrismaClient();
     const invitations = await prisma.invitation.findMany({

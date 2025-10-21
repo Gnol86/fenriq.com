@@ -6,24 +6,16 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/access-control";
 import { AlertTriangle } from "lucide-react";
-import { headers } from "next/headers";
-import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 export default async function DangerZonePage() {
     const tBreadcrumbs = await getTranslations("breadcrumbs");
     const tDangerZone = await getTranslations("user.danger_zone");
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
 
-    const user = session?.user;
-
-    if (!user) {
-        notFound();
-    }
+    // Vérifie que l'utilisateur est authentifié
+    const { user } = await requireAuth();
 
     return (
         <div className="flex flex-col gap-6">

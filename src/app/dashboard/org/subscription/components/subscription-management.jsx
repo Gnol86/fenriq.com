@@ -6,7 +6,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
-import { hasPermissionAction } from "@/actions/organization.action";
+import { checkPermission } from "@/lib/access-control";
 import {
     getOrganizationSubscriptionAction,
     getOrganizationInvoicesAction,
@@ -23,7 +23,7 @@ export default async function SubscriptionManagement({ organization }) {
     const t = await getTranslations("organization.subscription");
     const isSeatBased = SiteConfig.billing.type === "seat";
 
-    const canBillingUpdate = await hasPermissionAction({
+    const canBillingUpdate = await checkPermission({
         permissions: { billing: ["update"] },
     });
 

@@ -19,19 +19,12 @@ import {
 import ImageProfile from "@/components/image-profile";
 import { getOrganizationBySlugAsAdminAction } from "@/actions/admin.action";
 import { getTranslations, getLocale } from "next-intl/server";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { requireAdmin } from "@/lib/access-control";
 import { formatDate } from "@/lib/utils";
 
 export default async function AdminOrganizationPage({ params }) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
-
-    const user = session.user;
-    if (user.role !== "admin") {
-        notFound();
-    }
+    // Vérifie que l'utilisateur est admin
+    await requireAdmin();
 
     const t = await getTranslations("admin.organizations");
     const locale = await getLocale();

@@ -1,4 +1,3 @@
-import { hasPermissionAction } from "@/actions/organization.action";
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -9,6 +8,11 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
+import {
+    checkAdmin,
+    checkPermission,
+    requireAuth,
+} from "@/lib/access-control";
 import AddOnSideBarContent from "@/project/add-on-side-bar-content-dashboard";
 import { PrismaClient } from "@root/prisma/generated";
 import {
@@ -28,12 +32,16 @@ import Link from "next/link";
 
 export default async function SideBarContent() {
     const t = await getTranslations("sidebar.dashboard");
-    const session = await auth.api.getSession({
-        headers: await headers(), // you need to pass the headers object.
-    });
-    const user = session?.user;
 
+    // Vérifie que l'utilisateur est authentifié
+    const { user } = await requireAuth();
+
+    // Récupère l'organisation active
     const userOrganizations = await auth.api.listOrganizations({
+        headers: await headers(),
+    });
+
+    const session = await auth.api.getSession({
         headers: await headers(),
     });
 
@@ -41,25 +49,28 @@ export default async function SideBarContent() {
         org => org.id === session.session.activeOrganizationId
     );
 
-    const canOrgsUpdate = await hasPermissionAction({
+    // Vérifie les permissions pour l'UI conditionnelle
+    const canOrgsUpdate = await checkPermission({
         permissions: { organization: ["update"] },
     });
 
-    const canMembresRead = await hasPermissionAction({
+    const canMembresRead = await checkPermission({
         permissions: { member: ["read"] },
     });
 
-    const canInvitationsRead = await hasPermissionAction({
+    const canInvitationsRead = await checkPermission({
         permissions: { invitation: ["read"] },
     });
 
-    const canOrgsDelete = await hasPermissionAction({
+    const canOrgsDelete = await checkPermission({
         permissions: { organization: ["delete"] },
     });
 
-    const canBillingRead = await hasPermissionAction({
+    const canBillingRead = await checkPermission({
         permissions: { billing: ["read"] },
     });
+
+    const isAdmin = await checkAdmin();
 
     const prisma = new PrismaClient();
     const invitations = await prisma.invitation.findMany({
@@ -164,7 +175,7 @@ export default async function SideBarContent() {
                     </SidebarGroup>
                 )}
 
-            {user.role === "admin" && (
+            {isAdmin && (
                 <SidebarGroup>
                     <SidebarGroupLabel className="flex items-center gap-1 uppercase">
                         {t("administration")}

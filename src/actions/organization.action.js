@@ -1,48 +1,8 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import { nameToSlug } from "@/lib/utils";
-
-export async function hasPermissionAction({ permissions }) {
-    const h = await headers();
-
-    const session = await auth.api.getSession({
-        headers: h, // you need to pass the headers object.
-    });
-
-    if (!session) {
-        return false;
-    }
-
-    if (!session.user) {
-        return false;
-    }
-
-    if (!session.session.activeOrganizationId) {
-        return false;
-    }
-
-    const userOrganizations = await auth.api.listOrganizations({
-        headers: h,
-    });
-
-    if (
-        !userOrganizations.find(
-            org => org.id === session.session.activeOrganizationId
-        )
-    ) {
-        return false;
-    }
-
-    const response = await auth.api.hasPermission({
-        body: {
-            permissions: permissions,
-        },
-        headers: h,
-    });
-    return response.success;
-}
+import { headers } from "next/headers";
 
 export async function createOrganizationAction({ name }) {
     return await auth.api.createOrganization({

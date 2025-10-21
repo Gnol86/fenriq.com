@@ -6,24 +6,16 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { notFound } from "next/navigation";
+import { requireAuth } from "@/lib/access-control";
 import { getTranslations } from "next-intl/server";
 import ImageUploadUser from "./image-upload-user";
 import { Label } from "@/components/ui/label";
 
 export default async function UserSettingsPage() {
     const t = await getTranslations("user.settings");
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
 
-    const user = session?.user;
-
-    if (!user) {
-        notFound();
-    }
+    // Vérifie que l'utilisateur est authentifié
+    const { user } = await requireAuth();
 
     return (
         <div className="flex flex-col gap-6">

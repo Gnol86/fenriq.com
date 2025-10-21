@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import {
@@ -27,19 +26,15 @@ import {
 import SearchInput from "@/components/search-input";
 import UserTableRow from "./components/user-table-row";
 import { getTranslations } from "next-intl/server";
+import { requireAdmin } from "@/lib/access-control";
 
 const USERS_PER_PAGE = 10;
 
 export default async function AdminUsersPage({ searchParams }) {
     const tUsers = await getTranslations("admin.users");
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
 
-    const user = session.user;
-    if (user.role !== "admin") {
-        notFound();
-    }
+    // Vérifie que l'utilisateur est admin
+    const { user } = await requireAdmin();
 
     // Parse search parameters
     const resolvedSearchParams = await searchParams;
