@@ -41,6 +41,27 @@ export const requireAuth = cache(async () => {
 });
 
 /**
+ * Récupère et vérifie l'authentification de l'utilisateur
+ * @returns {Promise<{session: Object, user: Object}>}
+ * @throws {Error} notFound() si l'utilisateur n'est pas authentifié
+ */
+export const getAuth = cache(async () => {
+    const session = await getCachedSession();
+
+    if (!session?.user) {
+        return {
+            session: null,
+            user: null,
+        };
+    }
+
+    return {
+        session: session.session,
+        user: session.user,
+    };
+});
+
+/**
  * Version cachée de listOrganizations pour éviter les requêtes redondantes
  * Cache pendant toute la durée de la requête
  */
@@ -79,7 +100,7 @@ export const requireActiveOrganization = cache(async () => {
  * Version cachée de hasPermission pour éviter les requêtes redondantes
  * Cache basé sur les permissions demandées
  */
-const getCachedPermissionCheck = cache(async (permissions) => {
+const getCachedPermissionCheck = cache(async permissions => {
     return await auth.api.hasPermission({
         body: {
             permissions: permissions,

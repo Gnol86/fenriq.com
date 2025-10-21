@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuth } from "./lib/access-control";
 
 export async function proxy(request) {
-    const session = await auth.api.getSession({ headers: request.headers });
+    const { user } = await getAuth();
 
-    if (!session) {
+    if (!user) {
         return NextResponse.redirect(new URL("/signin", request.url));
     }
 
