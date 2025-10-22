@@ -119,7 +119,7 @@ export default function ImageUploadUser({ user }) {
     };
 
     const createCroppedFile = useCallback(async () => {
-        console.log("createCroppedFile START", {
+        console.error("DEBUG createCroppedFile START", {
             hasSelectedFile: !!selectedFile,
             hasCropArea: !!cropArea,
             hasPreviewUrl: !!previewUrl,
@@ -127,15 +127,15 @@ export default function ImageUploadUser({ user }) {
         });
 
         if (!selectedFile) {
-            console.log("createCroppedFile: no selectedFile, returning null");
+            console.error("DEBUG createCroppedFile: no selectedFile, returning null");
             return null;
         }
         if (!cropArea) {
-            console.log("createCroppedFile: no cropArea, returning original file");
+            console.error("DEBUG createCroppedFile: no cropArea, returning original file");
             return selectedFile;
         }
 
-        console.log("createCroppedFile: starting crop process", {
+        console.error("DEBUG createCroppedFile: starting crop process", {
             cropArea,
             previewUrl,
         });
@@ -144,7 +144,7 @@ export default function ImageUploadUser({ user }) {
         const image = await new Promise((resolve, reject) => {
             const img = new Image();
             img.onload = () => {
-                console.log("createCroppedFile: image loaded", {
+                console.error("DEBUG createCroppedFile: image loaded", {
                     naturalWidth: img.naturalWidth,
                     naturalHeight: img.naturalHeight,
                 });
@@ -170,7 +170,7 @@ export default function ImageUploadUser({ user }) {
         canvas.width = outputWidth;
         canvas.height = outputHeight;
 
-        console.log("createCroppedFile: canvas created", {
+        console.error("DEBUG createCroppedFile: canvas created", {
             baseWidth,
             baseHeight,
             scale,
@@ -196,7 +196,7 @@ export default function ImageUploadUser({ user }) {
             outputHeight
         );
 
-        console.log("createCroppedFile: image drawn on canvas, generating blob");
+        console.error("DEBUG createCroppedFile: image drawn on canvas, generating blob");
 
         const blob = await new Promise((resolve, reject) => {
             canvas.toBlob(
@@ -210,7 +210,7 @@ export default function ImageUploadUser({ user }) {
                         );
                         return;
                     }
-                    console.log("createCroppedFile: blob created", {
+                    console.error("DEBUG createCroppedFile: blob created", {
                         size: value.size,
                         type: value.type,
                     });
@@ -224,7 +224,7 @@ export default function ImageUploadUser({ user }) {
             type: selectedFile.type || "image/png",
         });
 
-        console.log("createCroppedFile: File created successfully", {
+        console.error("DEBUG createCroppedFile: File created successfully", {
             fileName: file.name,
             fileSize: file.size,
             fileType: file.type,
@@ -234,20 +234,20 @@ export default function ImageUploadUser({ user }) {
     }, [cropArea, previewUrl, selectedFile, tImageUpload]);
 
     const handleCropConfirm = async () => {
-        console.log("handleCropConfirm START", {
+        console.error("DEBUG handleCropConfirm START", {
             hasSelectedFile: !!selectedFile,
         });
 
         if (!selectedFile) {
-            console.log("handleCropConfirm: no selectedFile, exiting");
+            console.error("DEBUG handleCropConfirm: no selectedFile, exiting");
             return;
         }
 
         try {
             setIsCropping(true);
-            console.log("handleCropConfirm: calling createCroppedFile");
+            console.error("DEBUG handleCropConfirm: calling createCroppedFile");
             const fileToUpload = (await createCroppedFile()) ?? selectedFile;
-            console.log("handleCropConfirm: fileToUpload result", {
+            console.error("DEBUG handleCropConfirm: fileToUpload result", {
                 isNull: fileToUpload === null,
                 isUndefined: fileToUpload === undefined,
                 fileName: fileToUpload?.name,
