@@ -1,14 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { Trash2 } from "lucide-react";
-import { useServerAction } from "@/hooks/use-server-action";
-import ImageProfile from "@/components/image-profile";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { deleteFile, uploadFile } from "@/actions/file.action";
 import { updateOrganizationAction } from "@/actions/organization.action";
-import { useTranslations } from "next-intl";
+import ImageProfile from "@/components/image-profile";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -19,10 +14,15 @@ import {
 } from "@/components/ui/dialog";
 import {
     ImageCrop,
-    ImageCropContent,
     ImageCropApply,
+    ImageCropContent,
     ImageCropReset,
 } from "@/components/ui/shadcn-io/image-crop";
+import { useServerAction } from "@/hooks/use-server-action";
+import { cn } from "@/lib/utils";
+import { Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useRef, useState } from "react";
 
 export default function ImageUpload({ organization }) {
     const fileInputRef = useRef(null);
@@ -87,11 +87,6 @@ export default function ImageUpload({ organization }) {
     const handleFileSelect = e => {
         const file = e.target.files?.[0];
         if (file) {
-            console.error("DEBUG handleFileSelect (org): file selected", {
-                fileName: file.name,
-                fileSize: file.size,
-                fileType: file.type,
-            });
             setSelectedFile(file);
             setDialogOpen(true);
         }
@@ -190,7 +185,7 @@ export default function ImageUpload({ organization }) {
                             onCrop={dataUrl => setCroppedImageDataUrl(dataUrl)}
                         >
                             <ImageCropContent />
-                            <div className="flex items-center justify-center gap-2 mt-4">
+                            <div className="mt-4 flex items-center justify-center gap-2">
                                 <ImageCropReset />
                                 <ImageCropApply />
                             </div>

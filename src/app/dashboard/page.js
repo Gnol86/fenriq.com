@@ -22,7 +22,7 @@ export default async function DashboardPage() {
     const t = await getTranslations("dashboard.index");
 
     // Vérifie que l'utilisateur est authentifié
-    const { session, user, organization } = await requireActiveOrganization();
+    const { user, organization } = await requireActiveOrganization();
 
     const userOrganizations = await auth.api.listOrganizations({
         headers: await headers(),

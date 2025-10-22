@@ -80,11 +80,6 @@ export default function ImageUploadUser({ user }) {
     const handleFileSelect = e => {
         const file = e.target.files?.[0];
         if (file) {
-            console.error("DEBUG handleFileSelect: file selected", {
-                fileName: file.name,
-                fileSize: file.size,
-                fileType: file.type,
-            });
             setSelectedFile(file);
             setDialogOpen(true);
         }

@@ -10,16 +10,6 @@ const hostUrl = `${process.env.AWS_S3_PROTOCOL}://${process.env.AWS_S3_HOSTNAME}
 export async function uploadFile(file, folder = "", oldUrl) {
     const t = await getTranslations("file");
 
-    console.error("DEBUG uploadFile called with:", {
-        fileType: typeof file,
-        fileIsNull: file === null,
-        fileIsUndefined: file === undefined,
-        fileName: file?.name,
-        fileSize: file?.size,
-        folder,
-        oldUrl,
-    });
-
     // Validate file exists
     if (!file) {
         console.error("uploadFile error: file is null or undefined");

@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 import { Button } from "@components/ui/button";
 import { CropIcon, RotateCcwIcon } from "lucide-react";
 import { Slot } from "radix-ui";
@@ -11,7 +12,6 @@ import {
     useState,
 } from "react";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
-import { cn } from "@/lib/utils";
 
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -211,9 +211,10 @@ export const ImageCropContent = ({ style, className }) => {
                 {...reactCropProps}
             >
                 {imgSrc && (
+                    // eslint-disable-next-line @next/next/no-img-element -- react-image-crop requires a direct <img> element
                     <img
                         alt="crop"
-                        className="max-w-full h-auto"
+                        className="h-auto max-w-full"
                         onLoad={onImageLoad}
                         ref={imgRef}
                         src={imgSrc}
