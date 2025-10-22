@@ -200,24 +200,27 @@ export const ImageCropContent = ({ style, className }) => {
     };
 
     return (
-        <ReactCrop
-            className={cn("max-h-[277px] max-w-full", className)}
-            crop={crop}
-            onChange={handleChange}
-            onComplete={handleComplete}
-            style={{ ...shadcnStyle, ...style }}
-            {...reactCropProps}
-        >
-            {imgSrc && (
-                <img
-                    alt="crop"
-                    className="size-full"
-                    onLoad={onImageLoad}
-                    ref={imgRef}
-                    src={imgSrc}
-                />
-            )}
-        </ReactCrop>
+        <div className="flex justify-center">
+            <ReactCrop
+                className={cn("max-h-[500px] max-w-full", className)}
+                crop={crop}
+                onChange={handleChange}
+                onComplete={handleComplete}
+                style={{ ...shadcnStyle, ...style }}
+                keepSelection
+                {...reactCropProps}
+            >
+                {imgSrc && (
+                    <img
+                        alt="crop"
+                        className="max-w-full h-auto"
+                        onLoad={onImageLoad}
+                        ref={imgRef}
+                        src={imgSrc}
+                    />
+                )}
+            </ReactCrop>
+        </div>
     );
 };
 

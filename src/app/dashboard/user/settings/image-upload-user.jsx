@@ -1,14 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { Trash2 } from "lucide-react";
-import { useServerAction } from "@/hooks/use-server-action";
-import ImageProfile from "@/components/image-profile";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { deleteFile, uploadFile } from "@/actions/file.action";
 import { updateUserAction } from "@/actions/user.action";
-import { useTranslations } from "next-intl";
+import ImageProfile from "@/components/image-profile";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -19,10 +14,15 @@ import {
 } from "@/components/ui/dialog";
 import {
     ImageCrop,
-    ImageCropContent,
     ImageCropApply,
+    ImageCropContent,
     ImageCropReset,
 } from "@/components/ui/shadcn-io/image-crop";
+import { useServerAction } from "@/hooks/use-server-action";
+import { cn } from "@/lib/utils";
+import { Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useRef, useState } from "react";
 
 export default function ImageUploadUser({ user }) {
     const fileInputRef = useRef(null);
@@ -180,10 +180,11 @@ export default function ImageUploadUser({ user }) {
                         <ImageCrop
                             file={selectedFile}
                             aspect={1}
+                            circularCrop
                             onCrop={dataUrl => setCroppedImageDataUrl(dataUrl)}
                         >
                             <ImageCropContent />
-                            <div className="flex items-center justify-center gap-2 mt-4">
+                            <div className="mt-4 flex items-center justify-center gap-2">
                                 <ImageCropReset />
                                 <ImageCropApply />
                             </div>
