@@ -7,7 +7,11 @@ const nextConfig = {
     reactCompiler: true,
     images: {
         remotePatterns: [
-            new URL("https://my-store-id.public.blob.vercel-storage.com/**"),
+            {
+                protocol: process.env.AWS_S3_PROTOCOL,
+                hostname: process.env.AWS_S3_HOSTNAME,
+                pathname: `/${process.env.AWS_S3_BUCKET}/**`,
+            },
         ],
     },
 };
