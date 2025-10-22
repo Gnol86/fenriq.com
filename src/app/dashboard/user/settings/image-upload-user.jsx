@@ -177,19 +177,9 @@ export default function ImageUploadUser({ user }) {
     const handleCropConfirm = async () => {
         if (!selectedFile) return;
 
-        // Capture selectedFile to avoid race conditions
-        const currentFile = selectedFile;
-
         try {
             setIsCropping(true);
-            const fileToUpload = (await createCroppedFile()) ?? currentFile;
-
-            // Safety check: ensure we have a valid file before uploading
-            if (!fileToUpload) {
-                console.error("No file to upload after crop");
-                return;
-            }
-
+            const fileToUpload = (await createCroppedFile()) ?? selectedFile;
             await handleFileUpload(fileToUpload);
             setIsCropperOpen(false);
             resetCropperState();
