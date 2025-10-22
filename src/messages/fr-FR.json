@@ -732,6 +732,11 @@
             "button_aria_label": "Changer de thème"
         }
     },
+    "file": {
+        "error_file_too_large": "Le fichier est trop volumineux (maximum {maxSize} MB)",
+        "error_unsupported_type": "Type de fichier non supporté. Utilisez JPG, PNG, GIF ou WebP.",
+        "error_upload_failed": "Erreur lors de l'upload du fichier"
+    },
     "common": {
         "welcome": "Bienvenue",
         "n_a": "N/A",

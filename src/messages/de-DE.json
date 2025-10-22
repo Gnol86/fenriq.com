@@ -732,6 +732,11 @@
             "button_aria_label": "Modus wechseln"
         }
     },
+    "file": {
+        "error_file_too_large": "Datei ist zu groß (maximal {maxSize} MB)",
+        "error_unsupported_type": "Nicht unterstützter Dateityp. Verwenden Sie JPG, PNG, GIF oder WebP.",
+        "error_upload_failed": "Fehler beim Hochladen der Datei"
+    },
     "common": {
         "welcome": "Willkommen",
         "n_a": "n. a.",

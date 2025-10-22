@@ -732,6 +732,11 @@
             "button_aria_label": "Toggle theme"
         }
     },
+    "file": {
+        "error_file_too_large": "File is too large (maximum {maxSize} MB)",
+        "error_unsupported_type": "Unsupported file type. Use JPG, PNG, GIF or WebP.",
+        "error_upload_failed": "Error uploading file"
+    },
     "common": {
         "welcome": "Welcome",
         "n_a": "N/A",

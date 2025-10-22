@@ -732,6 +732,11 @@
             "button_aria_label": "Modus wisselen"
         }
     },
+    "file": {
+        "error_file_too_large": "Bestand is te groot (maximum {maxSize} MB)",
+        "error_unsupported_type": "Niet-ondersteund bestandstype. Gebruik JPG, PNG, GIF of WebP.",
+        "error_upload_failed": "Fout bij uploaden van bestand"
+    },
     "common": {
         "welcome": "Welkom",
         "n_a": "N.v.t.",
