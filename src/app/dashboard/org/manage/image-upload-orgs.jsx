@@ -1,67 +1,49 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Trash2 } from "lucide-react";
 import { useServerAction } from "@/hooks/use-server-action";
 import ImageProfile from "@/components/image-profile";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { deleteFile, uploadFile } from "@/actions/file.action";
+import { updateOrganizationAction } from "@/actions/organization.action";
+import { useTranslations } from "next-intl";
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
 import {
-    Cropper,
-    CropperCropArea,
-    CropperDescription,
-    CropperImage,
-} from "@/components/ui/cropper";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
-import { deleteFile, uploadFile } from "@/actions/file.action";
-import { updateOrganizationAction } from "@/actions/organization.action";
-import { useTranslations } from "next-intl";
+    ImageCrop,
+    ImageCropContent,
+    ImageCropApply,
+    ImageCropReset,
+} from "@/components/ui/shadcn-io/image-crop";
 
 export default function ImageUpload({ organization }) {
     const fileInputRef = useRef(null);
     const { execute, isPending } = useServerAction();
-    const [isCropperOpen, setIsCropperOpen] = useState(false);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [cropArea, setCropArea] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState("");
-    const [isCropping, setIsCropping] = useState(false);
-    const [zoom, setZoom] = useState(1);
     const tManage = useTranslations("organization.manage");
     const tImageUpload = useTranslations("organization.image_upload");
-    const zoomRange = useMemo(
-        () => ({
-            min: 1,
-            max: 3,
-            step: 0.01,
-        }),
-        []
-    );
 
-    const resetCropperState = useCallback(() => {
-        setSelectedFile(null);
-        setCropArea(null);
-        setIsCropping(false);
-        setZoom(1);
-        setPreviewUrl(prev => {
-            if (prev) {
-                URL.revokeObjectURL(prev);
-            }
-            return "";
-        });
-    }, []);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [croppedImageDataUrl, setCroppedImageDataUrl] = useState(null);
 
-    const handleDialogOpenChange = open => {
-        setIsCropperOpen(open);
-        if (!open) {
-            resetCropperState();
+    const dataURLtoFile = (dataurl, filename) => {
+        const arr = dataurl.split(",");
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
         }
+        return new File([u8arr], filename, { type: mime });
     };
 
     const handleFileUpload = async file => {
@@ -105,102 +87,41 @@ export default function ImageUpload({ organization }) {
     const handleFileSelect = e => {
         const file = e.target.files?.[0];
         if (file) {
-            const nextPreviewUrl = URL.createObjectURL(file);
-            setPreviewUrl(prev => {
-                if (prev) {
-                    URL.revokeObjectURL(prev);
-                }
-                return nextPreviewUrl;
+            console.error("DEBUG handleFileSelect (org): file selected", {
+                fileName: file.name,
+                fileSize: file.size,
+                fileType: file.type,
             });
             setSelectedFile(file);
-            setCropArea(null);
-            setZoom(1);
-            setIsCropperOpen(true);
+            setDialogOpen(true);
         }
         // Reset input value to allow selecting the same file again
         e.target.value = "";
     };
 
+    const handleCropComplete = async () => {
+        if (!croppedImageDataUrl || !selectedFile) return;
+
+        const croppedFile = dataURLtoFile(
+            croppedImageDataUrl,
+            selectedFile.name
+        );
+
+        setDialogOpen(false);
+        setSelectedFile(null);
+        setCroppedImageDataUrl(null);
+
+        await handleFileUpload(croppedFile);
+    };
+
+    const handleCancelCrop = () => {
+        setDialogOpen(false);
+        setSelectedFile(null);
+        setCroppedImageDataUrl(null);
+    };
+
     const handleClick = () => {
         fileInputRef.current?.click();
-    };
-
-    const createCroppedFile = useCallback(async () => {
-        if (!selectedFile) return null;
-        if (!cropArea) return selectedFile;
-
-        const { width, height, x, y } = cropArea;
-        const image = await new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve(img);
-            img.onerror = reject;
-            img.src = previewUrl;
-        });
-
-        const canvas = document.createElement("canvas");
-        const baseWidth = Math.max(1, Math.round(width));
-        const baseHeight = Math.max(1, Math.round(height));
-        const maxCanvasSize = 500;
-        const scale = Math.min(
-            1,
-            maxCanvasSize / Math.max(baseWidth, baseHeight)
-        );
-        const outputWidth = Math.max(1, Math.round(baseWidth * scale));
-        const outputHeight = Math.max(1, Math.round(baseHeight * scale));
-        canvas.width = outputWidth;
-        canvas.height = outputHeight;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-            throw new Error(tImageUpload("error_crop_context"));
-        }
-
-        ctx.drawImage(
-            image,
-            x,
-            y,
-            width,
-            height,
-            0,
-            0,
-            outputWidth,
-            outputHeight
-        );
-
-        const blob = await new Promise((resolve, reject) => {
-            canvas.toBlob(value => {
-                if (!value) {
-                    reject(new Error(tImageUpload("error_crop_generate")));
-                    return;
-                }
-                resolve(value);
-            }, selectedFile.type || "image/png");
-        });
-
-        return new File([blob], selectedFile.name, {
-            type: selectedFile.type || "image/png",
-        });
-    }, [cropArea, previewUrl, selectedFile, tImageUpload]);
-
-    const handleCropConfirm = async () => {
-        if (!selectedFile) return;
-
-        try {
-            setIsCropping(true);
-            const fileToUpload = (await createCroppedFile()) ?? selectedFile;
-            await handleFileUpload(fileToUpload);
-            setIsCropperOpen(false);
-            resetCropperState();
-        } catch (error) {
-            console.error(tImageUpload("error_crop_generate"), error);
-        } finally {
-            setIsCropping(false);
-        }
-    };
-
-    const handleZoomSliderChange = event => {
-        const nextZoom = Number(event.target.value);
-        if (Number.isNaN(nextZoom)) return;
-        setZoom(nextZoom);
     };
 
     if (!organization) {
@@ -219,8 +140,7 @@ export default function ImageUpload({ organization }) {
                     className={cn(
                         "w-fit cursor-pointer rounded-full transition-colors",
                         "ring-primary/50 hover:ring-2",
-                        (isPending || isCropping) &&
-                            "pointer-events-none opacity-50"
+                        isPending && "pointer-events-none opacity-50"
                     )}
                     onClick={handleClick}
                 >
@@ -251,70 +171,47 @@ export default function ImageUpload({ organization }) {
                 )}
             </div>
 
-            <Dialog open={isCropperOpen} onOpenChange={handleDialogOpenChange}>
-                <DialogContent className="sm:max-w-xl">
+            {/* Dialog pour recadrer l'image */}
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogContent>
                     <DialogHeader>
                         <DialogTitle>
                             {tImageUpload("cropper_title")}
                         </DialogTitle>
+                        <DialogDescription>
+                            {tImageUpload("cropper_description")}
+                        </DialogDescription>
                     </DialogHeader>
-                    <div className="flex flex-col gap-4">
-                        <div className="bg-muted flex h-80 w-full items-center justify-center overflow-hidden rounded-lg">
-                            {previewUrl ? (
-                                <Cropper
-                                    image={previewUrl}
-                                    aspectRatio={1}
-                                    zoom={zoom}
-                                    minZoom={zoomRange.min}
-                                    maxZoom={zoomRange.max}
-                                    onZoomChange={setZoom}
-                                    onCropChange={setCropArea}
-                                    className="h-full w-full"
-                                >
-                                    <CropperDescription>
-                                        {tImageUpload("cropper_description")}
-                                    </CropperDescription>
-                                    <CropperImage />
-                                    <CropperCropArea className="rounded-full" />
-                                </Cropper>
-                            ) : (
-                                <p className="text-muted-foreground text-sm">
-                                    {tImageUpload("cropper_loading")}
-                                </p>
-                            )}
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label htmlFor="org-image-zoom-slider">
-                                {tImageUpload("zoom_label")}
-                            </Label>
-                            <input
-                                id="org-image-zoom-slider"
-                                type="range"
-                                min={zoomRange.min}
-                                max={zoomRange.max}
-                                step={zoomRange.step}
-                                value={zoom}
-                                onChange={handleZoomSliderChange}
-                                disabled={isPending || isCropping}
-                                className="accent-primary w-full cursor-pointer"
-                            />
-                        </div>
-                    </div>
+
+                    {selectedFile && (
+                        <ImageCrop
+                            file={selectedFile}
+                            aspect={1}
+                            onCrop={dataUrl => setCroppedImageDataUrl(dataUrl)}
+                        >
+                            <ImageCropContent />
+                            <div className="flex items-center justify-center gap-2 mt-4">
+                                <ImageCropReset />
+                                <ImageCropApply />
+                            </div>
+                        </ImageCrop>
+                    )}
+
                     <DialogFooter>
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={() => setIsCropperOpen(false)}
-                            disabled={isPending || isCropping}
+                            onClick={handleCancelCrop}
+                            disabled={isPending}
                         >
                             {tImageUpload("cancel_button")}
                         </Button>
                         <Button
                             type="button"
-                            onClick={handleCropConfirm}
-                            disabled={isPending || isCropping || !selectedFile}
+                            onClick={handleCropComplete}
+                            disabled={isPending || !croppedImageDataUrl}
                         >
-                            {isCropping || isPending
+                            {isPending
                                 ? tImageUpload("saving_button")
                                 : tImageUpload("save_button")}
                         </Button>
