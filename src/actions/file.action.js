@@ -10,6 +10,24 @@ const hostUrl = `${process.env.AWS_S3_PROTOCOL}://${process.env.AWS_S3_HOSTNAME}
 export async function uploadFile(file, folder = "", oldUrl) {
     const t = await getTranslations("file");
 
+    // Log pour débogage
+    console.log("uploadFile called with:", {
+        fileType: typeof file,
+        fileIsNull: file === null,
+        fileIsUndefined: file === undefined,
+        fileName: file?.name,
+        fileSize: file?.size,
+        fileType: file?.type,
+        folder,
+        oldUrl,
+    });
+
+    // Validate file exists
+    if (!file) {
+        console.error("uploadFile error: file is null or undefined");
+        throw new Error("No file provided");
+    }
+
     // Validate file size (max 4.5MB for server uploads on Vercel)
     const MAX_SIZE = 4.5 * 1024 * 1024; // 4.5MB
     if (file.size > MAX_SIZE) {
