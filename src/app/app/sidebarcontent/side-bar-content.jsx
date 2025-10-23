@@ -3,11 +3,10 @@ import {
     SidebarGroupContent,
     SidebarGroupLabel,
     SidebarMenu,
-    SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { ActiveSidebarLink } from "@components/sidebar/active-sidebar-link";
 import { Plus } from "lucide-react";
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 export default async function SideBarContent() {
@@ -19,12 +18,10 @@ export default async function SideBarContent() {
             <SidebarGroupContent>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                            <Link href="/app">
-                                <Plus className="opacity-60" />
-                                {t("create_document")}
-                            </Link>
-                        </SidebarMenuButton>
+                        <ActiveSidebarLink href="/app">
+                            <Plus className="opacity-60" />
+                            {t("create_document")}
+                        </ActiveSidebarLink>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarGroupContent>
