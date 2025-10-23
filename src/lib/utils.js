@@ -62,7 +62,7 @@ export function formatDate(date, locale) {
     return formatter.format(dateObj);
 }
 
-const dataURLtoFile = async (dataurl, filename) => {
+export function dataURLtoFile(dataurl, filename) {
     const arr = dataurl.split(",");
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
@@ -72,4 +72,4 @@ const dataURLtoFile = async (dataurl, filename) => {
         u8arr[n] = bstr.charCodeAt(n);
     }
     return new File([u8arr], filename, { type: mime });
-};
+}
