@@ -16,7 +16,7 @@ import {
 import { Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
-import { deleteFile } from "../actions/file.action";
+import { deleteFileOrga, deleteFileUser } from "../actions/file.action";
 import { updateOrganizationAction } from "../actions/organization.action";
 import { updateUserAction } from "../actions/user.action";
 import { useServerAction } from "../hooks/use-server-action";
@@ -50,14 +50,13 @@ export default function ManageImageProfile({
     const handleClickDelete = async () => {
         await execute(
             async () => {
-                await deleteFile(
-                    user ? entity?.image : orga ? entity?.logo : ""
-                );
                 if (user) {
+                    await deleteFileUser();
                     await updateUserAction({
                         image: "",
                     });
                 } else if (orga) {
+                    await deleteFileOrga();
                     await updateOrganizationAction({
                         logo: "",
                     });
@@ -91,36 +90,12 @@ export default function ManageImageProfile({
                 const file = dataURLtoFile(croppedImage, selectedFile.name);
                 const formData = new FormData();
                 formData.append("file", file);
-                formData.append(
-                    "folder",
-                    user ? "users" : orga ? "orgas" : "dev"
-                );
-                formData.append(
-                    "oldUrl",
-                    user ? entity?.image ?? "" : orga ? entity?.logo ?? "" : ""
-                );
+                formData.append("type", user ? "user" : orga ? "orga" : null);
 
                 const response = await fetch("/api/upload", {
                     method: "POST",
                     body: formData,
                 });
-
-                if (!response.ok) {
-                    const data = await response.json();
-                    throw new Error(data.error);
-                }
-
-                const { url } = await response.json();
-
-                if (user) {
-                    await updateUserAction({
-                        image: url,
-                    });
-                } else if (orga) {
-                    await updateOrganizationAction({
-                        logo: url,
-                    });
-                }
             },
             {
                 successMessage: tImageUpload("success_upload"),

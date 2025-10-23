@@ -1,38 +1,23 @@
-import { requireAuth } from "@/lib/access-control";
 import { s3Client } from "@/lib/s3";
-import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { deleteFileOrga, deleteFileUser } from "@root/src/actions/file.action";
+import { updateOrganizationAction } from "@root/src/actions/organization.action";
+import { updateUserAction } from "@root/src/actions/user.action";
 import { getTranslations } from "next-intl/server";
 import { NextResponse } from "next/server";
 
 const hostUrl = `${process.env.AWS_S3_PROTOCOL}://${process.env.AWS_S3_HOSTNAME}/${process.env.AWS_S3_BUCKET}`;
 
-async function deleteFile(url) {
-    if (!url) return;
-
-    try {
-        const key = url.replace(`${hostUrl}/`, "");
-        const command = new DeleteObjectCommand({
-            Bucket: process.env.AWS_S3_BUCKET,
-            Key: key,
-        });
-        await s3Client.send(command);
-    } catch (error) {
-        console.error("Erreur lors de la suppression:", error);
-    }
-}
-
 export async function POST(request) {
     try {
-        // Vérifier l'authentification
-        await requireAuth();
-
         const t = await getTranslations("file");
 
         // Parser le FormData
         const formData = await request.formData();
         const file = formData.get("file");
-        const folder = formData.get("folder") ?? "";
-        const oldUrl = formData.get("oldUrl") ?? "";
+        const type = formData.get("type") ?? "";
+        const field =
+            type === "user" ? "image" : type === "orga" ? "logo" : null;
 
         // Valider le fichier
         if (!file) {
@@ -67,11 +52,13 @@ export async function POST(request) {
             );
         }
 
+        console.log("Type d'entité pour l'upload:", type);
+
         // Générer un nom de fichier unique
         const timestamp = Date.now();
         const randomSuffix = Math.random().toString(36).substring(2, 15);
         const filename = `${timestamp}-${randomSuffix}-${file.name}`;
-        const key = folder ? `${folder}/${filename}` : filename;
+        const key = field ? `${field}/${filename}` : filename;
 
         // Convertir le fichier en buffer
         const arrayBuffer = await file.arrayBuffer();
@@ -90,8 +77,13 @@ export async function POST(request) {
         // Générer l'URL publique
         const url = `${hostUrl}/${key}`;
 
-        // Supprimer l'ancien fichier si fourni
-        await deleteFile(oldUrl);
+        if (type === "user") {
+            await deleteFileUser();
+            await updateUserAction({ [field]: url });
+        } else if (type === "orga") {
+            await deleteFileOrga();
+            await updateOrganizationAction({ [field]: url });
+        }
 
         return NextResponse.json({ url }, { status: 200 });
     } catch (error) {
