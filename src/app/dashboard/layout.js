@@ -1,11 +1,11 @@
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import SideBarContent from "./sidebarcontent/side-bar-content";
 import BreadcrumbSlot from "@/components/breadcrumb-slot";
+import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import SideBarContent from "./sidebarcontent/side-bar-content";
 
 export default async function Layout({ children }) {
     return (
-        <SidebarProvider>
+        <>
             <AppSidebar>
                 <SideBarContent />
             </AppSidebar>
@@ -18,6 +18,6 @@ export default async function Layout({ children }) {
                     {children}
                 </div>
             </main>
-        </SidebarProvider>
+        </>
     );
 }
