@@ -1,4 +1,3 @@
-import ManageOrganizationForm from "./form";
 import {
     Card,
     CardContent,
@@ -6,10 +5,11 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { requirePermission } from "@/lib/access-control";
-import { getTranslations } from "next-intl/server";
 import { Label } from "@/components/ui/label";
-import ImageUpload from "./image-upload-orgs";
+import { requirePermission } from "@/lib/access-control";
+import ManageImageProfile from "@root/src/components/manage-image-profile";
+import { getTranslations } from "next-intl/server";
+import ManageOrganizationForm from "./form";
 
 export default async function OrganizationManagePage() {
     const t = await getTranslations("organization.manage");
@@ -30,7 +30,11 @@ export default async function OrganizationManagePage() {
                     <div className="flex flex-col gap-2">
                         <Label className="font-bold">{t("logo_label")}</Label>
 
-                        <ImageUpload organization={organization} />
+                        <ManageImageProfile
+                            entity={organization}
+                            orga
+                            size="2xl"
+                        />
                     </div>
                     <ManageOrganizationForm organization={organization} />
                 </CardContent>

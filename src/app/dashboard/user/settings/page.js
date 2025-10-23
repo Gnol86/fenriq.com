@@ -1,4 +1,3 @@
-import UserSettingsForm from "./form";
 import {
     Card,
     CardContent,
@@ -6,10 +5,11 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { requireAuth } from "@/lib/access-control";
-import { getTranslations } from "next-intl/server";
-import ImageUploadUser from "./image-upload-user";
 import { Label } from "@/components/ui/label";
+import { requireAuth } from "@/lib/access-control";
+import ManageImageProfile from "@root/src/components/manage-image-profile";
+import { getTranslations } from "next-intl/server";
+import UserSettingsForm from "./form";
 
 export default async function UserSettingsPage() {
     const t = await getTranslations("user.settings");
@@ -29,7 +29,7 @@ export default async function UserSettingsPage() {
                         <Label className="font-bold">
                             {t("profile_image_label")}
                         </Label>
-                        <ImageUploadUser user={user} />
+                        <ManageImageProfile entity={user} user size="2xl" />
                     </div>
                     <UserSettingsForm user={user} />
                 </CardContent>

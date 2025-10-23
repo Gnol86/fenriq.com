@@ -140,7 +140,7 @@ export const ImageCrop = ({
 
     const applyCrop = async () => {
         if (!(imgRef.current && completedCrop)) {
-            return;
+            return null;
         }
 
         const croppedImage = await getCroppedPngImage(
@@ -151,6 +151,7 @@ export const ImageCrop = ({
         );
 
         onCrop?.(croppedImage);
+        return croppedImage;
     };
 
     const resetCrop = () => {
@@ -225,6 +226,77 @@ export const ImageCropContent = ({ style, className }) => {
     );
 };
 
+export const ImageCropPreview = ({ style, className }) => {
+    const { imgSrc, completedCrop, imgRef, reactCropProps } = useImageCrop();
+    const previewCanvasRef = useRef(null);
+
+    useEffect(() => {
+        if (
+            !completedCrop ||
+            !imgRef.current ||
+            !previewCanvasRef.current ||
+            !imgSrc
+        ) {
+            return;
+        }
+
+        const image = imgRef.current;
+        const canvas = previewCanvasRef.current;
+        const crop = completedCrop;
+
+        const scaleX = image.naturalWidth / image.width;
+        const scaleY = image.naturalHeight / image.height;
+        const ctx = canvas.getContext("2d");
+
+        if (!ctx) {
+            return;
+        }
+
+        const pixelRatio = window.devicePixelRatio || 1;
+        canvas.width = crop.width * pixelRatio;
+        canvas.height = crop.height * pixelRatio;
+
+        ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        ctx.imageSmoothingQuality = "high";
+
+        ctx.drawImage(
+            image,
+            crop.x * scaleX,
+            crop.y * scaleY,
+            crop.width * scaleX,
+            crop.height * scaleY,
+            0,
+            0,
+            crop.width,
+            crop.height
+        );
+    }, [completedCrop, imgSrc, imgRef]);
+
+    if (!completedCrop || !imgSrc) {
+        return null;
+    }
+
+    return (
+        <div
+            className={cn(
+                "overflow-hidden",
+                reactCropProps?.circularCrop && "rounded-full",
+                className
+            )}
+            style={style}
+        >
+            <canvas
+                ref={previewCanvasRef}
+                className="h-full w-full object-cover"
+                style={{
+                    width: "100%",
+                    height: "100%",
+                }}
+            />
+        </div>
+    );
+};
+
 export const ImageCropApply = ({
     asChild = false,
     children,
@@ -233,9 +305,9 @@ export const ImageCropApply = ({
 }) => {
     const { applyCrop } = useImageCrop();
 
-    const handleClick = async e => {
-        await applyCrop();
-        onClick?.(e);
+    const handleClick = async () => {
+        const croppedImage = await applyCrop();
+        onClick?.(croppedImage);
     };
 
     if (asChild) {
@@ -248,7 +320,7 @@ export const ImageCropApply = ({
 
     return (
         <Button onClick={handleClick} size="icon" variant="ghost" {...props}>
-            {children ?? <CropIcon className="size-4" />}
+            {children ?? <CropIcon />}
         </Button>
     );
 };
@@ -276,7 +348,7 @@ export const ImageCropReset = ({
 
     return (
         <Button onClick={handleClick} size="icon" variant="ghost" {...props}>
-            {children ?? <RotateCcwIcon className="size-4" />}
+            {children ?? <RotateCcwIcon />}
         </Button>
     );
 };
