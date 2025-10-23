@@ -16,7 +16,7 @@ import {
 import { Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
-import { deleteFile, uploadFile } from "../actions/file.action";
+import { deleteFile } from "../actions/file.action";
 import { updateOrganizationAction } from "../actions/organization.action";
 import { updateUserAction } from "../actions/user.action";
 import { useServerAction } from "../hooks/use-server-action";
@@ -34,6 +34,18 @@ export default function ManageImageProfile({
     const [dialogOpen, setDialogOpen] = useState(false);
     const { isPending, execute } = useServerAction();
     const tImageUpload = useTranslations("user.image_upload");
+
+    const dataURLtoFile = (dataurl, filename) => {
+        const arr = dataurl.split(",");
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, { type: mime });
+    };
 
     const handleClickDelete = async () => {
         await execute(
@@ -72,19 +84,34 @@ export default function ManageImageProfile({
     };
 
     const handleCropComplete = async croppedImage => {
-        if (!croppedImage || !entity?.id) return;
+        if (!croppedImage || !entity?.id || !selectedFile) return;
 
         await execute(
             async () => {
-                console.warn(
-                    "In handleCropComplete (Client) croppedImage :",
-                    croppedImage
+                const file = dataURLtoFile(croppedImage, selectedFile.name);
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append(
+                    "folder",
+                    user ? "users" : orga ? "orgas" : "dev"
                 );
-                const url = await uploadFile(
-                    croppedImage,
-                    user ? "users" : orga ? "orgas" : "dev",
-                    user ? entity?.image : orga ? entity?.logo : ""
+                formData.append(
+                    "oldUrl",
+                    user ? entity?.image ?? "" : orga ? entity?.logo ?? "" : ""
                 );
+
+                const response = await fetch("/api/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.error);
+                }
+
+                const { url } = await response.json();
+
                 if (user) {
                     await updateUserAction({
                         image: url,

@@ -733,6 +733,7 @@
         }
     },
     "file": {
+        "error_no_file": "Keine Datei bereitgestellt",
         "error_file_too_large": "Datei ist zu groß (maximal {maxSize} MB)",
         "error_unsupported_type": "Nicht unterstützter Dateityp. Verwenden Sie JPG, PNG, GIF oder WebP.",
         "error_upload_failed": "Fehler beim Hochladen der Datei"
