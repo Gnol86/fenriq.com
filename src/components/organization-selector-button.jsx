@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
 import { useServerAction } from "@/hooks/use-server-action";
 import { setActiveOrganizationAction } from "@/actions/organization.action";
+import { useTranslations } from "next-intl";
 
 export default function OrganizationSelectorButton({
     organization,
     isActive,
     activeOrganizationId,
 }) {
+    const t = useTranslations("organization.selector");
     const { execute, isPending } = useServerAction();
 
     const handleSelectOrganization = async () => {
@@ -23,7 +25,7 @@ export default function OrganizationSelectorButton({
                     organizationId: organization.id,
                 }),
             {
-                successMessage: `"${organization.name}" sélectionnée`,
+                successMessage: t("success_selected", { name: organization.name }),
             }
         );
     };
@@ -32,7 +34,7 @@ export default function OrganizationSelectorButton({
         return (
             <div className="flex items-center gap-2">
                 <Check className="text-primary h-4 w-4" />
-                <span className="text-primary text-sm font-medium">Active</span>
+                <span className="text-primary text-sm font-medium">{t("active_label")}</span>
             </div>
         );
     }
@@ -48,10 +50,10 @@ export default function OrganizationSelectorButton({
             {isPending ? (
                 <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Sélection...
+                    {t("selecting_button")}
                 </>
             ) : (
-                "Sélectionner"
+                t("select_button")
             )}
         </Button>
     );

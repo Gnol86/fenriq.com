@@ -32,7 +32,7 @@ export async function AppSidebar({ children }) {
     );
 
     return (
-        <Sidebar collapsible="icon">
+        <Sidebar>
             <SidebarHeader>
                 <OrgButton
                     userOrganizations={userOrganizations}
