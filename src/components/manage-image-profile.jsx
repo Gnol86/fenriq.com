@@ -35,18 +35,6 @@ export default function ManageImageProfile({
     const { isPending, execute } = useServerAction();
     const tImageUpload = useTranslations("user.image_upload");
 
-    const dataURLtoFile = async (dataurl, filename) => {
-        const arr = dataurl.split(",");
-        const mime = arr[0].match(/:(.*?);/)[1];
-        const bstr = atob(arr[1]);
-        let n = bstr.length;
-        const u8arr = new Uint8Array(n);
-        while (n--) {
-            u8arr[n] = bstr.charCodeAt(n);
-        }
-        return new File([u8arr], filename, { type: mime });
-    };
-
     const handleClickDelete = async () => {
         await execute(
             async () => {
@@ -84,17 +72,12 @@ export default function ManageImageProfile({
     };
 
     const handleCropComplete = async croppedImage => {
-        if (!croppedImage || !entity?.id || !selectedFile) return;
-
-        const croppedFile = await dataURLtoFile(
-            croppedImage,
-            selectedFile.name
-        );
+        if (!croppedImage || !entity?.id) return;
 
         await execute(
             async () => {
                 const url = await uploadFile(
-                    croppedFile,
+                    croppedImage,
                     user ? "users" : orga ? "orgas" : "dev",
                     user ? entity?.image : orga ? entity?.logo : ""
                 );

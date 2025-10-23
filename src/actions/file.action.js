@@ -1,14 +1,17 @@
 "use server";
 
 import { s3Client } from "@/lib/s3";
+import { dataURLtoFile } from "@/lib/utils";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 
 const hostUrl = `${process.env.AWS_S3_PROTOCOL}://${process.env.AWS_S3_HOSTNAME}/${process.env.AWS_S3_BUCKET}`;
 
-export async function uploadFile(file, folder = "", oldUrl) {
+export async function uploadFile(dataURL, folder = "", oldUrl) {
     const t = await getTranslations("file");
+
+    const file = await dataURLtoFile(dataURL);
 
     // Validate file exists
     if (!file) {
