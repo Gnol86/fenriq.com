@@ -11,6 +11,8 @@ const hostUrl = `${process.env.AWS_S3_PROTOCOL}://${process.env.AWS_S3_HOSTNAME}
 export async function uploadFile(dataURL, folder = "", oldUrl) {
     const t = await getTranslations("file");
 
+    console.warn("In UploadFile (Serveur) dataURL :", dataURL);
+
     const file = await dataURLtoFile(dataURL);
 
     // Validate file exists

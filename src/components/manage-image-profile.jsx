@@ -76,6 +76,10 @@ export default function ManageImageProfile({
 
         await execute(
             async () => {
+                console.warn(
+                    "In handleCropComplete (Client) croppedImage :",
+                    croppedImage
+                );
                 const url = await uploadFile(
                     croppedImage,
                     user ? "users" : orga ? "orgas" : "dev",
