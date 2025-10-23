@@ -35,7 +35,7 @@ export default function ManageImageProfile({
     const { isPending, execute } = useServerAction();
     const tImageUpload = useTranslations("user.image_upload");
 
-    const dataURLtoFile = (dataurl, filename) => {
+    const dataURLtoFile = async (dataurl, filename) => {
         const arr = dataurl.split(",");
         const mime = arr[0].match(/:(.*?);/)[1];
         const bstr = atob(arr[1]);
@@ -86,7 +86,10 @@ export default function ManageImageProfile({
     const handleCropComplete = async croppedImage => {
         if (!croppedImage || !entity?.id || !selectedFile) return;
 
-        const croppedFile = dataURLtoFile(croppedImage, selectedFile.name);
+        const croppedFile = await dataURLtoFile(
+            croppedImage,
+            selectedFile.name
+        );
 
         await execute(
             async () => {
