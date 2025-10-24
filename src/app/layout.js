@@ -2,8 +2,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { SiteConfig } from "@/site-config";
 import WindowSize from "@components/dev/window-size";
-import PageLoader from "@components/page-loader";
 import { Provider } from "@components/provider";
+import SelectLanguageDialog from "@components/select-language-dialog";
 import { defaultLocale } from "@lib/i18n/config";
 import { getMessages } from "next-intl/server";
 import { cookies } from "next/headers";
@@ -30,6 +30,7 @@ export const metadata = {
 export default async function RootLayout({ children }) {
     const cookieStore = await cookies();
     const locale = cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
+    const hasLocale = !!cookieStore.get("NEXT_LOCALE");
     const messages = await getMessages();
 
     return (
@@ -39,8 +40,8 @@ export default async function RootLayout({ children }) {
             >
                 <Provider locale={locale} messages={messages}>
                     {children}
-                    <PageLoader />
                 </Provider>
+                <SelectLanguageDialog hasLocale={hasLocale} />
                 {process.env.NODE_ENV === "development" && (
                     <WindowSize currentLocale={locale} />
                 )}

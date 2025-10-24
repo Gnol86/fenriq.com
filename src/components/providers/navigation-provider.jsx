@@ -21,18 +21,8 @@ export function NavigationProvider({ children }) {
         const previousPath = previousPathnameRef.current;
         const previousSearch = previousSearchParamsRef.current;
 
-        console.log("[NavigationProvider] Effect triggered", {
-            currentPath,
-            currentSearch,
-            previousPath,
-            previousSearch,
-            isNavigating,
-        });
-
         // Si le pathname ou searchParams ont changé, c'est qu'une navigation vient de se terminer
         if (currentPath !== previousPath || currentSearch !== previousSearch) {
-            console.log("[NavigationProvider] Navigation detected - showing loader briefly");
-
             // Afficher le loader brièvement pour donner un feedback visuel
             setIsNavigating(true);
 
@@ -41,7 +31,6 @@ export function NavigationProvider({ children }) {
                 clearTimeout(loadingTimeoutRef.current);
             }
             loadingTimeoutRef.current = setTimeout(() => {
-                console.log("[NavigationProvider] Hiding loader");
                 setIsNavigating(false);
             }, 300); // 300ms de feedback visuel
 
@@ -59,7 +48,6 @@ export function NavigationProvider({ children }) {
 
     // Fonction pour démarrer la navigation manuellement (pour router.push)
     const startNavigation = useCallback(() => {
-        console.log("[NavigationProvider] Manual navigation started");
         setIsNavigating(true);
 
         // Timeout de sécurité : arrêter le loader après 10 secondes max
@@ -67,7 +55,6 @@ export function NavigationProvider({ children }) {
             clearTimeout(navigationTimeoutRef.current);
         }
         navigationTimeoutRef.current = setTimeout(() => {
-            console.log("[NavigationProvider] Navigation timeout - forcing stop");
             setIsNavigating(false);
         }, 10000);
     }, []);
@@ -80,10 +67,6 @@ export function NavigationProvider({ children }) {
             while (element && element !== document.body) {
                 if (element.tagName === "A") {
                     const href = element.getAttribute("href");
-                    console.log("[NavigationProvider] Link clicked", {
-                        href,
-                        tagName: element.tagName,
-                    });
 
                     // Vérifier si c'est un lien interne
                     if (
@@ -95,7 +78,6 @@ export function NavigationProvider({ children }) {
                         !href.startsWith("tel:") &&
                         element.target !== "_blank"
                     ) {
-                        console.log("[NavigationProvider] Internal navigation - starting loader");
                         startNavigation();
                         return;
                     }

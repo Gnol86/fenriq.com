@@ -41,7 +41,7 @@ export default function UserButton({
     const pathname = usePathname();
     const [isSigningOut, startSignOut] = useTransition();
     const [isStoppingImpersonation, stopImpersonating] = useTransition();
-    const { setOpenMobile, isMobile } = useSidebar();
+    const { isMobile } = useSidebar();
 
     if (!user) {
         return null;
