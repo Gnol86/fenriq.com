@@ -1,7 +1,4 @@
 "use client";
-import { useTransition } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,15 +6,22 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Loader2 } from "lucide-react";
+import { useSidebar } from "@/components/ui/sidebar";
 import { authClient, signOut } from "@/lib/auth-client";
-import { LayoutDashboard } from "lucide-react";
-import { AppWindow } from "lucide-react";
-import ImageProfile from "../image-profile";
-import { HatGlasses } from "lucide-react";
+import {
+    AppWindow,
+    HatGlasses,
+    LayoutDashboard,
+    Loader2,
+    LogOut,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { toast } from "sonner";
 import { AnimatedThemeToggler } from "../animated-theme-toggler";
-import { useTranslations } from "next-intl";
+import ImageProfile from "../image-profile";
 import LocalizationButton from "../localization-button";
 
 export default function UserButton({
@@ -30,6 +34,7 @@ export default function UserButton({
     const pathname = usePathname();
     const [isSigningOut, startSignOut] = useTransition();
     const [isStoppingImpersonation, stopImpersonating] = useTransition();
+    const { setOpenMobile } = useSidebar();
 
     if (!user) {
         return null;
@@ -101,7 +106,11 @@ export default function UserButton({
                 </DropdownMenuLabel>
                 {!isOnApp && (
                     <DropdownMenuItem asChild>
-                        <Link href="/app" className="flex items-center gap-2">
+                        <Link
+                            href="/app"
+                            className="flex items-center gap-2"
+                            onNavigate={() => setOpenMobile(false)}
+                        >
                             <AppWindow
                                 size={16}
                                 className="opacity-60"
@@ -116,6 +125,7 @@ export default function UserButton({
                         <Link
                             href="/dashboard"
                             className="flex items-center gap-2"
+                            onNavigate={() => setOpenMobile(false)}
                         >
                             <LayoutDashboard
                                 size={16}
