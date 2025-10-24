@@ -71,7 +71,7 @@ export default function OrgButton({
                             return (
                                 <DropdownMenuItem
                                     key={organization.id}
-                                    onSelect={async event => {
+                                    onSelect={async _event => {
                                         if (isMobile) {
                                             setOpenMobile(false);
                                         }
@@ -92,6 +92,7 @@ export default function OrgButton({
                                                         }
                                                     ),
                                                 redirectOnSuccess: "/dashboard",
+                                                refreshOnSuccess: true,
                                             }
                                         );
                                     }}

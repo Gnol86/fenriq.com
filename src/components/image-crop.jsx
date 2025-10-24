@@ -280,7 +280,7 @@ export const ImageCropPreview = ({ style, className }) => {
         <div
             className={cn(
                 "overflow-hidden",
-                reactCropProps?.circularCrop && "rounded-full",
+                reactCropProps?.circularCrop ? "rounded-full" : "rounded-lg",
                 className
             )}
             style={style}

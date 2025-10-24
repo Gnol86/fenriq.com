@@ -22,12 +22,19 @@ function LinkContent({ children }) {
 
 export function ActiveSidebarLink({ href, children, className }) {
     const pathname = usePathname();
-    const { setOpenMobile } = useSidebar();
+    const { setOpenMobile, isMobile } = useSidebar();
     const isActive = pathname === href;
 
     return (
         <SidebarMenuButton asChild isActive={isActive} className={className}>
-            <Link href={href} onNavigate={() => setOpenMobile(false)}>
+            <Link
+                href={href}
+                onNavigate={() => {
+                    if (isMobile) {
+                        setOpenMobile(false);
+                    }
+                }}
+            >
                 <LinkContent>{children}</LinkContent>
             </Link>
         </SidebarMenuButton>

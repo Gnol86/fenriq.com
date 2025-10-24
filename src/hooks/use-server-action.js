@@ -1,7 +1,7 @@
 "use client";
-import { useState, useCallback } from "react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
 
 export function useServerAction() {
     const [isPending, setIsPending] = useState(false);
@@ -29,14 +29,9 @@ export function useServerAction() {
                 loading: "Opération en cours...",
                 success: data => {
                     setData(data);
+
                     setIsSuccess(true);
                     setIsPending(false);
-
-                    if (redirectOnSuccess) {
-                        router.push(redirectOnSuccess);
-                    } else if (refreshOnSuccess) {
-                        router.refresh();
-                    }
 
                     return successMessage;
                 },
@@ -63,6 +58,15 @@ export function useServerAction() {
                     setIsPending(false);
 
                     return errorMessage;
+                },
+                finally: () => {
+                    // Push first, then refresh to ensure data is updated on the new page
+                    if (redirectOnSuccess) {
+                        router.push(redirectOnSuccess);
+                    }
+                    if (refreshOnSuccess) {
+                        router.refresh();
+                    }
                 },
             });
         },

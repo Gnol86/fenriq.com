@@ -151,7 +151,7 @@ export default function ManageImageProfile({
                     </DialogHeader>
 
                     {selectedFile && (
-                        <ImageCrop file={selectedFile} aspect={1} circularCrop>
+                        <ImageCrop file={selectedFile} aspect={1}>
                             <ImageCropContent />
                             <div className="flex w-full justify-center">
                                 <ImageCropPreview className="h-20 w-20" />

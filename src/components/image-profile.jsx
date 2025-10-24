@@ -24,6 +24,7 @@ export default function ImageProfile({
     size = "md",
     defaultImage = undefined,
 }) {
+    const src = entity?.image || entity?.logo || defaultImage;
     return (
         <Avatar className={`${AVATAR_SIZES[size]} rounded-lg`}>
             <AvatarFallback
@@ -31,10 +32,7 @@ export default function ImageProfile({
             >
                 {getInitials(entity?.name || entity?.email || "-")}
             </AvatarFallback>
-            <AvatarImage
-                src={(entity?.image || entity?.logo) ?? defaultImage}
-                alt={entity?.name}
-            />
+            <AvatarImage src={src} alt={entity?.name} />
         </Avatar>
     );
 }
