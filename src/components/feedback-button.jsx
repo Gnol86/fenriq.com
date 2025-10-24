@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
-import { MessageSquare, Star } from "lucide-react";
+import { createFeedbackAction } from "@/actions/feedback.action";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
     Dialog,
     DialogContent,
@@ -12,13 +12,14 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useServerAction } from "@/hooks/use-server-action";
-import { createFeedbackAction } from "@/actions/feedback.action";
 import { cn } from "@/lib/utils";
+import { MessageSquare, Star } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { SidebarMenuButton } from "./ui/sidebar";
 
 export function FeedbackButton() {
     const t = useTranslations("feedback");
@@ -57,10 +58,10 @@ export function FeedbackButton() {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button variant="ghost" className="w-full justify-start gap-2">
+                <SidebarMenuButton>
                     <MessageSquare className="size-4" />
                     <span>{t("button_label")}</span>
-                </Button>
+                </SidebarMenuButton>
             </DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleSubmit}>

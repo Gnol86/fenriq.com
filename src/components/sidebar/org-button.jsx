@@ -1,19 +1,21 @@
 "use client";
 
+import { setActiveOrganizationAction } from "@/actions/organization.action";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SiteConfig } from "@/site-config";
-import { Check } from "lucide-react";
 import { useServerAction } from "@/hooks/use-server-action";
-import { setActiveOrganizationAction } from "@/actions/organization.action";
-import ImageProfile from "../image-profile";
-import CreateOrganizationDialog from "./create-organization-dialog";
+import { SiteConfig } from "@/site-config";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { useTranslations } from "next-intl";
+import ImageProfile from "../image-profile";
+import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "../ui/sidebar";
+import CreateOrganizationDialog from "./create-organization-dialog";
 
 export default function OrgButton({
     userOrganizations,
@@ -23,80 +25,101 @@ export default function OrgButton({
     const tDashboard = useTranslations("dashboard.index");
     const tOrganizationSelector = useTranslations("organization.selector");
     const tAdminOrganizations = useTranslations("admin.organizations");
+    const { setOpenMobile, isMobile } = useSidebar();
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2 p-2">
-                <ImageProfile
-                    entity={activeUserOrganization}
-                    size="md"
-                    defaultImage="/images/logo.png"
-                />
-                <div className="flex min-w-0 flex-1 flex-col items-start justify-start overflow-hidden text-left">
-                    <span className="w-full truncate text-lg font-bold">
-                        {SiteConfig.title}
-                    </span>
-                    <span className="text-muted-foreground -mt-1 w-full truncate text-xs font-medium">
-                        {activeUserOrganization?.name ||
-                            tDashboard("no_active_organization")}
-                    </span>
-                </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-                className="w-56"
-                onCloseAutoFocus={event => event.preventDefault()}
-            >
-                <DropdownMenuLabel className="text-muted-foreground flex items-center gap-2 text-xs">
-                    {tDashboard("my_organizations_title")}
-                </DropdownMenuLabel>
-                {userOrganizations && userOrganizations.length > 0 ? (
-                    userOrganizations.map(organization => {
-                        const isActive =
-                            organization.id === activeUserOrganization?.id;
+        <SidebarMenuItem className="mt-2">
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton
+                        size="lg"
+                        className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                    >
+                        <ImageProfile
+                            entity={activeUserOrganization}
+                            size="sm"
+                            defaultImage="/images/logo.png"
+                        />
+                        <div className="grid flex-1 text-left text-sm leading-tight">
+                            <span className="truncate font-medium">
+                                {SiteConfig.title}
+                            </span>
+                            <span className="truncate text-xs">
+                                {activeUserOrganization?.name ||
+                                    tDashboard("no_active_organization")}
+                            </span>
+                        </div>
+                        <ChevronsUpDown className="ml-auto size-4" />
+                    </SidebarMenuButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                    className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                    side={isMobile ? "top" : "right"}
+                    align="end"
+                    sideOffset={4}
+                    onCloseAutoFocus={event => event.preventDefault()}
+                >
+                    <DropdownMenuLabel>
+                        {tDashboard("my_organizations_title")}
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {userOrganizations && userOrganizations.length > 0 ? (
+                        userOrganizations.map(organization => {
+                            const isActive =
+                                organization.id === activeUserOrganization?.id;
 
-                        return (
-                            <DropdownMenuItem
-                                key={organization.id}
-                                onSelect={async event => {
-                                    event.preventDefault();
-                                    if (isPending) return;
-
-                                    await execute(
-                                        () =>
-                                            setActiveOrganizationAction({
-                                                organizationId: organization.id,
-                                            }),
-                                        {
-                                            successMessage:
-                                                tOrganizationSelector(
-                                                    "success_selected",
-                                                    { name: organization.name }
-                                                ),
-                                            refreshOnSuccess: true,
+                            return (
+                                <DropdownMenuItem
+                                    key={organization.id}
+                                    onSelect={async event => {
+                                        if (isMobile) {
+                                            setOpenMobile(false);
                                         }
-                                    );
-                                }}
-                                className="flex items-center justify-between gap-2"
-                                disabled={isPending}
-                            >
-                                <ImageProfile entity={organization} size="xs" />
-                                <span className="flex-1 truncate text-sm">
-                                    {organization.name}
-                                </span>
-                                {isActive ? (
-                                    <Check className="text-primary h-4 w-4" />
-                                ) : null}
-                            </DropdownMenuItem>
-                        );
-                    })
-                ) : (
-                    <DropdownMenuItem disabled>
-                        {tAdminOrganizations("no_organizations")}
-                    </DropdownMenuItem>
-                )}
+                                        if (isPending) return;
 
-                <CreateOrganizationDialog />
-            </DropdownMenuContent>
-        </DropdownMenu>
+                                        await execute(
+                                            () =>
+                                                setActiveOrganizationAction({
+                                                    organizationId:
+                                                        organization.id,
+                                                }),
+                                            {
+                                                successMessage:
+                                                    tOrganizationSelector(
+                                                        "success_selected",
+                                                        {
+                                                            name: organization.name,
+                                                        }
+                                                    ),
+                                                redirectOnSuccess: "/dashboard",
+                                            }
+                                        );
+                                    }}
+                                    className="flex items-center justify-between gap-2"
+                                    disabled={isPending}
+                                >
+                                    <ImageProfile
+                                        entity={organization}
+                                        size="xs"
+                                    />
+                                    <span className="flex-1 truncate text-sm">
+                                        {organization.name}
+                                    </span>
+                                    {isActive ? (
+                                        <Check className="text-primary h-4 w-4" />
+                                    ) : null}
+                                </DropdownMenuItem>
+                            );
+                        })
+                    ) : (
+                        <DropdownMenuItem disabled>
+                            {tAdminOrganizations("no_organizations")}
+                        </DropdownMenuItem>
+                    )}
+
+                    <CreateOrganizationDialog />
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </SidebarMenuItem>
     );
 }

@@ -4,12 +4,19 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useSidebar } from "@/components/ui/sidebar";
+import {
+    SidebarMenuButton,
+    SidebarMenuItem,
+    useSidebar,
+} from "@/components/ui/sidebar";
 import { authClient, signOut } from "@/lib/auth-client";
+import { cn } from "@root/src/lib/utils";
 import {
     AppWindow,
+    ChevronsUpDown,
     HatGlasses,
     LayoutDashboard,
     Loader2,
@@ -34,7 +41,7 @@ export default function UserButton({
     const pathname = usePathname();
     const [isSigningOut, startSignOut] = useTransition();
     const [isStoppingImpersonation, stopImpersonating] = useTransition();
-    const { setOpenMobile } = useSidebar();
+    const { setOpenMobile, isMobile } = useSidebar();
 
     if (!user) {
         return null;
@@ -66,132 +73,147 @@ export default function UserButton({
     };
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2 p-2">
-                <ImageProfile entity={user} />
-                <div className="flex min-w-0 flex-1 flex-col items-start justify-start overflow-hidden text-left">
-                    <span className="w-full truncate font-medium">
-                        {isImpersonating ? (
-                            <span className="text-destructive flex items-center gap-1 truncate">
-                                {user.name || t("default_name")}{" "}
-                                <HatGlasses
-                                    className="text-foreground"
-                                    size={16}
-                                />
+        <SidebarMenuItem className="mb-2">
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton
+                        size="lg"
+                        className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                    >
+                        <ImageProfile entity={user} size="sm" />
+
+                        <div className="grid flex-1 text-left text-sm leading-tight">
+                            <span
+                                className={cn(
+                                    "truncate font-medium",
+                                    isImpersonating && "text-destructive"
+                                )}
+                            >
+                                {user.name || t("default_name")}
                             </span>
-                        ) : (
-                            user.name || t("default_name")
-                        )}
-                    </span>
-                    <span className="text-muted-foreground -mt-1 w-full truncate text-xs font-medium">
-                        {user.email || ""}
-                    </span>
-                </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-                className="w-56"
-                onCloseAutoFocus={event => event.preventDefault()}
-            >
-                <DropdownMenuLabel className="flex items-center gap-2">
-                    <ImageProfile entity={user} size="xs" />
-                    <div className="truncate">
-                        {user.name || t("default_name")}
-                    </div>
-                    <div className="flex-1" />
-                    <LocalizationButton
-                        currentLocale={currentLocale}
-                        size={16}
-                    />
-                    <AnimatedThemeToggler size={16} />
-                </DropdownMenuLabel>
-                {!isOnApp && (
-                    <DropdownMenuItem asChild>
-                        <Link
-                            href="/app"
+                            <span className="truncate text-xs">
+                                {user.email}
+                            </span>
+                        </div>
+                        <ChevronsUpDown className="ml-auto size-4" />
+                    </SidebarMenuButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                    className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                    side={isMobile ? "bottom" : "right"}
+                    align="end"
+                    sideOffset={4}
+                    onCloseAutoFocus={event => event.preventDefault()}
+                >
+                    <DropdownMenuLabel className="p-0 font-normal">
+                        <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                            <ImageProfile entity={user} size="sm" />
+                            <div className="grid flex-1 text-left text-sm leading-tight">
+                                <span className="truncate font-medium">
+                                    {user.name}
+                                </span>
+                                <span className="truncate text-xs">
+                                    {user.email}
+                                </span>
+                            </div>
+                        </div>
+
+                        <LocalizationButton
+                            currentLocale={currentLocale}
+                            size={16}
+                        />
+                        <AnimatedThemeToggler size={16} />
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {!isOnApp && (
+                        <DropdownMenuItem asChild>
+                            <Link
+                                href="/app"
+                                className="flex items-center gap-2"
+                                // onNavigate={() => setOpenMobile(false)}
+                            >
+                                <AppWindow
+                                    size={16}
+                                    className="opacity-60"
+                                    aria-hidden="true"
+                                />
+                                {t("return_to_app")}
+                            </Link>
+                        </DropdownMenuItem>
+                    )}
+                    {!isOnDashboard && (
+                        <DropdownMenuItem asChild>
+                            <Link
+                                href="/dashboard"
+                                className="flex items-center gap-2"
+                                // onNavigate={() => setOpenMobile(false)}
+                            >
+                                <LayoutDashboard
+                                    size={16}
+                                    className="opacity-60"
+                                    aria-hidden="true"
+                                />
+                                {t("dashboard")}
+                            </Link>
+                        </DropdownMenuItem>
+                    )}
+                    {isImpersonating ? (
+                        <DropdownMenuItem
+                            variant="destructive"
+                            onSelect={event => {
+                                event.preventDefault();
+                                if (!isStoppingImpersonation) {
+                                    handleStopImpersonating();
+                                }
+                            }}
+                            disabled={isStoppingImpersonation}
                             className="flex items-center gap-2"
-                            onNavigate={() => setOpenMobile(false)}
                         >
-                            <AppWindow
-                                size={16}
-                                className="opacity-60"
-                                aria-hidden="true"
-                            />
-                            {t("return_to_app")}
-                        </Link>
-                    </DropdownMenuItem>
-                )}
-                {!isOnDashboard && (
-                    <DropdownMenuItem asChild>
-                        <Link
-                            href="/dashboard"
+                            {isStoppingImpersonation ? (
+                                <Loader2
+                                    size={16}
+                                    className="animate-spin opacity-60"
+                                    aria-hidden="true"
+                                />
+                            ) : (
+                                <HatGlasses
+                                    size={16}
+                                    className="opacity-60"
+                                    aria-hidden="true"
+                                />
+                            )}
+                            {t("stop_impersonation")}
+                        </DropdownMenuItem>
+                    ) : (
+                        <DropdownMenuItem
+                            variant="destructive"
+                            onSelect={event => {
+                                event.preventDefault();
+                                if (!isSigningOut) {
+                                    handleSignOut();
+                                }
+                            }}
+                            disabled={isSigningOut}
                             className="flex items-center gap-2"
-                            onNavigate={() => setOpenMobile(false)}
                         >
-                            <LayoutDashboard
-                                size={16}
-                                className="opacity-60"
-                                aria-hidden="true"
-                            />
-                            {t("dashboard")}
-                        </Link>
-                    </DropdownMenuItem>
-                )}
-                {isImpersonating ? (
-                    <DropdownMenuItem
-                        variant="destructive"
-                        onSelect={event => {
-                            event.preventDefault();
-                            if (!isStoppingImpersonation) {
-                                handleStopImpersonating();
-                            }
-                        }}
-                        disabled={isStoppingImpersonation}
-                        className="flex items-center gap-2"
-                    >
-                        {isStoppingImpersonation ? (
-                            <Loader2
-                                size={16}
-                                className="animate-spin opacity-60"
-                                aria-hidden="true"
-                            />
-                        ) : (
-                            <HatGlasses
-                                size={16}
-                                className="opacity-60"
-                                aria-hidden="true"
-                            />
-                        )}
-                        {t("stop_impersonation")}
-                    </DropdownMenuItem>
-                ) : (
-                    <DropdownMenuItem
-                        variant="destructive"
-                        onSelect={event => {
-                            event.preventDefault();
-                            if (!isSigningOut) {
-                                handleSignOut();
-                            }
-                        }}
-                        disabled={isSigningOut}
-                        className="flex items-center gap-2"
-                    >
-                        {isSigningOut ? (
-                            <Loader2
-                                size={16}
-                                className="animate-spin opacity-60"
-                                aria-hidden="true"
-                            />
-                        ) : (
-                            <LogOut
-                                size={16}
-                                className="opacity-60"
-                                aria-hidden="true"
-                            />
-                        )}
-                        {t("sign_out")}
-                    </DropdownMenuItem>
-                )}
-            </DropdownMenuContent>
-        </DropdownMenu>
+                            {isSigningOut ? (
+                                <Loader2
+                                    size={16}
+                                    className="animate-spin opacity-60"
+                                    aria-hidden="true"
+                                />
+                            ) : (
+                                <LogOut
+                                    size={16}
+                                    className="opacity-60"
+                                    aria-hidden="true"
+                                />
+                            )}
+                            {t("sign_out")}
+                        </DropdownMenuItem>
+                    )}
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </SidebarMenuItem>
     );
 }

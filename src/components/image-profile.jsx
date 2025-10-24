@@ -25,9 +25,9 @@ export default function ImageProfile({
     defaultImage = undefined,
 }) {
     return (
-        <Avatar className={`${AVATAR_SIZES[size]}`}>
+        <Avatar className={`${AVATAR_SIZES[size]} rounded-lg`}>
             <AvatarFallback
-                className={`ring-foreground/20 ring ring-inset ${INITIAL_SIZES[size]}`}
+                className={`ring-foreground/20 rounded-lg ring ring-inset ${INITIAL_SIZES[size]}`}
             >
                 {getInitials(entity?.name || entity?.email || "-")}
             </AvatarFallback>

@@ -4,6 +4,8 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
+    SidebarMenu,
+    SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
 import { defaultLocale } from "@lib/i18n/config";
@@ -32,7 +34,7 @@ export async function AppSidebar({ children }) {
     );
 
     return (
-        <Sidebar>
+        <Sidebar collapsible="icon">
             <SidebarHeader>
                 <OrgButton
                     userOrganizations={userOrganizations}
@@ -41,12 +43,16 @@ export async function AppSidebar({ children }) {
             </SidebarHeader>
             <SidebarContent>{children}</SidebarContent>
             <SidebarFooter>
-                <FeedbackButton />
-                <UserButton
-                    user={user}
-                    isImpersonating={session?.session?.impersonatedBy}
-                    currentLocale={locale}
-                />
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <FeedbackButton />
+                    </SidebarMenuItem>
+                    <UserButton
+                        user={user}
+                        isImpersonating={session?.session?.impersonatedBy}
+                        currentLocale={locale}
+                    />
+                </SidebarMenu>
             </SidebarFooter>
         </Sidebar>
     );
