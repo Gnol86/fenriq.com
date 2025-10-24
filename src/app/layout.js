@@ -1,11 +1,12 @@
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { Provider } from "@/components/provider";
 import { SiteConfig } from "@/site-config";
-import WindowSize from "@/components/dev/window-size";
+import WindowSize from "@components/dev/window-size";
+import PageLoader from "@components/page-loader";
+import { Provider } from "@components/provider";
+import { defaultLocale } from "@lib/i18n/config";
 import { getMessages } from "next-intl/server";
 import { cookies } from "next/headers";
-import { defaultLocale } from "@lib/i18n/config";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -38,6 +39,7 @@ export default async function RootLayout({ children }) {
             >
                 <Provider locale={locale} messages={messages}>
                     {children}
+                    <PageLoader />
                 </Provider>
                 {process.env.NODE_ENV === "development" && (
                     <WindowSize currentLocale={locale} />

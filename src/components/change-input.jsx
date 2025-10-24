@@ -5,13 +5,11 @@ import {
     InputGroupAddon,
     InputGroupButton,
     InputGroupInput,
-    InputGroupText,
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { Check, Edit, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FormDescription, FormLabel, FormMessage } from "./ui/form";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export default function ChangeInput({
     label,
@@ -64,13 +62,8 @@ export default function ChangeInput({
             {changeMode ? (
                 <div onClick={e => e.stopPropagation()}>
                     <InputGroup ref={containerRef} onBlur={handleBlur}>
-                        {(label || icon) && (
-                            <InputGroupAddon>
-                                {icon && icon}
-                                {label && (
-                                    <InputGroupText>{label} :</InputGroupText>
-                                )}
-                            </InputGroupAddon>
+                        {icon && (
+                            <InputGroupAddon>{icon && icon}</InputGroupAddon>
                         )}
                         <InputGroupInput
                             disabled={loading}
@@ -109,19 +102,16 @@ export default function ChangeInput({
                     <FormMessage />
                 </div>
             ) : (
-                <Tooltip>
-                    <TooltipTrigger>
-                        <span
-                            className="group flex items-center gap-1"
-                            onClick={handleOpenChangeMode}
-                        >
-                            {value}
-                        </span>
-                    </TooltipTrigger>
-                    <TooltipContent side="left" onClick={handleOpenChangeMode}>
-                        <Edit size={16} />
-                    </TooltipContent>
-                </Tooltip>
+                <span
+                    className="group flex cursor-pointer items-center gap-2"
+                    onClick={handleOpenChangeMode}
+                >
+                    <span>{value}</span>
+                    <Edit
+                        size={12}
+                        className="opacity-50 group-hover:opacity-100"
+                    />
+                </span>
             )}
         </div>
     );
