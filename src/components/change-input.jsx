@@ -109,7 +109,7 @@ export default function ChangeInput({
                     <span>{value}</span>
                     <Edit
                         size={12}
-                        className="opacity-50 group-hover:opacity-100"
+                        className="opacity-0 group-hover:opacity-50"
                     />
                 </span>
             )}

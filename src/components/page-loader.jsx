@@ -13,7 +13,7 @@ export default function PageLoader() {
     }
 
     return (
-        <div className="bg-background/75 pointer-events-none fixed top-0 right-0 bottom-0 left-0 z-50 flex items-center justify-center backdrop-blur-md">
+        <div className="bg-background/10 pointer-events-none fixed top-0 right-0 bottom-0 left-0 z-50 flex items-center justify-center backdrop-blur-md">
             <Spinner className="h-10 w-10" />
         </div>
     );
