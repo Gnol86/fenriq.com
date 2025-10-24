@@ -3,7 +3,12 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { deleteFileOrga, deleteFileUser } from "@root/src/actions/file.action";
 import { updateOrganizationAction } from "@root/src/actions/organization.action";
 import { updateUserAction } from "@root/src/actions/user.action";
+import {
+    requireActiveOrganization,
+    requireAuth,
+} from "@root/src/lib/access-control";
 import { getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
 import { NextResponse } from "next/server";
 
 const hostUrl = `${process.env.AWS_S3_PROTOCOL}://${process.env.AWS_S3_HOSTNAME}/${process.env.AWS_S3_BUCKET}`;
@@ -18,6 +23,14 @@ export async function POST(request) {
         const type = formData.get("type") ?? "";
         const field =
             type === "user" ? "image" : type === "orga" ? "logo" : null;
+
+        if (type === "user") {
+            await requireAuth();
+        } else if (type === "orga") {
+            await requireActiveOrganization();
+        } else {
+            notFound();
+        }
 
         // Valider le fichier
         if (!file) {
@@ -51,8 +64,6 @@ export async function POST(request) {
                 { status: 400 }
             );
         }
-
-        console.log("Type d'entité pour l'upload:", type);
 
         // Générer un nom de fichier unique
         const timestamp = Date.now();

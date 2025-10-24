@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
-import { Copy } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle, Copy } from "lucide-react";
+import Link from "next/link";
 import { toast } from "sonner";
 
 function extractErrorInfo(error) {
@@ -55,7 +54,7 @@ export default function Error({ error, reset }) {
     );
 
     return (
-        <main className="flex h-dvh flex-col items-center justify-center gap-4">
+        <main className="flex h-dvh w-full flex-col items-center justify-center gap-4">
             <div className="flex items-center justify-center gap-2">
                 <div className="text-2xl font-bold">{errorInfo.statusCode}</div>
                 <div className="text-sm">{statusMessage}</div>

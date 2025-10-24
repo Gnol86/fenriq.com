@@ -92,7 +92,7 @@ export default function ManageImageProfile({
                 formData.append("file", file);
                 formData.append("type", user ? "user" : orga ? "orga" : null);
 
-                const response = await fetch("/api/upload", {
+                await fetch("/api/upload", {
                     method: "POST",
                     body: formData,
                 });
