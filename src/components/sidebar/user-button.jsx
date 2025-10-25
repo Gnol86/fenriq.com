@@ -4,7 +4,11 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
+    DropdownMenuPortal,
     DropdownMenuSeparator,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -21,15 +25,16 @@ import {
     LayoutDashboard,
     Loader2,
     LogOut,
+    Settings2,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { AnimatedThemeToggler } from "../animated-theme-toggler";
 import ImageProfile from "../image-profile";
-import LocalizationButton from "../localization-button";
+import LocalizationSubdropdown from "../localization-subdropdown";
+import ThemeSubdropdown from "../theme-subdropdown";
 
 export default function UserButton({
     user,
@@ -117,12 +122,6 @@ export default function UserButton({
                                 </span>
                             </div>
                         </div>
-
-                        <LocalizationButton
-                            currentLocale={currentLocale}
-                            size={16}
-                        />
-                        <AnimatedThemeToggler size={16} />
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {!isOnApp && (
@@ -157,6 +156,24 @@ export default function UserButton({
                             </Link>
                         </DropdownMenuItem>
                     )}
+                    <DropdownMenuSub>
+                        <DropdownMenuSubTrigger className="flex items-center gap-2">
+                            <Settings2
+                                size={16}
+                                className="opacity-60"
+                                aria-hidden="true"
+                            />
+                            <span>Parramètres</span>
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuPortal>
+                            <DropdownMenuSubContent>
+                                <LocalizationSubdropdown
+                                    currentLocale={currentLocale}
+                                />
+                                <ThemeSubdropdown />
+                            </DropdownMenuSubContent>
+                        </DropdownMenuPortal>
+                    </DropdownMenuSub>
                     {isImpersonating ? (
                         <DropdownMenuItem
                             variant="destructive"
