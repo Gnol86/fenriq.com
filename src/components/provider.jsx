@@ -4,6 +4,7 @@ import { DialogProvider } from "@/components/providers/dialog-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { NextIntlClientProvider } from "next-intl";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { SidebarProvider } from "./ui/sidebar";
 
 export function Provider({ children, locale, messages }) {
     return (
@@ -19,7 +20,7 @@ export function Provider({ children, locale, messages }) {
                 disableTransitionOnChange
             >
                 <DialogProvider>
-                    {children}
+                    <SidebarProvider>{children}</SidebarProvider>
                     <Toaster position="bottom-right" richColors closeButton />
                 </DialogProvider>
             </NextThemesProvider>
