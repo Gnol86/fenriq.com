@@ -31,14 +31,23 @@ export default async function RootLayout({ children }) {
     const cookieStore = await cookies();
     const locale = cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
     const hasLocale = !!cookieStore.get("NEXT_LOCALE");
+    const sidebarStateRaw = cookieStore.get("sidebar_state")?.value;
+    const sidebarState =
+        sidebarStateRaw == null ? true : sidebarStateRaw === "true";
     const messages = await getMessages();
+
+    console.log("RootLayout locale :", sidebarState);
 
     return (
         <html lang={locale} suppressHydrationWarning>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                <Provider locale={locale} messages={messages}>
+                <Provider
+                    locale={locale}
+                    messages={messages}
+                    sidebarState={sidebarState}
+                >
                     {children}
                 </Provider>
                 <SelectLanguageDialog hasLocale={hasLocale} />

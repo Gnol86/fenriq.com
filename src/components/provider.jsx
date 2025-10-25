@@ -6,7 +6,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { SidebarProvider } from "./ui/sidebar";
 
-export function Provider({ children, locale, messages }) {
+export function Provider({ children, locale, messages, sidebarState }) {
+    console.log("sidebarState :", sidebarState);
     return (
         <NextIntlClientProvider
             locale={locale}
@@ -20,7 +21,9 @@ export function Provider({ children, locale, messages }) {
                 disableTransitionOnChange
             >
                 <DialogProvider>
-                    <SidebarProvider>{children}</SidebarProvider>
+                    <SidebarProvider defaultOpen={sidebarState}>
+                        {children}
+                    </SidebarProvider>
                     <Toaster position="bottom-right" richColors closeButton />
                 </DialogProvider>
             </NextThemesProvider>
