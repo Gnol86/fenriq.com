@@ -725,12 +725,16 @@
     },
     "theme": {
         "toggler": {
+            "label": "Thème",
             "light": "clair",
             "dark": "sombre",
             "system": "système",
             "toast_success": "Thème {theme} appliqué",
             "button_aria_label": "Changer de thème"
         }
+    },
+    "language": {
+        "label": "Langue"
     },
     "file": {
         "error_no_file": "Aucun fichier fourni",

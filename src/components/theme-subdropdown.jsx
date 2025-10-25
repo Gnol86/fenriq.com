@@ -1,7 +1,7 @@
 "use client";
 
 import {
-    DropdownMenuItem,
+    DropdownMenuCheckboxItem,
     DropdownMenuPortal,
     DropdownMenuSub,
     DropdownMenuSubContent,
@@ -29,15 +29,17 @@ export default function ThemeSubdropdown() {
         <DropdownMenuSub>
             <DropdownMenuSubTrigger className="flex items-center gap-2">
                 {renderIcon()}
-                {tTheme(theme).replace(/^./, c => c.toUpperCase())}
+                {tTheme("label")}
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
                 <DropdownMenuSubContent className="w-48" side="top">
-                    <DropdownMenuItem
+                    <DropdownMenuCheckboxItem
                         onSelect={event => {
                             event.preventDefault();
                             setTheme("system");
                         }}
+                        disabled={theme === "system"}
+                        checked={theme === "system"}
                     >
                         <Monitor
                             size={16}
@@ -45,12 +47,14 @@ export default function ThemeSubdropdown() {
                             aria-hidden="true"
                         />
                         {tTheme("system").replace(/^./, c => c.toUpperCase())}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
                         onSelect={event => {
                             event.preventDefault();
                             setTheme("light");
                         }}
+                        disabled={theme === "light"}
+                        checked={theme === "light"}
                     >
                         <SunDim
                             size={16}
@@ -58,13 +62,15 @@ export default function ThemeSubdropdown() {
                             aria-hidden="true"
                         />
                         {tTheme("light").replace(/^./, c => c.toUpperCase())}
-                    </DropdownMenuItem>
+                    </DropdownMenuCheckboxItem>
 
-                    <DropdownMenuItem
+                    <DropdownMenuCheckboxItem
                         onSelect={event => {
                             event.preventDefault();
                             setTheme("dark");
                         }}
+                        disabled={theme === "dark"}
+                        checked={theme === "dark"}
                     >
                         <Moon
                             size={16}
@@ -72,7 +78,7 @@ export default function ThemeSubdropdown() {
                             aria-hidden="true"
                         />
                         {tTheme("dark").replace(/^./, c => c.toUpperCase())}
-                    </DropdownMenuItem>
+                    </DropdownMenuCheckboxItem>
                 </DropdownMenuSubContent>
             </DropdownMenuPortal>
         </DropdownMenuSub>

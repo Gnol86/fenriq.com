@@ -725,12 +725,16 @@
     },
     "theme": {
         "toggler": {
+            "label": "Thema",
             "light": "lichte modus",
             "dark": "donkere modus",
             "system": "systeemmodus",
             "toast_success": "{theme} is toegepast",
             "button_aria_label": "Modus wisselen"
         }
+    },
+    "language": {
+        "label": "Taal"
     },
     "file": {
         "error_no_file": "Geen bestand opgegeven",

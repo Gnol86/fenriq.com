@@ -725,12 +725,16 @@
     },
     "theme": {
         "toggler": {
+            "label": "Thema",
             "light": "heller Modus",
             "dark": "dunkler Modus",
             "system": "Systemmodus",
             "toast_success": "{theme} wurde aktiviert",
             "button_aria_label": "Modus wechseln"
         }
+    },
+    "language": {
+        "label": "Sprache"
     },
     "file": {
         "error_no_file": "Keine Datei bereitgestellt",

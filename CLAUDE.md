@@ -511,10 +511,10 @@ This project uses **next-intl** for internationalization with French (fr) as the
 
 - `@lib/i18n/config.js` - Locale configuration (locales array, defaultLocale)
 - `@lib/i18n/request.js` - Request configuration for loading translations based on cookie
-- `@/messages/fr.json` - French translations
-- `@/messages/en.json` - English translations
-- `@/messages/nl.json` - Dutch translations
-- `@/messages/de.json` - German translations
+- `@/messages/fr-FR.json` - French translations
+- `@/messages/en-US.json` - English translations
+- `@/messages/nl-NL.json` - Dutch translations
+- `@/messages/de-DE.json` - German translations
 - Cookie: `NEXT_LOCALE` stores user's locale preference
 
 ## Translation Patterns
@@ -622,7 +622,7 @@ Utilities like `getInvitationDisplayStatus` return status keys (`pending`, `outd
 When adding new user-facing text:
 
 1. **Never hardcode text** - Always use translation keys
-2. **🚨 CRITICAL: Add to ALL language files** - `messages/fr.json`, `messages/en.json`, `messages/nl.json`, AND `messages/de.json`
+2. **🚨 CRITICAL: Add to ALL language files** - `messages/xx-XX.json`
 3. **ALWAYS verify all language files exist** - Use `ls src/messages/` or `Glob` to list all .json files before adding translations
 4. **Use appropriate namespace** based on the feature
 5. **Keep keys consistent** across all languages
@@ -630,10 +630,10 @@ When adding new user-facing text:
 
 ### Supported Languages
 
-- 🇫🇷 French (`fr.json`) - Default language
-- 🇬🇧 English (`en.json`)
-- 🇳🇱 Dutch (`nl.json`)
-- 🇩🇪 German (`de.json`)
+- 🇫🇷 French
+- 🇬🇧 English
+- 🇳🇱 Dutch
+- 🇩🇪 German
 
 ## Example: Complete Page Translation
 
