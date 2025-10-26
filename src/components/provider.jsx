@@ -7,7 +7,6 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { SidebarProvider } from "./ui/sidebar";
 
 export function Provider({ children, locale, messages, sidebarState }) {
-    console.log("sidebarState :", sidebarState);
     return (
         <NextIntlClientProvider
             locale={locale}

@@ -2,7 +2,6 @@ import ImageProfile from "@/components/image-profile";
 import { Pagination } from "@/components/pagination";
 import SearchInput from "@/components/search-input";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -22,7 +21,6 @@ import {
 import { requireAdmin } from "@/lib/access-control";
 import { prisma } from "@/lib/prisma-client";
 import { formatDate } from "@/lib/utils";
-import { Eye } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
 const ORGS_PER_PAGE = 10;
@@ -32,6 +30,8 @@ export default async function AdminOrganizationsPage({ searchParams }) {
     await requireAdmin();
 
     const t = await getTranslations("admin.organizations");
+    const tSub = await getTranslations("organization.subscription");
+    const tCommon = await getTranslations("common");
     const locale = await getLocale();
     // Parse search parameters
     const resolvedSearchParams = await searchParams;
@@ -67,6 +67,12 @@ export default async function AdminOrganizationsPage({ searchParams }) {
             _count: {
                 select: {
                     members: true,
+                },
+            },
+            subscriptions: {
+                take: 1,
+                orderBy: {
+                    createdAt: "desc",
                 },
             },
         },
@@ -107,63 +113,82 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                 <TableHead>{t("table_status")}</TableHead>
                                 <TableHead>{t("table_members")}</TableHead>
                                 <TableHead>{t("table_created")}</TableHead>
-                                <TableHead className="text-right">
-                                    {t("table_details")}
-                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {organizations.map(org => (
-                                <TableRow key={org.id}>
-                                    {/* Organisation avec logo et informations */}
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <ImageProfile
-                                                entity={org}
-                                                size="sm"
-                                            />
-                                            <div className="flex flex-col">
-                                                <span className="text-foreground text-sm font-medium">
-                                                    {org.name}
-                                                </span>
-                                                <span className="text-muted-foreground text-xs">
-                                                    {org.slug}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </TableCell>
+                            {organizations.map(org => {
+                                const orgHref = `/dashboard/admin/orgs/${org.slug}`;
 
-                                    {/* Statut */}
-                                    <TableCell>
-                                        <Badge
-                                            variant="outline"
-                                            className="text-xs"
-                                        >
-                                            {t("status_placeholder")}
-                                        </Badge>
-                                    </TableCell>
+                                return (
+                                    <TableRow
+                                        key={org.id}
+                                        className="focus-within:bg-muted/50"
+                                    >
+                                        {/* Organisation avec logo et informations */}
+                                        <TableCell>
+                                            <Link
+                                                href={orgHref}
+                                                className="flex w-full items-center gap-2 rounded-md px-2 py-1 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                            >
+                                                <ImageProfile
+                                                    entity={org}
+                                                    size="sm"
+                                                />
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm font-medium">
+                                                        {org.name}
+                                                    </span>
+                                                    <span className="text-muted-foreground text-xs">
+                                                        {org.slug}
+                                                    </span>
+                                                </div>
+                                            </Link>
+                                        </TableCell>
 
-                                    {/* Membres */}
-                                    <TableCell>{org._count.members}</TableCell>
+                                        {/* Statut */}
+                                        <TableCell>
+                                            <Link
+                                                href={orgHref}
+                                                className="flex w-full items-center rounded-md px-2 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                                aria-label={t("table_status")}
+                                            >
+                                                <Badge
+                                                    variant="outline"
+                                                    className="text-xs"
+                                                >
+                                                    {org.subscriptions?.[0]?.status
+                                                        ? tSub(
+                                                              `status_${org.subscriptions[0].status}`
+                                                          )
+                                                        : tCommon("n_a")}
+                                                </Badge>
+                                            </Link>
+                                        </TableCell>
 
-                                    {/* Date de création */}
-                                    <TableCell>
-                                        <span className="text-muted-foreground text-sm">
-                                            {formatDate(org.createdAt, locale)}
-                                        </span>
-                                    </TableCell>
+                                        {/* Membres */}
+                                        <TableCell className="text-sm">
+                                            <Link
+                                                href={orgHref}
+                                                className="block w-full rounded-md px-2 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                                aria-label={t("table_members")}
+                                            >
+                                                {org._count.members}
+                                            </Link>
+                                        </TableCell>
 
-                                    <TableCell className="text-right">
-                                        <Link
-                                            href={`/dashboard/admin/orgs/${org.slug}`}
-                                        >
-                                            <Button size="icon" variant="ghost">
-                                                <Eye />
-                                            </Button>
-                                        </Link>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                                        {/* Date de création */}
+                                        <TableCell>
+                                            <Link
+                                                href={orgHref}
+                                                className="block w-full rounded-md px-2 py-1 text-muted-foreground text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                                aria-label={t("table_created")}
+                                            >
+                                                {formatDate(org.createdAt, locale)}
+                                            </Link>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
                         </TableBody>
                     </Table>
                     <Pagination totalPages={totalPages} page={page} />

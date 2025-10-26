@@ -36,8 +36,6 @@ export default async function RootLayout({ children }) {
         sidebarStateRaw == null ? true : sidebarStateRaw === "true";
     const messages = await getMessages();
 
-    console.log("RootLayout locale :", sidebarState);
-
     return (
         <html lang={locale} suppressHydrationWarning>
             <body

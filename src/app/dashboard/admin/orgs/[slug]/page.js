@@ -1,229 +1,299 @@
-import { notFound } from "next/navigation";
-import Link from "next/link";
+import ImageProfile from "@/components/image-profile";
 import {
     Card,
+    CardAction,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
-    Settings,
-    Users,
-    Mail,
-    AlertTriangle,
-    Calendar,
-    Building2,
-} from "lucide-react";
-import ImageProfile from "@/components/image-profile";
-import { getOrganizationBySlugAsAdminAction } from "@/actions/admin.action";
-import { getTranslations, getLocale } from "next-intl/server";
-import { requireAdmin } from "@/lib/access-control";
+    Item,
+    ItemActions,
+    ItemContent,
+    ItemDescription,
+    ItemGroup,
+    ItemMedia,
+    ItemSeparator,
+    ItemTitle,
+} from "@/components/ui/item";
 import { formatDate } from "@/lib/utils";
+import { requireAdmin } from "@root/src/lib/access-control";
+import { prisma } from "@root/src/lib/prisma-client";
+import { getLocale, getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
+import React from "react";
+
+function DetailRow({ label, value }) {
+    return (
+        <div className="flex flex-col gap-1 py-3 sm:flex-row sm:gap-4">
+            <dt className="text-muted-foreground min-w-[200px] text-sm font-medium">
+                {label}
+            </dt>
+            <dd className="text-sm">{value}</dd>
+        </div>
+    );
+}
 
 export default async function AdminOrganizationPage({ params }) {
     // Vérifie que l'utilisateur est admin
     await requireAdmin();
 
-    const t = await getTranslations("admin.organizations");
-    const locale = await getLocale();
     const { slug } = await params;
 
-    const organization = await getOrganizationBySlugAsAdminAction({ slug });
+    const t = await getTranslations("admin.organizations");
+    const tCommon = await getTranslations("common");
+    const tRoles = await getTranslations("roles");
+    const locale = await getLocale();
 
-    if (!organization || organization.error) {
+    const organisation = await prisma.organization.findUnique({
+        where: { slug: slug },
+        include: {
+            members: {
+                where: { role: "owner" },
+                include: {
+                    user: true,
+                },
+            },
+        },
+    });
+
+    if (!organisation) {
         notFound();
     }
 
-    const members = organization.members || [];
-    const memberCount = members.length;
-    const adminCount = members.filter(
-        member => member.role.includes("admin") || member.role.includes("owner")
-    ).length;
+    const subscription = await prisma.subscription.findUnique({
+        where: { referenceId: organisation.id },
+    });
+
+    const nbMembers = await prisma.member.count({
+        where: { organizationId: organisation.id },
+    });
 
     return (
         <div className="flex flex-col gap-6">
-            {/* En-tête organisation */}
             <Card>
                 <CardHeader>
-                    <div className="flex items-center gap-4">
-                        <ImageProfile entity={organization} size="2xl" />
-                        <div className="flex flex-col gap-2">
-                            <CardTitle className="text-2xl">
-                                {organization.name}
-                            </CardTitle>
-                            <CardDescription className="flex items-center gap-2">
-                                <Building2 className="h-4 w-4" />
-                                {t("slug_label")} {organization.slug}
-                            </CardDescription>
-                            <CardDescription className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4" />
-                                {t("created_on")}{" "}
-                                {formatDate(organization.createdAt, locale)}
-                            </CardDescription>
-                        </div>
-                    </div>
+                    <CardTitle>{t("detail_page_title")}</CardTitle>
+                    <CardDescription>{organisation.name}</CardDescription>
+                    <CardAction>
+                        <ImageProfile entity={organisation} />
+                    </CardAction>
                 </CardHeader>
+                <CardContent>
+                    {organisation.members.length > 0 ? (
+                        <ItemGroup>
+                            {organisation.members.map((member, index) => (
+                                <React.Fragment key={member.id}>
+                                    {index > 0 && <ItemSeparator />}
+                                    <Item>
+                                        <ItemMedia>
+                                            <ImageProfile
+                                                entity={member.user}
+                                            />
+                                        </ItemMedia>
+                                        <ItemContent>
+                                            <ItemTitle>
+                                                {member.user.name}
+                                            </ItemTitle>
+                                            <ItemDescription>
+                                                {member.user.email}
+                                            </ItemDescription>
+                                        </ItemContent>
+                                        <ItemActions>
+                                            <span className="text-muted-foreground text-sm">
+                                                {tRoles(member.role)}
+                                            </span>
+                                        </ItemActions>
+                                    </Item>
+                                </React.Fragment>
+                            ))}
+                        </ItemGroup>
+                    ) : (
+                        <p className="text-muted-foreground text-sm">
+                            {t("detail_contact_no_contact")}
+                        </p>
+                    )}
+                </CardContent>
+            </Card>
+            {/* Abonnement */}
+            <Card>
+                <CardHeader>
+                    <CardTitle>{t("detail_subscription_title")}</CardTitle>
+                    <CardDescription>
+                        {t("detail_subscription_description")}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {subscription ? (
+                        <dl className="divide-y">
+                            <DetailRow
+                                label={t("detail_subscription_id")}
+                                value={subscription.id}
+                            />
+                            <DetailRow
+                                label={t("detail_subscription_plan")}
+                                value={subscription.plan}
+                            />
+                            <DetailRow
+                                label={t("detail_subscription_status")}
+                                value={subscription.status ?? tCommon("n_a")}
+                            />
+                            <DetailRow
+                                label={t("detail_subscription_customer_id")}
+                                value={
+                                    subscription.stripeCustomerId ??
+                                    tCommon("n_a")
+                                }
+                            />
+                            <DetailRow
+                                label={t("detail_subscription_subscription_id")}
+                                value={
+                                    subscription.stripeSubscriptionId ??
+                                    tCommon("n_a")
+                                }
+                            />
+                            <DetailRow
+                                label={t("detail_subscription_seats")}
+                                value={subscription.seats ?? tCommon("n_a")}
+                            />
+                            <DetailRow
+                                label={t("detail_subscription_amount")}
+                                value={
+                                    subscription.amount
+                                        ? `${subscription.amount / 100} ${subscription.currency?.toUpperCase()}`
+                                        : tCommon("n_a")
+                                }
+                            />
+                            <DetailRow
+                                label={t("detail_subscription_interval")}
+                                value={subscription.interval ?? tCommon("n_a")}
+                            />
+                            <DetailRow
+                                label={t(
+                                    "detail_subscription_current_period_start"
+                                )}
+                                value={
+                                    subscription.currentPeriodStart
+                                        ? formatDate(
+                                              subscription.currentPeriodStart,
+                                              locale
+                                          )
+                                        : tCommon("n_a")
+                                }
+                            />
+                            <DetailRow
+                                label={t(
+                                    "detail_subscription_current_period_end"
+                                )}
+                                value={
+                                    subscription.currentPeriodEnd
+                                        ? formatDate(
+                                              subscription.currentPeriodEnd,
+                                              locale
+                                          )
+                                        : tCommon("n_a")
+                                }
+                            />
+                            <DetailRow
+                                label={t(
+                                    "detail_subscription_cancel_at_period_end"
+                                )}
+                                value={
+                                    subscription.cancelAtPeriodEnd
+                                        ? t("detail_yes")
+                                        : t("detail_no")
+                                }
+                            />
+                            <DetailRow
+                                label={t("detail_subscription_canceled_at")}
+                                value={
+                                    subscription.canceledAt
+                                        ? formatDate(
+                                              subscription.canceledAt,
+                                              locale
+                                          )
+                                        : tCommon("n_a")
+                                }
+                            />
+                            <DetailRow
+                                label={t("detail_subscription_trial_start")}
+                                value={
+                                    subscription.trialStart
+                                        ? formatDate(
+                                              subscription.trialStart,
+                                              locale
+                                          )
+                                        : tCommon("n_a")
+                                }
+                            />
+                            <DetailRow
+                                label={t("detail_subscription_trial_end")}
+                                value={
+                                    subscription.trialEnd
+                                        ? formatDate(
+                                              subscription.trialEnd,
+                                              locale
+                                          )
+                                        : tCommon("n_a")
+                                }
+                            />
+                            <DetailRow
+                                label={t("detail_subscription_created_at")}
+                                value={formatDate(
+                                    subscription.createdAt,
+                                    locale
+                                )}
+                            />
+                            <DetailRow
+                                label={t("detail_subscription_updated_at")}
+                                value={formatDate(
+                                    subscription.updatedAt,
+                                    locale
+                                )}
+                            />
+                        </dl>
+                    ) : (
+                        <p className="text-muted-foreground text-sm">
+                            {t("detail_subscription_no_subscription")}
+                        </p>
+                    )}
+                </CardContent>
             </Card>
 
-            {/* Statistiques */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            {t("stats_members")}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{memberCount}</div>
-                        <p className="text-muted-foreground text-xs">
-                            {t("stats_admins", {
-                                count: adminCount,
-                                s: adminCount > 1 ? "s" : "",
-                            })}
-                        </p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            {t("stats_status")}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-green-600">
-                            {t("stats_status_active")}
-                        </div>
-                        <p className="text-muted-foreground text-xs">
-                            {t("stats_status_description")}
-                        </p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            {t("stats_type")}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">
-                            {t("stats_type_standard")}
-                        </div>
-                        <p className="text-muted-foreground text-xs">
-                            {t("stats_type_description")}
-                        </p>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Navigation vers les sections */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Settings className="h-5 w-5" />
-                            {t("manage_title")}
-                        </CardTitle>
-                        <CardDescription>
-                            {t("manage_description")}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Button asChild variant="outline" className="w-full">
-                            <Link href={`/dashboard/admin/orgs/${slug}/manage`}>
-                                {t("manage_button")}
-                            </Link>
-                        </Button>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Users className="h-5 w-5" />
-                            {t("members_title", { count: memberCount })}
-                        </CardTitle>
-                        <CardDescription>
-                            {t("members_description")}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Button asChild variant="outline" className="w-full">
-                            <Link
-                                href={`/dashboard/admin/orgs/${slug}/members`}
-                            >
-                                {t("members_button")}
-                            </Link>
-                        </Button>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Mail className="h-5 w-5" />
-                            {t("invitations_title")}
-                        </CardTitle>
-                        <CardDescription>
-                            {t("invitations_description")}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Button asChild variant="outline" className="w-full">
-                            <Link
-                                href={`/dashboard/admin/orgs/${slug}/invitations`}
-                            >
-                                {t("invitations_button")}
-                            </Link>
-                        </Button>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-destructive flex items-center gap-2">
-                            <AlertTriangle className="h-5 w-5" />
-                            {t("danger_zone_title")}
-                        </CardTitle>
-                        <CardDescription>
-                            {t("danger_zone_description")}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Button
-                            asChild
-                            variant="destructive"
-                            className="w-full"
-                        >
-                            <Link
-                                href={`/dashboard/admin/orgs/${slug}/danger-zone`}
-                            >
-                                {t("danger_zone_button")}
-                            </Link>
-                        </Button>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Informations supplémentaires */}
-            {organization.metadata && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>{t("metadata_title")}</CardTitle>
-                        <CardDescription>
-                            {t("metadata_description")}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <pre className="bg-muted rounded p-4 text-sm">
-                            {JSON.stringify(organization.metadata, null, 2)}
-                        </pre>
-                    </CardContent>
-                </Card>
-            )}
+            {/* Informations générales */}
+            <Card>
+                <CardHeader>
+                    <CardTitle>{t("detail_info_title")}</CardTitle>
+                    <CardDescription>
+                        {t("detail_info_description")}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <dl className="divide-y">
+                        <DetailRow
+                            label={t("detail_id")}
+                            value={organisation.id}
+                        />
+                        <DetailRow
+                            label={t("detail_name")}
+                            value={organisation.name}
+                        />
+                        <DetailRow
+                            label={t("detail_slug")}
+                            value={organisation.slug ?? tCommon("n_a")}
+                        />
+                        <DetailRow
+                            label={t("detail_members_count")}
+                            value={nbMembers}
+                        />
+                        <DetailRow
+                            label={t("detail_created_at")}
+                            value={formatDate(organisation.createdAt, locale)}
+                        />
+                    </dl>
+                </CardContent>
+            </Card>
         </div>
     );
 }
