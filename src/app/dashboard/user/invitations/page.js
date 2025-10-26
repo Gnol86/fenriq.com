@@ -24,7 +24,7 @@ import {
     ItemTitle,
 } from "@/components/ui/item";
 import { requireAuth } from "@/lib/access-control";
-import { prisma } from "@/lib/prisma-client";
+import prisma from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import { Eye, Mail } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";

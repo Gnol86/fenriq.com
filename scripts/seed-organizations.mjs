@@ -1,4 +1,4 @@
-import { prisma } from "../src/lib/prisma-client.js";
+import prisma from "../src/lib/prisma.js";
 import crypto from "crypto";
 
 // Listes de noms fictifs pour générer des organisations réalistes

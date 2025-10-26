@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { checkAdmin, checkPermission, requireAuth } from "@/lib/access-control";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma-client";
+import prisma from "@/lib/prisma";
 import AddOnSideBarContent from "@/project/add-on-side-bar-content-dashboard";
 import { ActiveSidebarLink } from "@components/sidebar/active-sidebar-link";
 import {
@@ -19,6 +19,7 @@ import {
     MailPlus,
     MailPlusIcon,
     MessageSquare,
+    ReceiptEuro,
     Settings,
     Users,
 } from "lucide-react";
@@ -173,6 +174,12 @@ export default async function SideBarContent() {
                                 <ActiveSidebarLink href="/dashboard/admin/orgs">
                                     <Building className="opacity-60" />
                                     <span>{t("organizations")}</span>
+                                </ActiveSidebarLink>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <ActiveSidebarLink href="/dashboard/admin/plans">
+                                    <ReceiptEuro className="opacity-60" />
+                                    <span>{t("plans")}</span>
                                 </ActiveSidebarLink>
                             </SidebarMenuItem>
                             <SidebarMenuItem>

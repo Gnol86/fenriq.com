@@ -17,6 +17,9 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.914.0
         version: 3.914.0
+      '@better-auth/stripe':
+        specifier: ^1.3.32
+        version: 1.3.32(@better-auth/core@1.3.28(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.0.19)(better-sqlite3@12.4.1)(jose@6.1.0)(kysely@0.28.8)(nanostores@1.0.1))(better-auth@1.3.28(better-sqlite3@12.4.1)(next@16.0.0-beta.0(@babel/core@7.28.4)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(stripe@19.1.0(@types/node@24.9.1))
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.65.0(react@19.2.0))
@@ -171,6 +174,9 @@ importers:
       '@types/react':
         specifier: 19.2.2
         version: 19.2.2
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
       eslint:
         specifier: ^9.38.0
         version: 9.38.0(jiti@2.6.1)
@@ -544,6 +550,13 @@ packages:
       jose: ^6.1.0
       kysely: ^0.28.5
       nanostores: ^1.0.1
+
+  '@better-auth/stripe@1.3.32':
+    resolution: {integrity: sha512-ThTT/Xqts+4RUFn+W9hTg/wkeqsxwp7FDmTmGcE0anD/uZoCNL4FtIvmj8Gx35b5Mbn08EjDBVXDQF3gfQnXyw==}
+    peerDependencies:
+      '@better-auth/core': 1.3.32
+      better-auth: 1.3.32
+      stripe: ^18 || ^19
 
   '@better-auth/telemetry@1.3.28':
     resolution: {integrity: sha512-qZtV82IFuyQZc2c37VkiDgO/qfqPnJuWIyeC/iFK1AA5N8RSuC2+CVIH1sNDytPXUAthbYeOzcOCW2YEkgz1Ow==}
@@ -5520,6 +5533,14 @@ snapshots:
       jose: 6.1.0
       kysely: 0.28.8
       nanostores: 1.0.1
+      zod: 4.1.12
+
+  '@better-auth/stripe@1.3.32(@better-auth/core@1.3.28(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.0.19)(better-sqlite3@12.4.1)(jose@6.1.0)(kysely@0.28.8)(nanostores@1.0.1))(better-auth@1.3.28(better-sqlite3@12.4.1)(next@16.0.0-beta.0(@babel/core@7.28.4)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(stripe@19.1.0(@types/node@24.9.1))':
+    dependencies:
+      '@better-auth/core': 1.3.28(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.0.19)(better-sqlite3@12.4.1)(jose@6.1.0)(kysely@0.28.8)(nanostores@1.0.1)
+      better-auth: 1.3.28(better-sqlite3@12.4.1)(next@16.0.0-beta.0(@babel/core@7.28.4)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      defu: 6.1.4
+      stripe: 19.1.0(@types/node@24.9.1)
       zod: 4.1.12
 
   '@better-auth/telemetry@1.3.28(better-call@1.0.19)(better-sqlite3@12.4.1)(jose@6.1.0)(kysely@0.28.8)(nanostores@1.0.1)':

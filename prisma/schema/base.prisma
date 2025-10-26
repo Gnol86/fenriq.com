@@ -102,7 +102,6 @@ model Organization {
     metadata      String?
     members       Member[]
     invitations   Invitation[]
-    subscriptions Subscription[]
 
     @@unique([slug])
     @@map("organization")
@@ -142,24 +141,29 @@ model Subscription {
     id                   String       @id @default(cuid())
     plan                 String
     referenceId          String       @unique
-    organization         Organization @relation(fields: [referenceId], references: [id], onDelete: Cascade)
     stripeCustomerId     String?      @unique
     stripeSubscriptionId String?      @unique
     status               String?
-    currentPeriodStart   DateTime?
-    currentPeriodEnd     DateTime?
+    periodStart          DateTime?
+    periodEnd            DateTime?
     cancelAtPeriodEnd    Boolean?     @default(false)
-    canceledAt           DateTime?
+    seats                Int?         @default(1)
     trialStart           DateTime?
     trialEnd             DateTime?
-    seats                Int?         @default(1)
-    currency             String?
-    amount               Int?
-    interval             String?
-    createdAt            DateTime     @default(now())
-    updatedAt            DateTime     @updatedAt
 
     @@map("subscription")
+}
+
+model Plan {
+    id                    String   @id @default(cuid())
+    name                  String   @unique
+    priceId               String   @unique
+    annualDiscountPriceId String?  @unique
+    limits                String?
+    freeTrial             String?
+    showInPricingPage     Boolean  @default(true)
+
+    @@map("plan")
 }
 
 // ============================================================

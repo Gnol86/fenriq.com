@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma-client";
+import prisma from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 

@@ -5,6 +5,8 @@ import { APIError, betterAuth } from "better-auth";
 import { localization } from "better-auth-localization";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, createAuthMiddleware, organization } from "better-auth/plugins";
+import { stripe } from "@better-auth/stripe";
+import Stripe from "stripe";
 import {
     ac,
     adminPermissions,
@@ -16,7 +18,7 @@ import { getServerUrl } from "./server-url";
 import { cookies } from "next/headers";
 import translations from "../messages/better-auth.json";
 import { defaultLocale } from "./i18n/config.js";
-import { prisma } from "./prisma-client.js";
+import prisma from "./prisma";
 
 async function getActiveOrganization(userId) {
     const userMembership = await prisma.member.findFirst({
@@ -31,6 +33,10 @@ async function getLocale() {
     const cookieStore = await cookies();
     return cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
 }
+
+const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2025-09-30.clover", // Latest API version as of Stripe SDK v19
+});
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, { provider: "postgres" }),
@@ -185,6 +191,11 @@ export const auth = betterAuth({
         autoSignInAfterVerification: true,
     },
     plugins: [
+        stripe({
+            stripeClient,
+            stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+            createCustomerOnSignUp: false,
+        }),
         localization({
             defaultLocale: "en-US",
             fallbackLocale: "default",
@@ -213,108 +224,9 @@ export const auth = betterAuth({
             },
 
             organizationHooks: {
-                beforeDeleteOrganization: async data => {
-                    // Vérifier si l'organisation a un abonnement actif
-                    const subscription = await prisma.subscription.findFirst({
-                        where: {
-                            referenceId: data.organizationId,
-                            status: {
-                                in: ["active", "trialing", "past_due"],
-                            },
-                        },
-                    });
-
-                    if (subscription) {
-                        throw new APIError("FORBIDDEN", {
-                            message:
-                                "Cannot delete organization with active subscription",
-                        });
-                    }
-                },
                 afterDeleteOrganization: async data => {
                     // Supprimer le logo de l'organisation du blob s'il existe
                     await deleteFile(data.organization.logo);
-                },
-                afterAddMember: async ({ organization }) => {
-                    // Ne mettre à jour la quantité que pour le mode "seat"
-                    if (SiteConfig.billing.type !== "seat") {
-                        return;
-                    }
-
-                    // Mettre à jour la quantité de licences sur Stripe
-                    try {
-                        const { updateSubscriptionQuantityAction } =
-                            await import("@/actions/stripe.action");
-                        const memberCount = await prisma.member.count({
-                            where: {
-                                organizationId: organization.id,
-                            },
-                        });
-                        await updateSubscriptionQuantityAction({
-                            organizationId: organization.id,
-                            quantity: memberCount,
-                        });
-                    } catch (error) {
-                        console.error(
-                            "Error updating subscription quantity after adding member:",
-                            error
-                        );
-                        // Ne pas bloquer l'ajout du membre si la mise à jour Stripe échoue
-                    }
-                },
-                afterRemoveMember: async ({ organization }) => {
-                    // Ne mettre à jour la quantité que pour le mode "seat"
-                    if (SiteConfig.billing.type !== "seat") {
-                        return;
-                    }
-
-                    // Mettre à jour la quantité de licences sur Stripe
-                    try {
-                        const { updateSubscriptionQuantityAction } =
-                            await import("@/actions/stripe.action");
-                        const memberCount = await prisma.member.count({
-                            where: {
-                                organizationId: organization.id,
-                            },
-                        });
-                        await updateSubscriptionQuantityAction({
-                            organizationId: organization.id,
-                            quantity: memberCount,
-                        });
-                    } catch (error) {
-                        console.error(
-                            "Error updating subscription quantity after removing member:",
-                            error
-                        );
-                        // Ne pas bloquer la suppression du membre si la mise à jour Stripe échoue
-                    }
-                },
-                afterAcceptInvitation: async ({ organization }) => {
-                    // Ne mettre à jour la quantité que pour le mode "seat"
-                    if (SiteConfig.billing.type !== "seat") {
-                        return;
-                    }
-
-                    // Mettre à jour la quantité de licences sur Stripe
-                    try {
-                        const { updateSubscriptionQuantityAction } =
-                            await import("@/actions/stripe.action");
-                        const memberCount = await prisma.member.count({
-                            where: {
-                                organizationId: organization.id,
-                            },
-                        });
-                        await updateSubscriptionQuantityAction({
-                            organizationId: organization.id,
-                            quantity: memberCount,
-                        });
-                    } catch (error) {
-                        console.error(
-                            "Error updating subscription quantity after accepting invitation:",
-                            error
-                        );
-                        // Ne pas bloquer l'acceptation de l'invitation si la mise à jour Stripe échoue
-                    }
                 },
             },
 

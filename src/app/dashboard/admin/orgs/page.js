@@ -19,7 +19,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { requireAdmin } from "@/lib/access-control";
-import { prisma } from "@/lib/prisma-client";
+import prisma from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
@@ -128,7 +128,7 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                         <TableCell>
                                             <Link
                                                 href={orgHref}
-                                                className="flex w-full items-center gap-2 rounded-md px-2 py-1 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                                className="text-foreground focus-visible:ring-ring focus-visible:ring-offset-background flex w-full items-center gap-2 rounded-md px-2 py-1 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                                             >
                                                 <ImageProfile
                                                     entity={org}
@@ -149,14 +149,15 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                         <TableCell>
                                             <Link
                                                 href={orgHref}
-                                                className="flex w-full items-center rounded-md px-2 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                                className="focus-visible:ring-ring focus-visible:ring-offset-background flex w-full items-center rounded-md px-2 py-1 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                                                 aria-label={t("table_status")}
                                             >
                                                 <Badge
                                                     variant="outline"
                                                     className="text-xs"
                                                 >
-                                                    {org.subscriptions?.[0]?.status
+                                                    {org.subscriptions?.[0]
+                                                        ?.status
                                                         ? tSub(
                                                               `status_${org.subscriptions[0].status}`
                                                           )
@@ -169,7 +170,7 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                         <TableCell className="text-sm">
                                             <Link
                                                 href={orgHref}
-                                                className="block w-full rounded-md px-2 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                                className="focus-visible:ring-ring focus-visible:ring-offset-background block w-full rounded-md px-2 py-1 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                                                 aria-label={t("table_members")}
                                             >
                                                 {org._count.members}
@@ -180,10 +181,13 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                         <TableCell>
                                             <Link
                                                 href={orgHref}
-                                                className="block w-full rounded-md px-2 py-1 text-muted-foreground text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                                className="text-muted-foreground focus-visible:ring-ring focus-visible:ring-offset-background block w-full rounded-md px-2 py-1 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                                                 aria-label={t("table_created")}
                                             >
-                                                {formatDate(org.createdAt, locale)}
+                                                {formatDate(
+                                                    org.createdAt,
+                                                    locale
+                                                )}
                                             </Link>
                                         </TableCell>
                                     </TableRow>

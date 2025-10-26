@@ -18,11 +18,8 @@ import {
     EmptyTitle,
 } from "@/components/ui/empty";
 import { ItemGroup, ItemSeparator } from "@/components/ui/item";
-import {
-    checkPermission,
-    requirePermission,
-} from "@/lib/access-control";
-import { prisma } from "@/lib/prisma-client";
+import { checkPermission, requirePermission } from "@/lib/access-control";
+import prisma from "@/lib/prisma";
 import { Mail } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import React from "react";

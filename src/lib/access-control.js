@@ -43,7 +43,6 @@ export const requireAuth = cache(async () => {
 /**
  * Récupère et vérifie l'authentification de l'utilisateur
  * @returns {Promise<{session: Object, user: Object}>}
- * @throws {Error} notFound() si l'utilisateur n'est pas authentifié
  */
 export const getAuth = cache(async () => {
     const session = await getCachedSession();
@@ -87,6 +86,41 @@ export const requireActiveOrganization = cache(async () => {
 
     if (!organization) {
         notFound();
+    }
+
+    return {
+        session,
+        user,
+        organization,
+    };
+});
+
+/**
+ * Récupère l'organisation active de l'utilisateur
+ * @returns {Promise<{session: Object, user: Object, organization: Object}>}
+ */
+export const getActiveOrganization = cache(async () => {
+    const { session, user } = await getAuth();
+
+    if (!session || !user) {
+        return {
+            session: null,
+            user: null,
+            organization: null,
+        };
+    }
+
+    const userOrganizations = await getCachedOrganizations();
+    const organization = userOrganizations?.find(
+        org => org.id === session.activeOrganizationId
+    );
+
+    if (!organization) {
+        return {
+            session,
+            user,
+            organization: null,
+        };
     }
 
     return {

@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/item";
 import { formatDate } from "@/lib/utils";
 import { requireAdmin } from "@root/src/lib/access-control";
-import { prisma } from "@root/src/lib/prisma-client";
+import prisma from "@root/src/lib/prisma";
 import { getLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -139,13 +139,13 @@ export default async function AdminOrganizationPage({ params }) {
                                 label={t("detail_subscription_status")}
                                 value={subscription.status ?? tCommon("n_a")}
                             />
-                            <DetailRow
+                            {/* <DetailRow
                                 label={t("detail_subscription_customer_id")}
                                 value={
                                     subscription.stripeCustomerId ??
                                     tCommon("n_a")
                                 }
-                            />
+                            />*/}
                             <DetailRow
                                 label={t("detail_subscription_subscription_id")}
                                 value={
