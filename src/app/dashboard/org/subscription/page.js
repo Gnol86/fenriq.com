@@ -1,6 +1,8 @@
 import { requirePermission } from "@/lib/access-control";
 import prisma from "@/lib/prisma";
+import StripeLoader from "@root/src/components/stripe-loader";
 import { Suspense } from "react";
+import Plan from "./components/plan";
 
 export default async function OrganizationSubscriptionPage() {
     // Vérifie les permissions et récupère les données nécessaires
@@ -26,17 +28,17 @@ export default async function OrganizationSubscriptionPage() {
         ["active", "trialing", "past_due"].includes(subscription.status)
     ) {
         return (
-            <Suspense fallback={<StripeLoader />}>
-                <SubscriptionManagement organization={organization} />
-            </Suspense>
+            <Suspense fallback={<StripeLoader />}>Manage Subscription</Suspense>
         );
     }
 
     // Show plan selection if no subscription or subscription is canceled
     return (
-        <Plan
-            organization={organization}
-            lengthTotalMembres={lengthTotalMembres}
-        />
+        <Suspense fallback={<StripeLoader />}>
+            <Plan
+                organization={organization}
+                lengthTotalMembres={lengthTotalMembres}
+            />
+        </Suspense>
     );
 }
