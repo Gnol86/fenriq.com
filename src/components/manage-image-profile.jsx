@@ -118,7 +118,10 @@ export default function ManageImageProfile({
 
     return (
         <div className="flex items-center gap-4">
-            <div onClick={handleClickEdit} className="relative w-fit">
+            <div
+                onClick={handleClickEdit}
+                className="relative w-fit cursor-pointer"
+            >
                 <ImageProfile entity={entity} size={size} />
                 <input
                     ref={fileInputRef}

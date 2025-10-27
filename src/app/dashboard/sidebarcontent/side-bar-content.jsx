@@ -200,12 +200,6 @@ export default async function SideBarContent() {
                 <SidebarGroupContent>
                     <SidebarMenu>
                         <SidebarMenuItem>
-                            <ActiveSidebarLink href="/dashboard/user/settings">
-                                <Settings className="opacity-60" />
-                                <span>{t("settings")}</span>
-                            </ActiveSidebarLink>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
                             <ActiveSidebarLink href="/dashboard/user/invitations">
                                 <MailPlus className="opacity-60" />
                                 <span>{t("invitations")}</span>
@@ -215,6 +209,12 @@ export default async function SideBarContent() {
                                     {invitations.length}
                                 </SidebarMenuBadge>
                             )}
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <ActiveSidebarLink href="/dashboard/user/settings">
+                                <Settings className="opacity-60" />
+                                <span>{t("settings")}</span>
+                            </ActiveSidebarLink>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                             <ActiveSidebarLink
