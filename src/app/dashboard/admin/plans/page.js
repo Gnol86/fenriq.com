@@ -1,10 +1,11 @@
+import { getPlansAction } from "@/actions/plan.action";
 import {
     Card,
+    CardAction,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-    CardAction,
 } from "@/components/ui/card";
 import {
     Table,
@@ -16,9 +17,10 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { requireAdmin } from "@/lib/access-control";
+import { ButtonGroup } from "@root/src/components/ui/button-group";
 import { getTranslations } from "next-intl/server";
-import { getPlansAction } from "@/actions/plan.action";
 import DeletePlanButton from "./components/delete-plan-button";
+import EditPlanButton from "./components/edit-plan-button";
 import PlanForm from "./components/plan-form";
 
 export default async function AdminPlansPage() {
@@ -118,12 +120,17 @@ export default async function AdminPlansPage() {
                                         {limitsDisplay}
                                     </TableCell>
                                     <TableCell>{freeTrialDisplay}</TableCell>
-                                    <TableCell>{showInPricingDisplay}</TableCell>
                                     <TableCell>
-                                        <DeletePlanButton
-                                            planId={plan.id}
-                                            planName={plan.name}
-                                        />
+                                        {showInPricingDisplay}
+                                    </TableCell>
+                                    <TableCell>
+                                        <ButtonGroup>
+                                            <EditPlanButton plan={plan} />
+                                            <DeletePlanButton
+                                                planId={plan.id}
+                                                planName={plan.name}
+                                            />
+                                        </ButtonGroup>
                                     </TableCell>
                                 </TableRow>
                             );

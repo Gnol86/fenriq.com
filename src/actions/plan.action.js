@@ -59,6 +59,49 @@ export async function createPlanAction({
 }
 
 /**
+ * Met à jour un plan existant
+ */
+export async function updatePlanAction({
+    planId,
+    name,
+    priceId,
+    annualDiscountPriceId,
+    limits,
+    freeTrial,
+    showInPricingPage,
+}) {
+    await requireAdmin();
+
+    // Convertir les limites en JSON string si présentes
+    const limitsJson = limits && Object.keys(limits).length > 0
+        ? JSON.stringify(limits)
+        : null;
+
+    // Convertir freeTrial en JSON string si présent
+    const freeTrialJson = freeTrial
+        ? JSON.stringify({ days: parseInt(freeTrial) })
+        : null;
+
+    const plan = await prisma.plan.update({
+        where: {
+            id: planId,
+        },
+        data: {
+            name,
+            priceId,
+            annualDiscountPriceId: annualDiscountPriceId || null,
+            limits: limitsJson,
+            freeTrial: freeTrialJson,
+            showInPricingPage: showInPricingPage ?? true,
+        },
+    });
+
+    revalidatePath("/dashboard/admin/plans");
+
+    return plan;
+}
+
+/**
  * Supprime un plan
  */
 export async function deletePlanAction({ planId }) {

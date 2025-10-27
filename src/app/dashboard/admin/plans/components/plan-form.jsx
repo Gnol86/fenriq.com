@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useServerAction } from "@/hooks/use-server-action";
-import { createPlanAction } from "@/actions/plan.action";
+import { createPlanAction, updatePlanAction } from "@/actions/plan.action";
 import { useTranslations } from "next-intl";
 import { Plus, X } from "lucide-react";
 import {
@@ -27,10 +27,14 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { useState } from "react";
 
-export default function PlanForm() {
+export default function PlanForm({ plan = null, trigger = null }) {
     const t = useTranslations("admin.plans");
     const { execute, isPending } = useServerAction();
+    const [open, setOpen] = useState(false);
+
+    const isEditMode = !!plan;
 
     const formSchema = z.object({
         name: z
@@ -70,15 +74,28 @@ export default function PlanForm() {
         ),
     });
 
+    // Préparer les limites pour le mode édition
+    const parsedLimits = plan?.limits
+        ? Object.entries(JSON.parse(plan.limits)).map(([name, value]) => ({
+              name,
+              value: value.toString(),
+          }))
+        : [];
+
+    // Préparer le freeTrial pour le mode édition
+    const parsedFreeTrial = plan?.freeTrial
+        ? JSON.parse(plan.freeTrial).days.toString()
+        : "";
+
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "",
-            priceId: "",
-            annualDiscountPriceId: "",
-            freeTrial: "",
-            showInPricingPage: true,
-            limits: [],
+            name: plan?.name ?? "",
+            priceId: plan?.priceId ?? "",
+            annualDiscountPriceId: plan?.annualDiscountPriceId ?? "",
+            freeTrial: parsedFreeTrial,
+            showInPricingPage: plan?.showInPricingPage ?? true,
+            limits: parsedLimits,
         },
     });
 
@@ -94,38 +111,55 @@ export default function PlanForm() {
             return acc;
         }, {});
 
+        const actionData = {
+            name: values.name,
+            priceId: values.priceId,
+            annualDiscountPriceId: values.annualDiscountPriceId || null,
+            limits: limitsObject,
+            freeTrial: values.freeTrial || null,
+            showInPricingPage: values.showInPricingPage,
+        };
+
         await execute(
             () =>
-                createPlanAction({
-                    name: values.name,
-                    priceId: values.priceId,
-                    annualDiscountPriceId: values.annualDiscountPriceId || null,
-                    limits: limitsObject,
-                    freeTrial: values.freeTrial || null,
-                    showInPricingPage: values.showInPricingPage,
-                }),
+                isEditMode
+                    ? updatePlanAction({ planId: plan.id, ...actionData })
+                    : createPlanAction(actionData),
             {
-                successMessage: t("success_created"),
-                errorMessage: t("error_create"),
+                successMessage: isEditMode
+                    ? t("success_updated")
+                    : t("success_created"),
+                errorMessage: isEditMode
+                    ? t("error_update")
+                    : t("error_create"),
             }
         );
 
-        // Réinitialiser le formulaire après succès
-        form.reset();
+        // Fermer le dialog et réinitialiser le formulaire après succès
+        setOpen(false);
+        if (!isEditMode) {
+            form.reset();
+        }
     };
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button size="icon">
-                    <Plus />
-                </Button>
+                {trigger ?? (
+                    <Button size="icon">
+                        <Plus />
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>{t("form_title")}</DialogTitle>
+                    <DialogTitle>
+                        {isEditMode ? t("form_title_edit") : t("form_title")}
+                    </DialogTitle>
                     <DialogDescription>
-                        {t("form_description")}
+                        {isEditMode
+                            ? t("form_description_edit")
+                            : t("form_description")}
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -351,8 +385,12 @@ export default function PlanForm() {
                             className="w-fit"
                         >
                             {isPending
-                                ? t("form_submitting")
-                                : t("form_submit_button")}
+                                ? isEditMode
+                                    ? t("form_submitting_edit")
+                                    : t("form_submitting")
+                                : isEditMode
+                                  ? t("form_submit_button_edit")
+                                  : t("form_submit_button")}
                         </Button>
                     </form>
                 </Form>

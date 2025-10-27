@@ -53,9 +53,4 @@ export const SiteConfig = {
             invitationExpiresIn: 60 * 60 * 24 * 30, // Invitation expiry (30 days)
         },
     },
-
-    // ========== BILLING CONFIGURATION ==========
-    billing: {
-        type: "plan", // "seat" or "plan" or "subscription"
-    },
 };
