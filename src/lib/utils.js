@@ -1,4 +1,3 @@
-import { defaultLocale } from "@lib/i18n/config";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -25,39 +24,25 @@ export function nameToSlug(name) {
         .slice(0, 80);
 }
 
-const LOCALE_TO_REGION = {
-    fr: "fr-FR",
-    en: "en-US",
-};
-
-function resolveLocale(locale) {
-    if (locale) {
-        return LOCALE_TO_REGION[locale] ?? locale;
-    }
-
-    if (typeof navigator !== "undefined" && navigator.language) {
-        return navigator.language;
-    }
-
-    if (typeof Intl !== "undefined") {
-        const resolved = Intl.DateTimeFormat().resolvedOptions().locale;
-        if (resolved) return resolved;
-    }
-
-    return LOCALE_TO_REGION[defaultLocale] ?? defaultLocale;
-}
-
 export function formatDate(date, locale) {
     if (!date) return "N/A";
 
     const dateObj = new Date(date);
     if (Number.isNaN(dateObj.getTime())) return "N/A";
 
-    const formatter = new Intl.DateTimeFormat(resolveLocale(locale), {
+    const formatter = new Intl.DateTimeFormat(locale, {
         day: "numeric",
         month: "long",
         year: "numeric",
     });
 
     return formatter.format(dateObj);
+}
+
+// Fonction pour formater le prix
+export function formatPrice(amount, currency, locale) {
+    return new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency: currency.toUpperCase(),
+    }).format(amount / 100);
 }

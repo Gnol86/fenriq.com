@@ -6,13 +6,16 @@ import {
     Card,
     CardContent,
     CardDescription,
+    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { ButtonGroup } from "@root/src/components/ui/button-group";
+import { formatPrice } from "@root/src/lib/utils";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-export default function PlanList({ plans, memberCount }) {
+export default function PlanList({ plans, memberCount, locale }) {
     const t = useTranslations("organization.subscription");
     const [billingInterval, setBillingInterval] = useState("monthly");
 
@@ -25,14 +28,6 @@ export default function PlanList({ plans, memberCount }) {
             ? plans.filter(plan => plan.annualPrice !== null)
             : plans;
 
-    // Fonction pour formater le prix
-    const formatPrice = (amount, currency) => {
-        return new Intl.NumberFormat("fr-FR", {
-            style: "currency",
-            currency: currency.toUpperCase(),
-        }).format(amount / 100);
-    };
-
     // Fonction pour calculer le pourcentage d'économie
     const calculateSavings = (monthlyPrice, annualPrice) => {
         const monthlyYearlyCost = monthlyPrice.amount * 12;
@@ -42,17 +37,24 @@ export default function PlanList({ plans, memberCount }) {
         return Math.round(savings);
     };
 
+    // Calculer les économies maximales pour les plans annuels
+    const maxSavings = Math.max(
+        ...plans
+            .filter(plan => plan.annualPrice)
+            .map(plan => calculateSavings(plan.monthlyPrice, plan.annualPrice))
+    );
+
     return (
         <div className="flex flex-col gap-6">
             {/* Toggle mensuel/annuel */}
             {hasAnnualPlans && (
                 <div className="flex justify-center">
-                    <div className="bg-muted inline-flex gap-1 rounded-lg p-1">
+                    <ButtonGroup className="bg-muted rounded-xl p-2">
                         <Button
                             variant={
                                 billingInterval === "monthly"
                                     ? "default"
-                                    : "ghost"
+                                    : "outline"
                             }
                             size="sm"
                             onClick={() => setBillingInterval("monthly")}
@@ -63,19 +65,26 @@ export default function PlanList({ plans, memberCount }) {
                             variant={
                                 billingInterval === "annual"
                                     ? "default"
-                                    : "ghost"
+                                    : "outline"
                             }
                             size="sm"
                             onClick={() => setBillingInterval("annual")}
                         >
                             {t("billing_toggle_annual")}
+                            {maxSavings > 0 && (
+                                <Badge variant="destructive" className="ml-2">
+                                    {t("up_to_savings", {
+                                        percentage: maxSavings,
+                                    })}
+                                </Badge>
+                            )}
                         </Button>
-                    </div>
+                    </ButtonGroup>
                 </div>
             )}
 
             {/* Liste des plans */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="flex justify-center gap-4">
                 {displayedPlans.map(plan => {
                     const isTeamPlan = plan.name.toLowerCase() === "team";
 
@@ -104,61 +113,67 @@ export default function PlanList({ plans, memberCount }) {
                             : null;
 
                     // Parser les features depuis les métadonnées du produit
-                    const features = currentPrice.product.metadata?.features
-                        ? JSON.parse(currentPrice.product.metadata.features)
+                    const features = currentPrice.product.marketing_features
+                        ? JSON.parse(currentPrice.product.marketing_features)
                         : [];
 
+                    console.log(
+                        "marketing_features",
+                        currentPrice.product.marketing_features
+                    );
+
                     return (
-                        <Card key={plan.id} className="flex flex-col">
+                        <Card key={plan.id} className="flex max-w-sm flex-col">
                             <CardHeader>
-                                <div className="flex items-start justify-between">
-                                    <div>
-                                        <CardTitle>
-                                            {currentPrice.product.name}
-                                        </CardTitle>
-                                        {currentPrice.product.description && (
-                                            <CardDescription className="mt-2">
-                                                {
-                                                    currentPrice.product
-                                                        .description
-                                                }
-                                            </CardDescription>
-                                        )}
-                                    </div>
-                                    {plan.freeTrialDays && (
-                                        <Badge variant="secondary">
-                                            {t("free_trial_badge", {
-                                                days: plan.freeTrialDays,
+                                <CardTitle className="text-center">
+                                    <Badge className="text-sm">
+                                        {currentPrice.product.name}
+                                    </Badge>
+                                </CardTitle>
+                                {currentPrice.product.description && (
+                                    <CardDescription className="text-center">
+                                        {currentPrice.product.description}
+                                    </CardDescription>
+                                )}
+                            </CardHeader>
+                            <CardContent className="flex-1">
+                                {/* Prix */}
+                                <div className="flex flex-col items-center">
+                                    {/* Badge d'économie */}
+                                    {savings && (
+                                        <Badge
+                                            variant="destructive"
+                                            className="mb-1"
+                                        >
+                                            {t("annual_savings", {
+                                                percentage: savings,
                                             })}
                                         </Badge>
                                     )}
-                                </div>
-
-                                {/* Prix */}
-                                <div className="mt-4">
                                     {isTeamPlan ? (
-                                        <div className="flex flex-col gap-2">
-                                            <p className="text-muted-foreground text-sm">
+                                        <div className="flex flex-col items-center gap-1">
+                                            <span className="text-muted-foreground mb-2 text-center text-sm">
                                                 {t("team_plan_notice", {
                                                     count: memberCount,
-                                                })}
-                                            </p>
-                                            <p className="text-muted-foreground text-sm">
+                                                })}{" "}
                                                 {t("team_plan_price_info", {
                                                     price: formatPrice(
                                                         priceAmount,
-                                                        currency
+                                                        currency,
+                                                        locale
                                                     ),
                                                 })}
-                                            </p>
-                                            <div className="flex items-baseline gap-2">
+                                            </span>
+
+                                            <div className="flex flex-col items-center">
                                                 <span className="text-muted-foreground text-sm">
                                                     {t("team_plan_total")}
                                                 </span>
-                                                <span className="text-3xl font-bold">
+                                                <span className="text-4xl font-bold">
                                                     {formatPrice(
                                                         teamTotal,
-                                                        currency
+                                                        currency,
+                                                        locale
                                                     )}
                                                 </span>
                                                 <span className="text-muted-foreground text-sm">
@@ -168,13 +183,21 @@ export default function PlanList({ plans, memberCount }) {
                                                         : t("price_per_month")}
                                                 </span>
                                             </div>
+                                            <div className="mt-2 flex flex-col items-center">
+                                                <span className="text-muted-foreground bg-muted rounded-lg border p-2 text-xs">
+                                                    {t(
+                                                        "team_plan_proration_notice"
+                                                    )}
+                                                </span>
+                                            </div>
                                         </div>
                                     ) : (
-                                        <div className="flex items-baseline gap-2">
+                                        <div className="flex flex-col items-center">
                                             <span className="text-4xl font-bold">
                                                 {formatPrice(
                                                     priceAmount,
-                                                    currency
+                                                    currency,
+                                                    locale
                                                 )}
                                             </span>
                                             <span className="text-muted-foreground text-sm">
@@ -184,22 +207,8 @@ export default function PlanList({ plans, memberCount }) {
                                             </span>
                                         </div>
                                     )}
-
-                                    {/* Badge d'économie */}
-                                    {savings && (
-                                        <Badge
-                                            variant="secondary"
-                                            className="mt-2"
-                                        >
-                                            {t("annual_savings", {
-                                                percentage: savings,
-                                            })}
-                                        </Badge>
-                                    )}
                                 </div>
-                            </CardHeader>
 
-                            <CardContent className="flex flex-1 flex-col gap-4">
                                 {/* Features */}
                                 {features.length > 0 && (
                                     <ul className="flex flex-col gap-2">
@@ -214,12 +223,13 @@ export default function PlanList({ plans, memberCount }) {
                                         ))}
                                     </ul>
                                 )}
-
+                            </CardContent>
+                            <CardFooter>
                                 {/* Bouton de souscription */}
                                 <Button className="mt-auto w-full" size="lg">
                                     {t("subscribe_to_plan")}
                                 </Button>
-                            </CardContent>
+                            </CardFooter>
                         </Card>
                     );
                 })}

@@ -6,7 +6,18 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { getTranslations } from "next-intl/server";
+import {
+    Empty,
+    EmptyContent,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from "@/components/ui/empty";
+import { Button } from "@root/src/components/ui/button";
+import { checkAdmin } from "@root/src/lib/access-control";
+import { Plus, ReceiptEuro } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
+import Link from "next/link";
 import PlanList from "./plan-list";
 
 export default async function Plan({ organization, lengthTotalMembres }) {
@@ -15,31 +26,43 @@ export default async function Plan({ organization, lengthTotalMembres }) {
     // Récupérer les plans avec les données Stripe
     const plans = await getPlansWithStripeData();
 
-    // Si aucun plan n'est configuré
-    if (plans.length === 0) {
-        return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>{t("plan_title")}</CardTitle>
-                    <CardDescription>{t("plan_description")}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-muted-foreground text-center">
-                        {t("plan_not_configured")}
-                    </p>
-                </CardContent>
-            </Card>
-        );
-    }
+    const locale = await getLocale();
 
     return (
-        <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-                <h2 className="text-2xl font-bold">{t("plan_title")}</h2>
-                <p className="text-muted-foreground">{t("plan_description")}</p>
-            </div>
+        <Card>
+            <CardHeader>
+                <CardTitle>{t("page_title")}</CardTitle>
+                <CardDescription>{t("page_description")}</CardDescription>
+            </CardHeader>
+            <CardContent>
+                {plans.length > 0 ? (
+                    <PlanList
+                        plans={plans}
+                        memberCount={lengthTotalMembres}
+                        locale={locale}
+                    />
+                ) : (
+                    <Empty>
+                        <EmptyHeader>
+                            <EmptyMedia variant="icon">
+                                <ReceiptEuro />
+                            </EmptyMedia>
+                            <EmptyTitle>{t("plan_not_configured")}</EmptyTitle>
+                        </EmptyHeader>
+                        {checkAdmin() && (
+                            <EmptyContent>
+                                <Button size="icon" asChild>
+                                    <Link href="/dashboard/admin/plans">
+                                        <Plus />
+                                    </Link>
+                                </Button>
+                            </EmptyContent>
+                        )}
+                    </Empty>
+                )}
 
-            <PlanList plans={plans} memberCount={lengthTotalMembres} />
-        </div>
+                <p className="text-muted-foreground text-center"></p>
+            </CardContent>
+        </Card>
     );
 }
