@@ -46,7 +46,7 @@ export default function UserButton({
     const pathname = usePathname();
     const [isSigningOut, startSignOut] = useTransition();
     const [isStoppingImpersonation, stopImpersonating] = useTransition();
-    const { isMobile } = useSidebar();
+    const { isMobile, setOpenMobile } = useSidebar();
 
     if (!user) {
         return null;
@@ -129,7 +129,11 @@ export default function UserButton({
                             <Link
                                 href="/app"
                                 className="flex items-center gap-2"
-                                // onNavigate={() => setOpenMobile(false)}
+                                onNavigate={() => {
+                                    if (isMobile) {
+                                        setOpenMobile(false);
+                                    }
+                                }}
                             >
                                 <AppWindow
                                     size={16}
@@ -145,7 +149,11 @@ export default function UserButton({
                             <Link
                                 href="/dashboard"
                                 className="flex items-center gap-2"
-                                // onNavigate={() => setOpenMobile(false)}
+                                onNavigate={() => {
+                                    if (isMobile) {
+                                        setOpenMobile(false);
+                                    }
+                                }}
                             >
                                 <LayoutDashboard
                                     size={16}
