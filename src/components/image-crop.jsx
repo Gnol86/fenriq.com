@@ -1,5 +1,4 @@
 "use client";
-import { cn } from "@/lib/utils";
 import { Button } from "@components/ui/button";
 import { CropIcon, RotateCcwIcon } from "lucide-react";
 import { Slot } from "radix-ui";
@@ -12,6 +11,7 @@ import {
     useState,
 } from "react";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
+import { cn } from "@/lib/utils";
 
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -132,7 +132,6 @@ export const ImageCrop = ({
         onChange?.(pixelCrop, percentCrop);
     };
 
-    // biome-ignore lint/suspicious/useAwait: "onComplete is async"
     const handleComplete = async (pixelCrop, percentCrop) => {
         setCompletedCrop(pixelCrop);
         onComplete?.(pixelCrop, percentCrop);
@@ -212,7 +211,7 @@ export const ImageCropContent = ({ style, className }) => {
                 {...reactCropProps}
             >
                 {imgSrc && (
-                    // eslint-disable-next-line @next/next/no-img-element -- react-image-crop requires a direct <img> element
+                    // biome-ignore lint/performance/noImgElement: react-image-crop library requires a direct <img> element
                     <img
                         alt="crop"
                         className="h-auto max-w-full"

@@ -1,5 +1,8 @@
 "use client";
 
+import { Monitor, Moon, SunDim } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
 import {
     DropdownMenuCheckboxItem,
     DropdownMenuPortal,
@@ -7,9 +10,6 @@ import {
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Monitor, Moon, SunDim } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useTheme } from "next-themes";
 
 export default function ThemeSubdropdown() {
     const { theme = "system", setTheme } = useTheme();

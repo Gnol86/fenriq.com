@@ -1,5 +1,7 @@
 "use client";
 
+import { Mail } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import {
     Item,
@@ -12,8 +14,6 @@ import {
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getInvitationDisplayStatus } from "@/lib/invitation-utils";
 import { formatDate } from "@/lib/utils";
-import { Mail } from "lucide-react";
-import { useTranslations } from "next-intl";
 import InvitationsActionMenu from "./invitations-action-menu";
 
 export default function InvitationItem({

@@ -1,3 +1,5 @@
+import ManageImageProfile from "@root/src/components/manage-image-profile";
+import { getTranslations } from "next-intl/server";
 import {
     Card,
     CardContent,
@@ -7,8 +9,6 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { requirePermission } from "@/lib/access-control";
-import ManageImageProfile from "@root/src/components/manage-image-profile";
-import { getTranslations } from "next-intl/server";
 import ManageOrganizationForm from "./form";
 
 export default async function OrganizationManagePage() {

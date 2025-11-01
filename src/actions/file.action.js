@@ -1,7 +1,7 @@
 "use server";
 
-import { s3Client } from "@/lib/s3";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { s3Client } from "@/lib/s3";
 import { requireAuth, requirePermission } from "../lib/access-control";
 
 const hostUrl = `${process.env.AWS_S3_PROTOCOL}://${process.env.AWS_S3_HOSTNAME}/${process.env.AWS_S3_BUCKET}`;

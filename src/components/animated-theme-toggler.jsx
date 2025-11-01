@@ -1,12 +1,11 @@
 "use client";
-import { Monitor, Moon, SunDim } from "lucide-react";
-import { useRef, useEffect, useState } from "react";
-import { flushSync } from "react-dom";
+import { Loader2, Monitor, Moon, SunDim } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const THEME_ORDER = ["light", "dark", "system"];
 export const AnimatedThemeToggler = ({ className, size = 20 }) => {
@@ -89,6 +88,7 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
 
     return (
         <button
+            type="button"
             ref={buttonRef}
             onClick={changeTheme}
             className={cn(className)}

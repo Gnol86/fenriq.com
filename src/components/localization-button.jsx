@@ -1,5 +1,8 @@
 "use client";
 
+import { flagId, localeNames, locales } from "@lib/i18n/config";
+import { Check, Globe } from "lucide-react";
+import ReactCountryFlag from "react-country-flag";
 import { setLocaleAction } from "@/actions/locale.action";
 import {
     DropdownMenu,
@@ -10,9 +13,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useServerAction } from "@/hooks/use-server-action";
-import { flagId, localeNames, locales } from "@lib/i18n/config";
-import { Check, Globe } from "lucide-react";
-import ReactCountryFlag from "react-country-flag";
 
 export default function LocalizationButton({ currentLocale, size = 20 }) {
     const { execute, isPending } = useServerAction();

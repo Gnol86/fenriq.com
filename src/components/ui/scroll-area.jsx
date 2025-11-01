@@ -1,11 +1,9 @@
 "use client";
-import * as React from "react";
 
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
-
-import { cn } from "@/lib/utils";
-
+import * as React from "react";
 import { useTouchPrimary } from "@/hooks/use-has-primary-touch";
+import { cn } from "@/lib/utils";
 
 const ScrollAreaContext = React.createContext(false);
 
@@ -80,11 +78,12 @@ const ScrollArea = React.forwardRef(
                 controller.abort();
                 resizeObserver.disconnect();
             };
-        }, [checkScrollability, isTouch]);
+        }, [checkScrollability]);
 
         return (
             <ScrollAreaContext.Provider value={isTouch}>
                 {isTouch ? (
+                    // biome-ignore lint/a11y/useSemanticElements: Scroll area is a custom scrolling container, not a form fieldset
                     <div
                         ref={ref}
                         role="group"
@@ -100,7 +99,6 @@ const ScrollArea = React.forwardRef(
                                 "size-full overflow-auto rounded-[inherit]",
                                 viewportClassName
                             )}
-                            tabIndex={0}
                         >
                             {children}
                         </div>

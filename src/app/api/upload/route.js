@@ -1,4 +1,3 @@
-import { s3Client } from "@/lib/s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { deleteFileOrga, deleteFileUser } from "@root/src/actions/file.action";
 import { updateOrganizationAction } from "@root/src/actions/organization.action";
@@ -7,9 +6,10 @@ import {
     requireActiveOrganization,
     requireAuth,
 } from "@root/src/lib/access-control";
-import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { NextResponse } from "next/server";
+import { getTranslations } from "next-intl/server";
+import { s3Client } from "@/lib/s3";
 
 const hostUrl = `${process.env.AWS_S3_PROTOCOL}://${process.env.AWS_S3_HOSTNAME}/${process.env.AWS_S3_BUCKET}`;
 

@@ -1,8 +1,9 @@
 // src/lib/access-control.js
-import { auth } from "@/lib/auth";
+
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import { auth } from "@/lib/auth";
 
 /**
  * Version cachée de headers() pour éviter les appels multiples

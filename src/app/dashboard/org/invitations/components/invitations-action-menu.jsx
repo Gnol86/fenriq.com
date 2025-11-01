@@ -1,5 +1,8 @@
 "use client";
 
+import { Ban, Mail } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useCallback } from "react";
 import {
     cancelInvitationAction,
     inviteMemberAction,
@@ -8,9 +11,6 @@ import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useServerAction } from "@/hooks/use-server-action";
-import { Ban, Mail } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useCallback } from "react";
 
 export default function InvitationsActionMenu({
     invitation,

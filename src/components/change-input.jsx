@@ -1,5 +1,7 @@
 "use client";
 
+import { Check, Edit, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import {
     InputGroup,
     InputGroupAddon,
@@ -7,8 +9,6 @@ import {
     InputGroupInput,
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
-import { Check, Edit, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
 import { FormDescription, FormLabel, FormMessage } from "./ui/form";
 
 export default function ChangeInput({
@@ -60,7 +60,16 @@ export default function ChangeInput({
         <div className="group flex cursor-pointer flex-col gap-1">
             <FormLabel>{label}</FormLabel>
             {changeMode ? (
-                <div onClick={e => e.stopPropagation()}>
+                // biome-ignore lint/a11y/noStaticElementInteractions: role="presentation" indicates this is not an interactive element, events are for propagation control only
+                <div
+                    role="presentation"
+                    onClick={e => e.stopPropagation()}
+                    onKeyDown={e => {
+                        if (e.key === "Escape") {
+                            e.stopPropagation();
+                        }
+                    }}
+                >
                     <InputGroup ref={containerRef} onBlur={handleBlur}>
                         {icon && (
                             <InputGroupAddon>{icon && icon}</InputGroupAddon>
@@ -102,8 +111,9 @@ export default function ChangeInput({
                     <FormMessage />
                 </div>
             ) : (
-                <span
-                    className="group flex cursor-pointer items-center gap-2"
+                <button
+                    type="button"
+                    className="group flex cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-inherit"
                     onClick={handleOpenChangeMode}
                 >
                     <span>{value}</span>
@@ -111,7 +121,7 @@ export default function ChangeInput({
                         size={12}
                         className="opacity-0 group-hover:opacity-50"
                     />
-                </span>
+                </button>
             )}
         </div>
     );

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import ImageProfile from "@/components/image-profile";
 import { Pagination } from "@/components/pagination";
 import SearchInput from "@/components/search-input";
@@ -21,8 +23,7 @@ import {
 import { requireAdmin } from "@/lib/access-control";
 import prisma from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
-import { getLocale, getTranslations } from "next-intl/server";
-import Link from "next/link";
+
 const ORGS_PER_PAGE = 10;
 
 export default async function AdminOrganizationsPage({ searchParams }) {

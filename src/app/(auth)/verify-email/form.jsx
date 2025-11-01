@@ -1,7 +1,10 @@
 "use client";
-import { toast } from "sonner";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,12 +15,9 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
 import FormButton from "@/components/ui/form-button";
-import { useTranslations } from "next-intl";
+import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 
 export default function FormResendVerification() {
     const searchParams = useSearchParams();

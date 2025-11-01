@@ -1,5 +1,5 @@
-import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 
 import { signOutAction } from "@/actions/auth.action";
 import { Button } from "@/components/ui/button";

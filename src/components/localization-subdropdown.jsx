@@ -1,5 +1,9 @@
 "use client";
 
+import { flagId, localeNames, locales } from "@lib/i18n/config";
+import { Globe } from "lucide-react";
+import { useTranslations } from "next-intl";
+import ReactCountryFlag from "react-country-flag";
 import { setLocaleAction } from "@/actions/locale.action";
 import {
     DropdownMenuCheckboxItem,
@@ -9,10 +13,6 @@ import {
     DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useServerAction } from "@/hooks/use-server-action";
-import { flagId, localeNames, locales } from "@lib/i18n/config";
-import { Globe } from "lucide-react";
-import { useTranslations } from "next-intl";
-import ReactCountryFlag from "react-country-flag";
 
 export default function LocalizationSubdropdown({ currentLocale }) {
     const { execute, isPending } = useServerAction();

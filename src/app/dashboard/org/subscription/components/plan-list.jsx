@@ -1,5 +1,9 @@
 "use client";
 
+import { ButtonGroup } from "@root/src/components/ui/button-group";
+import { formatPrice } from "@root/src/lib/utils";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,10 +14,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { ButtonGroup } from "@root/src/components/ui/button-group";
-import { formatPrice } from "@root/src/lib/utils";
-import { useTranslations } from "next-intl";
-import { useState } from "react";
 
 export default function PlanList({ plans, memberCount, locale }) {
     const t = useTranslations("organization.subscription");
@@ -212,9 +212,9 @@ export default function PlanList({ plans, memberCount, locale }) {
                                 {/* Features */}
                                 {features.length > 0 && (
                                     <ul className="flex flex-col gap-2">
-                                        {features.map((feature, index) => (
+                                        {features.map(feature => (
                                             <li
-                                                key={index}
+                                                key={feature}
                                                 className="text-muted-foreground flex items-start gap-2 text-sm"
                                             >
                                                 <span>✓</span>

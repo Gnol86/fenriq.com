@@ -14,6 +14,8 @@
 
 "use client";
 
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -21,9 +23,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useServerAction } from "@/hooks/use-server-action";
-import { useTranslations } from "next-intl";
 // import { myAction } from "@project/actions/my.action";
 
 export default function ExampleComponent({ data }) {

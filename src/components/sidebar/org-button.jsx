@@ -1,5 +1,7 @@
 "use client";
 
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { setActiveOrganizationAction } from "@/actions/organization.action";
 import {
     DropdownMenu,
@@ -11,8 +13,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useServerAction } from "@/hooks/use-server-action";
 import { SiteConfig } from "@/site-config";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { useTranslations } from "next-intl";
 import ImageProfile from "../image-profile";
 import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "../ui/sidebar";
 import CreateOrganizationDialog from "./create-organization-dialog";

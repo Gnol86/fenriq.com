@@ -1,22 +1,22 @@
 "use client";
 
+import { Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useCallback, useMemo } from "react";
 import {
     removeMemberAction,
     updateMemberRoleAction,
 } from "@/actions/organization.action";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useServerAction } from "@/hooks/use-server-action";
 import { useConfirm } from "@/hooks/use-confirm";
-import { useTranslations } from "next-intl";
-import { useCallback, useMemo } from "react";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { Trash2 } from "lucide-react";
+import { useServerAction } from "@/hooks/use-server-action";
 
 export default function MembersActionMenu({
     member,

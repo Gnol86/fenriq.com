@@ -1,8 +1,22 @@
 "use client";
 
-import { useForm, useFieldArray } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, X } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
+import { createPlanAction, updatePlanAction } from "@/actions/plan.action";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import {
     Form,
     FormControl,
@@ -13,21 +27,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useServerAction } from "@/hooks/use-server-action";
-import { createPlanAction, updatePlanAction } from "@/actions/plan.action";
-import { useTranslations } from "next-intl";
-import { Plus, X } from "lucide-react";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-import { useState } from "react";
 
 export default function PlanForm({ plan = null, trigger = null }) {
     const t = useTranslations("admin.plans");
@@ -56,7 +56,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
             .string()
             .optional()
             .refine(
-                val => !val || parseInt(val) > 0,
+                val => !val || parseInt(val, 10) > 0,
                 t("validation_free_trial_positive")
             ),
         showInPricingPage: z.boolean().default(true),
@@ -67,7 +67,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
                     .string()
                     .min(1, t("validation_limit_value_required"))
                     .refine(
-                        val => parseInt(val) > 0,
+                        val => parseInt(val, 10) > 0,
                         t("validation_limit_value_positive")
                     ),
             })
@@ -107,7 +107,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
     const onSubmit = async values => {
         // Convertir les limites en objet
         const limitsObject = values.limits.reduce((acc, limit) => {
-            acc[limit.name] = parseInt(limit.value);
+            acc[limit.name] = parseInt(limit.value, 10);
             return acc;
         }, {});
 
@@ -282,7 +282,9 @@ export default function PlanForm({ plan = null, trigger = null }) {
                                             {t("form_show_in_pricing_label")}
                                         </FormLabel>
                                         <FormDescription>
-                                            {t("form_show_in_pricing_description")}
+                                            {t(
+                                                "form_show_in_pricing_description"
+                                            )}
                                         </FormDescription>
                                     </div>
                                 </FormItem>

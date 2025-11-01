@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { createContext, useCallback, useState } from "react";
 import {
     AlertDialog,
@@ -11,7 +12,6 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 export const DialogContext = createContext(null);

@@ -1,12 +1,12 @@
 "use client";
 
-import FormButton from "@/components/ui/form-button";
-import { authClient } from "@/lib/auth-client";
 import { Loader2, ShieldCheck, ShieldOff } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
+import FormButton from "@/components/ui/form-button";
+import { authClient } from "@/lib/auth-client";
 
 export default function AcceptInvitationClient({ invitationId }) {
     const router = useRouter();

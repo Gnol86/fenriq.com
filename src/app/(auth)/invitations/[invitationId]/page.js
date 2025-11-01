@@ -1,3 +1,7 @@
+import { Mailbox } from "lucide-react";
+import { headers } from "next/headers";
+import { notFound, redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import {
     Card,
     CardContent,
@@ -7,10 +11,6 @@ import {
 } from "@/components/ui/card";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { Mailbox } from "lucide-react";
-import { getTranslations } from "next-intl/server";
-import { headers } from "next/headers";
-import { notFound, redirect } from "next/navigation";
 import AcceptInvitationClient from "./accept-invitation-client";
 
 export default async function InvitationPage({ params }) {

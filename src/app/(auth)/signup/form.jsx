@@ -1,7 +1,10 @@
 "use client";
-import { toast } from "sonner";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,14 +15,11 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { PasswordStrengthInput } from "@/components/ui/password-strength-input";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
 import FormButton from "@/components/ui/form-button";
+import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { useTranslations } from "next-intl";
+import { PasswordStrengthInput } from "@/components/ui/password-strength-input";
+import { authClient } from "@/lib/auth-client";
 
 export default function FormSignup() {
     const router = useRouter();
@@ -78,7 +78,7 @@ export default function FormSignup() {
                 {
                     onSuccess: () => {
                         toast.success(t("success_message"));
-                        router.push("/verify-email?email=" + values.email);
+                        router.push(`/verify-email?email=${values.email}`);
                     },
                     onError: ctx => {
                         toast.error(ctx.error.message || t("error_submission"));
@@ -184,7 +184,7 @@ export default function FormSignup() {
                     <Link
                         href={
                             form.watch("email")
-                                ? "/signin?email=" + form.watch("email")
+                                ? `/signin?email=${form.watch("email")}`
                                 : "/signin"
                         }
                         className="text-primary hover:underline"

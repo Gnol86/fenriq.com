@@ -1,11 +1,8 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Ellipsis } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Ellipsis, Hash } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Button } from "./ui/button";
 import { useCallback } from "react";
-import { cn } from "@/lib/utils";
-import { ScrollArea } from "./ui/scroll-area";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
     DropdownMenu,
@@ -13,8 +10,9 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Check } from "lucide-react";
-import { Hash } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
+import { ScrollArea } from "./ui/scroll-area";
 
 export function Pagination({ totalPages, page }) {
     const router = useRouter();
@@ -106,11 +104,11 @@ export function Pagination({ totalPages, page }) {
                 </ButtonGroup>
                 <ButtonGroup>
                     <Button
-                        variant={cn(page == 1 ? "default" : "secondary")}
+                        variant={cn(page === 1 ? "default" : "secondary")}
                         size="icon-sm"
                         onClick={() => {
                             router.replace(
-                                pathname + "?" + createQueryString("page", 1)
+                                `${pathname}?${createQueryString("page", 1)}`
                             );
                         }}
                     >
@@ -148,7 +146,7 @@ export function Pagination({ totalPages, page }) {
                                     key={i}
                                     size="icon-sm"
                                     variant={cn(
-                                        page == i ? "default" : "secondary"
+                                        page === i ? "default" : "secondary"
                                     )}
                                     onClick={() => {
                                         router.replace(
@@ -181,7 +179,7 @@ export function Pagination({ totalPages, page }) {
                     {totalPages > 1 && (
                         <Button
                             variant={cn(
-                                page == totalPages ? "default" : "secondary"
+                                page === totalPages ? "default" : "secondary"
                             )}
                             size="icon-sm"
                             onClick={() => {

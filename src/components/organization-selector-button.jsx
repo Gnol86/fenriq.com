@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
-import { useServerAction } from "@/hooks/use-server-action";
-import { setActiveOrganizationAction } from "@/actions/organization.action";
 import { useTranslations } from "next-intl";
+import { setActiveOrganizationAction } from "@/actions/organization.action";
+import { Button } from "@/components/ui/button";
+import { useServerAction } from "@/hooks/use-server-action";
 
 export default function OrganizationSelectorButton({
     organization,
@@ -25,7 +25,9 @@ export default function OrganizationSelectorButton({
                     organizationId: organization.id,
                 }),
             {
-                successMessage: t("success_selected", { name: organization.name }),
+                successMessage: t("success_selected", {
+                    name: organization.name,
+                }),
             }
         );
     };
@@ -34,7 +36,9 @@ export default function OrganizationSelectorButton({
         return (
             <div className="flex items-center gap-2">
                 <Check className="text-primary h-4 w-4" />
-                <span className="text-primary text-sm font-medium">{t("active_label")}</span>
+                <span className="text-primary text-sm font-medium">
+                    {t("active_label")}
+                </span>
             </div>
         );
     }

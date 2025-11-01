@@ -1,8 +1,8 @@
 "use client";
 
-import Breadcrumb from "@/components/breadcrumb";
-import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import Breadcrumb from "@/components/breadcrumb";
 
 export default function BreadcrumbSlot() {
     const pathname = usePathname();
@@ -16,7 +16,7 @@ export default function BreadcrumbSlot() {
 
     let href = "";
     const items = segments.map(seg => {
-        href += "/" + seg;
+        href += `/${seg}`;
         const key = seg.replace(/-/g, "_");
         const name = t.has(key) ? t(key) : decodeURIComponent(seg);
         return {

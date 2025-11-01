@@ -1,15 +1,5 @@
 /* eslint-disable no-unused-vars */
 
-import {
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import Link from "next/link";
-
 export default function AddOnSideBarContentDashboard() {
     return null;
     // return (

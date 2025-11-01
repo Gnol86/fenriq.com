@@ -1,15 +1,14 @@
 "use client";
 
-import * as React from "react";
 import { cva } from "class-variance-authority";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 function InputGroup({ className, ...props }) {
     return (
+        // biome-ignore lint/a11y/useSemanticElements: Input group is a visual grouping, not a form fieldset
         <div
             data-slot="input-group"
             role="group"
@@ -54,18 +53,22 @@ const inputGroupAddonVariants = cva(
 );
 
 function InputGroupAddon({ className, align = "inline-start", ...props }) {
+    const handleClick = e => {
+        if (e.target.closest("button")) {
+            return;
+        }
+        e.currentTarget.parentElement?.querySelector("input")?.focus();
+    };
+
     return (
+        // biome-ignore lint/a11y/useSemanticElements: Input group addon is a visual grouping, not a form fieldset
+        // biome-ignore lint/a11y/useKeyWithClickEvents: Click handler focuses input, keyboard navigation is handled by the input itself
         <div
             role="group"
             data-slot="input-group-addon"
             data-align={align}
             className={cn(inputGroupAddonVariants({ align }), className)}
-            onClick={e => {
-                if (e.target.closest("button")) {
-                    return;
-                }
-                e.currentTarget.parentElement?.querySelector("input")?.focus();
-            }}
+            onClick={handleClick}
             {...props}
         />
     );

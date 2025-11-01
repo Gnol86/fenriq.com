@@ -1,5 +1,5 @@
-import prisma from "../src/lib/prisma.js";
 import crypto from "crypto";
+import prisma from "../src/lib/prisma.js";
 
 // Listes de noms fictifs pour générer des organisations réalistes
 const companyTypes = [

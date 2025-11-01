@@ -1,6 +1,15 @@
 "use client";
 
-import { Trash2, Ban, UserCheck } from "lucide-react";
+import { Ban, HatGlasses, Trash2, UserCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import {
+    banUserAction,
+    removeUserAction,
+    setUserRoleAction,
+    unbanUserAction,
+} from "@/actions/admin.action";
 import { Button } from "@/components/ui/button";
 import {
     Select,
@@ -9,19 +18,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { useServerAction } from "@/hooks/use-server-action";
 import { useConfirm } from "@/hooks/use-confirm";
-import {
-    setUserRoleAction,
-    banUserAction,
-    unbanUserAction,
-    removeUserAction,
-} from "@/actions/admin.action";
-import { HatGlasses } from "lucide-react";
+import { useServerAction } from "@/hooks/use-server-action";
 import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 
 export default function UserActionMenu({ user, isCurrentUser }) {
     const t = useTranslations("admin.users");

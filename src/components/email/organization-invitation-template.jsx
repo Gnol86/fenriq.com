@@ -1,5 +1,5 @@
-import { SiteConfig } from "@/site-config";
 import { Html } from "@react-email/components";
+import { SiteConfig } from "@/site-config";
 
 export function OrganizationInvitationTemplate({
     organizationName,

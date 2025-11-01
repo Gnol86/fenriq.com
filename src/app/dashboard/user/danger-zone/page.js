@@ -1,4 +1,5 @@
-import DangerZoneForm from "./form";
+import { AlertTriangle } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import {
     Card,
     CardContent,
@@ -7,8 +8,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { requireAuth } from "@/lib/access-control";
-import { AlertTriangle } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import DangerZoneForm from "./form";
 
 export default async function DangerZonePage() {
     const tBreadcrumbs = await getTranslations("breadcrumbs");

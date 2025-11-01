@@ -1,12 +1,11 @@
-import { Geist, Geist_Mono } from "next/font/google";
-
-import { SiteConfig } from "@/site-config";
 import WindowSize from "@components/dev/window-size";
 import { Provider } from "@components/provider";
 import SelectLanguageDialog from "@components/select-language-dialog";
 import { defaultLocale } from "@lib/i18n/config";
-import { getMessages } from "next-intl/server";
+import { Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
+import { getMessages } from "next-intl/server";
+import { SiteConfig } from "@/site-config";
 import "./globals.css";
 
 const geistSans = Geist({

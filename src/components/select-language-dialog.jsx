@@ -1,5 +1,8 @@
 "use client";
 
+import { Globe } from "lucide-react";
+import { useState } from "react";
+import ReactCountryFlag from "react-country-flag";
 import { setLocaleAction } from "@/actions/locale.action";
 import {
     Dialog,
@@ -7,9 +10,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Globe } from "lucide-react";
-import { useState } from "react";
-import ReactCountryFlag from "react-country-flag";
 import { useServerAction } from "../hooks/use-server-action";
 import { flagId, localeNames } from "../lib/i18n/config";
 import { Button } from "./ui/button";

@@ -8,12 +8,12 @@ export default async function sitemap() {
             changeFrequency: "monthly",
         },
         {
-            url: SiteConfig.prodUrl + "/signup",
+            url: `${SiteConfig.prodUrl}/signup`,
             lastModified: new Date(),
             changeFrequency: "monthly",
         },
         {
-            url: SiteConfig.prodUrl + "/signin",
+            url: `${SiteConfig.prodUrl}/signin`,
             lastModified: new Date(),
             changeFrequency: "monthly",
         },

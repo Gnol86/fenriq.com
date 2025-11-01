@@ -1,3 +1,5 @@
+import { ScrollText } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import {
     Card,
     CardContent,
@@ -5,8 +7,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { ScrollText } from "lucide-react";
-import { getTranslations } from "next-intl/server";
 import FormSignup from "./form";
 
 export default async function Page() {

@@ -1,8 +1,8 @@
 "use server";
 
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { nameToSlug } from "@/lib/utils";
-import { headers } from "next/headers";
 
 export async function createOrganizationAction({ name }) {
     return await auth.api.createOrganization({

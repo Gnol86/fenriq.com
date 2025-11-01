@@ -1,11 +1,11 @@
 "use client";
 
+import { AlertTriangle, Copy } from "lucide-react";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Copy } from "lucide-react";
-import { useTranslations } from "next-intl";
-import Link from "next/link";
-import { toast } from "sonner";
 
 function extractErrorInfo(error, t) {
     let statusCode = 500;
@@ -13,7 +13,7 @@ function extractErrorInfo(error, t) {
     let message = t("title");
     let name = error.name || "Error";
 
-    if (error.message && error.message.includes("APIError")) {
+    if (error.message?.includes("APIError")) {
         const apiErrorMatch = error.message.match(
             /\[Error \[APIError\]: (.*?)\]/
         );
@@ -40,7 +40,7 @@ function extractErrorInfo(error, t) {
     };
 }
 
-export default function Error({ error, reset }) {
+export default function ErrorPage({ error, reset }) {
     const t = useTranslations("errors.page_error");
     const errorInfo = extractErrorInfo(error, t);
 

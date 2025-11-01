@@ -12,6 +12,5 @@ export async function proxy(request) {
 }
 
 export const config = {
-    runtime: "nodejs",
     matcher: ["/app/:path*", "/dashboard/:path*"],
 };

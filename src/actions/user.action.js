@@ -1,9 +1,9 @@
 "use server";
 
+import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { getTranslations } from "next-intl/server";
-import { headers } from "next/headers";
 
 export async function updateUserAction({ name, email, image }) {
     return await auth.api.updateUser({

@@ -1,3 +1,14 @@
+import { ButtonGroup } from "@root/src/components/ui/button-group";
+import {
+    getActiveOrganization,
+    requireAuth,
+} from "@root/src/lib/access-control";
+import { headers } from "next/headers";
+import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import ImageProfile from "@/components/image-profile";
+import LeaveOrganizationButton from "@/components/leave-organization-button";
+import OrganizationSelectorButton from "@/components/organization-selector-button";
 import {
     Card,
     CardAction,
@@ -6,20 +17,8 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-
-import ImageProfile from "@/components/image-profile";
-import LeaveOrganizationButton from "@/components/leave-organization-button";
-import OrganizationSelectorButton from "@/components/organization-selector-button";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { ButtonGroup } from "@root/src/components/ui/button-group";
-import {
-    getActiveOrganization,
-    requireAuth,
-} from "@root/src/lib/access-control";
-import { getTranslations } from "next-intl/server";
-import { headers } from "next/headers";
-import Link from "next/link";
 
 export default async function DashboardPage() {
     const t = await getTranslations("dashboard.index");

@@ -11,6 +11,9 @@
  * ============================================================
  */
 
+import { BarChart, Package, ShoppingCart } from "lucide-react";
+import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -19,9 +22,6 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Package, ShoppingCart, BarChart } from "lucide-react";
-import Link from "next/link";
-import { getTranslations } from "next-intl/server";
 
 export default async function AppSideBar() {
     const t = await getTranslations("project.sidebar");

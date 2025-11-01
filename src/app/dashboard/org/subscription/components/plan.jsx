@@ -1,3 +1,8 @@
+import { Button } from "@root/src/components/ui/button";
+import { checkAdmin } from "@root/src/lib/access-control";
+import { Plus, ReceiptEuro } from "lucide-react";
+import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import { getPlansWithStripeData } from "@/actions/subscription.action";
 import {
     Card,
@@ -13,14 +18,12 @@ import {
     EmptyMedia,
     EmptyTitle,
 } from "@/components/ui/empty";
-import { Button } from "@root/src/components/ui/button";
-import { checkAdmin } from "@root/src/lib/access-control";
-import { Plus, ReceiptEuro } from "lucide-react";
-import { getLocale, getTranslations } from "next-intl/server";
-import Link from "next/link";
 import PlanList from "./plan-list";
 
-export default async function Plan({ organization, lengthTotalMembres }) {
+export default async function Plan({
+    organization: _organization,
+    lengthTotalMembres,
+}) {
     const t = await getTranslations("organization.subscription");
 
     // Récupérer les plans avec les données Stripe

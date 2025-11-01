@@ -1,12 +1,11 @@
-import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
-
-import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 function ItemGroup({ className, ...props }) {
     return (
+        // biome-ignore lint/a11y/useSemanticElements: ItemGroup provides flexible styling that ul/ol don't support
         <div
             role="list"
             data-slot="item-group"

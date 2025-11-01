@@ -1,8 +1,8 @@
 "use client";
 
-import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 import Link, { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
+import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 import { Spinner } from "../ui/spinner";
 
 // Composant interne qui doit être rendu à l'intérieur du Link pour accéder à useLinkStatus

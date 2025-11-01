@@ -1,5 +1,8 @@
 "use client";
 
+import { MessageSquare, Star } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { createFeedbackAction } from "@/actions/feedback.action";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,9 +19,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useServerAction } from "@/hooks/use-server-action";
 import { cn } from "@/lib/utils";
-import { MessageSquare, Star } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useState } from "react";
 import { SidebarMenuButton } from "./ui/sidebar";
 
 export function FeedbackButton() {
@@ -73,10 +73,15 @@ export function FeedbackButton() {
                     </DialogHeader>
                     <div className="flex flex-col gap-4 py-4">
                         <div className="flex flex-col gap-2">
-                            <label className="text-sm font-medium">
+                            <span className="text-sm font-medium">
                                 {t("rating_label")}
-                            </label>
-                            <div className="flex gap-2">
+                            </span>
+                            {/* biome-ignore lint/a11y/useSemanticElements: Star rating buttons are not form inputs, fieldset is not appropriate */}
+                            <div
+                                className="flex gap-2"
+                                role="group"
+                                aria-label={t("rating_label")}
+                            >
                                 {[1, 2, 3, 4, 5].map(value => (
                                     <button
                                         key={value}

@@ -1,10 +1,10 @@
 "use client";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { AlertTriangle, Copy } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 function extractErrorInfo(error) {
     console.error("Error object:", error);
@@ -31,7 +31,7 @@ function extractErrorInfo(error) {
     };
 }
 
-function getStatusMessage(status, statusCode) {
+function getStatusMessage(_status, statusCode) {
     switch (statusCode) {
         case "UNAUTHORIZED":
             return "Vous n'êtes pas autorisé à accéder à cette ressource.";
@@ -46,7 +46,7 @@ function getStatusMessage(status, statusCode) {
     }
 }
 
-export default function Error({ error, reset }) {
+export default function GlobalErrorPage({ error, reset }) {
     const errorInfo = extractErrorInfo(error);
     const statusMessage = getStatusMessage(
         errorInfo.status,

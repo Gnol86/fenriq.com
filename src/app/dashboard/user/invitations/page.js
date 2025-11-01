@@ -1,3 +1,7 @@
+import { Eye, Mail } from "lucide-react";
+import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
+import React from "react";
 import ImageProfile from "@/components/image-profile";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,10 +30,6 @@ import {
 import { requireAuth } from "@/lib/access-control";
 import prisma from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
-import { Eye, Mail } from "lucide-react";
-import { getLocale, getTranslations } from "next-intl/server";
-import Link from "next/link";
-import React from "react";
 
 export default async function Page() {
     const t = await getTranslations("user.invitations");

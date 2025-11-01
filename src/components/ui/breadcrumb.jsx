@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
 
@@ -47,8 +46,6 @@ function BreadcrumbPage({ className, ...props }) {
     return (
         <span
             data-slot="breadcrumb-page"
-            role="link"
-            aria-disabled="true"
             aria-current="page"
             className={cn("text-foreground font-normal", className)}
             {...props}

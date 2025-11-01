@@ -1,6 +1,6 @@
 import { SiteConfig } from "@root/src/site-config";
-import { getRequestConfig } from "next-intl/server";
 import { cookies } from "next/headers";
+import { getRequestConfig } from "next-intl/server";
 import { defaultLocale } from "./config";
 
 export default getRequestConfig(async () => {

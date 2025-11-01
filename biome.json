@@ -1,0 +1,85 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.3.2/schema.json",
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true
+    },
+    "files": {
+        "ignoreUnknown": false,
+        "includes": [
+            "**",
+            "!**/.next",
+            "!**/node_modules",
+            "!**/out",
+            "!**/dist",
+            "!**/.vercel",
+            "!**/build",
+            "!**/coverage",
+            "!**/generated",
+            "!**/src/generated",
+            "!**/prisma/generated",
+            "!**/.env*",
+            "!**/public"
+        ]
+    },
+    "assist": { "actions": { "source": { "organizeImports": "on" } } },
+    "formatter": {
+        "enabled": true,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 80,
+        "formatWithErrors": false
+    },
+    "css": {
+        "parser": {
+            "tailwindDirectives": true
+        }
+    },
+    "javascript": {
+        "formatter": {
+            "quoteStyle": "double",
+            "semicolons": "always",
+            "trailingCommas": "es5",
+            "arrowParentheses": "asNeeded",
+            "bracketSpacing": true,
+            "jsxQuoteStyle": "double",
+            "quoteProperties": "asNeeded"
+        }
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "correctness": {
+                "noUnusedVariables": "warn",
+                "useExhaustiveDependencies": "warn",
+                "noUnusedFunctionParameters": "warn",
+                "noUnknownTypeSelector": "off",
+                "noInvalidPositionAtImportRule": "off"
+            },
+            "suspicious": {
+                "noConsole": "off",
+                "noVar": "error",
+                "noShadowRestrictedNames": "warn",
+                "noArrayIndexKey": "warn"
+            },
+            "style": {
+                "useConst": "warn",
+                "useNodejsImportProtocol": "off"
+            },
+            "performance": {
+                "noImgElement": "warn"
+            },
+            "a11y": {
+                "noSvgWithoutTitle": "off",
+                "noStaticElementInteractions": "warn",
+                "useKeyWithClickEvents": "warn",
+                "useFocusableInteractive": "warn",
+                "useSemanticElements": "warn",
+                "noLabelWithoutControl": "warn",
+                "useButtonType": "warn"
+            }
+        }
+    }
+}

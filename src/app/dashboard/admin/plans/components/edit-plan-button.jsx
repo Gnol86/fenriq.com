@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import PlanForm from "./plan-form";
 
 export default function EditPlanButton({ plan }) {

@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, Fragment } from "react";
-import { TableCell, TableRow } from "@/components/ui/table";
-import { RoleBadge } from "@/components/ui/role-badge";
-import ImageProfile from "@/components/image-profile";
-import { formatDate } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { Fragment, useState } from "react";
+import ImageProfile from "@/components/image-profile";
+import { Badge } from "@/components/ui/badge";
+import { RoleBadge } from "@/components/ui/role-badge";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { formatDate } from "@/lib/utils";
 import UserDetailsCollapse from "./user-details-collapse";
-import { useTranslations, useLocale } from "next-intl";
 
 /**
  * Composant ligne de tableau pour afficher un utilisateur

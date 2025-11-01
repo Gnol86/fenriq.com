@@ -1,13 +1,13 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { updateOrganizationAction } from "@/actions/organization.action";
+import ChangeInput from "@/components/change-input";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useServerAction } from "@/hooks/use-server-action";
-import { updateOrganizationAction } from "@/actions/organization.action";
-import { useTranslations } from "next-intl";
-import ChangeInput from "@/components/change-input";
 
 export default function ManageOrganizationForm({ organization }) {
     const t = useTranslations("organization.manage");

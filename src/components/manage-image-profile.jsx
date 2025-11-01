@@ -1,5 +1,8 @@
 "use client";
 
+import { Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useRef, useState } from "react";
 import {
     ImageCrop,
     ImageCropApply,
@@ -13,9 +16,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Trash2 } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useRef, useState } from "react";
 import { deleteFileOrga, deleteFileUser } from "../actions/file.action";
 import { updateOrganizationAction } from "../actions/organization.action";
 import { updateUserAction } from "../actions/user.action";
@@ -118,9 +118,15 @@ export default function ManageImageProfile({
 
     return (
         <div className="flex items-center gap-4">
-            <div
+            <button
+                type="button"
                 onClick={handleClickEdit}
-                className="relative w-fit cursor-pointer"
+                className="relative w-fit cursor-pointer border-0 bg-transparent p-0"
+                aria-label={
+                    entity?.image || entity?.logo
+                        ? "Modifier l'image"
+                        : "Ajouter une image"
+                }
             >
                 <ImageProfile entity={entity} size={size} />
                 <input
@@ -131,7 +137,7 @@ export default function ManageImageProfile({
                     onChange={handleFileSelect}
                     disabled={isPending}
                 />
-            </div>
+            </button>
             {(entity?.image || entity?.logo) && (
                 <Button
                     onClick={handleClickDelete}

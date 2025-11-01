@@ -1,3 +1,8 @@
+import { requireAdmin } from "@root/src/lib/access-control";
+import prisma from "@root/src/lib/prisma";
+import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
+import React from "react";
 import ImageProfile from "@/components/image-profile";
 import {
     Card,
@@ -18,11 +23,6 @@ import {
     ItemTitle,
 } from "@/components/ui/item";
 import { formatDate } from "@/lib/utils";
-import { requireAdmin } from "@root/src/lib/access-control";
-import prisma from "@root/src/lib/prisma";
-import { getLocale, getTranslations } from "next-intl/server";
-import { notFound } from "next/navigation";
-import React from "react";
 
 function DetailRow({ label, value }) {
     return (

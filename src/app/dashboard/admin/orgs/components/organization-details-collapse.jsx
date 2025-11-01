@@ -1,22 +1,22 @@
 "use client";
 
+import {
+    Building2,
+    Calendar,
+    FileText,
+    Globe,
+    HatGlasses,
+    Users,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/utils";
-import {
-    Calendar,
-    Building2,
-    Users,
-    Globe,
-    FileText,
-    HatGlasses,
-} from "lucide-react";
-import OrganizationActionMenu from "./organization-action-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl";
+import { formatDate } from "@/lib/utils";
+import OrganizationActionMenu from "./organization-action-menu";
 
 // Composant pour afficher un membre avec bouton d'usurpation
 function MemberRow({ member, currentUserId }) {
@@ -90,7 +90,7 @@ export default function OrganizationDetailsCollapse({
     const formatDescription = description => {
         if (!description) return tDetails("field_description_empty");
         return description.length > 100
-            ? description.substring(0, 100) + "..."
+            ? `${description.substring(0, 100)}...`
             : description;
     };
 

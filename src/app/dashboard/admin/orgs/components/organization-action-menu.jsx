@@ -1,12 +1,12 @@
 "use client";
 
-import { Trash2, Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useServerAction } from "@/hooks/use-server-action";
-import { useConfirm } from "@/hooks/use-confirm";
-import { deleteOrganizationAction } from "@/actions/admin.action";
+import { Settings, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { deleteOrganizationAction } from "@/actions/admin.action";
+import { Button } from "@/components/ui/button";
+import { useConfirm } from "@/hooks/use-confirm";
+import { useServerAction } from "@/hooks/use-server-action";
 
 export default function OrganizationActionMenu({ organization }) {
     const t = useTranslations("admin.organizations");

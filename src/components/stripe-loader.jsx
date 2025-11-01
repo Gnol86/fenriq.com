@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useRef } from "react";
-import { AnimatedBeam } from "@/components/ui/animated-beam";
 import Image from "next/image";
+import { useRef } from "react";
+import { AnimatedBeam } from "@/components/ui/animated-beam";
 
 export default function StripeLoader() {
     const containerRef = useRef(null);

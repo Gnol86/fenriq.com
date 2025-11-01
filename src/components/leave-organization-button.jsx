@@ -1,5 +1,8 @@
 "use client";
 
+import { LogOut } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useCallback } from "react";
 import { leaveOrganizationAction } from "@/actions/organization.action";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,9 +12,6 @@ import {
 } from "@/components/ui/tooltip";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useServerAction } from "@/hooks/use-server-action";
-import { LogOut } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useCallback } from "react";
 
 export default function LeaveOrganizationButton({ organization, isActive }) {
     const t = useTranslations("organization.leave");

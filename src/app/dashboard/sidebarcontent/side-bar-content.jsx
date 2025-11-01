@@ -1,15 +1,3 @@
-import {
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarMenu,
-    SidebarMenuBadge,
-    SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { checkAdmin, checkPermission, requireAuth } from "@/lib/access-control";
-import { auth } from "@/lib/auth";
-import prisma from "@/lib/prisma";
-import AddOnSideBarContent from "@/project/add-on-side-bar-content-dashboard";
 import { ActiveSidebarLink } from "@components/sidebar/active-sidebar-link";
 import {
     AlertTriangle,
@@ -23,8 +11,20 @@ import {
     Settings,
     Users,
 } from "lucide-react";
-import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
+import {
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
+    SidebarMenu,
+    SidebarMenuBadge,
+    SidebarMenuItem,
+} from "@/components/ui/sidebar";
+import { checkAdmin, checkPermission, requireAuth } from "@/lib/access-control";
+import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import AddOnSideBarContent from "@/project/add-on-side-bar-content-dashboard";
 
 export default async function SideBarContent() {
     const t = await getTranslations("sidebar.dashboard");

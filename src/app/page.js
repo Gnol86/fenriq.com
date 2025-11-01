@@ -13,15 +13,15 @@
  * ============================================================
  */
 
+import { defaultLocale } from "@lib/i18n/config";
+import { cookies } from "next/headers";
 import { AnimatedThemeToggler } from "@/components/animated-theme-toggler";
-import SignUpButton from "@/components/auth/SignUpButton";
+import GoAppButton from "@/components/auth/GoAppButton";
 import SignInButton from "@/components/auth/SignInButton";
 import SignOutButton from "@/components/auth/SignOutButton";
-import GoAppButton from "@/components/auth/GoAppButton";
-import { SiteConfig } from "@/site-config";
-import { cookies } from "next/headers";
-import { defaultLocale } from "@lib/i18n/config";
+import SignUpButton from "@/components/auth/SignUpButton";
 import LocalizationButton from "@/components/localization-button";
+import { SiteConfig } from "@/site-config";
 
 export default async function Home() {
     const cookieStore = await cookies();

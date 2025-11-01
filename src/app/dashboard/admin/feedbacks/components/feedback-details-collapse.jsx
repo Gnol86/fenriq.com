@@ -1,16 +1,16 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useServerAction } from "@/hooks/use-server-action";
-import { useConfirm } from "@/hooks/use-confirm";
+import { Award, CheckCircle, Eye, MessageSquare, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
+    deleteFeedbackAction,
     markFeedbackAsReadAction,
     markFeedbackAsResolvedAction,
-    deleteFeedbackAction,
 } from "@/actions/feedback.action";
-import { MessageSquare, CheckCircle, Trash2, Eye, Award } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useConfirm } from "@/hooks/use-confirm";
+import { useServerAction } from "@/hooks/use-server-action";
 
 export default function FeedbackDetailsCollapse({ feedback }) {
     const { execute } = useServerAction();

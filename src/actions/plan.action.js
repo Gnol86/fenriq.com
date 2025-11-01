@@ -1,8 +1,8 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/access-control";
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
 
 /**
  * Récupère tous les plans
@@ -33,13 +33,14 @@ export async function createPlanAction({
     await requireAdmin();
 
     // Convertir les limites en JSON string si présentes
-    const limitsJson = limits && Object.keys(limits).length > 0
-        ? JSON.stringify(limits)
-        : null;
+    const limitsJson =
+        limits && Object.keys(limits).length > 0
+            ? JSON.stringify(limits)
+            : null;
 
     // Convertir freeTrial en JSON string si présent
     const freeTrialJson = freeTrial
-        ? JSON.stringify({ days: parseInt(freeTrial) })
+        ? JSON.stringify({ days: parseInt(freeTrial, 10) })
         : null;
 
     const plan = await prisma.plan.create({
@@ -73,13 +74,14 @@ export async function updatePlanAction({
     await requireAdmin();
 
     // Convertir les limites en JSON string si présentes
-    const limitsJson = limits && Object.keys(limits).length > 0
-        ? JSON.stringify(limits)
-        : null;
+    const limitsJson =
+        limits && Object.keys(limits).length > 0
+            ? JSON.stringify(limits)
+            : null;
 
     // Convertir freeTrial en JSON string si présent
     const freeTrialJson = freeTrial
-        ? JSON.stringify({ days: parseInt(freeTrial) })
+        ? JSON.stringify({ days: parseInt(freeTrial, 10) })
         : null;
 
     const plan = await prisma.plan.update({

@@ -1,3 +1,5 @@
+import { AlertTriangle } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import {
     Card,
     CardContent,
@@ -7,8 +9,6 @@ import {
 } from "@/components/ui/card";
 import { requirePermission } from "@/lib/access-control";
 import prisma from "@/lib/prisma";
-import { AlertTriangle } from "lucide-react";
-import { getTranslations } from "next-intl/server";
 import DangerZoneForm from "./form";
 
 export default async function DangerZonePage() {

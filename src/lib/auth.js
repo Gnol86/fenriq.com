@@ -1,24 +1,24 @@
 // src/lib/auth.js
-import { deleteFile } from "@/actions/file.action";
-import { SiteConfig } from "@/site-config";
+
+import { stripe } from "@better-auth/stripe";
 import { APIError, betterAuth } from "better-auth";
-import { localization } from "better-auth-localization";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin, createAuthMiddleware, organization } from "better-auth/plugins";
-import { stripe } from "@better-auth/stripe";
+import { localization } from "better-auth-localization";
+import { cookies } from "next/headers";
 import Stripe from "stripe";
+import { deleteFile } from "@/actions/file.action";
+import { SiteConfig } from "@/site-config";
+import translations from "../messages/better-auth.json";
+import { defaultLocale } from "./i18n/config.js";
 import {
     ac,
     adminPermissions,
     memberPermissions,
     ownerPermissions,
 } from "./organization-permissions.js";
-import { getServerUrl } from "./server-url";
-
-import { cookies } from "next/headers";
-import translations from "../messages/better-auth.json";
-import { defaultLocale } from "./i18n/config.js";
 import prisma from "./prisma";
+import { getServerUrl } from "./server-url";
 
 async function getActiveOrganization(userId) {
     const userMembership = await prisma.member.findFirst({

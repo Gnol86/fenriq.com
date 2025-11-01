@@ -1,16 +1,6 @@
 "use client";
 
 import {
-    listUserSessionsAction,
-    revokeUserSessionAction,
-    revokeUserSessionsAction,
-} from "@/actions/admin.action";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { useServerAction } from "@/hooks/use-server-action";
-import { useConfirm } from "@/hooks/use-confirm";
-import { formatDate } from "@/lib/utils";
-import {
     Calendar,
     Check,
     Clock,
@@ -22,10 +12,20 @@ import {
     Trash2,
     UserLock,
 } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import UserActionMenu from "./user-action-menu";
+import {
+    listUserSessionsAction,
+    revokeUserSessionAction,
+    revokeUserSessionsAction,
+} from "@/actions/admin.action";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useTranslations, useLocale } from "next-intl";
+import { useConfirm } from "@/hooks/use-confirm";
+import { useServerAction } from "@/hooks/use-server-action";
+import { formatDate } from "@/lib/utils";
+import UserActionMenu from "./user-action-menu";
 
 export default function UserDetailsCollapse({ user, isCurrentUser }) {
     const [sessions, setSessions] = useState([]);
@@ -90,7 +90,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
     const formatSessionDate = date => {
         if (!date) return tCommon("n_a");
         const dateObj = new Date(date);
-        if (isNaN(dateObj.getTime())) return tCommon("n_a");
+        if (Number.isNaN(dateObj.getTime())) return tCommon("n_a");
 
         return new Intl.DateTimeFormat(locale, {
             day: "2-digit",
@@ -185,9 +185,8 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                     {user.banExpiresIn && (
                                         <div className="flex items-center gap-1">
                                             <Clock className="h-3 w-3" />
-                                            {tUsers(
-                                                "details_ban_expires"
-                                            )}: {user.banExpiresIn}
+                                            {tUsers("details_ban_expires")}:{" "}
+                                            {user.banExpiresIn}
                                         </div>
                                     )}
                                 </div>

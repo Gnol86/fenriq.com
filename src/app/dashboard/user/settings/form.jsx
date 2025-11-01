@@ -1,13 +1,13 @@
 "use client";
 
-import { updateUserAction } from "@/actions/user.action";
-import ChangeInput from "@/components/change-input";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { useServerAction } from "@/hooks/use-server-action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { updateUserAction } from "@/actions/user.action";
+import ChangeInput from "@/components/change-input";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { useServerAction } from "@/hooks/use-server-action";
 
 export default function UserSettingsForm({ user }) {
     const t = useTranslations("user.settings");

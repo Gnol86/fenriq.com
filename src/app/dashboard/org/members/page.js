@@ -1,3 +1,6 @@
+import { Users } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import React from "react";
 import { Pagination } from "@/components/pagination";
 import SearchInput from "@/components/search-input";
 import {
@@ -19,11 +22,9 @@ import {
 import { ItemGroup, ItemSeparator } from "@/components/ui/item";
 import { checkPermission, requirePermission } from "@/lib/access-control";
 import prisma from "@/lib/prisma";
-import { Users } from "lucide-react";
-import { getTranslations } from "next-intl/server";
-import React from "react";
 import InviteMemberDialog from "../invitations/components/invite-member-dialog";
 import MemberItem from "./components/member-item";
+
 const MEMBRES_PER_PAGE = 10;
 
 export default async function OrganizationMembersPage({ searchParams }) {

@@ -1,4 +1,11 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -12,13 +19,6 @@ import FormButton from "@/components/ui/form-button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { authClient } from "@/lib/auth-client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslations } from "next-intl";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
 
 export default function FormSignin() {
     const searchParams = useSearchParams();
@@ -133,7 +133,7 @@ export default function FormSignin() {
                     <Link
                         href={
                             form.watch("email")
-                                ? "/signup?email=" + form.watch("email")
+                                ? `/signup?email=${form.watch("email")}`
                                 : "/signup"
                         }
                         className="text-primary hover:underline"

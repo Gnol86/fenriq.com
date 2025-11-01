@@ -1,8 +1,8 @@
 "use server";
 
-import { VerificationEmailTemplate } from "@/components/email/verification-template";
-import { OrganizationInvitationTemplate } from "@/components/email/organization-invitation-template";
 import { Resend } from "resend";
+import { OrganizationInvitationTemplate } from "@/components/email/organization-invitation-template";
+import { VerificationEmailTemplate } from "@/components/email/verification-template";
 import { SiteConfig } from "@/site-config";
 
 const resend = new Resend(process.env.RESEND_API_KEY);

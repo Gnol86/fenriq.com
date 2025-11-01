@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { CheckIcon, EyeIcon, EyeOffIcon, XIcon } from "lucide-react";
+import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
@@ -129,9 +129,9 @@ const PasswordStrengthInput = React.forwardRef(
                             className="grid grid-cols-2 gap-1.5"
                             aria-label="Exigences du mot de passe"
                         >
-                            {strength.map((req, index) => (
+                            {strength.map(req => (
                                 <li
-                                    key={index}
+                                    key={req.text}
                                     className="flex items-center gap-2"
                                 >
                                     {req.met ? (

@@ -1,5 +1,6 @@
-import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
+import SearchInput from "@/components/search-input";
 import {
     Card,
     CardContent,
@@ -8,14 +9,6 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import {
     Pagination,
     PaginationContent,
     PaginationItem,
@@ -23,10 +16,17 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import SearchInput from "@/components/search-input";
-import UserTableRow from "./components/user-table-row";
-import { getTranslations } from "next-intl/server";
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import { requireAdmin } from "@/lib/access-control";
+import { auth } from "@/lib/auth";
+import UserTableRow from "./components/user-table-row";
 
 const USERS_PER_PAGE = 10;
 

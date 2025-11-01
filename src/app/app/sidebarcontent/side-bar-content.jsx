@@ -1,3 +1,6 @@
+import { ActiveSidebarLink } from "@components/sidebar/active-sidebar-link";
+import { Plus } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -5,9 +8,6 @@ import {
     SidebarMenu,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ActiveSidebarLink } from "@components/sidebar/active-sidebar-link";
-import { Plus } from "lucide-react";
-import { getTranslations } from "next-intl/server";
 
 export default async function SideBarContent() {
     const t = await getTranslations("sidebar.app");

@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import { getInvitationStatusBadgeClasses } from "@/lib/invitation-utils";
+import { cn } from "@/lib/utils";
 
 /**
  * Composant badge de statut réutilisable

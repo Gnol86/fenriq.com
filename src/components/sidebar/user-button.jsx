@@ -1,4 +1,18 @@
 "use client";
+import { cn } from "@root/src/lib/utils";
+import {
+    AppWindow,
+    ChevronsUpDown,
+    HatGlasses,
+    LayoutDashboard,
+    Loader2,
+    LogOut,
+    Settings2,
+} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useTransition } from "react";
+import { toast } from "sonner";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -17,20 +31,6 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 import { authClient, signOut } from "@/lib/auth-client";
-import { cn } from "@root/src/lib/utils";
-import {
-    AppWindow,
-    ChevronsUpDown,
-    HatGlasses,
-    LayoutDashboard,
-    Loader2,
-    LogOut,
-    Settings2,
-} from "lucide-react";
-import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "next/navigation";
-import { useTransition } from "react";
-import { toast } from "sonner";
 import ImageProfile from "../image-profile";
 import LocalizationSubdropdown from "../localization-subdropdown";
 import ThemeSubdropdown from "../theme-subdropdown";

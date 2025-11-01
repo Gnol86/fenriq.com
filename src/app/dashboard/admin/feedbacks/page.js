@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server";
+import { getAllFeedbacksAction } from "@/actions/feedback.action";
 import {
     Card,
     CardContent,
@@ -14,8 +16,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { requireAdmin } from "@/lib/access-control";
-import { getTranslations } from "next-intl/server";
-import { getAllFeedbacksAction } from "@/actions/feedback.action";
 import FeedbackTable from "./components/feedback-table";
 
 export default async function AdminFeedbacksPage() {

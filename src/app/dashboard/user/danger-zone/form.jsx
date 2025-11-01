@@ -1,19 +1,11 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TriangleAlert } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import FormButton from "@/components/ui/form-button";
+import { deleteUserAction } from "@/actions/user.action";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -25,10 +17,18 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { deleteUserAction } from "@/actions/user.action";
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import FormButton from "@/components/ui/form-button";
+import { Input } from "@/components/ui/input";
 import { useServerAction } from "@/hooks/use-server-action";
-import { TriangleAlert } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 export default function DangerZoneForm({ user }) {
     const t = useTranslations("user.danger_zone");

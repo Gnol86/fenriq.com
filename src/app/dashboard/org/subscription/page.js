@@ -1,7 +1,7 @@
-import { requirePermission } from "@/lib/access-control";
-import prisma from "@/lib/prisma";
 import StripeLoader from "@root/src/components/stripe-loader";
 import { Suspense } from "react";
+import { requirePermission } from "@/lib/access-control";
+import prisma from "@/lib/prisma";
 import Plan from "./components/plan";
 
 export default async function OrganizationSubscriptionPage() {

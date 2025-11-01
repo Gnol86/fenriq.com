@@ -1,13 +1,12 @@
 "use client";
 
-import { Fragment } from "react";
-import { TableCell, TableRow } from "@/components/ui/table";
-import { formatDate } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronRight, Star } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { Fragment } from "react";
+import { Badge } from "@/components/ui/badge";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { cn, formatDate } from "@/lib/utils";
 import FeedbackDetailsCollapse from "./feedback-details-collapse";
-import { useTranslations, useLocale } from "next-intl";
-import { cn } from "@/lib/utils";
 
 export default function FeedbackTableRow({ feedback, isExpanded, onToggle }) {
     const t = useTranslations("admin.feedbacks");
