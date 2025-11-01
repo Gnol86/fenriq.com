@@ -28,7 +28,6 @@ import {
     Settings2,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
@@ -75,6 +74,15 @@ export default function UserButton({
             router.push("/dashboard");
             router.refresh();
         });
+    };
+
+    const handleNavigate = href => event => {
+        event.preventDefault();
+
+        if (isMobile) {
+            setOpenMobile(false);
+        }
+        router.push(href);
     };
 
     return (
@@ -125,43 +133,29 @@ export default function UserButton({
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {!isOnApp && (
-                        <DropdownMenuItem asChild>
-                            <Link
-                                href="/app"
-                                className="flex items-center gap-2"
-                                onNavigate={() => {
-                                    if (isMobile) {
-                                        setOpenMobile(false);
-                                    }
-                                }}
-                            >
-                                <AppWindow
-                                    size={16}
-                                    className="opacity-60"
-                                    aria-hidden="true"
-                                />
-                                {t("return_to_app")}
-                            </Link>
+                        <DropdownMenuItem
+                            onSelect={handleNavigate("/app")}
+                            className="flex items-center gap-2"
+                        >
+                            <AppWindow
+                                size={16}
+                                className="opacity-60"
+                                aria-hidden="true"
+                            />
+                            {t("return_to_app")}
                         </DropdownMenuItem>
                     )}
                     {!isOnDashboard && (
-                        <DropdownMenuItem asChild>
-                            <Link
-                                href="/dashboard"
-                                className="flex items-center gap-2"
-                                onNavigate={() => {
-                                    if (isMobile) {
-                                        setOpenMobile(false);
-                                    }
-                                }}
-                            >
-                                <LayoutDashboard
-                                    size={16}
-                                    className="opacity-60"
-                                    aria-hidden="true"
-                                />
-                                {t("dashboard")}
-                            </Link>
+                        <DropdownMenuItem
+                            onSelect={handleNavigate("/dashboard")}
+                            className="flex items-center gap-2"
+                        >
+                            <LayoutDashboard
+                                size={16}
+                                className="opacity-60"
+                                aria-hidden="true"
+                            />
+                            {t("dashboard")}
                         </DropdownMenuItem>
                     )}
                     <DropdownMenuSub>

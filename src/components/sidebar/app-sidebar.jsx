@@ -34,13 +34,14 @@ export async function AppSidebar({ children }) {
     );
 
     return (
-        <Sidebar collapsible="icon">
+        <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader>
                 <OrgButton
                     userOrganizations={userOrganizations}
                     activeUserOrganization={activeUserOrganization}
                 />
             </SidebarHeader>
+
             <SidebarContent>{children}</SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
