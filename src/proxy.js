@@ -2,15 +2,30 @@ import { NextResponse } from "next/server";
 import { getAuth } from "./lib/access-control";
 
 export async function proxy(request) {
-    const { user } = await getAuth();
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-pathname", request.nextUrl.pathname);
 
-    if (!user) {
-        return NextResponse.redirect(new URL("/signin", request.url));
+    // Vérification d'authentification uniquement pour /app et /dashboard
+    if (
+        request.nextUrl.pathname.startsWith("/app") ||
+        request.nextUrl.pathname.startsWith("/dashboard")
+    ) {
+        const { user } = await getAuth();
+
+        if (!user) {
+            return NextResponse.redirect(new URL("/signin", request.url));
+        }
     }
 
-    return NextResponse.next();
+    return NextResponse.next({
+        request: {
+            headers: requestHeaders,
+        },
+    });
 }
 
 export const config = {
-    matcher: ["/app/:path*", "/dashboard/:path*"],
+    matcher: [
+        "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    ],
 };

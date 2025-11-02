@@ -1,23 +1,31 @@
 import { defaultLocale } from "@lib/i18n/config";
+import { AppWindow } from "lucide-react";
 import { cookies, headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import { FeedbackButton } from "@/components/feedback-button";
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
+import { ActiveSidebarLink } from "./active-sidebar-link";
 import OrgButton from "./org-button";
 import UserButton from "./user-button";
 
 export async function AppSidebar({ children }) {
+    const t = await getTranslations("sidebar.user_button");
+    const h = await headers();
+    const pathname = h.get("x-pathname");
     const cookieStore = await cookies();
     const locale = cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
     const session = await auth.api.getSession({
-        headers: await headers(), // you need to pass the headers object.
+        headers: h, // you need to pass the headers object.
     });
 
     const user = session?.user;
@@ -25,13 +33,15 @@ export async function AppSidebar({ children }) {
     // Only fetch organizations if we have a valid session
     const userOrganizations = session
         ? await auth.api.listOrganizations({
-              headers: await headers(),
+              headers: h,
           })
         : [];
 
     const activeUserOrganization = userOrganizations?.find(
         org => org.id === session?.session?.activeOrganizationId
     );
+
+    const isOnApp = pathname?.startsWith("/app");
 
     return (
         <Sidebar collapsible="icon" variant="floating">
@@ -41,6 +51,20 @@ export async function AppSidebar({ children }) {
                     activeUserOrganization={activeUserOrganization}
                 />
             </SidebarHeader>
+            <SidebarGroup>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            {!isOnApp && (
+                                <ActiveSidebarLink href="/app">
+                                    <AppWindow className="opacity-60" />
+                                    <span>{t("return_to_app")}</span>
+                                </ActiveSidebarLink>
+                            )}
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
 
             <SidebarContent>{children}</SidebarContent>
             <SidebarFooter>

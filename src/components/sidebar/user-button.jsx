@@ -176,7 +176,6 @@ export default function UserButton({
                             </DropdownMenuSubContent>
                         </DropdownMenuPortal>
                     </DropdownMenuSub>
-                    <DropdownMenuSeparator />
                     {isImpersonating ? (
                         <DropdownMenuItem
                             variant="destructive"
