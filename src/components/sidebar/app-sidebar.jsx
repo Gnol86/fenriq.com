@@ -51,27 +51,25 @@ export async function AppSidebar({ children }) {
                     activeUserOrganization={activeUserOrganization}
                 />
             </SidebarHeader>
-            <SidebarGroup>
-                <SidebarGroupContent>
-                    <SidebarMenu>
-                        <SidebarMenuItem>
-                            {!isOnApp && (
-                                <ActiveSidebarLink href="/app">
-                                    <AppWindow className="opacity-60" />
-                                    <span>{t("return_to_app")}</span>
-                                </ActiveSidebarLink>
-                            )}
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarGroupContent>
-            </SidebarGroup>
 
             <SidebarContent>{children}</SidebarContent>
+
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <FeedbackButton />
                     </SidebarMenuItem>
+                    {!isOnApp && (
+                        <SidebarMenuItem>
+                            <ActiveSidebarLink
+                                href="/app"
+                                className="text-primary"
+                            >
+                                <AppWindow />
+                                <span>{t("return_to_app")}</span>
+                            </ActiveSidebarLink>
+                        </SidebarMenuItem>
+                    )}
                     <UserButton
                         user={user}
                         isImpersonating={session?.session?.impersonatedBy}
