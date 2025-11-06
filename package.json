@@ -6,8 +6,8 @@
     "packageManager": "bun@1.3.1",
     "scripts": {
         "dev": "rm -rf .next && next dev",
-        "build": "prisma generate && next build",
-        "start": "prisma migrate deploy && next start",
+        "build": "prisma migrate deploy && prisma generate && next build",
+        "start": "next start",
         "lint": "biome check .",
         "lint:fix": "biome check --write .",
         "format": "biome format --write .",
