@@ -10,11 +10,11 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 
 ### Core Commands
 
-- `pnpm dev` - Start development server with Turbopack
-- `pnpm build` - Build the application
-- `pnpm start` - Start production server
-- `pnpm lint` - Lint the code
-- `pnpm format` - Format the code
+- `bun dev` - Start development server with Turbopack
+- `bun build` - Build the application
+- `bun start` - Start production server
+- `bun lint` - Lint the code
+- `bun format` - Format the code
 
 ## Architecture Overview
 
@@ -27,7 +27,7 @@ Boilerplate for Next.js projects with Prisma, Better-Auth, Resend, Tailwind CSS,
 - **Authentication**: Better-Auth with organization and admin support
 - **Email**: React Email with Resend
 - **Payments**: Stripe integration
-- **Package Manager**: pnpm
+- **Package Manager**: bun
 
 ### Project Structure
 
@@ -145,10 +145,10 @@ git fetch upstream
 git merge upstream/main
 
 # Install new dependencies if any
-pnpm install
+bun install
 
 # Regenerate Prisma if schema changed
-pnpm prisma generate
+bun prisma generate
 ```
 
 **What happens:**
@@ -388,11 +388,11 @@ export default async function Sidebar() {
 
 ## Development Notes
 
-- Always use `pnpm` for package management
+- Always use `bun` for package management
 - Use TypeScript strict mode - no `any` types
 - Prefer server components and avoid unnecessary client-side state
 - Prefer using `??` than `||`
-- After every file creation or modification, run `pnpm lint` before finishing the task
+- After every file creation or modification, run `bun lint` before finishing the task
 
 ## Files naming
 
