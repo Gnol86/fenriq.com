@@ -157,6 +157,7 @@ model Subscription {
 model Plan {
     id                    String   @id @default(cuid())
     name                  String   @unique
+    description           String?
     priceId               String   @unique
     annualDiscountPriceId String?  @unique
     limits                String?

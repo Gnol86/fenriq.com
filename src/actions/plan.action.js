@@ -24,6 +24,7 @@ export async function getPlansAction() {
  */
 export async function createPlanAction({
     name,
+    description,
     priceId,
     annualDiscountPriceId,
     limits,
@@ -46,6 +47,7 @@ export async function createPlanAction({
     const plan = await prisma.plan.create({
         data: {
             name,
+            description: description || null,
             priceId,
             annualDiscountPriceId: annualDiscountPriceId || null,
             limits: limitsJson,
@@ -65,6 +67,7 @@ export async function createPlanAction({
 export async function updatePlanAction({
     planId,
     name,
+    description,
     priceId,
     annualDiscountPriceId,
     limits,
@@ -90,6 +93,7 @@ export async function updatePlanAction({
         },
         data: {
             name,
+            description: description || null,
             priceId,
             annualDiscountPriceId: annualDiscountPriceId || null,
             limits: limitsJson,

@@ -27,6 +27,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useServerAction } from "@/hooks/use-server-action";
 
 export default function PlanForm({ plan = null, trigger = null }) {
@@ -41,6 +42,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
             .string()
             .min(1, t("validation_name_required"))
             .min(2, t("validation_name_min")),
+        description: z.string().optional(),
         priceId: z
             .string()
             .min(1, t("validation_price_id_required"))
@@ -91,6 +93,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: plan?.name ?? "",
+            description: plan?.description ?? "",
             priceId: plan?.priceId ?? "",
             annualDiscountPriceId: plan?.annualDiscountPriceId ?? "",
             freeTrial: parsedFreeTrial,
@@ -113,6 +116,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
 
         const actionData = {
             name: values.name,
+            description: values.description || null,
             priceId: values.priceId,
             annualDiscountPriceId: values.annualDiscountPriceId || null,
             limits: limitsObject,
@@ -184,6 +188,32 @@ export default function PlanForm({ plan = null, trigger = null }) {
                                             {...field}
                                         />
                                     </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        {/* Description */}
+                        <FormField
+                            control={form.control}
+                            name="description"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        {t("form_description_label")}
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                            placeholder={t(
+                                                "form_description_placeholder"
+                                            )}
+                                            rows={4}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        {t("form_description_description")}
+                                    </FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}

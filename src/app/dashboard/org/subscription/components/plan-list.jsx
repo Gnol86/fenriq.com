@@ -4,12 +4,13 @@ import { ButtonGroup } from "@root/src/components/ui/button-group";
 import { formatPrice } from "@root/src/lib/utils";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
     CardHeader,
     CardTitle,
@@ -23,10 +24,23 @@ export default function PlanList({ plans, memberCount, locale }) {
     const hasAnnualPlans = plans.some(plan => plan.annualPrice !== null);
 
     // Filtrer les plans selon l'intervalle de facturation
-    const displayedPlans =
+    const filteredPlans =
         billingInterval === "annual"
             ? plans.filter(plan => plan.annualPrice !== null)
             : plans;
+
+    // Trier les plans par prix croissant
+    const displayedPlans = [...filteredPlans].sort((a, b) => {
+        const priceA =
+            billingInterval === "annual" && a.annualPrice
+                ? a.annualPrice.amount
+                : a.monthlyPrice.amount;
+        const priceB =
+            billingInterval === "annual" && b.annualPrice
+                ? b.annualPrice.amount
+                : b.monthlyPrice.amount;
+        return priceA - priceB;
+    });
 
     // Fonction pour calculer le pourcentage d'économie
     const calculateSavings = (monthlyPrice, annualPrice) => {
@@ -84,7 +98,7 @@ export default function PlanList({ plans, memberCount, locale }) {
             )}
 
             {/* Liste des plans */}
-            <div className="flex justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
                 {displayedPlans.map(plan => {
                     const isTeamPlan = plan.name.toLowerCase() === "team";
 
@@ -112,29 +126,19 @@ export default function PlanList({ plans, memberCount, locale }) {
                               )
                             : null;
 
-                    // Parser les features depuis les métadonnées du produit
-                    const features = currentPrice.product.marketing_features
-                        ? JSON.parse(currentPrice.product.marketing_features)
-                        : [];
-
                     console.log(
                         "marketing_features",
                         currentPrice.product.marketing_features
                     );
 
                     return (
-                        <Card key={plan.id} className="flex max-w-sm flex-col">
+                        <Card key={plan.id} className="flex w-80 flex-col">
                             <CardHeader>
                                 <CardTitle className="text-center">
                                     <Badge className="text-sm">
                                         {currentPrice.product.name}
                                     </Badge>
                                 </CardTitle>
-                                {currentPrice.product.description && (
-                                    <CardDescription className="text-center">
-                                        {currentPrice.product.description}
-                                    </CardDescription>
-                                )}
                             </CardHeader>
                             <CardContent className="flex-1">
                                 {/* Prix */}
@@ -210,18 +214,19 @@ export default function PlanList({ plans, memberCount, locale }) {
                                 </div>
 
                                 {/* Features */}
-                                {features.length > 0 && (
-                                    <ul className="flex flex-col gap-2">
-                                        {features.map(feature => (
-                                            <li
-                                                key={feature}
-                                                className="text-muted-foreground flex items-start gap-2 text-sm"
+                                {(plan.description ||
+                                    currentPrice.product.description) && (
+                                    <div className="text-left prose prose-sm dark:prose-invert max-w-none mt-4">
+                                        {plan.description ? (
+                                            <ReactMarkdown
+                                                remarkPlugins={[remarkGfm]}
                                             >
-                                                <span>✓</span>
-                                                <span>{feature}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                                {plan.description}
+                                            </ReactMarkdown>
+                                        ) : (
+                                            currentPrice.product.description
+                                        )}
+                                    </div>
                                 )}
                             </CardContent>
                             <CardFooter>

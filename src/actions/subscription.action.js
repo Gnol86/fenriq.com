@@ -67,6 +67,7 @@ export async function getPlansWithStripeData() {
                 return {
                     id: plan.id,
                     name: plan.name,
+                    description: plan.description,
                     limits,
                     freeTrialDays,
                     monthlyPrice: {
