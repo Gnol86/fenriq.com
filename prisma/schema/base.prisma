@@ -102,6 +102,7 @@ model Organization {
     metadata      String?
     members       Member[]
     invitations   Invitation[]
+    subscriptions Subscription[]
 
     @@unique([slug])
     @@map("organization")
@@ -138,18 +139,21 @@ model Invitation {
 // ============================================================
 
 model Subscription {
-    id                   String       @id @default(cuid())
+    id                   String        @id @default(cuid())
     plan                 String
-    referenceId          String       @unique
-    stripeCustomerId     String?      @unique
-    stripeSubscriptionId String?      @unique
+    referenceId          String        @unique
+    organization         Organization  @relation(fields: [referenceId], references: [id], onDelete: Cascade)
+    stripeCustomerId     String?       @unique
+    stripeSubscriptionId String?       @unique
     status               String?
     periodStart          DateTime?
     periodEnd            DateTime?
-    cancelAtPeriodEnd    Boolean?     @default(false)
-    seats                Int?         @default(1)
+    cancelAtPeriodEnd    Boolean?      @default(false)
+    seats                Int?          @default(1)
     trialStart           DateTime?
     trialEnd             DateTime?
+    createdAt            DateTime      @default(now())
+    updatedAt            DateTime      @updatedAt
 
     @@map("subscription")
 }
