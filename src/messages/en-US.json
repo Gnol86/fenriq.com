@@ -238,6 +238,7 @@
             "team_plan_proration_notice": "Prorated costs for members added or removed during the billing period will be applied to the next invoice.",
             "free_trial_badge": "{days} days free trial",
             "subscribe_to_plan": "Subscribe",
+            "processing_subscription": "Processing...",
             "annual_savings": "Save {percentage}%",
             "up_to_savings": "Save up to {percentage}%",
             "current_licenses": "Current Licenses",

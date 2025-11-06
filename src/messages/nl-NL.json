@@ -238,6 +238,7 @@
             "team_plan_proration_notice": "Pro rata kosten voor toegevoegde of verwijderde leden tijdens de factureringsperiode worden toegepast op de volgende factuur.",
             "free_trial_badge": "{days} dagen gratis proefperiode",
             "subscribe_to_plan": "Abonneren",
+            "processing_subscription": "Verwerken...",
             "annual_savings": "Bespaar {percentage}%",
             "up_to_savings": "Bespaar tot {percentage}%",
             "current_licenses": "Huidige licenties",

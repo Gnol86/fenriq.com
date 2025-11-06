@@ -238,6 +238,7 @@
             "team_plan_proration_notice": "Le coût à la baisse ou à la hausse par membre supprimé ou ajouté durant la période de facturation sera appliqué lors de la prochaine facturation.",
             "free_trial_badge": "Essai gratuit de {days} jours",
             "subscribe_to_plan": "S'abonner",
+            "processing_subscription": "Traitement en cours...",
             "annual_savings": "Économisez {percentage}%",
             "up_to_savings": "Économisez jusqu'à {percentage}%",
             "current_licenses": "Licences actuelles",

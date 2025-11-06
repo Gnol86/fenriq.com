@@ -9,6 +9,7 @@ import remarkGfm from "remark-gfm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import SubscriptionButton from "./subscription-button";
 
 export default function PlanList({ plans, memberCount, locale }) {
     const t = useTranslations("organization.subscription");
@@ -101,8 +102,6 @@ export default function PlanList({ plans, memberCount, locale }) {
                             ? calculateSavings(plan.monthlyPrice, plan.annualPrice)
                             : null;
 
-                    console.log("marketing_features", currentPrice.product.marketing_features);
-
                     return (
                         <Card key={plan.id} className="flex w-80 flex-col">
                             <CardHeader>
@@ -184,9 +183,10 @@ export default function PlanList({ plans, memberCount, locale }) {
                             </CardContent>
                             <CardFooter>
                                 {/* Bouton de souscription */}
-                                <Button className="mt-auto w-full" size="lg">
-                                    {t("subscribe_to_plan")}
-                                </Button>
+                                <SubscriptionButton
+                                    planId={plan.id}
+                                    billingInterval={billingInterval}
+                                />
                             </CardFooter>
                         </Card>
                     );

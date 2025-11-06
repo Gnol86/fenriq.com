@@ -114,3 +114,77 @@ export async function getOrganizationMemberCount() {
 
     return memberCount;
 }
+
+/**
+ * Crée une session de checkout Stripe pour s'abonner à un plan
+ * Valide le priceId et la quantité côté serveur pour éviter les manipulations
+ */
+export async function createCheckoutSession({ planId, billingInterval = "monthly" }) {
+    const { organization, user } = await requireActiveOrganization();
+
+    // Récupérer le plan depuis la base de données
+    const plan = await prisma.plan.findUnique({
+        where: { id: planId },
+    });
+
+    if (!plan) {
+        throw new Error("Plan introuvable");
+    }
+
+    // Déterminer le priceId correct selon l'intervalle de facturation
+    let priceId;
+    if (billingInterval === "annual" && plan.annualDiscountPriceId) {
+        priceId = plan.annualDiscountPriceId;
+    } else {
+        priceId = plan.priceId;
+    }
+
+    // Calculer la quantité en fonction du type de plan
+    let quantity = 1;
+    if (plan.name.toLowerCase() === "team") {
+        // Pour le plan Team, compter le nombre de membres
+        const memberCount = await prisma.member.count({
+            where: {
+                organizationId: organization.id,
+            },
+        });
+        quantity = memberCount;
+    }
+
+    // Créer l'URL de retour
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const successUrl = `${baseUrl}/dashboard/org/subscription?success=true`;
+    const cancelUrl = `${baseUrl}/dashboard/org/subscription?canceled=true`;
+
+    try {
+        // Créer la session de checkout
+        const session = await stripe.checkout.sessions.create({
+            mode: "subscription",
+            payment_method_types: ["card"],
+            line_items: [
+                {
+                    price: priceId,
+                    quantity,
+                },
+            ],
+            success_url: successUrl,
+            cancel_url: cancelUrl,
+            customer_email: user.email,
+            metadata: {
+                organizationId: organization.id,
+                userId: user.id,
+                planId: plan.id,
+            },
+            subscription_data: {
+                metadata: {
+                    organizationId: organization.id,
+                    planId: plan.id,
+                },
+            },
+        });
+        return { url: session.url };
+    } catch (error) {
+        console.error("Error creating checkout session:", error);
+        throw new Error("Impossible de créer la session de paiement");
+    }
+}

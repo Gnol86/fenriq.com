@@ -238,6 +238,7 @@
             "team_plan_proration_notice": "Anteilige Kosten für hinzugefügte oder entfernte Mitglieder während des Abrechnungszeitraums werden auf der nächsten Rechnung angewendet.",
             "free_trial_badge": "{days} Tage kostenlose Testversion",
             "subscribe_to_plan": "Abonnieren",
+            "processing_subscription": "Wird bearbeitet...",
             "annual_savings": "Sparen Sie {percentage}%",
             "up_to_savings": "Sparen Sie bis zu {percentage}%",
             "current_licenses": "Aktuelle Lizenzen",
