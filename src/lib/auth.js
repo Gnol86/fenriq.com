@@ -10,6 +10,7 @@ import Stripe from "stripe";
 import { deleteFile } from "@/actions/file.action";
 import { SiteConfig } from "@/site-config";
 import translations from "../messages/better-auth.json";
+import { checkPermission } from "./access-control";
 import { defaultLocale } from "./i18n/config.js";
 import {
     ac,
@@ -189,6 +190,50 @@ export const auth = betterAuth({
             stripeClient,
             stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
             createCustomerOnSignUp: false,
+            subscription: {
+                enabled: true,
+                plans: async () => {
+                    const plans = await prisma.plan.findMany();
+                    return plans.map(plan => ({
+                        name: plan.name,
+                        priceId: plan.priceId,
+                        annualDiscountPriceId: plan.annualDiscountPriceId,
+                        limits: JSON.parse(plan.limits),
+                        freeTrial: JSON.parse(plan.freeTrial),
+                    }));
+                },
+                authorizeReference: async ({ action }) => {
+                    // Vérifier si l'action nécessite des permissions de gestion
+                    if (
+                        action === "upgrade-subscription" ||
+                        action === "cancel-subscription" ||
+                        action === "restore-subscription"
+                    ) {
+                        const ok = await checkPermission({
+                            permissions: { billing: ["update"] },
+                        });
+                        return ok;
+                    }
+                    return true;
+                },
+                getCheckoutSessionParams: async (
+                    { _user, _session, _plan, _subscription },
+                    _request
+                ) => {
+                    return {
+                        params: {
+                            allow_promotion_codes: true,
+                            automatic_tax: {
+                                enabled: true,
+                            },
+                            tax_id_collection: {
+                                enabled: true,
+                            },
+                            billing_address_collection: "required",
+                        },
+                    };
+                },
+            },
         }),
         localization({
             defaultLocale: "en-US",

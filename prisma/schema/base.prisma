@@ -22,21 +22,22 @@ datasource db {
 // ============================================================
 
 model User {
-    id            String       @id
-    name          String
-    email         String
-    emailVerified Boolean      @default(false)
-    image         String?
-    createdAt     DateTime     @default(now())
-    updatedAt     DateTime     @default(now()) @updatedAt
-    role          String?
-    banned        Boolean?     @default(false)
-    banReason     String?
-    banExpires    DateTime?
-    sessions      Session[]
-    accounts      Account[]
-    members       Member[]
-    invitations   Invitation[]
+    id               String       @id
+    name             String
+    email            String
+    emailVerified    Boolean      @default(false)
+    image            String?
+    createdAt        DateTime     @default(now())
+    updatedAt        DateTime     @default(now()) @updatedAt
+    role             String?
+    banned           Boolean?     @default(false)
+    banReason        String?
+    banExpires       DateTime?
+    stripeCustomerId String?
+    sessions         Session[]
+    accounts         Account[]
+    members          Member[]
+    invitations      Invitation[]
 
     @@unique([email])
     @@map("user")
@@ -94,15 +95,14 @@ model Verification {
 // ============================================================
 
 model Organization {
-    id            String         @id
-    name          String
-    slug          String?
-    logo          String?
-    createdAt     DateTime
-    metadata      String?
-    members       Member[]
-    invitations   Invitation[]
-    subscriptions Subscription[]
+    id          String       @id
+    name        String
+    slug        String?
+    logo        String?
+    createdAt   DateTime
+    metadata    String?
+    members     Member[]
+    invitations Invitation[]
 
     @@unique([slug])
     @@map("organization")
@@ -139,34 +139,31 @@ model Invitation {
 // ============================================================
 
 model Subscription {
-    id                   String        @id @default(cuid())
+    id                   String    @id @default(cuid())
     plan                 String
-    referenceId          String        @unique
-    organization         Organization  @relation(fields: [referenceId], references: [id], onDelete: Cascade)
-    stripeCustomerId     String?       @unique
-    stripeSubscriptionId String?       @unique
+    referenceId          String    @unique
+    stripeCustomerId     String?   @unique
+    stripeSubscriptionId String?   @unique
     status               String?
     periodStart          DateTime?
     periodEnd            DateTime?
-    cancelAtPeriodEnd    Boolean?      @default(false)
-    seats                Int?          @default(1)
+    cancelAtPeriodEnd    Boolean?  @default(false)
+    seats                Int?      @default(1)
     trialStart           DateTime?
     trialEnd             DateTime?
-    createdAt            DateTime      @default(now())
-    updatedAt            DateTime      @updatedAt
 
     @@map("subscription")
 }
 
 model Plan {
-    id                    String   @id @default(cuid())
-    name                  String   @unique
+    id                    String  @id @default(cuid())
+    name                  String  @unique
     description           String?
-    priceId               String   @unique
-    annualDiscountPriceId String?  @unique
+    priceId               String  @unique
+    annualDiscountPriceId String? @unique
     limits                String?
     freeTrial             String?
-    showInPricingPage     Boolean  @default(true)
+    showInPricingPage     Boolean @default(true)
 
     @@map("plan")
 }

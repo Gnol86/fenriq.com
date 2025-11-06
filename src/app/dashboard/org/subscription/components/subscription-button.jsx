@@ -4,13 +4,13 @@ import { useState } from "react";
 import { createCheckoutSession } from "@/actions/subscription.action";
 import { Button } from "@/components/ui/button";
 
-export default function SubscriptionButton({ planId, billingInterval = "monthly" }) {
+export default function SubscriptionButton({ planId, annual = false }) {
     const [isPending, setIsPending] = useState(false);
     const t = useTranslations("organization.subscription");
 
     const handleSubscribe = async () => {
         setIsPending(true);
-        const data = await createCheckoutSession({ planId, billingInterval });
+        const data = await createCheckoutSession({ planId, annual });
 
         if (data?.url) {
             window.location.href = data.url;

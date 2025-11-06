@@ -185,7 +185,7 @@ export default function PlanList({ plans, memberCount, locale }) {
                                 {/* Bouton de souscription */}
                                 <SubscriptionButton
                                     planId={plan.id}
-                                    billingInterval={billingInterval}
+                                    annual={billingInterval === "annual"}
                                 />
                             </CardFooter>
                         </Card>
