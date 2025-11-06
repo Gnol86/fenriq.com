@@ -239,6 +239,7 @@
             "free_trial_badge": "{days} days free trial",
             "subscribe_to_plan": "Subscribe",
             "processing_subscription": "Processing...",
+            "manage_plan": "Manage Plan",
             "annual_savings": "Save {percentage}%",
             "up_to_savings": "Save up to {percentage}%",
             "current_licenses": "Current Licenses",

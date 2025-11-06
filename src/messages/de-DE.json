@@ -239,6 +239,7 @@
             "free_trial_badge": "{days} Tage kostenlose Testversion",
             "subscribe_to_plan": "Abonnieren",
             "processing_subscription": "Wird bearbeitet...",
+            "manage_plan": "Plan verwalten",
             "annual_savings": "Sparen Sie {percentage}%",
             "up_to_savings": "Sparen Sie bis zu {percentage}%",
             "current_licenses": "Aktuelle Lizenzen",

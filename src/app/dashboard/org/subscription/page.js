@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { requirePermission } from "@/lib/access-control";
 import prisma from "@/lib/prisma";
 import Plan from "./components/plan";
+import PortalButton from "./components/portal-button";
 
 export default async function OrganizationSubscriptionPage() {
     // Vérifie les permissions et récupère les données nécessaires
@@ -24,7 +25,12 @@ export default async function OrganizationSubscriptionPage() {
 
     // Show subscription management if subscription exists and is active
     if (subscription && ["active", "trialing", "past_due"].includes(subscription.status)) {
-        return <Suspense fallback={<StripeLoader />}>Manage Subscription</Suspense>;
+        return (
+            <Suspense fallback={<StripeLoader />}>
+                Manage Subscription
+                <PortalButton />
+            </Suspense>
+        );
     }
 
     // Show plan selection if no subscription or subscription is canceled

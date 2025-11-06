@@ -239,6 +239,7 @@
             "free_trial_badge": "Essai gratuit de {days} jours",
             "subscribe_to_plan": "S'abonner",
             "processing_subscription": "Traitement en cours...",
+            "manage_plan": "Gérer le plan",
             "annual_savings": "Économisez {percentage}%",
             "up_to_savings": "Économisez jusqu'à {percentage}%",
             "current_licenses": "Licences actuelles",

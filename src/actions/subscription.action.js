@@ -160,3 +160,23 @@ export async function createCheckoutSession({ planId, annual = false }) {
 
     return data;
 }
+
+/**
+ * Crée une session du portail de facturation Stripe pour gérer l'abonnement
+ */
+export async function createBillingPortalSession() {
+    const { organization } = await requirePermission({
+        permissions: { billing: ["update"] },
+    });
+
+    const data = await auth.api.createBillingPortal({
+        body: {
+            referenceId: organization.id,
+            returnUrl: `${getServerUrl()}/dashboard/org/subscription`,
+        },
+        // This endpoint requires session cookies.
+        headers: await headers(),
+    });
+
+    return data;
+}
