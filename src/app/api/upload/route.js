@@ -2,10 +2,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { deleteFileOrga, deleteFileUser } from "@root/src/actions/file.action";
 import { updateOrganizationAction } from "@root/src/actions/organization.action";
 import { updateUserAction } from "@root/src/actions/user.action";
-import {
-    requireActiveOrganization,
-    requireAuth,
-} from "@root/src/lib/access-control";
+import { requireActiveOrganization, requireAuth } from "@root/src/lib/access-control";
 import { notFound } from "next/navigation";
 import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
@@ -21,8 +18,7 @@ export async function POST(request) {
         const formData = await request.formData();
         const file = formData.get("file");
         const type = formData.get("type") ?? "";
-        const field =
-            type === "user" ? "image" : type === "orga" ? "logo" : null;
+        const field = type === "user" ? "image" : type === "orga" ? "logo" : null;
 
         if (type === "user") {
             await requireAuth();
@@ -34,10 +30,7 @@ export async function POST(request) {
 
         // Valider le fichier
         if (!file) {
-            return NextResponse.json(
-                { error: t("error_no_file") },
-                { status: 400 }
-            );
+            return NextResponse.json({ error: t("error_no_file") }, { status: 400 });
         }
 
         // Valider la taille (max 4.5MB pour Vercel)
@@ -50,19 +43,10 @@ export async function POST(request) {
         }
 
         // Valider le type
-        const allowedTypes = [
-            "image/jpeg",
-            "image/jpg",
-            "image/png",
-            "image/gif",
-            "image/webp",
-        ];
+        const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
 
         if (!allowedTypes.includes(file.type)) {
-            return NextResponse.json(
-                { error: t("error_unsupported_type") },
-                { status: 400 }
-            );
+            return NextResponse.json({ error: t("error_unsupported_type") }, { status: 400 });
         }
 
         // Générer un nom de fichier unique
@@ -102,9 +86,6 @@ export async function POST(request) {
 
         const t = await getTranslations("file");
 
-        return NextResponse.json(
-            { error: t("error_upload_failed") },
-            { status: 500 }
-        );
+        return NextResponse.json({ error: t("error_upload_failed") }, { status: 500 });
     }
 }

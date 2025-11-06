@@ -8,13 +8,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function PlanList({ plans, memberCount, locale }) {
     const t = useTranslations("organization.subscription");
@@ -25,9 +19,7 @@ export default function PlanList({ plans, memberCount, locale }) {
 
     // Filtrer les plans selon l'intervalle de facturation
     const filteredPlans =
-        billingInterval === "annual"
-            ? plans.filter(plan => plan.annualPrice !== null)
-            : plans;
+        billingInterval === "annual" ? plans.filter(plan => plan.annualPrice !== null) : plans;
 
     // Trier les plans par prix croissant
     const displayedPlans = [...filteredPlans].sort((a, b) => {
@@ -45,9 +37,7 @@ export default function PlanList({ plans, memberCount, locale }) {
     // Fonction pour calculer le pourcentage d'économie
     const calculateSavings = (monthlyPrice, annualPrice) => {
         const monthlyYearlyCost = monthlyPrice.amount * 12;
-        const savings =
-            ((monthlyYearlyCost - annualPrice.amount) / monthlyYearlyCost) *
-            100;
+        const savings = ((monthlyYearlyCost - annualPrice.amount) / monthlyYearlyCost) * 100;
         return Math.round(savings);
     };
 
@@ -65,22 +55,14 @@ export default function PlanList({ plans, memberCount, locale }) {
                 <div className="flex justify-center">
                     <ButtonGroup className="bg-muted rounded-xl p-2">
                         <Button
-                            variant={
-                                billingInterval === "monthly"
-                                    ? "default"
-                                    : "outline"
-                            }
+                            variant={billingInterval === "monthly" ? "default" : "outline"}
                             size="sm"
                             onClick={() => setBillingInterval("monthly")}
                         >
                             {t("billing_toggle_monthly")}
                         </Button>
                         <Button
-                            variant={
-                                billingInterval === "annual"
-                                    ? "default"
-                                    : "outline"
-                            }
+                            variant={billingInterval === "annual" ? "default" : "outline"}
                             size="sm"
                             onClick={() => setBillingInterval("annual")}
                         >
@@ -111,33 +93,21 @@ export default function PlanList({ plans, memberCount, locale }) {
                     const currency = currentPrice.currency;
 
                     // Pour le plan team, calculer le total
-                    const teamTotal = isTeamPlan
-                        ? priceAmount * memberCount
-                        : null;
+                    const teamTotal = isTeamPlan ? priceAmount * memberCount : null;
 
                     // Calculer les économies si on affiche le prix annuel
                     const savings =
-                        billingInterval === "annual" &&
-                        plan.annualPrice &&
-                        plan.monthlyPrice
-                            ? calculateSavings(
-                                  plan.monthlyPrice,
-                                  plan.annualPrice
-                              )
+                        billingInterval === "annual" && plan.annualPrice && plan.monthlyPrice
+                            ? calculateSavings(plan.monthlyPrice, plan.annualPrice)
                             : null;
 
-                    console.log(
-                        "marketing_features",
-                        currentPrice.product.marketing_features
-                    );
+                    console.log("marketing_features", currentPrice.product.marketing_features);
 
                     return (
                         <Card key={plan.id} className="flex w-80 flex-col">
                             <CardHeader>
                                 <CardTitle className="text-center">
-                                    <Badge className="text-sm">
-                                        {currentPrice.product.name}
-                                    </Badge>
+                                    <Badge className="text-sm">{currentPrice.product.name}</Badge>
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="flex-1">
@@ -145,10 +115,7 @@ export default function PlanList({ plans, memberCount, locale }) {
                                 <div className="flex flex-col items-center">
                                     {/* Badge d'économie */}
                                     {savings && (
-                                        <Badge
-                                            variant="destructive"
-                                            className="mb-1"
-                                        >
+                                        <Badge variant="destructive" className="mb-1">
                                             {t("annual_savings", {
                                                 percentage: savings,
                                             })}
@@ -174,35 +141,24 @@ export default function PlanList({ plans, memberCount, locale }) {
                                                     {t("team_plan_total")}
                                                 </span>
                                                 <span className="text-4xl font-bold">
-                                                    {formatPrice(
-                                                        teamTotal,
-                                                        currency,
-                                                        locale
-                                                    )}
+                                                    {formatPrice(teamTotal, currency, locale)}
                                                 </span>
                                                 <span className="text-muted-foreground text-sm">
-                                                    {billingInterval ===
-                                                    "annual"
+                                                    {billingInterval === "annual"
                                                         ? t("price_per_year")
                                                         : t("price_per_month")}
                                                 </span>
                                             </div>
                                             <div className="mt-2 flex flex-col items-center">
                                                 <span className="text-muted-foreground bg-muted rounded-lg border p-2 text-xs">
-                                                    {t(
-                                                        "team_plan_proration_notice"
-                                                    )}
+                                                    {t("team_plan_proration_notice")}
                                                 </span>
                                             </div>
                                         </div>
                                     ) : (
                                         <div className="flex flex-col items-center">
                                             <span className="text-4xl font-bold">
-                                                {formatPrice(
-                                                    priceAmount,
-                                                    currency,
-                                                    locale
-                                                )}
+                                                {formatPrice(priceAmount, currency, locale)}
                                             </span>
                                             <span className="text-muted-foreground text-sm">
                                                 {billingInterval === "annual"
@@ -214,13 +170,10 @@ export default function PlanList({ plans, memberCount, locale }) {
                                 </div>
 
                                 {/* Features */}
-                                {(plan.description ||
-                                    currentPrice.product.description) && (
+                                {(plan.description || currentPrice.product.description) && (
                                     <div className="text-left prose prose-sm dark:prose-invert max-w-none mt-4">
                                         {plan.description ? (
-                                            <ReactMarkdown
-                                                remarkPlugins={[remarkGfm]}
-                                            >
+                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                                 {plan.description}
                                             </ReactMarkdown>
                                         ) : (

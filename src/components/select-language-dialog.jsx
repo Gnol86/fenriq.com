@@ -4,12 +4,7 @@ import { Globe } from "lucide-react";
 import { useState } from "react";
 import ReactCountryFlag from "react-country-flag";
 import { setLocaleAction } from "@/actions/locale.action";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useServerAction } from "../hooks/use-server-action";
 import { flagId, localeNames } from "../lib/i18n/config";
 import { Button } from "./ui/button";
@@ -39,21 +34,15 @@ export default function SelectLanguageDialog({ hasLocale = true }) {
                             onClick={async () => {
                                 if (isPending) return;
 
-                                await execute(
-                                    () => setLocaleAction({ locale }),
-                                    {
-                                        successMessage: `${localeNames[locale]}`,
-                                        refreshOnSuccess: true,
-                                    }
-                                );
+                                await execute(() => setLocaleAction({ locale }), {
+                                    successMessage: `${localeNames[locale]}`,
+                                    refreshOnSuccess: true,
+                                });
 
                                 setOpen(false);
                             }}
                         >
-                            <ReactCountryFlag
-                                svg
-                                countryCode={flagId[locale] ?? locale}
-                            />
+                            <ReactCountryFlag svg countryCode={flagId[locale] ?? locale} />
                             <span>{name}</span>
                         </Button>
                     ))}

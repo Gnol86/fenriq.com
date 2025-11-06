@@ -60,13 +60,9 @@ export default function FormSignin() {
                         if (ctx.error.status === 403) {
                             // Rediriger vers la page de vérification avec l'email
                             toast.error(t("error_email_not_verified"));
-                            router.push(
-                                `/verify-email?email=${encodeURIComponent(values.email)}`
-                            );
+                            router.push(`/verify-email?email=${encodeURIComponent(values.email)}`);
                         } else {
-                            toast.error(
-                                ctx.error.message || t("error_signin_failed")
-                            );
+                            toast.error(ctx.error.message || t("error_signin_failed"));
                         }
                     },
                 }
@@ -106,10 +102,7 @@ export default function FormSignin() {
                         <FormItem>
                             <FormLabel>{t("password_label")}</FormLabel>
                             <FormControl>
-                                <PasswordInput
-                                    disabled={form.formState.isSubmitting}
-                                    {...field}
-                                />
+                                <PasswordInput disabled={form.formState.isSubmitting} {...field} />
                             </FormControl>
 
                             <FormMessage />
@@ -132,9 +125,7 @@ export default function FormSignin() {
                     {t("no_account_text")}
                     <Link
                         href={
-                            form.watch("email")
-                                ? `/signup?email=${form.watch("email")}`
-                                : "/signup"
+                            form.watch("email") ? `/signup?email=${form.watch("email")}` : "/signup"
                         }
                         className="text-primary hover:underline"
                     >

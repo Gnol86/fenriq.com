@@ -31,26 +31,17 @@ export default async function RootLayout({ children }) {
     const locale = cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
     const hasLocale = !!cookieStore.get("NEXT_LOCALE");
     const sidebarStateRaw = cookieStore.get("sidebar_state")?.value;
-    const sidebarState =
-        sidebarStateRaw == null ? true : sidebarStateRaw === "true";
+    const sidebarState = sidebarStateRaw == null ? true : sidebarStateRaw === "true";
     const messages = await getMessages();
 
     return (
         <html lang={locale} suppressHydrationWarning>
-            <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-            >
-                <Provider
-                    locale={locale}
-                    messages={messages}
-                    sidebarState={sidebarState}
-                >
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+                <Provider locale={locale} messages={messages} sidebarState={sidebarState}>
                     {children}
                 </Provider>
                 <SelectLanguageDialog hasLocale={hasLocale} />
-                {process.env.NODE_ENV === "development" && (
-                    <WindowSize currentLocale={locale} />
-                )}
+                {process.env.NODE_ENV === "development" && <WindowSize currentLocale={locale} />}
             </body>
         </html>
     );

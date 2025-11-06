@@ -43,9 +43,7 @@ export function useServerAction() {
 
                     if (err?.message) {
                         // Check if it's a Better-Auth APIError format
-                        const apiErrorMatch = err.message.match(
-                            /\[Error \[APIError\]: (.*?)\]/
-                        );
+                        const apiErrorMatch = err.message.match(/\[Error \[APIError\]: (.*?)\]/);
                         if (apiErrorMatch) {
                             errorMessage = apiErrorMatch[1];
                         } else {

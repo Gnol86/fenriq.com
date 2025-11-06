@@ -58,11 +58,7 @@ export async function inviteMemberAction({ email, role, organizationId }) {
     });
 }
 
-export async function updateMemberRoleAction({
-    memberId,
-    role,
-    organizationId,
-}) {
+export async function updateMemberRoleAction({ memberId, role, organizationId }) {
     return await auth.api.updateMemberRole({
         body: {
             memberId,

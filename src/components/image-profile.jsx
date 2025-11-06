@@ -19,11 +19,7 @@ const INITIAL_SIZES = {
     "2xl": "text-2xl",
 };
 
-export default function ImageProfile({
-    entity,
-    size = "md",
-    defaultImage = undefined,
-}) {
+export default function ImageProfile({ entity, size = "md", defaultImage = undefined }) {
     const src = entity?.image || entity?.logo || defaultImage;
     return (
         <Avatar className={`${AVATAR_SIZES[size]} rounded-lg`}>

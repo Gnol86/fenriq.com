@@ -1,12 +1,6 @@
 import { MailQuestionMark } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import FormResendVerification from "./form";
 
 export default async function Page() {

@@ -1,12 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { getAllFeedbacksAction } from "@/actions/feedback.action";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Table,
     TableBody,
@@ -33,10 +27,7 @@ export default async function AdminFeedbacksPage() {
     // Calculer la moyenne
     const averageRating =
         feedbacks.length > 0
-            ? (
-                  feedbacks.reduce((sum, f) => sum + f.rating, 0) /
-                  feedbacks.length
-              ).toFixed(1)
+            ? (feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length).toFixed(1)
             : 0;
 
     return (
@@ -56,9 +47,7 @@ export default async function AdminFeedbacksPage() {
 
                 <CardContent className="flex w-full flex-col gap-4">
                     <Table>
-                        {!feedbacks.length && (
-                            <TableCaption>{t("no_feedbacks")}</TableCaption>
-                        )}
+                        {!feedbacks.length && <TableCaption>{t("no_feedbacks")}</TableCaption>}
                         <TableHeader>
                             <TableRow>
                                 <TableHead>{t("table_user")}</TableHead>
@@ -68,10 +57,7 @@ export default async function AdminFeedbacksPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            <FeedbackTable
-                                feedbacks={feedbacks}
-                                resolvedCount={resolvedCount}
-                            />
+                            <FeedbackTable feedbacks={feedbacks} resolvedCount={resolvedCount} />
                         </TableBody>
                     </Table>
                 </CardContent>

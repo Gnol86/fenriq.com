@@ -18,23 +18,17 @@ export default function FeedbackDetailsCollapse({ feedback }) {
     const t = useTranslations("admin.feedbacks");
 
     const handleMarkAsRead = async () => {
-        await execute(
-            () => markFeedbackAsReadAction({ feedbackId: feedback.id }),
-            {
-                successMessage: t("mark_read_success"),
-                errorMessage: t("mark_read_error"),
-            }
-        );
+        await execute(() => markFeedbackAsReadAction({ feedbackId: feedback.id }), {
+            successMessage: t("mark_read_success"),
+            errorMessage: t("mark_read_error"),
+        });
     };
 
     const handleMarkAsResolved = async () => {
-        await execute(
-            () => markFeedbackAsResolvedAction({ feedbackId: feedback.id }),
-            {
-                successMessage: t("mark_resolved_success"),
-                errorMessage: t("mark_resolved_error"),
-            }
-        );
+        await execute(() => markFeedbackAsResolvedAction({ feedbackId: feedback.id }), {
+            successMessage: t("mark_resolved_success"),
+            errorMessage: t("mark_resolved_error"),
+        });
     };
 
     const handleDelete = async () => {
@@ -45,13 +39,10 @@ export default function FeedbackDetailsCollapse({ feedback }) {
                 variant: "destructive",
             },
             async () => {
-                await execute(
-                    () => deleteFeedbackAction({ feedbackId: feedback.id }),
-                    {
-                        successMessage: t("delete_success"),
-                        errorMessage: t("delete_error"),
-                    }
-                );
+                await execute(() => deleteFeedbackAction({ feedbackId: feedback.id }), {
+                    successMessage: t("delete_success"),
+                    errorMessage: t("delete_error"),
+                });
             }
         );
     };
@@ -71,9 +62,7 @@ export default function FeedbackDetailsCollapse({ feedback }) {
                         </div>
                     </ScrollArea>
                 ) : (
-                    <div className="text-muted-foreground text-sm italic">
-                        {t("no_comment")}
-                    </div>
+                    <div className="text-muted-foreground text-sm italic">{t("no_comment")}</div>
                 )}
             </div>
 
@@ -97,21 +86,13 @@ export default function FeedbackDetailsCollapse({ feedback }) {
             {/* Actions */}
             <div className="flex flex-wrap gap-2">
                 {!feedback.isRead && (
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleMarkAsRead}
-                    >
+                    <Button variant="outline" size="sm" onClick={handleMarkAsRead}>
                         <Eye className="mr-2 size-4" />
                         {t("action_mark_read")}
                     </Button>
                 )}
                 {!feedback.isResolved && (
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleMarkAsResolved}
-                    >
+                    <Button variant="outline" size="sm" onClick={handleMarkAsResolved}>
                         <CheckCircle className="mr-2 size-4" />
                         {t("action_mark_resolved")}
                     </Button>

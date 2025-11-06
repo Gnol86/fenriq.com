@@ -4,26 +4,11 @@ import { Plus, ReceiptEuro } from "lucide-react";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getPlansWithStripeData } from "@/actions/subscription.action";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
-    Empty,
-    EmptyContent,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from "@/components/ui/empty";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import PlanList from "./plan-list";
 
-export default async function Plan({
-    organization: _organization,
-    lengthTotalMembres,
-}) {
+export default async function Plan({ organization: _organization, lengthTotalMembres }) {
     const t = await getTranslations("organization.subscription");
 
     // Récupérer les plans avec les données Stripe
@@ -39,11 +24,7 @@ export default async function Plan({
             </CardHeader>
             <CardContent>
                 {plans.length > 0 ? (
-                    <PlanList
-                        plans={plans}
-                        memberCount={lengthTotalMembres}
-                        locale={locale}
-                    />
+                    <PlanList plans={plans} memberCount={lengthTotalMembres} locale={locale} />
                 ) : (
                     <Empty>
                         <EmptyHeader>

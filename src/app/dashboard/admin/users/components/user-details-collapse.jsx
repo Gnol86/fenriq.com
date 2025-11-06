@@ -62,9 +62,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
         });
 
         // Recharger les sessions
-        setSessions(prev =>
-            prev.filter(session => session.token !== sessionToken)
-        );
+        setSessions(prev => prev.filter(session => session.token !== sessionToken));
     };
 
     const handleRevokeAllSessions = async () => {
@@ -76,12 +74,9 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                 variant: "destructive",
             },
             async () => {
-                await execute(
-                    () => revokeUserSessionsAction({ userId: user.id }),
-                    {
-                        successMessage: tUsers("sessions_revoke_all_success"),
-                    }
-                );
+                await execute(() => revokeUserSessionsAction({ userId: user.id }), {
+                    successMessage: tUsers("sessions_revoke_all_success"),
+                });
                 setSessions([]);
             }
         );
@@ -127,9 +122,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                             <div className="text-muted-foreground font-medium">
                                 {tUsers("details_id")}
                             </div>
-                            <p className="font-mono text-xs break-all">
-                                {user.id}
-                            </p>
+                            <p className="font-mono text-xs break-all">{user.id}</p>
                         </div>
                         <div className="flex items-center gap-1">
                             <div className="text-muted-foreground font-medium">
@@ -139,15 +132,9 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                 <Mail className="h-3 w-3" />
                                 {user.email}
                                 {user.emailVerified ? (
-                                    <Check
-                                        size={16}
-                                        className="text-green-600"
-                                    />
+                                    <Check size={16} className="text-green-600" />
                                 ) : (
-                                    <Plus
-                                        size={18}
-                                        className="text-destructive rotate-45"
-                                    />
+                                    <Plus size={18} className="text-destructive rotate-45" />
                                 )}
                             </div>
                         </div>
@@ -178,15 +165,13 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                     {user.banReason && (
                                         <div className="flex items-center gap-1">
                                             <UserLock className="h-3 w-3" />
-                                            {tUsers("details_ban_reason")}:{" "}
-                                            {user.banReason}
+                                            {tUsers("details_ban_reason")}: {user.banReason}
                                         </div>
                                     )}
                                     {user.banExpiresIn && (
                                         <div className="flex items-center gap-1">
                                             <Clock className="h-3 w-3" />
-                                            {tUsers("details_ban_expires")}:{" "}
-                                            {user.banExpiresIn}
+                                            {tUsers("details_ban_expires")}: {user.banExpiresIn}
                                         </div>
                                     )}
                                 </div>
@@ -233,13 +218,8 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                         >
                                             <div className="min-w-0 flex-1">
                                                 <div className="mb-1 flex items-center gap-2">
-                                                    <Badge
-                                                        variant="outline"
-                                                        className="text-xs"
-                                                    >
-                                                        {getUserAgent(
-                                                            session.userAgent
-                                                        )}
+                                                    <Badge variant="outline" className="text-xs">
+                                                        {getUserAgent(session.userAgent)}
                                                     </Badge>
                                                     {session.ipAddress && (
                                                         <span className="text-muted-foreground flex items-center gap-1 text-xs">
@@ -250,33 +230,21 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                                 </div>
                                                 <div className="text-muted-foreground text-xs">
                                                     {tUsers("sessions_created")}{" "}
-                                                    {formatSessionDate(
-                                                        session.createdAt
-                                                    )}
+                                                    {formatSessionDate(session.createdAt)}
                                                 </div>
                                                 {session.expiresAt && (
                                                     <div className="text-muted-foreground text-xs">
-                                                        {tUsers(
-                                                            "sessions_expires"
-                                                        )}{" "}
-                                                        {formatSessionDate(
-                                                            session.expiresAt
-                                                        )}
+                                                        {tUsers("sessions_expires")}{" "}
+                                                        {formatSessionDate(session.expiresAt)}
                                                     </div>
                                                 )}
                                             </div>
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                onClick={() =>
-                                                    handleRevokeSession(
-                                                        session.token
-                                                    )
-                                                }
+                                                onClick={() => handleRevokeSession(session.token)}
                                                 className="ml-2"
-                                                aria-label={tUsers(
-                                                    "sessions_revoke_all"
-                                                )}
+                                                aria-label={tUsers("sessions_revoke_all")}
                                             >
                                                 <Trash2 className="h-3 w-3" />
                                             </Button>

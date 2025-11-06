@@ -19,8 +19,8 @@ export function OrganizationInvitationTemplate({
                     <strong> {organizationName}</strong> sur {SiteConfig.title}.
                 </p>
                 <p style={{ marginBottom: "12px" }}>
-                    Cliquez sur le bouton ci-dessous pour accepter
-                    l&apos;invitation et accéder à l&apos;espace partagé.
+                    Cliquez sur le bouton ci-dessous pour accepter l&apos;invitation et accéder à
+                    l&apos;espace partagé.
                 </p>
                 <p style={{ marginBottom: "16px" }}>
                     <a
@@ -42,8 +42,8 @@ export function OrganizationInvitationTemplate({
                     Ce lien expirera le {expiresAt}.
                 </p>
                 <p style={{ marginBottom: "12px", color: "#6B7280" }}>
-                    Si le bouton ne fonctionne pas, copiez et collez le lien
-                    suivant dans votre navigateur :
+                    Si le bouton ne fonctionne pas, copiez et collez le lien suivant dans votre
+                    navigateur :
                 </p>
                 <p style={{ marginBottom: "12px" }}>
                     <a href={invitationUrl}>{invitationUrl}</a>

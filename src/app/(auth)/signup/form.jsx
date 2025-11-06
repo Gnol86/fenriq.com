@@ -38,18 +38,10 @@ export default function FormSignup() {
             password: z
                 .string()
                 .min(8, tValidation("password.min_length"))
-                .regex(
-                    /(?=.*[a-z])/,
-                    tValidation("password.lowercase_required")
-                )
-                .regex(
-                    /(?=.*[A-Z])/,
-                    tValidation("password.uppercase_required")
-                )
+                .regex(/(?=.*[a-z])/, tValidation("password.lowercase_required"))
+                .regex(/(?=.*[A-Z])/, tValidation("password.uppercase_required"))
                 .regex(/(?=.*\d)/, tValidation("password.digit_required")),
-            password_confirm: z
-                .string()
-                .min(1, tValidation("password.confirm_required")),
+            password_confirm: z.string().min(1, tValidation("password.confirm_required")),
         })
         .refine(data => data.password === data.password_confirm, {
             message: tValidation("password.mismatch"),
@@ -157,10 +149,7 @@ export default function FormSignup() {
                         <FormItem>
                             <FormLabel>{t("password_confirm_label")}</FormLabel>
                             <FormControl>
-                                <PasswordInput
-                                    disabled={form.formState.isSubmitting}
-                                    {...field}
-                                />
+                                <PasswordInput disabled={form.formState.isSubmitting} {...field} />
                             </FormControl>
 
                             <FormMessage />
@@ -183,9 +172,7 @@ export default function FormSignup() {
                     {t("already_account_text")}
                     <Link
                         href={
-                            form.watch("email")
-                                ? `/signin?email=${form.watch("email")}`
-                                : "/signin"
+                            form.watch("email") ? `/signin?email=${form.watch("email")}` : "/signin"
                         }
                         className="text-primary hover:underline"
                     >

@@ -39,8 +39,7 @@ export default function InvitationItem({
 
     const invitationRole = invitation.role ?? "member";
     const roleLabel = tRoles(invitationRole);
-    const showActions =
-        invitation.status === "pending" && (canCreate || canCancel);
+    const showActions = invitation.status === "pending" && (canCreate || canCancel);
 
     return (
         <Item>
@@ -51,17 +50,12 @@ export default function InvitationItem({
                 <ItemTitle>
                     {invitation.email}
                     {invitationRole !== "member" && <Badge>{roleLabel}</Badge>}
-                    <StatusBadge
-                        status={normalizedStatusKey}
-                        variant="invitation"
-                    >
+                    <StatusBadge status={normalizedStatusKey} variant="invitation">
                         {statusLabel}
                     </StatusBadge>
                 </ItemTitle>
                 <ItemDescription>
-                    {invitation.expiresAt
-                        ? formatDate(invitation.expiresAt, locale)
-                        : "-"}
+                    {invitation.expiresAt ? formatDate(invitation.expiresAt, locale) : "-"}
                 </ItemDescription>
             </ItemContent>
             {showActions && (

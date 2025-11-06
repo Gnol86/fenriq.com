@@ -9,8 +9,7 @@ import { cn } from "@/lib/utils";
 
 const PasswordInput = React.forwardRef(({ className, ...props }, ref) => {
     const [showPassword, setShowPassword] = React.useState(false);
-    const disabled =
-        props.value === "" || props.value === undefined || props.disabled;
+    const disabled = props.value === "" || props.value === undefined || props.disabled;
 
     return (
         <div className="relative">
@@ -33,9 +32,7 @@ const PasswordInput = React.forwardRef(({ className, ...props }, ref) => {
                 ) : (
                     <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
                 )}
-                <span className="sr-only">
-                    {showPassword ? "Hide password" : "Show password"}
-                </span>
+                <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
             </Button>
 
             {/* hides browsers password toggles */}

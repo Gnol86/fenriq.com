@@ -3,10 +3,7 @@
 import { Ban, Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
-import {
-    cancelInvitationAction,
-    inviteMemberAction,
-} from "@/actions/organization.action";
+import { cancelInvitationAction, inviteMemberAction } from "@/actions/organization.action";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { useConfirm } from "@/hooks/use-confirm";

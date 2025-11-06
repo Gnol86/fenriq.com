@@ -18,8 +18,7 @@ export default getRequestConfig(async () => {
     // Load project messages (if they exist)
     let projectMessages = {};
     try {
-        projectMessages = (await import(`@/messages/${locale}.project.json`))
-            .default;
+        projectMessages = (await import(`@/messages/${locale}.project.json`)).default;
     } catch (_e) {
         console.warn(`No project messages found for locale "${locale}"`);
     }

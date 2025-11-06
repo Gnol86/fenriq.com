@@ -64,9 +64,7 @@ export const auth = betterAuth({
                     const userCount = await prisma.user.count();
 
                     if (userCount === 1) {
-                        console.warn(
-                            "First user signed up, assigning admin role."
-                        );
+                        console.warn("First user signed up, assigning admin role.");
                         await prisma.user.update({
                             where: { id: user.id },
                             data: { role: "admin" },
@@ -78,9 +76,7 @@ export const auth = betterAuth({
         session: {
             create: {
                 before: async session => {
-                    const organization = await getActiveOrganization(
-                        session.userId
-                    );
+                    const organization = await getActiveOrganization(session.userId);
                     return {
                         data: {
                             ...session,
@@ -175,9 +171,7 @@ export const auth = betterAuth({
     emailVerification: {
         sendVerificationEmail: async ({ user, url }) => {
             try {
-                const { sendVerificationEmail } = await import(
-                    "@/actions/email.action"
-                );
+                const { sendVerificationEmail } = await import("@/actions/email.action");
                 await sendVerificationEmail({
                     email: user.email,
                     name: user.name,
@@ -208,12 +202,10 @@ export const auth = betterAuth({
         organization({
             allowUserToCreateOrganization:
                 SiteConfig.options.organization.allowUserToCreateOrganization,
-            organizationLimit:
-                SiteConfig.options.organization.organizationLimit,
+            organizationLimit: SiteConfig.options.organization.organizationLimit,
             membershipLimit: SiteConfig.options.organization.membershipLimit,
             invitationLimit: SiteConfig.options.organization.invitationLimit,
-            invitationExpiresIn:
-                SiteConfig.options.organization.invitationExpiresIn,
+            invitationExpiresIn: SiteConfig.options.organization.invitationExpiresIn,
 
             creatorRole: "owner",
             ac: ac,
@@ -230,12 +222,7 @@ export const auth = betterAuth({
                 },
             },
 
-            sendInvitationEmail: async ({
-                email,
-                organization,
-                inviter,
-                invitation,
-            }) => {
+            sendInvitationEmail: async ({ email, organization, inviter, invitation }) => {
                 try {
                     const { sendOrganizationInvitationEmail } = await import(
                         "@/actions/email.action"
@@ -244,16 +231,12 @@ export const auth = betterAuth({
                     await sendOrganizationInvitationEmail({
                         email,
                         organizationName: organization.name,
-                        inviterName:
-                            inviter?.user?.name || inviter?.user?.email || "--",
+                        inviterName: inviter?.user?.name || inviter?.user?.email || "--",
                         invitationUrl,
                         expiresAt: invitation.expiresAt,
                     });
                 } catch (error) {
-                    console.error(
-                        "Error sending organization invitation email:",
-                        error
-                    );
+                    console.error("Error sending organization invitation email:", error);
                 }
             },
         }),

@@ -36,9 +36,7 @@ export default function OrganizationSelectorButton({
         return (
             <div className="flex items-center gap-2">
                 <Check className="text-primary h-4 w-4" />
-                <span className="text-primary text-sm font-medium">
-                    {t("active_label")}
-                </span>
+                <span className="text-primary text-sm font-medium">{t("active_label")}</span>
             </div>
         );
     }

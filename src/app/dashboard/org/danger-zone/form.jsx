@@ -30,10 +30,7 @@ import FormButton from "@/components/ui/form-button";
 import { Input } from "@/components/ui/input";
 import { useServerAction } from "@/hooks/use-server-action";
 
-export default function DangerZoneForm({
-    organization,
-    hasActiveSubscription,
-}) {
+export default function DangerZoneForm({ organization, hasActiveSubscription }) {
     const t = useTranslations("organization.danger_zone");
     const tValidation = useTranslations("validation.confirmation");
     const { execute, isPending } = useServerAction();
@@ -75,15 +72,10 @@ export default function DangerZoneForm({
 
     return (
         <Form {...form}>
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="flex flex-col gap-6"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
                 {hasActiveSubscription ? (
                     <div className="rounded-md border border-yellow-400/40 bg-yellow-400/10 p-4 text-sm text-yellow-600 dark:text-yellow-400">
-                        <p className="font-medium">
-                            {t("subscription_warning_title")}
-                        </p>
+                        <p className="font-medium">{t("subscription_warning_title")}</p>
                         <p className="text-yellow-600/70 dark:text-yellow-400/70">
                             {t("subscription_warning_description")}
                         </p>
@@ -93,9 +85,7 @@ export default function DangerZoneForm({
                         <p className="font-medium">
                             {t("warning_title", { name: organization.name })}
                         </p>
-                        <p className="text-destructive/70">
-                            {t("warning_subtitle")}
-                        </p>
+                        <p className="text-destructive/70">{t("warning_subtitle")}</p>
                     </div>
                 )}
 
@@ -115,9 +105,7 @@ export default function DangerZoneForm({
                                     {...field}
                                     autoFocus
                                     placeholder={organization.name}
-                                    disabled={
-                                        isPending || hasActiveSubscription
-                                    }
+                                    disabled={isPending || hasActiveSubscription}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -131,10 +119,7 @@ export default function DangerZoneForm({
                                 type="button"
                                 variant="destructive"
                                 loading={isPending}
-                                disabled={
-                                    !form.formState.isValid ||
-                                    hasActiveSubscription
-                                }
+                                disabled={!form.formState.isValid || hasActiveSubscription}
                             >
                                 <TriangleAlert /> {t("delete_button")}
                                 <TriangleAlert />
@@ -142,9 +127,7 @@ export default function DangerZoneForm({
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                    {t("alert_title")}
-                                </AlertDialogTitle>
+                                <AlertDialogTitle>{t("alert_title")}</AlertDialogTitle>
                                 <AlertDialogDescription>
                                     {t("alert_description", {
                                         name: organization.name,
@@ -152,9 +135,7 @@ export default function DangerZoneForm({
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                                <AlertDialogCancel>
-                                    {t("alert_cancel")}
-                                </AlertDialogCancel>
+                                <AlertDialogCancel>{t("alert_cancel")}</AlertDialogCancel>
                                 <AlertDialogAction
                                     onClick={handleDeleteConfirmation}
                                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"

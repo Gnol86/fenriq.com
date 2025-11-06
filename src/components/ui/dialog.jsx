@@ -34,12 +34,7 @@ function DialogOverlay({ className, ...props }) {
     );
 }
 
-function DialogContent({
-    className,
-    children,
-    showCloseButton = true,
-    ...props
-}) {
+function DialogContent({ className, children, showCloseButton = true, ...props }) {
     return (
         <DialogPortal data-slot="dialog-portal">
             <DialogOverlay />
@@ -70,10 +65,7 @@ function DialogHeader({ className, ...props }) {
     return (
         <div
             data-slot="dialog-header"
-            className={cn(
-                "flex flex-col gap-2 text-center sm:text-left",
-                className
-            )}
+            className={cn("flex flex-col gap-2 text-center sm:text-left", className)}
             {...props}
         />
     );
@@ -83,10 +75,7 @@ function DialogFooter({ className, ...props }) {
     return (
         <div
             data-slot="dialog-footer"
-            className={cn(
-                "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
-                className
-            )}
+            className={cn("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
             {...props}
         />
     );

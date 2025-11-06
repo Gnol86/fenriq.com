@@ -50,10 +50,7 @@ export default function ManageOrganizationForm({ organization }) {
 
     return organization ? (
         <Form {...form}>
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="flex flex-col gap-6"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
                 <FormField
                     control={form.control}
                     name="name"

@@ -39,21 +39,15 @@ export default function LocalizationSubdropdown({ currentLocale }) {
                                     event.preventDefault();
                                     if (isPending) return;
 
-                                    await execute(
-                                        () => setLocaleAction({ locale }),
-                                        {
-                                            successMessage: `${localeNames[locale]}`,
-                                            refreshOnSuccess: true,
-                                        }
-                                    );
+                                    await execute(() => setLocaleAction({ locale }), {
+                                        successMessage: `${localeNames[locale]}`,
+                                        refreshOnSuccess: true,
+                                    });
                                 }}
                                 disabled={locale === currentLocale || isPending}
                                 checked={locale === currentLocale}
                             >
-                                <ReactCountryFlag
-                                    svg
-                                    countryCode={flagId[locale] ?? locale}
-                                />
+                                <ReactCountryFlag svg countryCode={flagId[locale] ?? locale} />
                                 {localeNames[locale] ?? locale}
                             </DropdownMenuCheckboxItem>
                         );

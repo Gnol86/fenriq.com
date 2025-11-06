@@ -2,13 +2,7 @@ import { Mailbox } from "lucide-react";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import AcceptInvitationClient from "./accept-invitation-client";
@@ -36,9 +30,7 @@ export default async function InvitationPage({ params }) {
     }
 
     if (!session) {
-        redirect(
-            `/signin?callback=${encodeURIComponent(`/invitations/${invitationId}`)}`
-        );
+        redirect(`/signin?callback=${encodeURIComponent(`/invitations/${invitationId}`)}`);
     }
 
     if (session && session.user.email !== invitation.email) {

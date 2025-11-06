@@ -10,6 +10,7 @@ import {
     SidebarHeader,
     SidebarMenu,
     SidebarMenuItem,
+    SidebarRail,
 } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
 import { ActiveSidebarLink } from "./active-sidebar-link";
@@ -42,7 +43,7 @@ export async function AppSidebar({ children }) {
     const isOnApp = pathname?.startsWith("/app");
 
     return (
-        <Sidebar collapsible="icon" variant="floating">
+        <Sidebar collapsible="icon">
             <SidebarHeader>
                 <OrgButton
                     userOrganizations={userOrganizations}
@@ -59,10 +60,7 @@ export async function AppSidebar({ children }) {
                     </SidebarMenuItem>
                     {!isOnApp && (
                         <SidebarMenuItem>
-                            <ActiveSidebarLink
-                                href="/app"
-                                className="text-primary"
-                            >
+                            <ActiveSidebarLink href="/app" className="text-primary">
                                 <AppWindow />
                                 <span>{t("return_to_app")}</span>
                             </ActiveSidebarLink>
@@ -75,6 +73,7 @@ export async function AppSidebar({ children }) {
                     />
                 </SidebarMenu>
             </SidebarFooter>
+            <SidebarRail />
         </Sidebar>
     );
 }

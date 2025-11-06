@@ -44,10 +44,7 @@ export default function UserSettingsForm({ user }) {
 
     return user ? (
         <Form {...form}>
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="flex flex-col gap-6"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
                 <FormField
                     control={form.control}
                     name="name"

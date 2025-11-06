@@ -119,8 +119,7 @@ const businessWords = [
 ];
 
 function generateCompanyName() {
-    const word1 =
-        businessWords[Math.floor(Math.random() * businessWords.length)];
+    const word1 = businessWords[Math.floor(Math.random() * businessWords.length)];
     const word2 = companyTypes[Math.floor(Math.random() * companyTypes.length)];
     return `${word1} ${word2}`;
 }
@@ -162,19 +161,14 @@ async function seedOrganizations() {
             id: crypto.randomBytes(12).toString("base64url"),
             name: name,
             slug: slug,
-            createdAt: new Date(
-                Date.now() -
-                    Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000)
-            ),
+            createdAt: new Date(Date.now() - Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000)),
         };
 
         organizations.push(organization);
     }
 
     try {
-        console.log(
-            "📝 Insertion des organisations dans la base de données..."
-        );
+        console.log("📝 Insertion des organisations dans la base de données...");
 
         const result = await prisma.organization.createMany({
             data: organizations,

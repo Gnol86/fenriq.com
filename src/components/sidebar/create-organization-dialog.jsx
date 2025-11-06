@@ -97,10 +97,7 @@ export default function CreateOrganizationDialog() {
                     <DialogDescription>{t("description")}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="flex flex-col gap-6"
-                    >
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
                         <FormField
                             control={form.control}
                             name="name"
@@ -115,9 +112,7 @@ export default function CreateOrganizationDialog() {
                                             disabled={isPending}
                                         />
                                     </FormControl>
-                                    <FormDescription>
-                                        {t("name_description")}
-                                    </FormDescription>
+                                    <FormDescription>{t("name_description")}</FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}

@@ -27,19 +27,12 @@ export default function ToggleViewButton({ label }) {
         params.delete("page");
 
         startTransition(() => {
-            router.replace(
-                `${pathname}${params.toString() ? `?${params.toString()}` : ""}`
-            );
+            router.replace(`${pathname}${params.toString() ? `?${params.toString()}` : ""}`);
         });
     };
 
     return (
-        <Button
-            variant="outline"
-            className="sm:w-auto"
-            onClick={handleToggle}
-            disabled={isPending}
-        >
+        <Button variant="outline" className="sm:w-auto" onClick={handleToggle} disabled={isPending}>
             {label}
         </Button>
     );

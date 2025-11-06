@@ -44,9 +44,7 @@ export default async function AdminPlansPage() {
 
             <CardContent className="flex w-full flex-col gap-4">
                 <Table>
-                    {!plans.length && (
-                        <TableCaption>{t("no_plans")}</TableCaption>
-                    )}
+                    {!plans.length && <TableCaption>{t("no_plans")}</TableCaption>}
                     <TableHeader>
                         <TableRow>
                             <TableHead>{t("table_name")}</TableHead>
@@ -74,9 +72,7 @@ export default async function AdminPlansPage() {
                             let freeTrialDays = null;
                             try {
                                 if (plan.freeTrial) {
-                                    const freeTrialObj = JSON.parse(
-                                        plan.freeTrial
-                                    );
+                                    const freeTrialObj = JSON.parse(plan.freeTrial);
                                     freeTrialDays = freeTrialObj.days;
                                 }
                             } catch (e) {
@@ -87,10 +83,7 @@ export default async function AdminPlansPage() {
                             const limitsDisplay =
                                 Object.keys(limits).length > 0
                                     ? Object.entries(limits)
-                                          .map(
-                                              ([key, value]) =>
-                                                  `${key}: ${value}`
-                                          )
+                                          .map(([key, value]) => `${key}: ${value}`)
                                           .join(", ")
                                     : t("limit_not_set");
 
@@ -106,23 +99,16 @@ export default async function AdminPlansPage() {
 
                             return (
                                 <TableRow key={plan.id}>
-                                    <TableCell className="font-medium">
-                                        {plan.name}
-                                    </TableCell>
+                                    <TableCell className="font-medium">{plan.name}</TableCell>
                                     <TableCell className="font-mono text-xs">
                                         {plan.priceId}
                                     </TableCell>
                                     <TableCell className="font-mono text-xs">
-                                        {plan.annualDiscountPriceId ||
-                                            t("limit_not_set")}
+                                        {plan.annualDiscountPriceId || t("limit_not_set")}
                                     </TableCell>
-                                    <TableCell className="text-sm">
-                                        {limitsDisplay}
-                                    </TableCell>
+                                    <TableCell className="text-sm">{limitsDisplay}</TableCell>
                                     <TableCell>{freeTrialDisplay}</TableCell>
-                                    <TableCell>
-                                        {showInPricingDisplay}
-                                    </TableCell>
+                                    <TableCell>{showInPricingDisplay}</TableCell>
                                     <TableCell>
                                         <ButtonGroup>
                                             <EditPlanButton plan={plan} />

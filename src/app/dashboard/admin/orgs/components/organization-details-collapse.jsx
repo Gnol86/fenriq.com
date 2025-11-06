@@ -1,13 +1,6 @@
 "use client";
 
-import {
-    Building2,
-    Calendar,
-    FileText,
-    Globe,
-    HatGlasses,
-    Users,
-} from "lucide-react";
+import { Building2, Calendar, FileText, Globe, HatGlasses, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -23,8 +16,7 @@ function MemberRow({ member, currentUserId }) {
     const router = useRouter();
     const tMembers = useTranslations("admin.org_members");
     const tDetails = useTranslations("admin.org_details");
-    const fallbackName =
-        member.user?.name || member.user?.email || tDetails("fallback_user");
+    const fallbackName = member.user?.name || member.user?.email || tDetails("fallback_user");
 
     const handleImpersonateUser = async () => {
         try {
@@ -34,9 +26,7 @@ function MemberRow({ member, currentUserId }) {
             });
 
             if (result.data?.session) {
-                toast.success(
-                    tMembers("success_impersonate", { name: fallbackName })
-                );
+                toast.success(tMembers("success_impersonate", { name: fallbackName }));
                 router.push("/dashboard");
                 router.refresh();
             }
@@ -51,9 +41,7 @@ function MemberRow({ member, currentUserId }) {
             <div className="flex items-center gap-2">
                 <div className="flex flex-col">
                     <span className="text-sm font-medium">{fallbackName}</span>
-                    <span className="text-muted-foreground text-xs">
-                        {member.user?.email}
-                    </span>
+                    <span className="text-muted-foreground text-xs">{member.user?.email}</span>
                 </div>
             </div>
             <div className="flex items-center gap-2">
@@ -61,11 +49,7 @@ function MemberRow({ member, currentUserId }) {
                     {member.role}
                 </Badge>
                 {member.userId !== currentUserId ? (
-                    <Button
-                        variant="outline"
-                        onClick={handleImpersonateUser}
-                        size="sm"
-                    >
+                    <Button variant="outline" onClick={handleImpersonateUser} size="sm">
                         <HatGlasses className="mr-2 h-4 w-4" />
                         {tMembers("owners_impersonate")}
                     </Button>
@@ -79,19 +63,14 @@ function MemberRow({ member, currentUserId }) {
     );
 }
 
-export default function OrganizationDetailsCollapse({
-    organization,
-    currentUserId,
-}) {
+export default function OrganizationDetailsCollapse({ organization, currentUserId }) {
     const tDetails = useTranslations("admin.org_details");
     const tMembers = useTranslations("admin.org_members");
     const locale = useLocale();
 
     const formatDescription = description => {
         if (!description) return tDetails("field_description_empty");
-        return description.length > 100
-            ? `${description.substring(0, 100)}...`
-            : description;
+        return description.length > 100 ? `${description.substring(0, 100)}...` : description;
     };
 
     return (
@@ -109,9 +88,7 @@ export default function OrganizationDetailsCollapse({
                             <div className="text-muted-foreground font-medium">
                                 {tDetails("field_id")}
                             </div>
-                            <p className="font-mono text-xs break-all">
-                                {organization.id}
-                            </p>
+                            <p className="font-mono text-xs break-all">{organization.id}</p>
                         </div>
                         <div className="flex items-center gap-1">
                             <div className="text-muted-foreground font-medium">
@@ -138,9 +115,7 @@ export default function OrganizationDetailsCollapse({
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <FileText className="h-3 w-3" />
-                                    {formatDescription(
-                                        organization.description
-                                    )}
+                                    {formatDescription(organization.description)}
                                 </div>
                             </div>
                         )}
@@ -162,16 +137,13 @@ export default function OrganizationDetailsCollapse({
                             <Users className="mt-0.25 h-4 w-4" />
                             {tMembers("owners_title", {
                                 count:
-                                    organization.members?.filter(
-                                        member => member.role === "owner"
-                                    ).length || 0,
+                                    organization.members?.filter(member => member.role === "owner")
+                                        .length || 0,
                             })}
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 text-sm">
-                        {!organization.members?.filter(
-                            member => member.role === "owner"
-                        ).length ? (
+                        {!organization.members?.filter(member => member.role === "owner").length ? (
                             <div className="text-muted-foreground py-4 text-center">
                                 {tMembers("owners_empty")}
                             </div>
@@ -179,9 +151,7 @@ export default function OrganizationDetailsCollapse({
                             <ScrollArea onCard className="max-h-40">
                                 <div className="flex flex-col gap-2">
                                     {organization.members
-                                        .filter(
-                                            member => member.role === "owner"
-                                        )
+                                        .filter(member => member.role === "owner")
                                         .map(member => (
                                             <MemberRow
                                                 key={member.id}

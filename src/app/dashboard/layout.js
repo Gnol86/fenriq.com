@@ -14,9 +14,7 @@ export default async function Layout({ children }) {
                     <SidebarTrigger />
                     <BreadcrumbSlot />
                 </div>
-                <div className="mx-auto flex max-w-4xl flex-col gap-6 p-6">
-                    {children}
-                </div>
+                <div className="mx-auto flex max-w-4xl flex-col gap-6 p-6">{children}</div>
             </main>
         </>
     );

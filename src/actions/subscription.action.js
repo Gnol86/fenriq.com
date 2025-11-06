@@ -25,22 +25,16 @@ export async function getPlansWithStripeData() {
         plans.map(async plan => {
             try {
                 // Récupérer le prix mensuel avec les informations du produit
-                const monthlyPrice = await stripe.prices.retrieve(
-                    plan.priceId,
-                    {
-                        expand: ["product"],
-                    }
-                );
+                const monthlyPrice = await stripe.prices.retrieve(plan.priceId, {
+                    expand: ["product"],
+                });
 
                 // Récupérer le prix annuel si disponible
                 let annualPrice = null;
                 if (plan.annualDiscountPriceId) {
-                    annualPrice = await stripe.prices.retrieve(
-                        plan.annualDiscountPriceId,
-                        {
-                            expand: ["product"],
-                        }
-                    );
+                    annualPrice = await stripe.prices.retrieve(plan.annualDiscountPriceId, {
+                        expand: ["product"],
+                    });
                 }
 
                 // Parser les limites JSON
@@ -96,10 +90,7 @@ export async function getPlansWithStripeData() {
                         : null,
                 };
             } catch (error) {
-                console.error(
-                    `Error fetching Stripe data for plan ${plan.name}:`,
-                    error
-                );
+                console.error(`Error fetching Stripe data for plan ${plan.name}:`, error);
                 return null;
             }
         })

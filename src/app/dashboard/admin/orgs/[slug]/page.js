@@ -27,9 +27,7 @@ import { formatDate } from "@/lib/utils";
 function DetailRow({ label, value }) {
     return (
         <div className="flex flex-col gap-1 py-3 sm:flex-row sm:gap-4">
-            <dt className="text-muted-foreground min-w-[200px] text-sm font-medium">
-                {label}
-            </dt>
+            <dt className="text-muted-foreground min-w-[200px] text-sm font-medium">{label}</dt>
             <dd className="text-sm">{value}</dd>
         </div>
     );
@@ -88,17 +86,11 @@ export default async function AdminOrganizationPage({ params }) {
                                     {index > 0 && <ItemSeparator />}
                                     <Item>
                                         <ItemMedia>
-                                            <ImageProfile
-                                                entity={member.user}
-                                            />
+                                            <ImageProfile entity={member.user} />
                                         </ItemMedia>
                                         <ItemContent>
-                                            <ItemTitle>
-                                                {member.user.name}
-                                            </ItemTitle>
-                                            <ItemDescription>
-                                                {member.user.email}
-                                            </ItemDescription>
+                                            <ItemTitle>{member.user.name}</ItemTitle>
+                                            <ItemDescription>{member.user.email}</ItemDescription>
                                         </ItemContent>
                                         <ItemActions>
                                             <span className="text-muted-foreground text-sm">
@@ -120,9 +112,7 @@ export default async function AdminOrganizationPage({ params }) {
             <Card>
                 <CardHeader>
                     <CardTitle>{t("detail_subscription_title")}</CardTitle>
-                    <CardDescription>
-                        {t("detail_subscription_description")}
-                    </CardDescription>
+                    <CardDescription>{t("detail_subscription_description")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     {subscription ? (
@@ -148,10 +138,7 @@ export default async function AdminOrganizationPage({ params }) {
                             />*/}
                             <DetailRow
                                 label={t("detail_subscription_subscription_id")}
-                                value={
-                                    subscription.stripeSubscriptionId ??
-                                    tCommon("n_a")
-                                }
+                                value={subscription.stripeSubscriptionId ?? tCommon("n_a")}
                             />
                             <DetailRow
                                 label={t("detail_subscription_seats")}
@@ -170,35 +157,23 @@ export default async function AdminOrganizationPage({ params }) {
                                 value={subscription.interval ?? tCommon("n_a")}
                             />
                             <DetailRow
-                                label={t(
-                                    "detail_subscription_current_period_start"
-                                )}
+                                label={t("detail_subscription_current_period_start")}
                                 value={
                                     subscription.currentPeriodStart
-                                        ? formatDate(
-                                              subscription.currentPeriodStart,
-                                              locale
-                                          )
+                                        ? formatDate(subscription.currentPeriodStart, locale)
                                         : tCommon("n_a")
                                 }
                             />
                             <DetailRow
-                                label={t(
-                                    "detail_subscription_current_period_end"
-                                )}
+                                label={t("detail_subscription_current_period_end")}
                                 value={
                                     subscription.currentPeriodEnd
-                                        ? formatDate(
-                                              subscription.currentPeriodEnd,
-                                              locale
-                                          )
+                                        ? formatDate(subscription.currentPeriodEnd, locale)
                                         : tCommon("n_a")
                                 }
                             />
                             <DetailRow
-                                label={t(
-                                    "detail_subscription_cancel_at_period_end"
-                                )}
+                                label={t("detail_subscription_cancel_at_period_end")}
                                 value={
                                     subscription.cancelAtPeriodEnd
                                         ? t("detail_yes")
@@ -209,10 +184,7 @@ export default async function AdminOrganizationPage({ params }) {
                                 label={t("detail_subscription_canceled_at")}
                                 value={
                                     subscription.canceledAt
-                                        ? formatDate(
-                                              subscription.canceledAt,
-                                              locale
-                                          )
+                                        ? formatDate(subscription.canceledAt, locale)
                                         : tCommon("n_a")
                                 }
                             />
@@ -220,10 +192,7 @@ export default async function AdminOrganizationPage({ params }) {
                                 label={t("detail_subscription_trial_start")}
                                 value={
                                     subscription.trialStart
-                                        ? formatDate(
-                                              subscription.trialStart,
-                                              locale
-                                          )
+                                        ? formatDate(subscription.trialStart, locale)
                                         : tCommon("n_a")
                                 }
                             />
@@ -231,26 +200,17 @@ export default async function AdminOrganizationPage({ params }) {
                                 label={t("detail_subscription_trial_end")}
                                 value={
                                     subscription.trialEnd
-                                        ? formatDate(
-                                              subscription.trialEnd,
-                                              locale
-                                          )
+                                        ? formatDate(subscription.trialEnd, locale)
                                         : tCommon("n_a")
                                 }
                             />
                             <DetailRow
                                 label={t("detail_subscription_created_at")}
-                                value={formatDate(
-                                    subscription.createdAt,
-                                    locale
-                                )}
+                                value={formatDate(subscription.createdAt, locale)}
                             />
                             <DetailRow
                                 label={t("detail_subscription_updated_at")}
-                                value={formatDate(
-                                    subscription.updatedAt,
-                                    locale
-                                )}
+                                value={formatDate(subscription.updatedAt, locale)}
                             />
                         </dl>
                     ) : (
@@ -265,28 +225,17 @@ export default async function AdminOrganizationPage({ params }) {
             <Card>
                 <CardHeader>
                     <CardTitle>{t("detail_info_title")}</CardTitle>
-                    <CardDescription>
-                        {t("detail_info_description")}
-                    </CardDescription>
+                    <CardDescription>{t("detail_info_description")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <dl className="divide-y">
-                        <DetailRow
-                            label={t("detail_id")}
-                            value={organisation.id}
-                        />
-                        <DetailRow
-                            label={t("detail_name")}
-                            value={organisation.name}
-                        />
+                        <DetailRow label={t("detail_id")} value={organisation.id} />
+                        <DetailRow label={t("detail_name")} value={organisation.name} />
                         <DetailRow
                             label={t("detail_slug")}
                             value={organisation.slug ?? tCommon("n_a")}
                         />
-                        <DetailRow
-                            label={t("detail_members_count")}
-                            value={nbMembers}
-                        />
+                        <DetailRow label={t("detail_members_count")} value={nbMembers} />
                         <DetailRow
                             label={t("detail_created_at")}
                             value={formatDate(organisation.createdAt, locale)}

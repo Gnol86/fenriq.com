@@ -93,8 +93,7 @@ export async function canAddUsage(organizationId) {
 export async function getUsageStats(organizationId) {
     const limit = await getUsageLimit(organizationId);
     const current = await getCurrentUsage(organizationId);
-    const remaining =
-        limit === Infinity ? Infinity : Math.max(0, limit - current);
+    const remaining = limit === Infinity ? Infinity : Math.max(0, limit - current);
     const canAdd = current < limit;
 
     return {

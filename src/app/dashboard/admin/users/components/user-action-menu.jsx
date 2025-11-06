@@ -32,14 +32,11 @@ export default function UserActionMenu({ user, isCurrentUser }) {
     const handleRoleChange = async newRole => {
         if (newRole === user.role) return;
 
-        await execute(
-            () => setUserRoleAction({ userId: user.id, role: newRole }),
-            {
-                successMessage: t("success_role_updated", {
-                    role: tRoles(newRole),
-                }),
-            }
-        );
+        await execute(() => setUserRoleAction({ userId: user.id, role: newRole }), {
+            successMessage: t("success_role_updated", {
+                role: tRoles(newRole),
+            }),
+        });
     };
 
     const handleBanUser = async () => {

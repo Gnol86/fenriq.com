@@ -3,10 +3,7 @@
 import { Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useMemo } from "react";
-import {
-    removeMemberAction,
-    updateMemberRoleAction,
-} from "@/actions/organization.action";
+import { removeMemberAction, updateMemberRoleAction } from "@/actions/organization.action";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {

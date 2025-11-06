@@ -1,12 +1,6 @@
 import ManageImageProfile from "@root/src/components/manage-image-profile";
 import { getTranslations } from "next-intl/server";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { requirePermission } from "@/lib/access-control";
 import ManageOrganizationForm from "./form";
@@ -30,11 +24,7 @@ export default async function OrganizationManagePage() {
                     <div className="flex flex-col gap-2">
                         <Label className="font-bold">{t("logo_label")}</Label>
 
-                        <ManageImageProfile
-                            entity={organization}
-                            orga
-                            size="2xl"
-                        />
+                        <ManageImageProfile entity={organization} orga size="2xl" />
                     </div>
                     <ManageOrganizationForm organization={organization} />
                 </CardContent>

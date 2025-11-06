@@ -67,7 +67,7 @@ export default async function SideBarContent() {
     });
 
     const isAdmin = await checkAdmin();
-    const invitations = await prisma.invitation.findMany({
+    const invitations_count = await prisma.invitation.count({
         where: {
             email: user.email,
             status: "pending",
@@ -76,6 +76,14 @@ export default async function SideBarContent() {
             },
         },
     });
+
+    const feedbacks_count = isAdmin
+        ? await prisma.feedback.count({
+              where: {
+                  isResolved: false,
+              },
+          })
+        : 0;
 
     return (
         <>
@@ -95,14 +103,10 @@ export default async function SideBarContent() {
             <AddOnSideBarContent />
 
             {activeUserOrganization &&
-                (canOrgsUpdate ||
-                    canMembresRead ||
-                    canInvitationsRead ||
-                    canOrgsDelete) && (
+                (canOrgsUpdate || canMembresRead || canInvitationsRead || canOrgsDelete) && (
                     <SidebarGroup>
                         <SidebarGroupLabel className="flex items-center gap-1 uppercase">
-                            {activeUserOrganization?.name ??
-                                t("organization_fallback")}
+                            {activeUserOrganization?.name ?? t("organization_fallback")}
                         </SidebarGroupLabel>
 
                         <SidebarGroupContent>
@@ -135,9 +139,7 @@ export default async function SideBarContent() {
                                     <SidebarMenuItem>
                                         <ActiveSidebarLink href="/dashboard/org/manage">
                                             <Settings className="opacity-60" />
-                                            <span>
-                                                {t("manage_organization")}
-                                            </span>
+                                            <span>{t("manage_organization")}</span>
                                         </ActiveSidebarLink>
                                     </SidebarMenuItem>
                                 )}
@@ -187,6 +189,11 @@ export default async function SideBarContent() {
                                     <MessageSquare className="opacity-60" />
                                     <span>{t("feedbacks")}</span>
                                 </ActiveSidebarLink>
+                                {feedbacks_count > 0 && (
+                                    <SidebarMenuBadge className="bg-destructive text-destructive-foreground peer-hover/menu-button:text-destructive-foreground font-bold">
+                                        {feedbacks_count}
+                                    </SidebarMenuBadge>
+                                )}
                             </SidebarMenuItem>
                         </SidebarMenu>
                     </SidebarGroupContent>
@@ -204,9 +211,9 @@ export default async function SideBarContent() {
                                 <MailPlus className="opacity-60" />
                                 <span>{t("invitations")}</span>
                             </ActiveSidebarLink>
-                            {invitations.length > 0 && (
+                            {invitations_count > 0 && (
                                 <SidebarMenuBadge className="bg-destructive text-destructive-foreground peer-hover/menu-button:text-destructive-foreground font-bold">
-                                    {invitations.length}
+                                    {invitations_count}
                                 </SidebarMenuBadge>
                             )}
                         </SidebarMenuItem>

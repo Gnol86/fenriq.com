@@ -14,10 +14,7 @@ function extractErrorInfo(error) {
         return {
             statusCode: error.statusCode,
             status: error.status,
-            message:
-                error.body?.message ??
-                error.message ??
-                "Une erreur s'est produite",
+            message: error.body?.message ?? error.message ?? "Une erreur s'est produite",
             name: error.name ?? "APIError",
         };
     }
@@ -48,10 +45,7 @@ function getStatusMessage(_status, statusCode) {
 
 export default function GlobalErrorPage({ error, reset }) {
     const errorInfo = extractErrorInfo(error);
-    const statusMessage = getStatusMessage(
-        errorInfo.status,
-        errorInfo.statusCode
-    );
+    const statusMessage = getStatusMessage(errorInfo.status, errorInfo.statusCode);
 
     return (
         <main className="flex h-dvh w-full flex-col items-center justify-center gap-4">

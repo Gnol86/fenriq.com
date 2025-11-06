@@ -37,12 +37,7 @@ export async function listUsersAction({
     });
 }
 
-export async function createUserAction({
-    email,
-    password,
-    name,
-    role = "user",
-}) {
+export async function createUserAction({ email, password, name, role = "user" }) {
     return await auth.api.createUser({
         body: {
             email,
@@ -144,13 +139,7 @@ export async function stopImpersonateUserAction() {
 }
 
 // Organisation actions
-export async function createOrganizationAction({
-    name,
-    slug,
-    description,
-    logo,
-    metadata,
-}) {
+export async function createOrganizationAction({ name, slug, description, logo, metadata }) {
     return await auth.api.createOrganization({
         body: {
             name,
@@ -194,20 +183,14 @@ export async function listOrganizationMembersAsAdminAction({ organizationId }) {
     });
 }
 
-export async function listOrganizationInvitationsAsAdminAction({
-    organizationId,
-}) {
+export async function listOrganizationInvitationsAsAdminAction({ organizationId }) {
     return await auth.api.listInvitations({
         query: { organizationId: organizationId },
         headers: await headers(),
     });
 }
 
-export async function updateMemberRoleAsAdminAction({
-    memberId,
-    role,
-    organizationId,
-}) {
+export async function updateMemberRoleAsAdminAction({ memberId, role, organizationId }) {
     return await auth.api.updateMemberRole({
         body: {
             memberId,
@@ -218,10 +201,7 @@ export async function updateMemberRoleAsAdminAction({
     });
 }
 
-export async function removeMemberAsAdminAction({
-    memberIdOrEmail,
-    organizationId,
-}) {
+export async function removeMemberAsAdminAction({ memberIdOrEmail, organizationId }) {
     return await auth.api.removeMember({
         body: {
             memberIdOrEmail,
@@ -231,10 +211,7 @@ export async function removeMemberAsAdminAction({
     });
 }
 
-export async function cancelInvitationAsAdminAction({
-    invitationId,
-    organizationId,
-}) {
+export async function cancelInvitationAsAdminAction({ invitationId, organizationId }) {
     return await auth.api.cancelInvitation({
         body: {
             invitationId,
@@ -244,11 +221,7 @@ export async function cancelInvitationAsAdminAction({
     });
 }
 
-export async function resendInvitationAsAdminAction({
-    email,
-    role,
-    organizationId,
-}) {
+export async function resendInvitationAsAdminAction({ email, role, organizationId }) {
     return await auth.api.createInvitation({
         body: {
             email,

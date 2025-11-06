@@ -30,9 +30,7 @@ export default async function AppSideBar() {
         <>
             {/* Main Application Menu */}
             <SidebarGroup>
-                <SidebarGroupLabel className="uppercase">
-                    {t("application")}
-                </SidebarGroupLabel>
+                <SidebarGroupLabel className="uppercase">{t("application")}</SidebarGroupLabel>
                 <SidebarGroupContent>
                     <SidebarMenu>
                         <SidebarMenuItem>

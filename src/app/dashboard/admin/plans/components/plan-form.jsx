@@ -38,10 +38,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
     const isEditMode = !!plan;
 
     const formSchema = z.object({
-        name: z
-            .string()
-            .min(1, t("validation_name_required"))
-            .min(2, t("validation_name_min")),
+        name: z.string().min(1, t("validation_name_required")).min(2, t("validation_name_min")),
         description: z.string().optional(),
         priceId: z
             .string()
@@ -50,17 +47,11 @@ export default function PlanForm({ plan = null, trigger = null }) {
         annualDiscountPriceId: z
             .string()
             .optional()
-            .refine(
-                val => !val || val.startsWith("price_"),
-                t("validation_price_id_format")
-            ),
+            .refine(val => !val || val.startsWith("price_"), t("validation_price_id_format")),
         freeTrial: z
             .string()
             .optional()
-            .refine(
-                val => !val || parseInt(val, 10) > 0,
-                t("validation_free_trial_positive")
-            ),
+            .refine(val => !val || parseInt(val, 10) > 0, t("validation_free_trial_positive")),
         showInPricingPage: z.boolean().default(true),
         limits: z.array(
             z.object({
@@ -68,10 +59,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
                 value: z
                     .string()
                     .min(1, t("validation_limit_value_required"))
-                    .refine(
-                        val => parseInt(val, 10) > 0,
-                        t("validation_limit_value_positive")
-                    ),
+                    .refine(val => parseInt(val, 10) > 0, t("validation_limit_value_positive")),
             })
         ),
     });
@@ -85,9 +73,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
         : [];
 
     // Préparer le freeTrial pour le mode édition
-    const parsedFreeTrial = plan?.freeTrial
-        ? JSON.parse(plan.freeTrial).days.toString()
-        : "";
+    const parsedFreeTrial = plan?.freeTrial ? JSON.parse(plan.freeTrial).days.toString() : "";
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -130,12 +116,8 @@ export default function PlanForm({ plan = null, trigger = null }) {
                     ? updatePlanAction({ planId: plan.id, ...actionData })
                     : createPlanAction(actionData),
             {
-                successMessage: isEditMode
-                    ? t("success_updated")
-                    : t("success_created"),
-                errorMessage: isEditMode
-                    ? t("error_update")
-                    : t("error_create"),
+                successMessage: isEditMode ? t("success_updated") : t("success_created"),
+                errorMessage: isEditMode ? t("error_update") : t("error_create"),
             }
         );
 
@@ -157,34 +139,23 @@ export default function PlanForm({ plan = null, trigger = null }) {
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>
-                        {isEditMode ? t("form_title_edit") : t("form_title")}
-                    </DialogTitle>
+                    <DialogTitle>{isEditMode ? t("form_title_edit") : t("form_title")}</DialogTitle>
                     <DialogDescription>
-                        {isEditMode
-                            ? t("form_description_edit")
-                            : t("form_description")}
+                        {isEditMode ? t("form_description_edit") : t("form_description")}
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="flex flex-col gap-6"
-                    >
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
                         {/* Nom du plan */}
                         <FormField
                             control={form.control}
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>
-                                        {t("form_name_label")}
-                                    </FormLabel>
+                                    <FormLabel>{t("form_name_label")}</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder={t(
-                                                "form_name_placeholder"
-                                            )}
+                                            placeholder={t("form_name_placeholder")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -199,14 +170,10 @@ export default function PlanForm({ plan = null, trigger = null }) {
                             name="description"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>
-                                        {t("form_description_label")}
-                                    </FormLabel>
+                                    <FormLabel>{t("form_description_label")}</FormLabel>
                                     <FormControl>
                                         <Textarea
-                                            placeholder={t(
-                                                "form_description_placeholder"
-                                            )}
+                                            placeholder={t("form_description_placeholder")}
                                             rows={4}
                                             {...field}
                                         />
@@ -225,14 +192,10 @@ export default function PlanForm({ plan = null, trigger = null }) {
                             name="priceId"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>
-                                        {t("form_price_id_label")}
-                                    </FormLabel>
+                                    <FormLabel>{t("form_price_id_label")}</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder={t(
-                                                "form_price_id_placeholder"
-                                            )}
+                                            placeholder={t("form_price_id_placeholder")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -250,14 +213,10 @@ export default function PlanForm({ plan = null, trigger = null }) {
                             name="annualDiscountPriceId"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>
-                                        {t("form_annual_discount_label")}
-                                    </FormLabel>
+                                    <FormLabel>{t("form_annual_discount_label")}</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder={t(
-                                                "form_annual_discount_placeholder"
-                                            )}
+                                            placeholder={t("form_annual_discount_placeholder")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -275,15 +234,11 @@ export default function PlanForm({ plan = null, trigger = null }) {
                             name="freeTrial"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>
-                                        {t("form_free_trial_label")}
-                                    </FormLabel>
+                                    <FormLabel>{t("form_free_trial_label")}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"
-                                            placeholder={t(
-                                                "form_free_trial_placeholder"
-                                            )}
+                                            placeholder={t("form_free_trial_placeholder")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -308,13 +263,9 @@ export default function PlanForm({ plan = null, trigger = null }) {
                                         />
                                     </FormControl>
                                     <div className="flex flex-col gap-1">
-                                        <FormLabel>
-                                            {t("form_show_in_pricing_label")}
-                                        </FormLabel>
+                                        <FormLabel>{t("form_show_in_pricing_label")}</FormLabel>
                                         <FormDescription>
-                                            {t(
-                                                "form_show_in_pricing_description"
-                                            )}
+                                            {t("form_show_in_pricing_description")}
                                         </FormDescription>
                                     </div>
                                 </FormItem>
@@ -324,19 +275,14 @@ export default function PlanForm({ plan = null, trigger = null }) {
                         {/* Limits */}
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col gap-2">
-                                <h3 className="text-sm font-medium">
-                                    {t("form_limits_title")}
-                                </h3>
+                                <h3 className="text-sm font-medium">{t("form_limits_title")}</h3>
                                 <p className="text-muted-foreground text-sm">
                                     {t("form_limits_description")}
                                 </p>
                             </div>
 
                             {fields.map((field, index) => (
-                                <div
-                                    key={field.id}
-                                    className="flex items-end gap-2"
-                                >
+                                <div key={field.id} className="flex items-end gap-2">
                                     <FormField
                                         control={form.control}
                                         name={`limits.${index}.name`}
@@ -344,9 +290,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
                                             <FormItem className="flex-1">
                                                 {index === 0 && (
                                                     <FormLabel>
-                                                        {t(
-                                                            "form_limit_name_placeholder"
-                                                        )}
+                                                        {t("form_limit_name_placeholder")}
                                                     </FormLabel>
                                                 )}
                                                 <FormControl>
@@ -369,9 +313,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
                                             <FormItem className="flex-1">
                                                 {index === 0 && (
                                                     <FormLabel>
-                                                        {t(
-                                                            "form_limit_value_placeholder"
-                                                        )}
+                                                        {t("form_limit_value_placeholder")}
                                                     </FormLabel>
                                                 )}
                                                 <FormControl>
@@ -411,11 +353,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
                             </Button>
                         </div>
 
-                        <Button
-                            type="submit"
-                            disabled={isPending}
-                            className="w-fit"
-                        >
+                        <Button type="submit" disabled={isPending} className="w-fit">
                             {isPending
                                 ? isEditMode
                                     ? t("form_submitting_edit")

@@ -23,12 +23,7 @@ import { useServerAction } from "../hooks/use-server-action";
 import ImageProfile from "./image-profile";
 import { Button } from "./ui/button";
 
-export default function ManageImageProfile({
-    entity,
-    user = false,
-    orga = false,
-    size = "md",
-}) {
+export default function ManageImageProfile({ entity, user = false, orga = false, size = "md" }) {
     const fileInputRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -123,9 +118,7 @@ export default function ManageImageProfile({
                 onClick={handleClickEdit}
                 className="relative w-fit cursor-pointer border-0 bg-transparent p-0"
                 aria-label={
-                    entity?.image || entity?.logo
-                        ? "Modifier l'image"
-                        : "Ajouter une image"
+                    entity?.image || entity?.logo ? "Modifier l'image" : "Ajouter une image"
                 }
             >
                 <ImageProfile entity={entity} size={size} />
@@ -139,11 +132,7 @@ export default function ManageImageProfile({
                 />
             </button>
             {(entity?.image || entity?.logo) && (
-                <Button
-                    onClick={handleClickDelete}
-                    size="icon"
-                    variant="destructive"
-                >
+                <Button onClick={handleClickDelete} size="icon" variant="destructive">
                     <Trash2 />
                 </Button>
             )}
@@ -151,12 +140,8 @@ export default function ManageImageProfile({
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>
-                            {tImageUpload("cropper_title")}
-                        </DialogTitle>
-                        <DialogDescription>
-                            {tImageUpload("cropper_description")}
-                        </DialogDescription>
+                        <DialogTitle>{tImageUpload("cropper_title")}</DialogTitle>
+                        <DialogDescription>{tImageUpload("cropper_description")}</DialogDescription>
                     </DialogHeader>
 
                     {selectedFile && (
@@ -177,9 +162,7 @@ export default function ManageImageProfile({
                                 <ImageCropApply
                                     size="default"
                                     variant="default"
-                                    onClick={croppedImage =>
-                                        handleCropComplete(croppedImage)
-                                    }
+                                    onClick={croppedImage => handleCropComplete(croppedImage)}
                                     asChild
                                 >
                                     <Button>

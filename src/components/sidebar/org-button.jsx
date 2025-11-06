@@ -17,10 +17,7 @@ import ImageProfile from "../image-profile";
 import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "../ui/sidebar";
 import CreateOrganizationDialog from "./create-organization-dialog";
 
-export default function OrgButton({
-    userOrganizations,
-    activeUserOrganization,
-}) {
+export default function OrgButton({ userOrganizations, activeUserOrganization }) {
     const { execute, isPending } = useServerAction();
     const tDashboard = useTranslations("dashboard.index");
     const tOrganizationSelector = useTranslations("organization.selector");
@@ -41,9 +38,7 @@ export default function OrgButton({
                             defaultImage="/images/logo.png"
                         />
                         <div className="grid flex-1 text-left text-sm leading-tight">
-                            <span className="truncate font-medium">
-                                {SiteConfig.title}
-                            </span>
+                            <span className="truncate font-medium">{SiteConfig.title}</span>
                             <span className="truncate text-xs">
                                 {activeUserOrganization?.name ||
                                     tDashboard("no_active_organization")}
@@ -59,14 +54,11 @@ export default function OrgButton({
                     sideOffset={4}
                     onCloseAutoFocus={event => event.preventDefault()}
                 >
-                    <DropdownMenuLabel>
-                        {tDashboard("my_organizations_title")}
-                    </DropdownMenuLabel>
+                    <DropdownMenuLabel>{tDashboard("my_organizations_title")}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {userOrganizations && userOrganizations.length > 0 ? (
                         userOrganizations.map(organization => {
-                            const isActive =
-                                organization.id === activeUserOrganization?.id;
+                            const isActive = organization.id === activeUserOrganization?.id;
 
                             return (
                                 <DropdownMenuItem
@@ -80,17 +72,15 @@ export default function OrgButton({
                                         await execute(
                                             () =>
                                                 setActiveOrganizationAction({
-                                                    organizationId:
-                                                        organization.id,
+                                                    organizationId: organization.id,
                                                 }),
                                             {
-                                                successMessage:
-                                                    tOrganizationSelector(
-                                                        "success_selected",
-                                                        {
-                                                            name: organization.name,
-                                                        }
-                                                    ),
+                                                successMessage: tOrganizationSelector(
+                                                    "success_selected",
+                                                    {
+                                                        name: organization.name,
+                                                    }
+                                                ),
                                                 redirectOnSuccess: "/dashboard",
                                                 refreshOnSuccess: true,
                                             }
@@ -99,16 +89,11 @@ export default function OrgButton({
                                     className="flex items-center justify-between gap-2"
                                     disabled={isPending}
                                 >
-                                    <ImageProfile
-                                        entity={organization}
-                                        size="xs"
-                                    />
+                                    <ImageProfile entity={organization} size="xs" />
                                     <span className="flex-1 truncate text-sm">
                                         {organization.name}
                                     </span>
-                                    {isActive ? (
-                                        <Check className="text-primary h-4 w-4" />
-                                    ) : null}
+                                    {isActive ? <Check className="text-primary h-4 w-4" /> : null}
                                 </DropdownMenuItem>
                             );
                         })

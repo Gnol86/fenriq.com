@@ -81,9 +81,7 @@ export const requireActiveOrganization = cache(async () => {
 
     const userOrganizations = await getCachedOrganizations();
 
-    const organization = userOrganizations?.find(
-        org => org.id === session.activeOrganizationId
-    );
+    const organization = userOrganizations?.find(org => org.id === session.activeOrganizationId);
 
     if (!organization) {
         notFound();
@@ -112,9 +110,7 @@ export const getActiveOrganization = cache(async () => {
     }
 
     const userOrganizations = await getCachedOrganizations();
-    const organization = userOrganizations?.find(
-        org => org.id === session.activeOrganizationId
-    );
+    const organization = userOrganizations?.find(org => org.id === session.activeOrganizationId);
 
     if (!organization) {
         return {

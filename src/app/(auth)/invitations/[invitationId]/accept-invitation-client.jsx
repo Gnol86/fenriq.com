@@ -45,9 +45,7 @@ export default function AcceptInvitationClient({ invitationId }) {
 
             setStatus("accepted");
             toast.success(
-                organizationActivated
-                    ? t("success_accepted")
-                    : t("success_accepted_activate")
+                organizationActivated ? t("success_accepted") : t("success_accepted_activate")
             );
             router.push("/app");
             router.refresh();
@@ -113,10 +111,7 @@ export default function AcceptInvitationClient({ invitationId }) {
                     className="sm:flex-1"
                 >
                     {isAccepting && (
-                        <Loader2
-                            className="mr-2 h-4 w-4 animate-spin"
-                            aria-hidden="true"
-                        />
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
                     )}
                     {t("accept_button")}
                 </FormButton>
@@ -128,10 +123,7 @@ export default function AcceptInvitationClient({ invitationId }) {
                     className="sm:flex-1"
                 >
                     {isRejecting && (
-                        <Loader2
-                            className="mr-2 h-4 w-4 animate-spin"
-                            aria-hidden="true"
-                        />
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
                     )}
                     {t("reject_button")}
                 </FormButton>

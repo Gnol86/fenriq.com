@@ -29,10 +29,7 @@ export default function LocalizationButton({ currentLocale, size = 20 }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48" side="top">
                 <DropdownMenuLabel className="flex items-center justify-between">
-                    <ReactCountryFlag
-                        svg
-                        countryCode={flagId[currentLocale] ?? currentLocale}
-                    />
+                    <ReactCountryFlag svg countryCode={flagId[currentLocale] ?? currentLocale} />
                     {localeNames[currentLocale]}
                     <Check className="text-primary h-4 w-4" />
                 </DropdownMenuLabel>
@@ -45,21 +42,15 @@ export default function LocalizationButton({ currentLocale, size = 20 }) {
                             onSelect={async () => {
                                 if (isPending) return;
 
-                                await execute(
-                                    () => setLocaleAction({ locale }),
-                                    {
-                                        successMessage: `${localeNames[locale]}`,
-                                        refreshOnSuccess: true,
-                                    }
-                                );
+                                await execute(() => setLocaleAction({ locale }), {
+                                    successMessage: `${localeNames[locale]}`,
+                                    refreshOnSuccess: true,
+                                });
                             }}
                             className="flex items-center gap-2 text-sm"
                             disabled={isPending}
                         >
-                            <ReactCountryFlag
-                                svg
-                                countryCode={flagId[locale] ?? locale}
-                            />
+                            <ReactCountryFlag svg countryCode={flagId[locale] ?? locale} />
                             {localeNames[locale] ?? locale}
                         </DropdownMenuItem>
                     );

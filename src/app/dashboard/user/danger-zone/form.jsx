@@ -66,15 +66,10 @@ export default function DangerZoneForm({ user }) {
 
     return (
         <Form {...form}>
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="flex flex-col gap-6"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
                 <div className="border-destructive/40 bg-destructive/10 text-destructive rounded-md border p-4 text-sm">
                     <p className="font-medium">{t("warning_title")}</p>
-                    <p className="text-destructive/70">
-                        {t("warning_subtitle")}
-                    </p>
+                    <p className="text-destructive/70">{t("warning_subtitle")}</p>
                 </div>
 
                 <FormField
@@ -115,17 +110,13 @@ export default function DangerZoneForm({ user }) {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                    {t("alert_title")}
-                                </AlertDialogTitle>
+                                <AlertDialogTitle>{t("alert_title")}</AlertDialogTitle>
                                 <AlertDialogDescription>
                                     {t("alert_description")}
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                                <AlertDialogCancel>
-                                    {t("alert_cancel")}
-                                </AlertDialogCancel>
+                                <AlertDialogCancel>{t("alert_cancel")}</AlertDialogCancel>
                                 <AlertDialogAction
                                     onClick={handleDeleteConfirmation}
                                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"

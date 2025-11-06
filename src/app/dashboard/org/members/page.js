@@ -111,9 +111,7 @@ export default async function OrganizationMembersPage({ searchParams }) {
                                     <Users />
                                 </EmptyMedia>
                                 <EmptyTitle>{t("no_members")}</EmptyTitle>
-                                <EmptyDescription>
-                                    {t("invit_members")}
-                                </EmptyDescription>
+                                <EmptyDescription>{t("invit_members")}</EmptyDescription>
                             </EmptyHeader>
                             <EmptyContent>
                                 <InviteMemberDialog
@@ -124,9 +122,7 @@ export default async function OrganizationMembersPage({ searchParams }) {
                         </Empty>
                     ) : (
                         <>
-                            <SearchInput
-                                placeholder={t("search_placeholder")}
-                            />
+                            <SearchInput placeholder={t("search_placeholder")} />
                             <ItemGroup>
                                 {members.map((member, index) => (
                                     <React.Fragment key={member.id}>
@@ -137,9 +133,7 @@ export default async function OrganizationMembersPage({ searchParams }) {
                                             canUpdate={canMemberUpdate}
                                             canDelete={canMemberDelete}
                                         />
-                                        {index !== members.length - 1 && (
-                                            <ItemSeparator />
-                                        )}
+                                        {index !== members.length - 1 && <ItemSeparator />}
                                     </React.Fragment>
                                 ))}
                             </ItemGroup>

@@ -4,13 +4,7 @@ import ImageProfile from "@/components/image-profile";
 import { Pagination } from "@/components/pagination";
 import SearchInput from "@/components/search-input";
 import { Badge } from "@/components/ui/badge";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Table,
     TableBody,
@@ -103,9 +97,7 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                     <Table>
                         {!organizations.length && (
                             <TableCaption>
-                                {searchValue
-                                    ? t("no_search_results")
-                                    : t("no_organizations")}
+                                {searchValue ? t("no_search_results") : t("no_organizations")}
                             </TableCaption>
                         )}
                         <TableHeader>
@@ -121,20 +113,14 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                 const orgHref = `/dashboard/admin/orgs/${org.slug}`;
 
                                 return (
-                                    <TableRow
-                                        key={org.id}
-                                        className="focus-within:bg-muted/50"
-                                    >
+                                    <TableRow key={org.id} className="focus-within:bg-muted/50">
                                         {/* Organisation avec logo et informations */}
                                         <TableCell>
                                             <Link
                                                 href={orgHref}
                                                 className="text-foreground focus-visible:ring-ring focus-visible:ring-offset-background flex w-full items-center gap-2 rounded-md px-2 py-1 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                                             >
-                                                <ImageProfile
-                                                    entity={org}
-                                                    size="sm"
-                                                />
+                                                <ImageProfile entity={org} size="sm" />
                                                 <div className="flex flex-col">
                                                     <span className="text-sm font-medium">
                                                         {org.name}
@@ -153,12 +139,8 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                                 className="focus-visible:ring-ring focus-visible:ring-offset-background flex w-full items-center rounded-md px-2 py-1 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                                                 aria-label={t("table_status")}
                                             >
-                                                <Badge
-                                                    variant="outline"
-                                                    className="text-xs"
-                                                >
-                                                    {org.subscriptions?.[0]
-                                                        ?.status
+                                                <Badge variant="outline" className="text-xs">
+                                                    {org.subscriptions?.[0]?.status
                                                         ? tSub(
                                                               `status_${org.subscriptions[0].status}`
                                                           )
@@ -185,10 +167,7 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                                 className="text-muted-foreground focus-visible:ring-ring focus-visible:ring-offset-background block w-full rounded-md px-2 py-1 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                                                 aria-label={t("table_created")}
                                             >
-                                                {formatDate(
-                                                    org.createdAt,
-                                                    locale
-                                                )}
+                                                {formatDate(org.createdAt, locale)}
                                             </Link>
                                         </TableCell>
                                     </TableRow>

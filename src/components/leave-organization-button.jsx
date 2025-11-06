@@ -5,11 +5,7 @@ import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { leaveOrganizationAction } from "@/actions/organization.action";
 import { Button } from "@/components/ui/button";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useServerAction } from "@/hooks/use-server-action";
 

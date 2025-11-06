@@ -30,12 +30,10 @@ export default async function Home() {
         <>
             <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-sans sm:p-20">
                 <main className="row-start-2 flex flex-col items-center gap-[32px] sm:items-start">
-                    <h1 className="text-4xl font-bold">
-                        👋 Hello, I&apos;m Arnaud
-                    </h1>
+                    <h1 className="text-4xl font-bold">👋 Hello, I&apos;m Arnaud</h1>
                     <p className="text-lg">
-                        I&apos;m a software engineer, I love to code, and
-                        I&apos;m passionate about open source.
+                        I&apos;m a software engineer, I love to code, and I&apos;m passionate about
+                        open source.
                     </p>
                 </main>
             </div>

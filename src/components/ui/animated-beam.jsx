@@ -45,8 +45,7 @@ export const AnimatedBeam = ({
     useEffect(() => {
         const updatePath = () => {
             if (containerRef.current && fromRef.current && toRef.current) {
-                const containerRect =
-                    containerRef.current.getBoundingClientRect();
+                const containerRect = containerRef.current.getBoundingClientRect();
                 const rectA = fromRef.current.getBoundingClientRect();
                 const rectB = toRef.current.getBoundingClientRect();
 
@@ -54,26 +53,10 @@ export const AnimatedBeam = ({
                 const svgHeight = containerRect.height;
                 setSvgDimensions({ width: svgWidth, height: svgHeight });
 
-                const startX =
-                    rectA.left -
-                    containerRect.left +
-                    rectA.width / 2 +
-                    startXOffset;
-                const startY =
-                    rectA.top -
-                    containerRect.top +
-                    rectA.height / 2 +
-                    startYOffset;
-                const endX =
-                    rectB.left -
-                    containerRect.left +
-                    rectB.width / 2 +
-                    endXOffset;
-                const endY =
-                    rectB.top -
-                    containerRect.top +
-                    rectB.height / 2 +
-                    endYOffset;
+                const startX = rectA.left - containerRect.left + rectA.width / 2 + startXOffset;
+                const startY = rectA.top - containerRect.top + rectA.height / 2 + startYOffset;
+                const endX = rectB.left - containerRect.left + rectB.width / 2 + endXOffset;
+                const endY = rectB.top - containerRect.top + rectB.height / 2 + endYOffset;
 
                 const controlY = startY - curvature;
                 const d = `M ${startX},${startY} Q ${
@@ -165,11 +148,7 @@ export const AnimatedBeam = ({
                     <stop stopColor={gradientStartColor} stopOpacity="0"></stop>
                     <stop stopColor={gradientStartColor}></stop>
                     <stop offset="32.5%" stopColor={gradientStopColor}></stop>
-                    <stop
-                        offset="100%"
-                        stopColor={gradientStopColor}
-                        stopOpacity="0"
-                    ></stop>
+                    <stop offset="100%" stopColor={gradientStopColor} stopOpacity="0"></stop>
                 </motion.linearGradient>
             </defs>
         </svg>

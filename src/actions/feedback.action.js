@@ -5,11 +5,7 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-export async function createFeedbackAction({
-    rating,
-    comment,
-    allowUseAsTestimonial = false,
-}) {
+export async function createFeedbackAction({ rating, comment, allowUseAsTestimonial = false }) {
     const session = await auth.api.getSession({
         headers: await headers(),
     });
@@ -25,8 +21,7 @@ export async function createFeedbackAction({
             userId: session.user.id,
             userName: session.user.name,
             userEmail: session.user.email,
-            allowUseAsTestimonial:
-                rating === 5 && comment?.trim() ? allowUseAsTestimonial : false,
+            allowUseAsTestimonial: rating === 5 && comment?.trim() ? allowUseAsTestimonial : false,
         },
     });
 

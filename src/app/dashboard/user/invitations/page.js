@@ -4,19 +4,8 @@ import { getLocale, getTranslations } from "next-intl/server";
 import React from "react";
 import ImageProfile from "@/components/image-profile";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
-    Empty,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from "@/components/ui/empty";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
     Item,
     ItemActions,
@@ -56,9 +45,7 @@ export default async function Page() {
         <div className="flex flex-col gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        {t("page_title")}
-                    </CardTitle>
+                    <CardTitle className="flex items-center gap-2">{t("page_title")}</CardTitle>
                     <CardDescription>{t("page_description")}</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -77,21 +64,16 @@ export default async function Page() {
                                 <React.Fragment key={invitation.id}>
                                     <Item variant="outline" size="sm">
                                         <ItemMedia>
-                                            <ImageProfile
-                                                entity={invitation.organization}
-                                            />
+                                            <ImageProfile entity={invitation.organization} />
                                         </ItemMedia>
                                         <ItemContent>
-                                            <ItemTitle>
-                                                {invitation.organization.name}
-                                            </ItemTitle>
+                                            <ItemTitle>{invitation.organization.name}</ItemTitle>
                                             <ItemDescription className="flex flex-col">
                                                 <span>
                                                     {t("table_invited_by")}
                                                     {" : "}
                                                     {invitation.user?.name ||
-                                                        invitation.user
-                                                            ?.email ||
+                                                        invitation.user?.email ||
                                                         tCommon("n_a")}
                                                 </span>
                                                 <span>
@@ -102,10 +84,7 @@ export default async function Page() {
                                                 <span>
                                                     {t("table_expiration")}
                                                     {" : "}
-                                                    {formatDate(
-                                                        invitation.expiresAt,
-                                                        locale
-                                                    )}
+                                                    {formatDate(invitation.expiresAt, locale)}
                                                 </span>
                                             </ItemDescription>
                                         </ItemContent>
@@ -115,17 +94,13 @@ export default async function Page() {
                                                 className="flex items-center gap-2"
                                                 asChild
                                             >
-                                                <Link
-                                                    href={`/invitations/${invitation.id}`}
-                                                >
+                                                <Link href={`/invitations/${invitation.id}`}>
                                                     <Eye /> {t("view_button")}
                                                 </Link>
                                             </Button>
                                         </ItemActions>
                                     </Item>
-                                    {index !== invitations.length - 1 && (
-                                        <ItemSeparator />
-                                    )}
+                                    {index !== invitations.length - 1 && <ItemSeparator />}
                                 </React.Fragment>
                             ))}
                         </ItemGroup>

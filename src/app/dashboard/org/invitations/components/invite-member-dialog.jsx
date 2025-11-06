@@ -35,10 +35,7 @@ import {
 } from "@/components/ui/select";
 import { useServerAction } from "@/hooks/use-server-action";
 
-export default function InviteMemberDialog({
-    organizationId,
-    organizationName,
-}) {
+export default function InviteMemberDialog({ organizationId, organizationName }) {
     const t = useTranslations("organization.invitations");
     const tValidation = useTranslations("validation");
     const tRoles = useTranslations("roles");
@@ -93,10 +90,7 @@ export default function InviteMemberDialog({
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onInvite)}
-                        className="flex flex-col gap-4"
-                    >
+                    <form onSubmit={form.handleSubmit(onInvite)} className="flex flex-col gap-4">
                         <FormField
                             control={form.control}
                             name="email"
@@ -129,20 +123,14 @@ export default function InviteMemberDialog({
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue
-                                                    placeholder={t(
-                                                        "role_placeholder"
-                                                    )}
-                                                />
+                                                <SelectValue placeholder={t("role_placeholder")} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectItem value="member">
                                                 {tRoles("member")}
                                             </SelectItem>
-                                            <SelectItem value="admin">
-                                                {tRoles("admin")}
-                                            </SelectItem>
+                                            <SelectItem value="admin">{tRoles("admin")}</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />

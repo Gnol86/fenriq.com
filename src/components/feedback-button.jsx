@@ -67,21 +67,13 @@ export function FeedbackButton() {
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>
                         <DialogTitle>{t("dialog_title")}</DialogTitle>
-                        <DialogDescription>
-                            {t("dialog_description")}
-                        </DialogDescription>
+                        <DialogDescription>{t("dialog_description")}</DialogDescription>
                     </DialogHeader>
                     <div className="flex flex-col gap-4 py-4">
                         <div className="flex flex-col gap-2">
-                            <span className="text-sm font-medium">
-                                {t("rating_label")}
-                            </span>
+                            <span className="text-sm font-medium">{t("rating_label")}</span>
                             {/* biome-ignore lint/a11y/useSemanticElements: Star rating buttons are not form inputs, fieldset is not appropriate */}
-                            <div
-                                className="flex gap-2"
-                                role="group"
-                                aria-label={t("rating_label")}
-                            >
+                            <div className="flex gap-2" role="group" aria-label={t("rating_label")}>
                                 {[1, 2, 3, 4, 5].map(value => (
                                     <button
                                         key={value}
@@ -102,10 +94,7 @@ export function FeedbackButton() {
                             </div>
                         </div>
                         <div className="flex flex-col gap-2">
-                            <label
-                                htmlFor="comment"
-                                className="text-sm font-medium"
-                            >
+                            <label htmlFor="comment" className="text-sm font-medium">
                                 {t("comment_label")}
                             </label>
                             <Textarea
@@ -149,11 +138,7 @@ export function FeedbackButton() {
                         </Button>
                         <Button
                             type="submit"
-                            disabled={
-                                rating === 0 ||
-                                comment.trim().length === 0 ||
-                                isPending
-                            }
+                            disabled={rating === 0 || comment.trim().length === 0 || isPending}
                         >
                             {isPending ? t("submitting") : t("submit")}
                         </Button>

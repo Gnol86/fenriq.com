@@ -47,17 +47,12 @@ export default function UserTableRow({ user, currentUserId }) {
                                     {user.name || tUsers("table_user")}
                                 </span>
                                 {isCurrentUser && (
-                                    <Badge
-                                        variant="secondary"
-                                        className="text-xs"
-                                    >
+                                    <Badge variant="secondary" className="text-xs">
                                         {tUsers("badge_you")}
                                     </Badge>
                                 )}
                             </div>
-                            <span className="text-muted-foreground text-xs">
-                                {user.email}
-                            </span>
+                            <span className="text-muted-foreground text-xs">{user.email}</span>
                         </div>
                     </div>
                 </TableCell>
@@ -99,10 +94,7 @@ export default function UserTableRow({ user, currentUserId }) {
             {isExpanded && (
                 <TableRow>
                     <TableCell colSpan={4} className="p-0">
-                        <UserDetailsCollapse
-                            user={user}
-                            isCurrentUser={isCurrentUser}
-                        />
+                        <UserDetailsCollapse user={user} isCurrentUser={isCurrentUser} />
                     </TableCell>
                 </TableRow>
             )}

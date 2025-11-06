@@ -6,9 +6,8 @@ export function VerificationEmailTemplate({ name, verificationUrl }) {
             <h1>Vérifiez votre adresse email</h1>
             <p>Bonjour {name ?? "Utilisateur"},</p>
             <p>
-                Pour terminer la création de votre compte {SiteConfig.title},
-                veuillez vérifier votre adresse email en cliquant sur le lien
-                ci-dessous :
+                Pour terminer la création de votre compte {SiteConfig.title}, veuillez vérifier
+                votre adresse email en cliquant sur le lien ci-dessous :
             </p>
             <p>
                 <a

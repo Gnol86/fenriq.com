@@ -10,10 +10,7 @@ export default function StripeLoader() {
     const div2Ref = useRef(null);
 
     return (
-        <div
-            className="relative mx-auto flex w-64 items-center justify-between"
-            ref={containerRef}
-        >
+        <div className="relative mx-auto flex w-64 items-center justify-between" ref={containerRef}>
             <AnimatedBeam
                 containerRef={containerRef}
                 fromRef={div1Ref}
@@ -24,20 +21,10 @@ export default function StripeLoader() {
                 endXOffset={-10}
             />
             <div ref={div1Ref} className="z-50">
-                <Image
-                    src="/images/stripe.svg"
-                    alt="Stripe Logo"
-                    width={100}
-                    height={100}
-                />
+                <Image src="/images/stripe.svg" alt="Stripe Logo" width={100} height={100} />
             </div>
             <div ref={div2Ref} className="z-50">
-                <Image
-                    src="/images/logo.png"
-                    alt="App Logo"
-                    width={50}
-                    height={50}
-                />
+                <Image src="/images/logo.png" alt="App Logo" width={50} height={50} />
             </div>
         </div>
     );

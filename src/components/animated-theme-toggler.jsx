@@ -24,11 +24,8 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
         if (!buttonRef.current) return;
 
         const normalizedIndex =
-            currentThemeIndex === -1
-                ? THEME_ORDER.indexOf("system")
-                : currentThemeIndex;
-        const nextTheme =
-            THEME_ORDER[(normalizedIndex + 1) % THEME_ORDER.length];
+            currentThemeIndex === -1 ? THEME_ORDER.indexOf("system") : currentThemeIndex;
+        const nextTheme = THEME_ORDER[(normalizedIndex + 1) % THEME_ORDER.length];
 
         const transition = document.startViewTransition(() => {
             flushSync(() => {
@@ -38,8 +35,7 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
 
         await transition.ready;
 
-        const { top, left, width, height } =
-            buttonRef.current.getBoundingClientRect();
+        const { top, left, width, height } = buttonRef.current.getBoundingClientRect();
         const y = top + height / 2;
         const x = left + width / 2;
 
@@ -49,10 +45,7 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
 
         const animation = document.documentElement.animate(
             {
-                clipPath: [
-                    `circle(0px at ${x}px ${y}px)`,
-                    `circle(${maxRad}px at ${x}px ${y}px)`,
-                ],
+                clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${maxRad}px at ${x}px ${y}px)`],
             },
             {
                 duration: 700,

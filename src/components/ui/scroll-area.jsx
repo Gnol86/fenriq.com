@@ -39,14 +39,8 @@ const ScrollArea = React.forwardRef(
             const element = viewportRef.current;
             if (!element) return;
 
-            const {
-                scrollTop,
-                scrollLeft,
-                scrollWidth,
-                clientWidth,
-                scrollHeight,
-                clientHeight,
-            } = element;
+            const { scrollTop, scrollLeft, scrollWidth, clientWidth, scrollHeight, clientHeight } =
+                element;
             setShowMask(prev => ({
                 ...prev,
                 top: scrollTop > 0,
@@ -123,10 +117,7 @@ const ScrollArea = React.forwardRef(
                         <ScrollAreaPrimitive.Viewport
                             ref={viewportRef}
                             data-slot="scroll-area-viewport"
-                            className={cn(
-                                "size-full rounded-[inherit]",
-                                viewportClassName
-                            )}
+                            className={cn("size-full rounded-[inherit]", viewportClassName)}
                         >
                             {children}
                         </ScrollAreaPrimitive.Viewport>
@@ -150,61 +141,48 @@ const ScrollArea = React.forwardRef(
 
 ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
 
-const ScrollBar = React.forwardRef(
-    ({ className, orientation = "vertical", ...props }, ref) => {
-        const isTouch = React.useContext(ScrollAreaContext);
+const ScrollBar = React.forwardRef(({ className, orientation = "vertical", ...props }, ref) => {
+    const isTouch = React.useContext(ScrollAreaContext);
 
-        if (isTouch) return null;
+    if (isTouch) return null;
 
-        return (
-            <ScrollAreaPrimitive.ScrollAreaScrollbar
-                ref={ref}
-                orientation={orientation}
-                data-slot="scroll-area-scrollbar"
+    return (
+        <ScrollAreaPrimitive.ScrollAreaScrollbar
+            ref={ref}
+            orientation={orientation}
+            data-slot="scroll-area-scrollbar"
+            className={cn(
+                "hover:bg-muted dark:hover:bg-muted/50 data-[state=visible]:fade-in-0 data-[state=hidden]:fade-out-0 data-[state=visible]:animate-in data-[state=hidden]:animate-out flex touch-none p-px transition-[colors] duration-150 select-none",
+                orientation === "vertical" && "h-full w-2.5 border-l border-l-transparent",
+                orientation === "horizontal" &&
+                    "h-2.5 flex-col border-t border-t-transparent px-1 pr-1.25",
+                className
+            )}
+            {...props}
+        >
+            <ScrollAreaPrimitive.ScrollAreaThumb
+                data-slot="scroll-area-thumb"
                 className={cn(
-                    "hover:bg-muted dark:hover:bg-muted/50 data-[state=visible]:fade-in-0 data-[state=hidden]:fade-out-0 data-[state=visible]:animate-in data-[state=hidden]:animate-out flex touch-none p-px transition-[colors] duration-150 select-none",
-                    orientation === "vertical" &&
-                        "h-full w-2.5 border-l border-l-transparent",
-                    orientation === "horizontal" &&
-                        "h-2.5 flex-col border-t border-t-transparent px-1 pr-1.25",
-                    className
+                    "bg-border relative flex-1 origin-center rounded-full transition-[scale]",
+                    orientation === "vertical" && "my-1 active:scale-y-95",
+                    orientation === "horizontal" && "active:scale-x-98"
                 )}
-                {...props}
-            >
-                <ScrollAreaPrimitive.ScrollAreaThumb
-                    data-slot="scroll-area-thumb"
-                    className={cn(
-                        "bg-border relative flex-1 origin-center rounded-full transition-[scale]",
-                        orientation === "vertical" && "my-1 active:scale-y-95",
-                        orientation === "horizontal" && "active:scale-x-98"
-                    )}
-                />
-            </ScrollAreaPrimitive.ScrollAreaScrollbar>
-        );
-    }
-);
+            />
+        </ScrollAreaPrimitive.ScrollAreaScrollbar>
+    );
+});
 
 ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName;
 
-const ScrollMask = ({
-    showMask,
-    maskHeight,
-    className,
-    onCard = false,
-    ...props
-}) => {
+const ScrollMask = ({ showMask, maskHeight, className, onCard = false, ...props }) => {
     return (
         <>
             <div
                 {...props}
                 aria-hidden="true"
                 style={{
-                    "--top-fade-height": showMask.top
-                        ? `${maskHeight}px`
-                        : "0px",
-                    "--bottom-fade-height": showMask.bottom
-                        ? `${maskHeight}px`
-                        : "0px",
+                    "--top-fade-height": showMask.top ? `${maskHeight}px` : "0px",
+                    "--bottom-fade-height": showMask.bottom ? `${maskHeight}px` : "0px",
                 }}
                 className={cn(
                     "pointer-events-none absolute inset-0 z-10",
@@ -226,12 +204,8 @@ const ScrollMask = ({
                 {...props}
                 aria-hidden="true"
                 style={{
-                    "--left-fade-width": showMask.left
-                        ? `${maskHeight}px`
-                        : "0px",
-                    "--right-fade-width": showMask.right
-                        ? `${maskHeight}px`
-                        : "0px",
+                    "--left-fade-width": showMask.left ? `${maskHeight}px` : "0px",
+                    "--right-fade-width": showMask.right ? `${maskHeight}px` : "0px",
                 }}
                 className={cn(
                     "pointer-events-none absolute inset-0 z-10",

@@ -1,12 +1,6 @@
 import { AlertTriangle } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireAuth } from "@/lib/access-control";
 import DangerZoneForm from "./form";
 
@@ -25,9 +19,7 @@ export default async function DangerZonePage() {
                         <AlertTriangle className="h-5 w-5" />
                         {tBreadcrumbs("danger_zone")}
                     </CardTitle>
-                    <CardDescription>
-                        {tDangerZone("card_description")}
-                    </CardDescription>
+                    <CardDescription>{tDangerZone("card_description")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <DangerZoneForm user={user} />

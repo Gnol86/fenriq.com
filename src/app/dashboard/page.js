@@ -1,8 +1,5 @@
 import { ButtonGroup } from "@root/src/components/ui/button-group";
-import {
-    getActiveOrganization,
-    requireAuth,
-} from "@root/src/lib/access-control";
+import { getActiveOrganization, requireAuth } from "@root/src/lib/access-control";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
@@ -71,13 +68,9 @@ export default async function DashboardPage() {
                         {organization && (
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center gap-3">
-                                    <ImageProfile
-                                        entity={organization}
-                                        size="lg"
-                                    />
+                                    <ImageProfile entity={organization} size="lg" />
                                     <span className="truncate font-semibold">
-                                        {organization?.name ??
-                                            t("organization_fallback")}
+                                        {organization?.name ?? t("organization_fallback")}
                                     </span>
                                 </div>
                             </div>
@@ -95,24 +88,17 @@ export default async function DashboardPage() {
                                         className="flex items-center justify-between"
                                     >
                                         <div className="flex min-w-0 items-center gap-3">
-                                            <ImageProfile
-                                                entity={contact?.user}
-                                                size="md"
-                                            />
+                                            <ImageProfile entity={contact?.user} size="md" />
                                             <div className="flex min-w-0 flex-col gap-0.5">
                                                 <span className="text-foreground truncate text-sm font-medium">
-                                                    {contact?.user.name ??
-                                                        t("contact_fallback")}
+                                                    {contact?.user.name ?? t("contact_fallback")}
                                                 </span>
                                                 <span className="text-foreground -mt-1 truncate text-sm font-bold">
                                                     {contact?.user.email ? (
                                                         <Link
                                                             href={`mailto:${contact?.user.email}`}
                                                         >
-                                                            {
-                                                                contact?.user
-                                                                    .email
-                                                            }
+                                                            {contact?.user.email}
                                                         </Link>
                                                     ) : (
                                                         t("no_email")
@@ -130,9 +116,7 @@ export default async function DashboardPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>{t("my_organizations_title")}</CardTitle>
-                    <CardDescription>
-                        {t("my_organizations_description")}
-                    </CardDescription>
+                    <CardDescription>{t("my_organizations_description")}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-3">
                     {userOrganizations.length > 0 ? (
@@ -145,26 +129,19 @@ export default async function DashboardPage() {
                                     <div className="flex min-w-0 items-center gap-3">
                                         <ImageProfile entity={org} size="md" />
                                         <span className="truncate font-bold">
-                                            {org?.name ??
-                                                t("organization_fallback")}
+                                            {org?.name ?? t("organization_fallback")}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <ButtonGroup>
                                             <OrganizationSelectorButton
                                                 organization={org}
-                                                isActive={
-                                                    org?.id === organization?.id
-                                                }
-                                                activeOrganizationId={
-                                                    organization?.id
-                                                }
+                                                isActive={org?.id === organization?.id}
+                                                activeOrganizationId={organization?.id}
                                             />
                                             <LeaveOrganizationButton
                                                 organization={org}
-                                                isActive={
-                                                    org?.id === organization?.id
-                                                }
+                                                isActive={org?.id === organization?.id}
                                             />
                                         </ButtonGroup>
                                     </div>

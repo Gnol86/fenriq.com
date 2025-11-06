@@ -8,11 +8,7 @@ import { SidebarProvider } from "./ui/sidebar";
 
 export function Provider({ children, locale, messages, sidebarState }) {
     return (
-        <NextIntlClientProvider
-            locale={locale}
-            messages={messages}
-            timeZone="UTC"
-        >
+        <NextIntlClientProvider locale={locale} messages={messages} timeZone="UTC">
             <NextThemesProvider
                 attribute="class"
                 defaultTheme="system"
@@ -20,9 +16,7 @@ export function Provider({ children, locale, messages, sidebarState }) {
                 disableTransitionOnChange
             >
                 <DialogProvider>
-                    <SidebarProvider defaultOpen={sidebarState}>
-                        {children}
-                    </SidebarProvider>
+                    <SidebarProvider defaultOpen={sidebarState}>{children}</SidebarProvider>
                     <Toaster position="bottom-right" richColors closeButton />
                 </DialogProvider>
             </NextThemesProvider>

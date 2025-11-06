@@ -41,11 +41,7 @@ export default function OrganizationActionMenu({ organization }) {
                 </Button>
             </Link>
 
-            <Button
-                variant="destructive"
-                onClick={handleDeleteOrganization}
-                size="sm"
-            >
+            <Button variant="destructive" onClick={handleDeleteOrganization} size="sm">
                 <Trash2 className="mr-2 h-4 w-4" />
                 {t("delete_button")}
             </Button>

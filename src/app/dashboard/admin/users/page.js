@@ -1,13 +1,7 @@
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import SearchInput from "@/components/search-input";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Pagination,
     PaginationContent,
@@ -84,9 +78,7 @@ export default async function AdminUsersPage({ searchParams }) {
                     <Table>
                         {!users.length && (
                             <TableCaption>
-                                {searchValue
-                                    ? tUsers("no_search_results")
-                                    : tUsers("no_users")}
+                                {searchValue ? tUsers("no_search_results") : tUsers("no_users")}
                             </TableCaption>
                         )}
                         <TableHeader>
@@ -125,38 +117,27 @@ export default async function AdminUsersPage({ searchParams }) {
                                     )}
 
                                     {/* Page numbers */}
-                                    {Array.from(
-                                        { length: Math.min(5, totalPages) },
-                                        (_, i) => {
-                                            const pageNum = Math.max(
-                                                1,
-                                                Math.min(
-                                                    page - 2 + i,
-                                                    totalPages - 4 + i
-                                                )
-                                            );
-                                            if (pageNum > totalPages)
-                                                return null;
+                                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                        const pageNum = Math.max(
+                                            1,
+                                            Math.min(page - 2 + i, totalPages - 4 + i)
+                                        );
+                                        if (pageNum > totalPages) return null;
 
-                                            return (
-                                                <PaginationItem key={pageNum}>
-                                                    <PaginationLink
-                                                        href={`?${new URLSearchParams(
-                                                            {
-                                                                ...resolvedSearchParams,
-                                                                page: pageNum.toString(),
-                                                            }
-                                                        ).toString()}`}
-                                                        isActive={
-                                                            pageNum === page
-                                                        }
-                                                    >
-                                                        {pageNum}
-                                                    </PaginationLink>
-                                                </PaginationItem>
-                                            );
-                                        }
-                                    )}
+                                        return (
+                                            <PaginationItem key={pageNum}>
+                                                <PaginationLink
+                                                    href={`?${new URLSearchParams({
+                                                        ...resolvedSearchParams,
+                                                        page: pageNum.toString(),
+                                                    }).toString()}`}
+                                                    isActive={pageNum === page}
+                                                >
+                                                    {pageNum}
+                                                </PaginationLink>
+                                            </PaginationItem>
+                                        );
+                                    })}
 
                                     {page < totalPages && (
                                         <PaginationItem>

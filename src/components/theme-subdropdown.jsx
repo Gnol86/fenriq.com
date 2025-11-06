@@ -16,12 +16,9 @@ export default function ThemeSubdropdown() {
     const tTheme = useTranslations("theme.toggler");
 
     const renderIcon = () => {
-        if (theme === "dark")
-            return <Moon size={16} className="opacity-60" aria-hidden="true" />;
+        if (theme === "dark") return <Moon size={16} className="opacity-60" aria-hidden="true" />;
         if (theme === "system")
-            return (
-                <Monitor size={16} className="opacity-60" aria-hidden="true" />
-            );
+            return <Monitor size={16} className="opacity-60" aria-hidden="true" />;
         return <SunDim size={16} className="opacity-60" aria-hidden="true" />;
     };
 
@@ -41,11 +38,7 @@ export default function ThemeSubdropdown() {
                         disabled={theme === "system"}
                         checked={theme === "system"}
                     >
-                        <Monitor
-                            size={16}
-                            className="opacity-60"
-                            aria-hidden="true"
-                        />
+                        <Monitor size={16} className="opacity-60" aria-hidden="true" />
                         {tTheme("system").replace(/^./, c => c.toUpperCase())}
                     </DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem
@@ -56,11 +49,7 @@ export default function ThemeSubdropdown() {
                         disabled={theme === "light"}
                         checked={theme === "light"}
                     >
-                        <SunDim
-                            size={16}
-                            className="opacity-60"
-                            aria-hidden="true"
-                        />
+                        <SunDim size={16} className="opacity-60" aria-hidden="true" />
                         {tTheme("light").replace(/^./, c => c.toUpperCase())}
                     </DropdownMenuCheckboxItem>
 
@@ -72,11 +61,7 @@ export default function ThemeSubdropdown() {
                         disabled={theme === "dark"}
                         checked={theme === "dark"}
                     >
-                        <Moon
-                            size={16}
-                            className="opacity-60"
-                            aria-hidden="true"
-                        />
+                        <Moon size={16} className="opacity-60" aria-hidden="true" />
                         {tTheme("dark").replace(/^./, c => c.toUpperCase())}
                     </DropdownMenuCheckboxItem>
                 </DropdownMenuSubContent>

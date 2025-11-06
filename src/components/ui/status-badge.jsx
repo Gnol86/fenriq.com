@@ -10,16 +10,9 @@ import { cn } from "@/lib/utils";
  * @param {string} props.className - Classes CSS additionnelles
  * @param {React.ReactNode} props.children - Contenu personnalisé (remplace le statut)
  */
-export function StatusBadge({
-    status,
-    variant = "default",
-    className,
-    children,
-    ...props
-}) {
+export function StatusBadge({ status, variant = "default", className, children, ...props }) {
     // Classes de base pour tous les badges
-    const baseClasses =
-        "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium";
+    const baseClasses = "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium";
 
     // Sélectionner les classes selon le variant
     let variantClasses = "";

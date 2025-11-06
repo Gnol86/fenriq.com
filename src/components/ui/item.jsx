@@ -47,13 +47,7 @@ const itemVariants = cva(
     }
 );
 
-function Item({
-    className,
-    variant = "default",
-    size = "default",
-    asChild = false,
-    ...props
-}) {
+function Item({ className, variant = "default", size = "default", asChild = false, ...props }) {
     const Comp = asChild ? Slot : "div";
     return (
         <Comp
@@ -147,10 +141,7 @@ function ItemHeader({ className, ...props }) {
     return (
         <div
             data-slot="item-header"
-            className={cn(
-                "flex basis-full items-center justify-between gap-2",
-                className
-            )}
+            className={cn("flex basis-full items-center justify-between gap-2", className)}
             {...props}
         />
     );
@@ -160,10 +151,7 @@ function ItemFooter({ className, ...props }) {
     return (
         <div
             data-slot="item-footer"
-            className={cn(
-                "flex basis-full items-center justify-between gap-2",
-                className
-            )}
+            className={cn("flex basis-full items-center justify-between gap-2", className)}
             {...props}
         />
     );

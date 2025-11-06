@@ -60,11 +60,7 @@ export default function FormResendVerification() {
                         <FormItem>
                             <FormLabel>{t("email_label")}</FormLabel>
                             <FormControl>
-                                <Input
-                                    disabled={true}
-                                    type="email"
-                                    {...field}
-                                />
+                                <Input disabled={true} type="email" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -86,10 +82,7 @@ export default function FormResendVerification() {
 
                 <div className="flex items-center justify-center gap-2 text-xs">
                     {t("already_verified_text")}
-                    <Link
-                        href="/signin"
-                        className="text-primary hover:underline"
-                    >
+                    <Link href="/signin" className="text-primary hover:underline">
                         {t("signin_link")}
                     </Link>
                 </div>

@@ -71,37 +71,22 @@ export default function ChangeInput({
                     }}
                 >
                     <InputGroup ref={containerRef} onBlur={handleBlur}>
-                        {icon && (
-                            <InputGroupAddon>{icon && icon}</InputGroupAddon>
-                        )}
-                        <InputGroupInput
-                            disabled={loading}
-                            value={value}
-                            {...props}
-                        />
+                        {icon && <InputGroupAddon>{icon && icon}</InputGroupAddon>}
+                        <InputGroupInput disabled={loading} value={value} {...props} />
                         <InputGroupAddon align="inline-end">
                             {loading ? (
                                 <Spinner />
                             ) : value !== initialValueRef.current ? (
                                 <>
-                                    <InputGroupButton
-                                        type="button"
-                                        onClick={handleCancel}
-                                    >
+                                    <InputGroupButton type="button" onClick={handleCancel}>
                                         <X className="text-destructive" />
                                     </InputGroupButton>
-                                    <InputGroupButton
-                                        disabled={loading}
-                                        type="submit"
-                                    >
+                                    <InputGroupButton disabled={loading} type="submit">
                                         <Check className="text-green-600" />
                                     </InputGroupButton>
                                 </>
                             ) : (
-                                <InputGroupButton
-                                    type="button"
-                                    onClick={handleCancel}
-                                >
+                                <InputGroupButton type="button" onClick={handleCancel}>
                                     <X />
                                 </InputGroupButton>
                             )}
@@ -117,10 +102,7 @@ export default function ChangeInput({
                     onClick={handleOpenChangeMode}
                 >
                     <span>{value}</span>
-                    <Edit
-                        size={12}
-                        className="opacity-0 group-hover:opacity-50"
-                    />
+                    <Edit size={12} className="opacity-0 group-hover:opacity-50" />
                 </button>
             )}
         </div>

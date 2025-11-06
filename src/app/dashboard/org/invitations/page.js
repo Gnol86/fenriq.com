@@ -41,9 +41,7 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
         ? (rawPageParam[rawPageParam.length - 1] ?? "1")
         : (rawPageParam ?? "1");
     const viewParam = resolvedSearchParams?.view;
-    const currentView = Array.isArray(viewParam)
-        ? viewParam[viewParam.length - 1]
-        : viewParam;
+    const currentView = Array.isArray(viewParam) ? viewParam[viewParam.length - 1] : viewParam;
     const isShowingAllInvitations = currentView === "all";
     const limit = INVITATIONS_PER_PAGE;
     const page = parseInt(pageParam, 10);
@@ -96,9 +94,7 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
         ? t("filter.show_pending")
         : t("filter.show_all");
     const filterStatusMessage = t(
-        isShowingAllInvitations
-            ? "filter.showing_all"
-            : "filter.showing_pending",
+        isShowingAllInvitations ? "filter.showing_all" : "filter.showing_pending",
         { count: lengthTotalInvitations }
     );
     const emptyStateTitleKey = searchValue
@@ -151,9 +147,7 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
                         </Empty>
                     ) : (
                         <>
-                            <p className="text-muted-foreground text-sm">
-                                {filterStatusMessage}
-                            </p>
+                            <p className="text-muted-foreground text-sm">{filterStatusMessage}</p>
                             <ItemGroup>
                                 {invitations.map((invitation, index) => (
                                     <React.Fragment key={invitation.id}>
@@ -164,9 +158,7 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
                                             canCancel={canInvitationCancel}
                                             locale={locale}
                                         />
-                                        {index !== invitations.length - 1 && (
-                                            <ItemSeparator />
-                                        )}
+                                        {index !== invitations.length - 1 && <ItemSeparator />}
                                     </React.Fragment>
                                 ))}
                             </ItemGroup>

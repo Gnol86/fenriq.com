@@ -2,14 +2,7 @@
 import { Button } from "@components/ui/button";
 import { CropIcon, RotateCcwIcon } from "lucide-react";
 import { Slot } from "radix-ui";
-import {
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 import { cn } from "@/lib/utils";
 
@@ -32,12 +25,7 @@ const centerAspectCrop = (mediaWidth, mediaHeight, aspect) =>
         mediaHeight
     );
 
-const getCroppedPngImage = async (
-    imageSrc,
-    scaleFactor,
-    pixelCrop,
-    maxImageSize
-) => {
+const getCroppedPngImage = async (imageSrc, scaleFactor, pixelCrop, maxImageSize) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
@@ -69,12 +57,7 @@ const getCroppedPngImage = async (
     const blob = await response.blob();
 
     if (blob.size > maxImageSize) {
-        return await getCroppedPngImage(
-            imageSrc,
-            scaleFactor * 0.9,
-            pixelCrop,
-            maxImageSize
-        );
+        return await getCroppedPngImage(imageSrc, scaleFactor * 0.9, pixelCrop, maxImageSize);
     }
 
     return croppedImageUrl;
@@ -107,20 +90,14 @@ export const ImageCrop = ({
 
     useEffect(() => {
         const reader = new FileReader();
-        reader.addEventListener("load", () =>
-            setImgSrc(reader.result?.toString() || "")
-        );
+        reader.addEventListener("load", () => setImgSrc(reader.result?.toString() || ""));
         reader.readAsDataURL(file);
     }, [file]);
 
     const onImageLoad = useCallback(
         e => {
             const { width, height } = e.currentTarget;
-            const newCrop = centerAspectCrop(
-                width,
-                height,
-                reactCropProps.aspect
-            );
+            const newCrop = centerAspectCrop(width, height, reactCropProps.aspect);
             setCrop(newCrop);
             setInitialCrop(newCrop);
         },
@@ -176,23 +153,12 @@ export const ImageCrop = ({
         resetCrop,
     };
 
-    return (
-        <ImageCropContext.Provider value={contextValue}>
-            {children}
-        </ImageCropContext.Provider>
-    );
+    return <ImageCropContext.Provider value={contextValue}>{children}</ImageCropContext.Provider>;
 };
 
 export const ImageCropContent = ({ style, className }) => {
-    const {
-        imgSrc,
-        crop,
-        handleChange,
-        handleComplete,
-        onImageLoad,
-        imgRef,
-        reactCropProps,
-    } = useImageCrop();
+    const { imgSrc, crop, handleChange, handleComplete, onImageLoad, imgRef, reactCropProps } =
+        useImageCrop();
 
     const shadcnStyle = {
         "--rc-border-color": "var(--color-border)",
@@ -230,12 +196,7 @@ export const ImageCropPreview = ({ style, className }) => {
     const previewCanvasRef = useRef(null);
 
     useEffect(() => {
-        if (
-            !completedCrop ||
-            !imgRef.current ||
-            !previewCanvasRef.current ||
-            !imgSrc
-        ) {
+        if (!completedCrop || !imgRef.current || !previewCanvasRef.current || !imgSrc) {
             return;
         }
 
@@ -296,12 +257,7 @@ export const ImageCropPreview = ({ style, className }) => {
     );
 };
 
-export const ImageCropApply = ({
-    asChild = false,
-    children,
-    onClick,
-    ...props
-}) => {
+export const ImageCropApply = ({ asChild = false, children, onClick, ...props }) => {
     const { applyCrop } = useImageCrop();
 
     const handleClick = async () => {
@@ -324,12 +280,7 @@ export const ImageCropApply = ({
     );
 };
 
-export const ImageCropReset = ({
-    asChild = false,
-    children,
-    onClick,
-    ...props
-}) => {
+export const ImageCropReset = ({ asChild = false, children, onClick, ...props }) => {
     const { resetCrop } = useImageCrop();
 
     const handleClick = e => {

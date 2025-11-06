@@ -15,10 +15,7 @@ export default function FeedbackTableRow({ feedback, isExpanded, onToggle }) {
     return (
         <Fragment>
             <TableRow
-                className={cn(
-                    "cursor-pointer",
-                    !feedback.isRead && "bg-muted/50"
-                )}
+                className={cn("cursor-pointer", !feedback.isRead && "bg-muted/50")}
                 onClick={onToggle}
             >
                 {/* Utilisateur */}
@@ -63,10 +60,7 @@ export default function FeedbackTableRow({ feedback, isExpanded, onToggle }) {
                 <TableCell>
                     <div className="flex flex-col gap-1">
                         {!feedback.isRead && (
-                            <Badge
-                                variant="secondary"
-                                className="w-fit text-xs"
-                            >
+                            <Badge variant="secondary" className="w-fit text-xs">
                                 {t("status_unread")}
                             </Badge>
                         )}
@@ -75,10 +69,7 @@ export default function FeedbackTableRow({ feedback, isExpanded, onToggle }) {
                                 {t("status_resolved")}
                             </Badge>
                         ) : (
-                            <Badge
-                                variant="destructive"
-                                className="w-fit text-xs"
-                            >
+                            <Badge variant="destructive" className="w-fit text-xs">
                                 {t("status_pending")}
                             </Badge>
                         )}

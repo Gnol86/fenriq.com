@@ -13,12 +13,7 @@ export default function FormButton({ children, loading, ...props }) {
                 </div>
             )}
             {
-                <div
-                    className={cn(
-                        loading && "opacity-0",
-                        "inline-flex items-center gap-2"
-                    )}
-                >
+                <div className={cn(loading && "opacity-0", "inline-flex items-center gap-2")}>
                     {children}
                 </div>
             }

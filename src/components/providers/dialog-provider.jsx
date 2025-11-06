@@ -27,21 +27,18 @@ export function DialogProvider({ children }) {
         onConfirm: null,
     });
 
-    const confirm = useCallback(
-        ({ title, description, variant = "default" }, onConfirm) => {
-            return new Promise(resolve => {
-                setDialogState({
-                    isOpen: true,
-                    title,
-                    description,
-                    variant,
-                    resolve,
-                    onConfirm,
-                });
+    const confirm = useCallback(({ title, description, variant = "default" }, onConfirm) => {
+        return new Promise(resolve => {
+            setDialogState({
+                isOpen: true,
+                title,
+                description,
+                variant,
+                resolve,
+                onConfirm,
             });
-        },
-        []
-    );
+        });
+    }, []);
 
     const handleConfirm = useCallback(async () => {
         if (dialogState.onConfirm) {
@@ -83,10 +80,7 @@ export function DialogProvider({ children }) {
     return (
         <DialogContext.Provider value={{ confirm }}>
             {children}
-            <AlertDialog
-                open={dialogState.isOpen}
-                onOpenChange={handleOpenChange}
-            >
+            <AlertDialog open={dialogState.isOpen} onOpenChange={handleOpenChange}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>{dialogState.title}</AlertDialogTitle>
@@ -97,9 +91,7 @@ export function DialogProvider({ children }) {
                         )}
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel onClick={handleCancel}>
-                            {t("cancel")}
-                        </AlertDialogCancel>
+                        <AlertDialogCancel onClick={handleCancel}>{t("cancel")}</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleConfirm}
                             className={cn(

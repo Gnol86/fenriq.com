@@ -47,11 +47,7 @@ function ButtonGroupText({ className, asChild = false, ...props }) {
     );
 }
 
-function ButtonGroupSeparator({
-    className,
-    orientation = "vertical",
-    ...props
-}) {
+function ButtonGroupSeparator({ className, orientation = "vertical", ...props }) {
     return (
         <Separator
             data-slot="button-group-separator"
@@ -65,9 +61,4 @@ function ButtonGroupSeparator({
     );
 }
 
-export {
-    ButtonGroup,
-    ButtonGroupSeparator,
-    ButtonGroupText,
-    buttonGroupVariants,
-};
+export { ButtonGroup, ButtonGroupSeparator, ButtonGroupText, buttonGroupVariants };

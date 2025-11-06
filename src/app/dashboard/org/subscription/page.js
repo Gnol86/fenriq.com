@@ -23,22 +23,14 @@ export default async function OrganizationSubscriptionPage() {
     });
 
     // Show subscription management if subscription exists and is active
-    if (
-        subscription &&
-        ["active", "trialing", "past_due"].includes(subscription.status)
-    ) {
-        return (
-            <Suspense fallback={<StripeLoader />}>Manage Subscription</Suspense>
-        );
+    if (subscription && ["active", "trialing", "past_due"].includes(subscription.status)) {
+        return <Suspense fallback={<StripeLoader />}>Manage Subscription</Suspense>;
     }
 
     // Show plan selection if no subscription or subscription is canceled
     return (
         <Suspense fallback={<StripeLoader />}>
-            <Plan
-                organization={organization}
-                lengthTotalMembres={lengthTotalMembres}
-            />
+            <Plan organization={organization} lengthTotalMembres={lengthTotalMembres} />
         </Suspense>
     );
 }

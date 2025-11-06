@@ -25,21 +25,13 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    SidebarMenuButton,
-    SidebarMenuItem,
-    useSidebar,
-} from "@/components/ui/sidebar";
+import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { authClient, signOut } from "@/lib/auth-client";
 import ImageProfile from "../image-profile";
 import LocalizationSubdropdown from "../localization-subdropdown";
 import ThemeSubdropdown from "../theme-subdropdown";
 
-export default function UserButton({
-    user,
-    isImpersonating = null,
-    currentLocale = "en",
-}) {
+export default function UserButton({ user, isImpersonating = null, currentLocale = "en" }) {
     const t = useTranslations("sidebar.user_button");
     const router = useRouter();
     const pathname = usePathname();
@@ -104,9 +96,7 @@ export default function UserButton({
                             >
                                 {user.name || t("default_name")}
                             </span>
-                            <span className="truncate text-xs">
-                                {user.email}
-                            </span>
+                            <span className="truncate text-xs">{user.email}</span>
                         </div>
                         <ChevronsUpDown className="ml-auto size-4" />
                     </SidebarMenuButton>
@@ -122,12 +112,8 @@ export default function UserButton({
                         <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                             <ImageProfile entity={user} size="sm" />
                             <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-medium">
-                                    {user.name}
-                                </span>
-                                <span className="truncate text-xs">
-                                    {user.email}
-                                </span>
+                                <span className="truncate font-medium">{user.name}</span>
+                                <span className="truncate text-xs">{user.email}</span>
                             </div>
                         </div>
                     </DropdownMenuLabel>
@@ -137,11 +123,7 @@ export default function UserButton({
                             onSelect={handleNavigate("/app")}
                             className="flex items-center gap-2"
                         >
-                            <AppWindow
-                                size={16}
-                                className="opacity-60"
-                                aria-hidden="true"
-                            />
+                            <AppWindow size={16} className="opacity-60" aria-hidden="true" />
                             {t("return_to_app")}
                         </DropdownMenuItem>
                     )}
@@ -150,28 +132,18 @@ export default function UserButton({
                             onSelect={handleNavigate("/dashboard")}
                             className="flex items-center gap-2"
                         >
-                            <LayoutDashboard
-                                size={16}
-                                className="opacity-60"
-                                aria-hidden="true"
-                            />
+                            <LayoutDashboard size={16} className="opacity-60" aria-hidden="true" />
                             {t("dashboard")}
                         </DropdownMenuItem>
                     )}
                     <DropdownMenuSub>
                         <DropdownMenuSubTrigger className="flex items-center gap-2">
-                            <Settings2
-                                size={16}
-                                className="opacity-60"
-                                aria-hidden="true"
-                            />
+                            <Settings2 size={16} className="opacity-60" aria-hidden="true" />
                             <span>Parramètres</span>
                         </DropdownMenuSubTrigger>
                         <DropdownMenuPortal>
                             <DropdownMenuSubContent>
-                                <LocalizationSubdropdown
-                                    currentLocale={currentLocale}
-                                />
+                                <LocalizationSubdropdown currentLocale={currentLocale} />
                                 <ThemeSubdropdown />
                             </DropdownMenuSubContent>
                         </DropdownMenuPortal>
@@ -195,11 +167,7 @@ export default function UserButton({
                                     aria-hidden="true"
                                 />
                             ) : (
-                                <HatGlasses
-                                    size={16}
-                                    className="opacity-60"
-                                    aria-hidden="true"
-                                />
+                                <HatGlasses size={16} className="opacity-60" aria-hidden="true" />
                             )}
                             {t("stop_impersonation")}
                         </DropdownMenuItem>
@@ -222,11 +190,7 @@ export default function UserButton({
                                     aria-hidden="true"
                                 />
                             ) : (
-                                <LogOut
-                                    size={16}
-                                    className="opacity-60"
-                                    aria-hidden="true"
-                                />
+                                <LogOut size={16} className="opacity-60" aria-hidden="true" />
                             )}
                             {t("sign_out")}
                         </DropdownMenuItem>

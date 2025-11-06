@@ -14,9 +14,7 @@ function extractErrorInfo(error, t) {
     let name = error.name || "Error";
 
     if (error.message?.includes("APIError")) {
-        const apiErrorMatch = error.message.match(
-            /\[Error \[APIError\]: (.*?)\]/
-        );
+        const apiErrorMatch = error.message.match(/\[Error \[APIError\]: (.*?)\]/);
         if (apiErrorMatch) {
             message = apiErrorMatch[1] || t("auth_error");
         }

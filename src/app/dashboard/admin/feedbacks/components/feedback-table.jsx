@@ -15,9 +15,7 @@ export default function FeedbackTable({ feedbacks, resolvedCount }) {
         setExpandedId(prev => (prev === feedbackId ? null : feedbackId));
     };
 
-    const filteredFeedbacks = showResolved
-        ? feedbacks
-        : feedbacks.filter(f => !f.isResolved);
+    const filteredFeedbacks = showResolved ? feedbacks : feedbacks.filter(f => !f.isResolved);
 
     return (
         <>
