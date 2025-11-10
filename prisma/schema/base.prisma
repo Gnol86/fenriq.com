@@ -142,8 +142,8 @@ model Subscription {
     id                   String    @id @default(cuid())
     plan                 String
     referenceId          String    @unique
-    stripeCustomerId     String?   @unique
-    stripeSubscriptionId String?   @unique
+    stripeCustomerId     String?
+    stripeSubscriptionId String?
     status               String?
     periodStart          DateTime?
     periodEnd            DateTime?
