@@ -42,7 +42,7 @@ export function Pagination({ totalPages, page }) {
                         size="icon-sm"
                         disabled={page === 1}
                         onClick={() => {
-                            router.replace(pathname + "?" + createQueryString("page", page - 1));
+                            router.replace(`${pathname}?${createQueryString("page", page - 1)}`);
                         }}
                     >
                         <ChevronLeft />
@@ -63,7 +63,7 @@ export function Pagination({ totalPages, page }) {
                                             key={p}
                                             onClick={() => {
                                                 router.replace(
-                                                    pathname + "?" + createQueryString("page", p)
+                                                    `${pathname}?${createQueryString("page", p)}`
                                                 );
                                             }}
                                         >
@@ -80,7 +80,7 @@ export function Pagination({ totalPages, page }) {
                         size="icon-sm"
                         disabled={page === totalPages}
                         onClick={() => {
-                            router.replace(pathname + "?" + createQueryString("page", page + 1));
+                            router.replace(`${pathname}?${createQueryString("page", page + 1)}`);
                         }}
                     >
                         <ChevronRight />
@@ -126,7 +126,7 @@ export function Pagination({ totalPages, page }) {
                                     variant={cn(page === i ? "default" : "secondary")}
                                     onClick={() => {
                                         router.replace(
-                                            pathname + "?" + createQueryString("page", i)
+                                            `${pathname}?${createQueryString("page", i)}`
                                         );
                                     }}
                                 >
@@ -152,7 +152,7 @@ export function Pagination({ totalPages, page }) {
                             size="icon-sm"
                             onClick={() => {
                                 router.replace(
-                                    pathname + "?" + createQueryString("page", totalPages)
+                                    `${pathname}?${createQueryString("page", totalPages)}`
                                 );
                             }}
                         >

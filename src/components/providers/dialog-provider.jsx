@@ -3,15 +3,14 @@
 import { useTranslations } from "next-intl";
 import { createContext, useCallback, useState } from "react";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+    Modal,
+    ModalContent,
+    ModalDescription,
+    ModalFooter,
+    ModalHeader,
+    ModalTitle,
+} from "@/components/modal";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export const DialogContext = createContext(null);
@@ -80,19 +79,19 @@ export function DialogProvider({ children }) {
     return (
         <DialogContext.Provider value={{ confirm }}>
             {children}
-            <AlertDialog open={dialogState.isOpen} onOpenChange={handleOpenChange}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>{dialogState.title}</AlertDialogTitle>
+            <Modal open={dialogState.isOpen} onOpenChange={handleOpenChange}>
+                <ModalContent showCloseButton={false}>
+                    <ModalHeader>
+                        <ModalTitle>{dialogState.title}</ModalTitle>
                         {dialogState.description && (
-                            <AlertDialogDescription>
-                                {dialogState.description}
-                            </AlertDialogDescription>
+                            <ModalDescription>{dialogState.description}</ModalDescription>
                         )}
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel onClick={handleCancel}>{t("cancel")}</AlertDialogCancel>
-                        <AlertDialogAction
+                    </ModalHeader>
+                    <ModalFooter>
+                        <Button variant="outline" onClick={handleCancel}>
+                            {t("cancel")}
+                        </Button>
+                        <Button
                             onClick={handleConfirm}
                             className={cn(
                                 dialogState.variant === "destructive" &&
@@ -100,10 +99,10 @@ export function DialogProvider({ children }) {
                             )}
                         >
                             {t("confirm")}
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </DialogContext.Provider>
     );
 }

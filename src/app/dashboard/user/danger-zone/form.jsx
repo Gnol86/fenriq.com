@@ -7,16 +7,16 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { deleteUserAction } from "@/actions/user.action";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+    Modal,
+    ModalClose,
+    ModalContent,
+    ModalDescription,
+    ModalFooter,
+    ModalHeader,
+    ModalTitle,
+    ModalTrigger,
+} from "@/components/modal";
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
@@ -96,8 +96,8 @@ export default function DangerZoneForm({ user }) {
                     )}
                 />
                 {form.formState.isValid && (
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
+                    <Modal>
+                        <ModalTrigger asChild>
                             <FormButton
                                 type="button"
                                 variant="destructive"
@@ -107,25 +107,25 @@ export default function DangerZoneForm({ user }) {
                                 <TriangleAlert /> {t("delete_button")}
                                 <TriangleAlert />
                             </FormButton>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>{t("alert_title")}</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    {t("alert_description")}
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>{t("alert_cancel")}</AlertDialogCancel>
-                                <AlertDialogAction
+                        </ModalTrigger>
+                        <ModalContent>
+                            <ModalHeader>
+                                <ModalTitle>{t("alert_title")}</ModalTitle>
+                                <ModalDescription>{t("alert_description")}</ModalDescription>
+                            </ModalHeader>
+                            <ModalFooter>
+                                <ModalClose asChild>
+                                    <Button variant="outline">{t("alert_cancel")}</Button>
+                                </ModalClose>
+                                <Button
                                     onClick={handleDeleteConfirmation}
                                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                 >
                                     {t("alert_confirm")}
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                                </Button>
+                            </ModalFooter>
+                        </ModalContent>
+                    </Modal>
                 )}
             </form>
         </Form>
