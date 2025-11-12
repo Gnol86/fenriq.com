@@ -27,6 +27,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
+    "use cache: private";
     const cookieStore = await cookies();
     const locale = cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
     const hasLocale = !!cookieStore.get("NEXT_LOCALE");
@@ -41,7 +42,7 @@ export default async function RootLayout({ children }) {
                     {children}
                 </Provider>
                 <SelectLanguageDialog hasLocale={hasLocale} />
-                {process.env.NODE_ENV === "development" && <WindowSize currentLocale={locale} />}
+                {process.env.NODE_ENV === "development" && <WindowSize />}
             </body>
         </html>
     );

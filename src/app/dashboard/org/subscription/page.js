@@ -20,12 +20,11 @@ export default async function OrganizationSubscriptionPage() {
         // This endpoint requires session cookies.
         headers: await headers(),
     });
+    
     // get the active subscription
     const activeSubscription = subscriptions.find(
         sub => sub.status === "active" || sub.status === "trialing"
     );
-
-    console.log("Active Subscription:", activeSubscription);
 
     const lengthTotalMembres = await prisma.member.count({
         where: {
