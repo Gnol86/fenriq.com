@@ -1,34 +1,40 @@
 // src/lib/access-control.js
 
+import { cacheLife } from "next/cache";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
-import { cache } from "react";
 import { auth } from "@/lib/auth";
 
 /**
  * Version cachée de headers() pour éviter les appels multiples
  * Cache pendant toute la durée de la requête
  */
-const getCachedHeaders = cache(async () => {
+const getCachedHeaders = async () => {
+    "use cache";
+    cacheLife("seconds");
     return await headers();
-});
+};
 
 /**
  * Version cachée de getSession pour éviter les requêtes redondantes
  * Cache pendant toute la durée de la requête
  */
-const getCachedSession = cache(async () => {
+const getCachedSession = async () => {
+    "use cache";
+    cacheLife("seconds");
     return await auth.api.getSession({
         headers: await getCachedHeaders(),
     });
-});
+};
 
 /**
  * Récupère et vérifie l'authentification de l'utilisateur
  * @returns {Promise<{session: Object, user: Object}>}
  * @throws {Error} notFound() si l'utilisateur n'est pas authentifié
  */
-export const requireAuth = cache(async () => {
+export const requireAuth = async () => {
+    "use cache";
+    cacheLife("seconds");
     const session = await getCachedSession();
 
     if (!session?.user) {
@@ -39,13 +45,15 @@ export const requireAuth = cache(async () => {
         session: session.session,
         user: session.user,
     };
-});
+};
 
 /**
  * Récupère et vérifie l'authentification de l'utilisateur
  * @returns {Promise<{session: Object, user: Object}>}
  */
-export const getAuth = cache(async () => {
+export const getAuth = async () => {
+    "use cache";
+    cacheLife("seconds");
     const session = await getCachedSession();
 
     if (!session?.user) {
@@ -59,24 +67,28 @@ export const getAuth = cache(async () => {
         session: session.session,
         user: session.user,
     };
-});
+};
 
 /**
  * Version cachée de listOrganizations pour éviter les requêtes redondantes
  * Cache pendant toute la durée de la requête
  */
-const getCachedOrganizations = cache(async () => {
+const getCachedOrganizations = async () => {
+    "use cache";
+    cacheLife("seconds");
     return await auth.api.listOrganizations({
         headers: await getCachedHeaders(),
     });
-});
+};
 
 /**
  * Récupère l'organisation active de l'utilisateur
  * @returns {Promise<{session: Object, user: Object, organization: Object}>}
  * @throws {Error} notFound() si pas d'organisation active
  */
-export const requireActiveOrganization = cache(async () => {
+export const requireActiveOrganization = async () => {
+    "use cache";
+    cacheLife("seconds");
     const { session, user } = await requireAuth();
 
     const userOrganizations = await getCachedOrganizations();
@@ -92,13 +104,15 @@ export const requireActiveOrganization = cache(async () => {
         user,
         organization,
     };
-});
+};
 
 /**
  * Récupère l'organisation active de l'utilisateur
  * @returns {Promise<{session: Object, user: Object, organization: Object}>}
  */
-export const getActiveOrganization = cache(async () => {
+export const getActiveOrganization = async () => {
+    "use cache";
+    cacheLife("seconds");
     const { session, user } = await getAuth();
 
     if (!session || !user) {
@@ -125,20 +139,22 @@ export const getActiveOrganization = cache(async () => {
         user,
         organization,
     };
-});
+};
 
 /**
  * Version cachée de hasPermission pour éviter les requêtes redondantes
  * Cache basé sur les permissions demandées
  */
-const getCachedPermissionCheck = cache(async permissions => {
+const getCachedPermissionCheck = async () => {
+    "use cache";
+    cacheLife("seconds");
     return await auth.api.hasPermission({
         body: {
             permissions: permissions,
         },
         headers: await getCachedHeaders(),
     });
-});
+};
 
 /**
  * Vérifie que l'utilisateur a les permissions requises dans l'organisation active
@@ -168,7 +184,9 @@ export async function requirePermission({ permissions }) {
  * @returns {Promise<{session: Object, user: Object}>}
  * @throws {Error} notFound() si l'utilisateur n'est pas admin
  */
-export const requireAdmin = cache(async () => {
+export const requireAdmin = async () => {
+    "use cache";
+    cacheLife("seconds");
     const { session, user } = await requireAuth();
 
     if (user.role !== "admin") {
@@ -179,7 +197,7 @@ export const requireAdmin = cache(async () => {
         session,
         user,
     };
-});
+};
 
 /**
  * Vérifie si l'utilisateur a les permissions sans lever d'erreur
