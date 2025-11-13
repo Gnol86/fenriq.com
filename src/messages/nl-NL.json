@@ -232,6 +232,7 @@
             "billing_toggle_annual": "Jaarlijks",
             "price_per_month": "per maand",
             "price_per_year": "per jaar",
+            "price_per_membre": "per lid",
             "team_plan_notice": "U heeft {count, plural, =0 {geen leden} =1 {1 lid} other {# leden}} in uw organisatie.",
             "team_plan_price_info": "Uw abonnement kost {price} per lid.",
             "team_plan_total": "Totaal:",

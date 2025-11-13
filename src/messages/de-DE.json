@@ -232,6 +232,7 @@
             "billing_toggle_annual": "Jährlich",
             "price_per_month": "pro Monat",
             "price_per_year": "pro Jahr",
+            "price_per_membre": "pro Mitglied",
             "team_plan_notice": "Sie haben {count, plural, =0 {keine Mitglieder} =1 {1 Mitglied} other {# Mitglieder}} in Ihrer Organisation.",
             "team_plan_price_info": "Ihr Abonnement kostet {price} pro Mitglied.",
             "team_plan_total": "Gesamt:",

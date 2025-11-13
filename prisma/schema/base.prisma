@@ -141,7 +141,7 @@ model Invitation {
 model Subscription {
     id                   String    @id @default(cuid())
     plan                 String
-    referenceId          String    @unique
+    referenceId          String
     stripeCustomerId     String?
     stripeSubscriptionId String?
     status               String?
