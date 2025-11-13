@@ -263,7 +263,13 @@
             "pack_selector_description": "Each pack adds {limit} units to your usage limit",
             "pack_price_info": "{count, plural, =1 {1 pack × {amount} {currency} = {total} {currency}} other {# packs × {amount} {currency} = {total} {currency}}}",
             "total_usage_limit": "Total Usage Limit",
-            "total_price_label": "Total Price"
+            "total_price_label": "Total Price",
+            "current_plan": "Current plan",
+            "subscription_details": "Subscription details",
+            "billing_period": "Billing period",
+            "subscription_info": "Subscription information",
+            "cancel_notice": "Your subscription will be cancelled at the end of the current period",
+            "trial_notice": "You are currently in a free trial period"
         },
         "manage": {
             "page_title": "Manage Organization",

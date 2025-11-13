@@ -210,7 +210,7 @@ export const auth = betterAuth({
                         action === "restore-subscription"
                     ) {
                         const ok = await checkPermission({
-                            permissions: { billing: ["update"] },
+                            permissions: { billing: ["manage"] },
                         });
                         return ok;
                     }

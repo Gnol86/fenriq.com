@@ -263,7 +263,13 @@
             "pack_selector_description": "Elk pakket voegt {limit} eenheden toe aan uw gebruikslimiet",
             "pack_price_info": "{count, plural, =1 {1 pakket × {amount} {currency} = {total} {currency}} other {# pakketten × {amount} {currency} = {total} {currency}}}",
             "total_usage_limit": "Totale gebruikslimiet",
-            "total_price_label": "Totale prijs"
+            "total_price_label": "Totale prijs",
+            "current_plan": "Huidig abonnement",
+            "subscription_details": "Abonnementsdetails",
+            "billing_period": "Facturatieperiode",
+            "subscription_info": "Abonnementsinformatie",
+            "cancel_notice": "Uw abonnement wordt aan het einde van de huidige periode geannuleerd",
+            "trial_notice": "U bevindt zich momenteel in een gratis proefperiode"
         },
         "manage": {
             "page_title": "Organisatie beheren",

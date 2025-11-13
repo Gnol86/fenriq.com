@@ -9,7 +9,7 @@ export const ORG_RESOURCES = {
 
 const CUSTOM_RESOURCES = {
     app: ["use"],
-    billing: ["read", "update"],
+    billing: ["manage"],
 };
 
 export const statements = {
@@ -24,7 +24,7 @@ export const ownerPermissions = ac.newRole({
     organization: ["update", "delete"],
     member: ["update", "delete", "read"],
     invitation: ["read", "create", "cancel"],
-    billing: ["read", "update"],
+    billing: ["manage"],
 });
 
 // ADMIN: presque tout, sauf delete org / changer owner
@@ -32,7 +32,6 @@ export const adminPermissions = ac.newRole({
     app: ["use"],
     member: ["update", "delete", "read"],
     invitation: ["read", "create", "cancel"],
-    billing: ["read"],
 });
 
 // MEMBER: accès limité

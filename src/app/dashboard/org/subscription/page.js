@@ -3,13 +3,13 @@ import { auth } from "@root/src/lib/auth";
 import { headers } from "next/headers";
 import { Suspense } from "react";
 import { requirePermission } from "@/lib/access-control";
+import ManagePlan from "./components/manage-plan";
 import Plan from "./components/plan";
-import PortalButton from "./components/portal-button";
 
 export default async function OrganizationSubscriptionPage() {
     // Vérifie les permissions et récupère les données nécessaires
     const { organization } = await requirePermission({
-        permissions: { billing: ["read"] },
+        permissions: { billing: ["manage"] },
     });
 
     const subscriptions = await auth.api.listActiveSubscriptions({
@@ -29,8 +29,7 @@ export default async function OrganizationSubscriptionPage() {
     if (activeSubscription) {
         return (
             <Suspense fallback={<StripeLoader />}>
-                Manage Subscription
-                <PortalButton />
+                <ManagePlan activeSubscription={activeSubscription} />
             </Suspense>
         );
     }

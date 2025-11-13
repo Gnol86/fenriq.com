@@ -263,7 +263,13 @@
             "pack_selector_description": "Jedes Paket fügt {limit} Einheiten zu Ihrem Nutzungslimit hinzu",
             "pack_price_info": "{count, plural, =1 {1 Paket × {amount} {currency} = {total} {currency}} other {# Pakete × {amount} {currency} = {total} {currency}}}",
             "total_usage_limit": "Gesamtes Nutzungslimit",
-            "total_price_label": "Gesamtpreis"
+            "total_price_label": "Gesamtpreis",
+            "current_plan": "Aktueller Plan",
+            "subscription_details": "Abonnementdetails",
+            "billing_period": "Abrechnungszeitraum",
+            "subscription_info": "Abonnementinformationen",
+            "cancel_notice": "Ihr Abonnement wird am Ende des aktuellen Zeitraums gekündigt",
+            "trial_notice": "Sie befinden sich derzeit in einem kostenlosen Testzeitraum"
         },
         "manage": {
             "page_title": "Organisation verwalten",

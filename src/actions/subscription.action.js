@@ -124,7 +124,7 @@ export async function getOrganizationMemberCount() {
  */
 export async function createCheckoutSession({ planId, annual = false }) {
     const { organization } = await requirePermission({
-        permissions: { billing: ["update"] },
+        permissions: { billing: ["manage"] },
     });
 
     const plan = await prisma.plan.findUnique({
@@ -166,7 +166,7 @@ export async function createCheckoutSession({ planId, annual = false }) {
  */
 export async function createBillingPortalSession() {
     const { organization } = await requirePermission({
-        permissions: { billing: ["update"] },
+        permissions: { billing: ["manage"] },
     });
 
     const data = await auth.api.createBillingPortal({
@@ -179,4 +179,110 @@ export async function createBillingPortalSession() {
     });
 
     return data;
+}
+
+/**
+ * Récupère les informations détaillées de l'abonnement depuis Stripe
+ */
+export async function getSubscriptionDetails(subscriptionId) {
+    await requirePermission({
+        permissions: { billing: ["manage"] },
+    });
+
+    try {
+        // Récupérer l'abonnement avec toutes les informations liées
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+            expand: ["default_payment_method", "items.data.price.product", "latest_invoice"],
+        });
+
+        // Récupérer les 5 dernières factures
+        const invoices = await stripe.invoices.list({
+            subscription: subscriptionId,
+            limit: 5,
+        });
+
+        // Récupérer le prix et le produit
+        const priceId = subscription.items.data[0].price.id;
+        const price = await stripe.prices.retrieve(priceId, {
+            expand: ["product"],
+        });
+
+        // Depuis l'API 2025-03-31, les dates sont dans les items
+        const firstItem = subscription.items.data[0];
+
+        // Retourner uniquement les données sérialisables nécessaires
+        return {
+            subscription: {
+                id: subscription.id,
+                status: subscription.status,
+                // Les dates sont maintenant dans les items depuis API 2025-03-31
+                current_period_start: firstItem.current_period_start,
+                current_period_end: firstItem.current_period_end,
+                trial_start: subscription.trial_start,
+                trial_end: subscription.trial_end,
+                cancel_at_period_end: subscription.cancel_at_period_end,
+                canceled_at: subscription.canceled_at,
+                customer: subscription.customer,
+                items: {
+                    data: subscription.items.data.map(item => ({
+                        id: item.id,
+                        quantity: item.quantity,
+                        current_period_start: item.current_period_start,
+                        current_period_end: item.current_period_end,
+                        price: {
+                            id: item.price.id,
+                        },
+                    })),
+                },
+            },
+            invoices: invoices.data.map(invoice => ({
+                id: invoice.id,
+                number: invoice.number,
+                status: invoice.status,
+                created: invoice.created,
+                amount_paid: invoice.amount_paid,
+                currency: invoice.currency,
+                invoice_pdf: invoice.invoice_pdf,
+            })),
+            price: {
+                id: price.id,
+                unit_amount: price.unit_amount,
+                currency: price.currency,
+                recurring: {
+                    interval: price.recurring?.interval,
+                    interval_count: price.recurring?.interval_count,
+                },
+            },
+            product: {
+                id: price.product.id,
+                name: price.product.name,
+                description: price.product.description,
+            },
+        };
+    } catch (error) {
+        console.error("Error fetching subscription details from Stripe:", error);
+        throw new Error("Failed to fetch subscription details");
+    }
+}
+
+/**
+ * Crée une session du portail Stripe pour gérer l'abonnement
+ */
+export async function createStripePortalSession(formData) {
+    const referenceId = formData.get("referenceId");
+
+    const { organization } = await requirePermission({
+        permissions: { billing: ["manage"] },
+    });
+
+    if (organization.id !== referenceId) {
+        throw new Error("Unauthorized");
+    }
+
+    const session = await stripe.billingPortal.sessions.create({
+        customer: formData.get("customerId"),
+        return_url: `${getServerUrl()}/dashboard/org/subscription`,
+    });
+
+    return { url: session.url };
 }

@@ -62,8 +62,8 @@ export default async function SideBarContent() {
         permissions: { organization: ["delete"] },
     });
 
-    const canBillingRead = await checkPermission({
-        permissions: { billing: ["read"] },
+    const canBillingManage = await checkPermission({
+        permissions: { billing: ["manage"] },
     });
 
     const isAdmin = await checkAdmin();
@@ -103,7 +103,11 @@ export default async function SideBarContent() {
             <AddOnSideBarContent />
 
             {activeUserOrganization &&
-                (canOrgsUpdate || canMembresRead || canInvitationsRead || canOrgsDelete) && (
+                (canOrgsUpdate ||
+                    canMembresRead ||
+                    canInvitationsRead ||
+                    canOrgsDelete ||
+                    canBillingManage) && (
                     <SidebarGroup>
                         <SidebarGroupLabel className="flex items-center gap-1 uppercase">
                             {activeUserOrganization?.name ?? t("organization_fallback")}
@@ -127,7 +131,7 @@ export default async function SideBarContent() {
                                         </ActiveSidebarLink>
                                     </SidebarMenuItem>
                                 )}
-                                {canBillingRead && (
+                                {canBillingManage && (
                                     <SidebarMenuItem>
                                         <ActiveSidebarLink href="/dashboard/org/subscription">
                                             <Euro className="opacity-60" />
