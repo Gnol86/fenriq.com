@@ -6,8 +6,8 @@ import { useCallback } from "react";
 import { cancelInvitationAction, inviteMemberAction } from "@/actions/organization.action";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { useConfirm } from "@/hooks/use-confirm";
 import { useServerAction } from "@/hooks/use-server-action";
+import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 
 export default function InvitationsActionMenu({
     invitation,
@@ -16,7 +16,6 @@ export default function InvitationsActionMenu({
     canCancel,
 }) {
     const t = useTranslations("organization.invitations");
-    const confirm = useConfirm();
     const { execute, isPending } = useServerAction();
 
     const resendInvitation = useCallback(async () => {
@@ -34,29 +33,26 @@ export default function InvitationsActionMenu({
     }, [invitation, organizationId, t, execute]);
 
     const cancelInvitation = useCallback(async () => {
-        await confirm(
-            {
-                title: t("remove_dialog_title"),
-                description: invitation.email
-                    ? t("remove_dialog_description", {
-                          email: invitation.email,
-                      })
-                    : t("remove_dialog_description_fallback"),
+        dialogManager.confirm({
+            title: t("remove_dialog_title"),
+            description: invitation.email
+                ? t("remove_dialog_description", {
+                      email: invitation.email,
+                  })
+                : t("remove_dialog_description_fallback"),
+            action: {
+                label: t("remove_dialog_confirm"),
                 variant: "destructive",
+                onClick: async () => {
+                    await cancelInvitationAction({
+                        organizationId,
+                        invitationId: invitation.id,
+                    });
+                },
+                successMessage: t("success_cancelled"),
             },
-            () =>
-                execute(
-                    () =>
-                        cancelInvitationAction({
-                            organizationId,
-                            invitationId: invitation.id,
-                        }),
-                    {
-                        successMessage: t("success_cancelled"),
-                    }
-                )
-        );
-    }, [invitation, organizationId, t, confirm, execute]);
+        });
+    }, [invitation, organizationId, t]);
 
     if (invitation.status !== "pending") return null;
 

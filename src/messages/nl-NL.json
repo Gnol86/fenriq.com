@@ -314,6 +314,7 @@
             "button_aria_label": "Organisatie verlaten",
             "dialog_title": "Organisatie verlaten?",
             "dialog_description": "Weet u zeker dat u de organisatie {orgName} wilt verlaten? U verliest de toegang tot alle gegevens.",
+            "dialog_confirm": "Verlaten",
             "success_message": "U heeft de organisatie {orgName} verlaten",
             "error_message": "Kan organisatie niet verlaten",
             "error_sole_owner": "U kunt deze organisatie niet verlaten omdat u de enige eigenaar bent. Draag eerst het eigendom over aan een ander lid."
@@ -338,7 +339,6 @@
             "remove_dialog_title": "Dit lid verwijderen?",
             "remove_dialog_description": "Deze actie ontneemt {name} de toegang tot de organisatie.",
             "remove_dialog_description_fallback": "Deze actie ontneemt dit lid de toegang tot de organisatie.",
-            "remove_dialog_cancel": "Annuleren",
             "remove_dialog_confirm": "Verwijderen",
             "stats_label": "{count, plural, one {# actief lid} other {# actieve leden}}"
         },
@@ -389,7 +389,8 @@
             },
             "remove_dialog_title": "Deze uitnodiging annuleren?",
             "remove_dialog_description": "Deze actie annuleert de uitnodiging voor {email}.",
-            "remove_dialog_description_fallback": "Deze actie annuleert deze uitnodiging."
+            "remove_dialog_description_fallback": "Deze actie annuleert deze uitnodiging.",
+            "remove_dialog_confirm": "Uitnodiging annuleren"
         },
         "create_dialog": {
             "title": "Organisatie aanmaken",
@@ -430,6 +431,7 @@
             "success_impersonate": "Overname geslaagd",
             "success_deleted": "Gebruiker succesvol verwijderd",
             "confirm_delete": "Weet u zeker dat u gebruiker {name} permanent wilt verwijderen?",
+            "confirm_delete_label": "Verwijderen",
             "ban_reason": "Geblokkeerd door beheerder",
             "status_active": "Actief",
             "status_banned": "Geblokkeerd",
@@ -442,6 +444,7 @@
             "sessions_revoke_success": "Sessie succesvol ingetrokken",
             "sessions_revoke_all_success": "Alle sessies zijn ingetrokken",
             "sessions_revoke_confirm": "Weet u zeker dat u alle sessies voor {name} wilt intrekken?",
+            "sessions_revoke_confirm_label": "Alles intrekken",
             "sessions_created": "Aangemaakt:",
             "sessions_expires": "Verloopt:",
             "sessions_ip": "IP",
@@ -474,6 +477,7 @@
             "delete_button": "Verwijderen",
             "success_deleted": "Organisatie succesvol verwijderd",
             "confirm_delete": "Weet u zeker dat u organisatie \"{name}\" permanent wilt verwijderen?",
+            "confirm_delete_label": "Verwijderen",
             "slug_label": "Slug:",
             "created_on": "Aangemaakt op",
             "stats_members": "Leden",
@@ -662,6 +666,7 @@
             "no_plans": "Geen plannen geconfigureerd.",
             "delete_button": "Verwijderen",
             "confirm_delete": "Weet u zeker dat u het plan \"{name}\" wilt verwijderen?",
+            "confirm_delete_label": "Verwijderen",
             "success_deleted": "Plan succesvol verwijderd",
             "success_created": "Plan succesvol aangemaakt",
             "error_create": "Fout bij het aanmaken van plan",
@@ -736,6 +741,7 @@
             "mark_resolved_error": "Fout bij markeren als afgehandeld",
             "delete_confirm_title": "Verwijdering bevestigen",
             "delete_confirm_description": "Weet u zeker dat u deze feedback wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+            "delete_confirm_label": "Verwijderen",
             "delete_success": "Feedback succesvol verwijderd",
             "delete_error": "Fout bij verwijderen van feedback",
             "testimonial_allowed_title": "Getuigenis geautoriseerd",
@@ -883,7 +889,8 @@
         "no": "Nee",
         "dialog": {
             "cancel": "Annuleren",
-            "confirm": "Bevestigen"
+            "confirm": "Bevestigen",
+            "type_to_confirm": "Typ <code>{text}</code> om deze actie te bevestigen."
         }
     }
 }

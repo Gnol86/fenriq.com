@@ -24,6 +24,14 @@ export function nameToSlug(name) {
         .slice(0, 80);
 }
 
+export function normalizeText(text) {
+    return text
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
 export function formatDate(date, locale) {
     if (!date) return "N/A";
 

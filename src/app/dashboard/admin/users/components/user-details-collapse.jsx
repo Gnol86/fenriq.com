@@ -22,8 +22,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useConfirm } from "@/hooks/use-confirm";
 import { useServerAction } from "@/hooks/use-server-action";
+import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 import { formatDate } from "@/lib/utils";
 import UserActionMenu from "./user-action-menu";
 
@@ -31,7 +31,6 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
     const [sessions, setSessions] = useState([]);
     const [loadingSessions, setLoadingSessions] = useState(false);
     const { execute } = useServerAction();
-    const confirm = useConfirm();
     const tUsers = useTranslations("admin.users");
     const tCommon = useTranslations("common");
     const locale = useLocale();
@@ -66,20 +65,21 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
     };
 
     const handleRevokeAllSessions = async () => {
-        await confirm(
-            {
-                title: tUsers("sessions_revoke_confirm", {
-                    name: user.name || user.email,
-                }),
+        dialogManager.confirm({
+            title: tUsers("sessions_revoke_confirm", {
+                name: user.name || user.email,
+            }),
+            action: {
+                label: tUsers("sessions_revoke_confirm_label"),
                 variant: "destructive",
+                onClick: async () => {
+                    await execute(() => revokeUserSessionsAction({ userId: user.id }), {
+                        successMessage: tUsers("sessions_revoke_all_success"),
+                    });
+                    setSessions([]);
+                },
             },
-            async () => {
-                await execute(() => revokeUserSessionsAction({ userId: user.id }), {
-                    successMessage: tUsers("sessions_revoke_all_success"),
-                });
-                setSessions([]);
-            }
-        );
+        });
     };
 
     const formatSessionDate = date => {

@@ -6,42 +6,35 @@ import { useCallback } from "react";
 import { leaveOrganizationAction } from "@/actions/organization.action";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useConfirm } from "@/hooks/use-confirm";
-import { useServerAction } from "@/hooks/use-server-action";
+import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 
 export default function LeaveOrganizationButton({ organization, isActive }) {
     const t = useTranslations("organization.leave");
-    const { execute, isPending } = useServerAction();
-    const confirm = useConfirm();
 
     const handleLeaveOrganization = useCallback(async () => {
         if (!organization?.id) {
             return;
         }
 
-        await confirm(
-            {
-                title: t("dialog_title"),
-                description: t("dialog_description", {
+        dialogManager.confirm({
+            title: t("dialog_title"),
+            description: t("dialog_description", {
+                orgName: organization.name,
+            }),
+            action: {
+                label: t("dialog_confirm"),
+                variant: "destructive",
+                onClick: async () => {
+                    await leaveOrganizationAction({
+                        organizationId: organization.id,
+                    });
+                },
+                successMessage: t("success_message", {
                     orgName: organization.name,
                 }),
-                variant: "destructive",
             },
-            () =>
-                execute(
-                    () =>
-                        leaveOrganizationAction({
-                            organizationId: organization.id,
-                        }),
-                    {
-                        successMessage: t("success_message", {
-                            orgName: organization.name,
-                        }),
-                        errorMessage: t("error_message"),
-                    }
-                )
-        );
-    }, [organization, confirm, execute, t]);
+        });
+    }, [organization, t]);
 
     // Ne pas afficher le bouton si c'est l'organisation active
     if (isActive) {
@@ -54,7 +47,6 @@ export default function LeaveOrganizationButton({ organization, isActive }) {
                 <Button
                     variant="destructive"
                     size="icon-sm"
-                    disabled={isPending}
                     onClick={handleLeaveOrganization}
                     aria-label={t("button_aria_label")}
                 >

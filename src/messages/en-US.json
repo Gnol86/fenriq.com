@@ -314,6 +314,7 @@
             "button_aria_label": "Leave organization",
             "dialog_title": "Leave organization?",
             "dialog_description": "Are you sure you want to leave the organization {orgName}? You will lose access to all its data.",
+            "dialog_confirm": "Leave",
             "success_message": "You left the organization {orgName}",
             "error_message": "Unable to leave organization",
             "error_sole_owner": "You cannot leave this organization because you are the sole owner. Transfer ownership to another member first."
@@ -338,7 +339,6 @@
             "remove_dialog_title": "Remove this member?",
             "remove_dialog_description": "This action will revoke {name}'s access to the organization.",
             "remove_dialog_description_fallback": "This action will revoke the member's access to the organization.",
-            "remove_dialog_cancel": "Cancel",
             "remove_dialog_confirm": "Remove",
             "stats_label": "{count, plural, one {# active member} other {# active members}}"
         },
@@ -389,7 +389,8 @@
             },
             "remove_dialog_title": "Cancel this invitation?",
             "remove_dialog_description": "This action will cancel the invitation for {email}.",
-            "remove_dialog_description_fallback": "This action will cancel this invitation."
+            "remove_dialog_description_fallback": "This action will cancel this invitation.",
+            "remove_dialog_confirm": "Cancel invitation"
         },
         "create_dialog": {
             "title": "Create Organization",
@@ -430,6 +431,7 @@
             "success_impersonate": "Impersonation successful",
             "success_deleted": "User deleted successfully",
             "confirm_delete": "Are you sure you want to permanently delete user {name}?",
+            "confirm_delete_label": "Delete",
             "ban_reason": "Banned by administrator",
             "status_active": "Active",
             "status_banned": "Banned",
@@ -442,6 +444,7 @@
             "sessions_revoke_success": "Session revoked successfully",
             "sessions_revoke_all_success": "All sessions have been revoked",
             "sessions_revoke_confirm": "Are you sure you want to revoke all sessions for {name}?",
+            "sessions_revoke_confirm_label": "Revoke all",
             "sessions_created": "Created:",
             "sessions_expires": "Expires:",
             "sessions_ip": "IP",
@@ -474,6 +477,7 @@
             "delete_button": "Delete",
             "success_deleted": "Organization deleted successfully",
             "confirm_delete": "Are you sure you want to permanently delete organization \"{name}\"?",
+            "confirm_delete_label": "Delete",
             "slug_label": "Slug:",
             "created_on": "Created on",
             "stats_members": "Members",
@@ -662,6 +666,7 @@
             "no_plans": "No plans configured.",
             "delete_button": "Delete",
             "confirm_delete": "Are you sure you want to delete the plan \"{name}\"?",
+            "confirm_delete_label": "Delete",
             "success_deleted": "Plan deleted successfully",
             "success_created": "Plan created successfully",
             "error_create": "Error creating plan",
@@ -736,6 +741,7 @@
             "mark_resolved_error": "Error marking as resolved",
             "delete_confirm_title": "Confirm Deletion",
             "delete_confirm_description": "Are you sure you want to delete this feedback? This action cannot be undone.",
+            "delete_confirm_label": "Delete",
             "delete_success": "Feedback deleted successfully",
             "delete_error": "Error deleting feedback",
             "testimonial_allowed_title": "Testimonial Authorized",
@@ -883,7 +889,8 @@
         "no": "No",
         "dialog": {
             "cancel": "Cancel",
-            "confirm": "Confirm"
+            "confirm": "Confirm",
+            "type_to_confirm": "Type <code>{text}</code> to confirm this action."
         }
     }
 }

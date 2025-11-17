@@ -9,12 +9,11 @@ import {
 } from "@/actions/feedback.action";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useConfirm } from "@/hooks/use-confirm";
 import { useServerAction } from "@/hooks/use-server-action";
+import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 
 export default function FeedbackDetailsCollapse({ feedback }) {
     const { execute } = useServerAction();
-    const confirm = useConfirm();
     const t = useTranslations("admin.feedbacks");
 
     const handleMarkAsRead = async () => {
@@ -32,19 +31,20 @@ export default function FeedbackDetailsCollapse({ feedback }) {
     };
 
     const handleDelete = async () => {
-        await confirm(
-            {
-                title: t("delete_confirm_title"),
-                description: t("delete_confirm_description"),
+        dialogManager.confirm({
+            title: t("delete_confirm_title"),
+            description: t("delete_confirm_description"),
+            action: {
+                label: t("delete_confirm_label"),
                 variant: "destructive",
+                onClick: async () => {
+                    await execute(() => deleteFeedbackAction({ feedbackId: feedback.id }), {
+                        successMessage: t("delete_success"),
+                        errorMessage: t("delete_error"),
+                    });
+                },
             },
-            async () => {
-                await execute(() => deleteFeedbackAction({ feedbackId: feedback.id }), {
-                    successMessage: t("delete_success"),
-                    errorMessage: t("delete_error"),
-                });
-            }
-        );
+        });
     };
 
     return (

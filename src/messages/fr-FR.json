@@ -314,6 +314,7 @@
             "button_aria_label": "Quitter l'organisation",
             "dialog_title": "Quitter l'organisation ?",
             "dialog_description": "Êtes-vous sûr de vouloir quitter l'organisation {orgName} ? Vous perdrez l'accès à toutes ses données.",
+            "dialog_confirm": "Quitter",
             "success_message": "Vous avez quitté l'organisation {orgName}",
             "error_message": "Impossible de quitter l'organisation",
             "error_sole_owner": "Vous ne pouvez pas quitter cette organisation car vous êtes le seul propriétaire. Transférez d'abord la propriété à un autre membre."
@@ -338,7 +339,6 @@
             "remove_dialog_title": "Supprimer ce membre ?",
             "remove_dialog_description": "Cette action retirera l'accès de {name} à l'organisation.",
             "remove_dialog_description_fallback": "Cette action retirera l'accès de ce membre à l'organisation.",
-            "remove_dialog_cancel": "Annuler",
             "remove_dialog_confirm": "Supprimer",
             "stats_label": "{count, plural, one {# membre actif} other {# membres actifs}}"
         },
@@ -389,7 +389,8 @@
             },
             "remove_dialog_title": "Annuler cette invitation ?",
             "remove_dialog_description": "Cette action annulera l'invitation de {email}.",
-            "remove_dialog_description_fallback": "Cette action annulera cette invitation."
+            "remove_dialog_description_fallback": "Cette action annulera cette invitation.",
+            "remove_dialog_confirm": "Annuler l'invitation"
         },
         "create_dialog": {
             "title": "Créer une organisation",
@@ -430,6 +431,7 @@
             "success_impersonate": "Usurpation réussie",
             "success_deleted": "Utilisateur supprimé avec succès",
             "confirm_delete": "Êtes-vous sûr de vouloir supprimer définitivement l'utilisateur {name} ?",
+            "confirm_delete_label": "Supprimer",
             "ban_reason": "Banni par l'administrateur",
             "status_active": "Actif",
             "status_banned": "Banni",
@@ -442,6 +444,7 @@
             "sessions_revoke_success": "Session révoquée avec succès",
             "sessions_revoke_all_success": "Toutes les sessions ont été révoquées",
             "sessions_revoke_confirm": "Êtes-vous sûr de vouloir révoquer toutes les sessions de {name} ?",
+            "sessions_revoke_confirm_label": "Révoquer tout",
             "sessions_created": "Créée :",
             "sessions_expires": "Expire :",
             "sessions_ip": "IP",
@@ -474,6 +477,7 @@
             "delete_button": "Supprimer",
             "success_deleted": "Organisation supprimée avec succès",
             "confirm_delete": "Êtes-vous sûr de vouloir supprimer définitivement l'organisation \"{name}\" ?",
+            "confirm_delete_label": "Supprimer",
             "slug_label": "Slug:",
             "created_on": "Créé le",
             "stats_members": "Membres",
@@ -662,6 +666,7 @@
             "no_plans": "Aucun plan configuré.",
             "delete_button": "Supprimer",
             "confirm_delete": "Êtes-vous sûr de vouloir supprimer le plan \"{name}\" ?",
+            "confirm_delete_label": "Supprimer",
             "success_deleted": "Plan supprimé avec succès",
             "success_created": "Plan créé avec succès",
             "error_create": "Erreur lors de la création du plan",
@@ -736,6 +741,7 @@
             "mark_resolved_error": "Erreur lors du marquage comme traité",
             "delete_confirm_title": "Confirmer la suppression",
             "delete_confirm_description": "Êtes-vous sûr de vouloir supprimer ce feedback ? Cette action est irréversible.",
+            "delete_confirm_label": "Supprimer",
             "delete_success": "Feedback supprimé avec succès",
             "delete_error": "Erreur lors de la suppression du feedback",
             "testimonial_allowed_title": "Témoignage autorisé",
@@ -883,7 +889,8 @@
         "no": "Non",
         "dialog": {
             "cancel": "Annuler",
-            "confirm": "Confirmer"
+            "confirm": "Confirmer",
+            "type_to_confirm": "Tapez <code>{text}</code> pour confirmer cette action."
         }
     }
 }

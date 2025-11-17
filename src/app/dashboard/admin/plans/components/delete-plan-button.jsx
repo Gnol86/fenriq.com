@@ -4,25 +4,23 @@ import { Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { deletePlanAction } from "@/actions/plan.action";
 import { Button } from "@/components/ui/button";
-import { useConfirm } from "@/hooks/use-confirm";
-import { useServerAction } from "@/hooks/use-server-action";
+import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 
 export default function DeletePlanButton({ planId, planName }) {
     const t = useTranslations("admin.plans");
-    const { execute } = useServerAction();
-    const confirm = useConfirm();
 
     const handleDelete = async () => {
-        await confirm(
-            {
-                title: t("confirm_delete", { name: planName }),
+        dialogManager.confirm({
+            title: t("confirm_delete", { name: planName }),
+            action: {
+                label: t("confirm_delete_label"),
                 variant: "destructive",
+                onClick: async () => {
+                    await deletePlanAction({ planId });
+                },
+                successMessage: t("success_deleted"),
             },
-            () =>
-                execute(() => deletePlanAction({ planId }), {
-                    successMessage: t("success_deleted"),
-                })
-        );
+        });
     };
 
     return (

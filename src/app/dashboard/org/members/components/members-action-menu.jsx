@@ -12,8 +12,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useConfirm } from "@/hooks/use-confirm";
 import { useServerAction } from "@/hooks/use-server-action";
+import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 
 export default function MembersActionMenu({
     member,
@@ -26,7 +26,6 @@ export default function MembersActionMenu({
     const t = useTranslations("organization.members");
     const tRoles = useTranslations("roles");
     const { execute, isPending } = useServerAction();
-    const confirm = useConfirm();
 
     const isSelf = useMemo(() => {
         const memberUserId = member?.user?.id ?? member?.userId;
@@ -62,28 +61,24 @@ export default function MembersActionMenu({
 
         const memberName = member?.user?.name;
 
-        await confirm(
-            {
-                title: t("remove_dialog_title"),
-                description: memberName
-                    ? t("remove_dialog_description", { name: memberName })
-                    : t("remove_dialog_description_fallback"),
+        dialogManager.confirm({
+            title: t("remove_dialog_title"),
+            description: memberName
+                ? t("remove_dialog_description", { name: memberName })
+                : t("remove_dialog_description_fallback"),
+            action: {
+                label: t("remove_dialog_confirm"),
                 variant: "destructive",
+                onClick: async () => {
+                    await removeMemberAction({
+                        memberIdOrEmail: member.id,
+                        organizationId,
+                    });
+                },
+                successMessage: t("success_member_removed"),
             },
-            () =>
-                execute(
-                    () =>
-                        removeMemberAction({
-                            memberIdOrEmail: member.id,
-                            organizationId,
-                        }),
-                    {
-                        successMessage: t("success_member_removed"),
-                        errorMessage: t("error_member_remove"),
-                    }
-                )
-        );
-    }, [member, organizationId, confirm, execute, t]);
+        });
+    }, [member, organizationId, t]);
 
     const roleOptions = useMemo(
         () => [

@@ -314,6 +314,7 @@
             "button_aria_label": "Organisation verlassen",
             "dialog_title": "Organisation verlassen?",
             "dialog_description": "Sind Sie sicher, dass Sie die Organisation {orgName} verlassen möchten? Sie verlieren den Zugriff auf alle Daten.",
+            "dialog_confirm": "Verlassen",
             "success_message": "Sie haben die Organisation {orgName} verlassen",
             "error_message": "Organisation kann nicht verlassen werden",
             "error_sole_owner": "Sie können diese Organisation nicht verlassen, da Sie der einzige Eigentümer sind. Übertragen Sie zuerst das Eigentum auf ein anderes Mitglied."
@@ -389,7 +390,8 @@
             },
             "remove_dialog_title": "Diese Einladung stornieren?",
             "remove_dialog_description": "Diese Aktion storniert die Einladung für {email}.",
-            "remove_dialog_description_fallback": "Diese Aktion storniert diese Einladung."
+            "remove_dialog_description_fallback": "Diese Aktion storniert diese Einladung.",
+            "remove_dialog_confirm": "Einladung stornieren"
         },
         "create_dialog": {
             "title": "Organisation erstellen",
@@ -430,6 +432,7 @@
             "success_impersonate": "Übernahme erfolgreich",
             "success_deleted": "Benutzer erfolgreich gelöscht",
             "confirm_delete": "Sind Sie sicher, dass Sie Benutzer {name} dauerhaft löschen möchten?",
+            "confirm_delete_label": "Löschen",
             "ban_reason": "Von Administrator gesperrt",
             "status_active": "Aktiv",
             "status_banned": "Gesperrt",
@@ -442,6 +445,7 @@
             "sessions_revoke_success": "Sitzung erfolgreich widerrufen",
             "sessions_revoke_all_success": "Alle Sitzungen wurden widerrufen",
             "sessions_revoke_confirm": "Sind Sie sicher, dass Sie alle Sitzungen für {name} widerrufen möchten?",
+            "sessions_revoke_confirm_label": "Alle widerrufen",
             "sessions_created": "Erstellt:",
             "sessions_expires": "Läuft ab:",
             "sessions_ip": "IP",
@@ -474,6 +478,7 @@
             "delete_button": "Löschen",
             "success_deleted": "Organisation erfolgreich gelöscht",
             "confirm_delete": "Sind Sie sicher, dass Sie die Organisation \"{name}\" dauerhaft löschen möchten?",
+            "confirm_delete_label": "Löschen",
             "slug_label": "Slug:",
             "created_on": "Erstellt am",
             "stats_members": "Mitglieder",
@@ -662,6 +667,7 @@
             "no_plans": "Keine Pläne konfiguriert.",
             "delete_button": "Löschen",
             "confirm_delete": "Sind Sie sicher, dass Sie den Plan \"{name}\" löschen möchten?",
+            "confirm_delete_label": "Löschen",
             "success_deleted": "Plan erfolgreich gelöscht",
             "success_created": "Plan erfolgreich erstellt",
             "error_create": "Fehler beim Erstellen des Plans",
@@ -736,6 +742,7 @@
             "mark_resolved_error": "Fehler beim Markieren als bearbeitet",
             "delete_confirm_title": "Löschung bestätigen",
             "delete_confirm_description": "Sind Sie sicher, dass Sie dieses Feedback löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+            "delete_confirm_label": "Löschen",
             "delete_success": "Feedback erfolgreich gelöscht",
             "delete_error": "Fehler beim Löschen des Feedbacks",
             "testimonial_allowed_title": "Testimonial autorisiert",
@@ -883,7 +890,8 @@
         "no": "Nein",
         "dialog": {
             "cancel": "Abbrechen",
-            "confirm": "Bestätigen"
+            "confirm": "Bestätigen",
+            "type_to_confirm": "Geben Sie <code>{text}</code> ein, um diese Aktion zu bestätigen."
         }
     }
 }

@@ -5,31 +5,25 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { deleteOrganizationAction } from "@/actions/admin.action";
 import { Button } from "@/components/ui/button";
-import { useConfirm } from "@/hooks/use-confirm";
-import { useServerAction } from "@/hooks/use-server-action";
+import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 
 export default function OrganizationActionMenu({ organization }) {
     const t = useTranslations("admin.organizations");
-    const { execute } = useServerAction();
-    const confirm = useConfirm();
 
     const handleDeleteOrganization = async () => {
-        await confirm(
-            {
-                title: t("confirm_delete", { name: organization.name }),
+        dialogManager.confirm({
+            title: t("confirm_delete", { name: organization.name }),
+            action: {
+                label: t("confirm_delete_label"),
                 variant: "destructive",
+                onClick: async () => {
+                    await deleteOrganizationAction({
+                        organizationId: organization.id,
+                    });
+                },
+                successMessage: t("success_deleted"),
             },
-            () =>
-                execute(
-                    () =>
-                        deleteOrganizationAction({
-                            organizationId: organization.id,
-                        }),
-                    {
-                        successMessage: t("success_deleted"),
-                    }
-                )
-        );
+        });
     };
 
     return (

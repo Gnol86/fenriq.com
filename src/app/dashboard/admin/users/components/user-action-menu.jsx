@@ -18,16 +18,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { useConfirm } from "@/hooks/use-confirm";
 import { useServerAction } from "@/hooks/use-server-action";
 import { authClient } from "@/lib/auth-client";
+import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 
 export default function UserActionMenu({ user, isCurrentUser }) {
     const t = useTranslations("admin.users");
     const tRoles = useTranslations("roles");
     const router = useRouter();
     const { execute } = useServerAction();
-    const confirm = useConfirm();
 
     const handleRoleChange = async newRole => {
         if (newRole === user.role) return;
@@ -76,16 +75,19 @@ export default function UserActionMenu({ user, isCurrentUser }) {
     };
 
     const handleRemoveUser = async () => {
-        await confirm(
-            {
-                title: t("confirm_delete", { name: user.name || user.email }),
+        dialogManager.confirm({
+            title: t("confirm_delete", { name: user.name || user.email }),
+            confirmText: user.name || user.email,
+            action: {
+                label: t("confirm_delete_label"),
                 variant: "destructive",
+
+                onClick: async () => {
+                    await removeUserAction({ userId: user.id });
+                },
+                successMessage: t("success_deleted"),
             },
-            () =>
-                execute(() => removeUserAction({ userId: user.id }), {
-                    successMessage: t("success_deleted"),
-                })
-        );
+        });
     };
 
     if (isCurrentUser) {

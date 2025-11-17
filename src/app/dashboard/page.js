@@ -1,3 +1,4 @@
+import TestDialog from "@root/src/components/testdialog";
 import { ButtonGroup } from "@root/src/components/ui/button-group";
 import { getActiveOrganization, requireAuth } from "@root/src/lib/access-control";
 import { headers } from "next/headers";
@@ -65,6 +66,7 @@ export default async function DashboardPage() {
                             : t("no_active_organization")}
                     </CardDescription>
                     <CardAction>
+                        <TestDialog />
                         {organization && (
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center gap-3">
