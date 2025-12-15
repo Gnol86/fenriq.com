@@ -5,7 +5,7 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.js");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactCompiler: true,
-    cacheComponents: true,
+    cacheComponents: false, // Désactivé car incompatible avec headers() dans requireAuth
     devIndicators: {
         position: "top-right",
     },

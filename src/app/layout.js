@@ -27,7 +27,6 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-    "use cache: private";
     const cookieStore = await cookies();
     const locale = cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
     const hasLocale = !!cookieStore.get("NEXT_LOCALE");
