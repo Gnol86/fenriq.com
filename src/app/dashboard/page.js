@@ -1,4 +1,4 @@
-import TestDialog from "@root/src/components/testdialog";
+import FormGenerator from "@components/form-generator";
 import { ButtonGroup } from "@root/src/components/ui/button-group";
 import { getActiveOrganization, requireAuth } from "@root/src/lib/access-control";
 import { headers } from "next/headers";
@@ -50,6 +50,94 @@ export default async function DashboardPage() {
           })
         : [];
 
+    const formDescriptor = {
+        defaultValues: {
+            email: "",
+            password: "",
+            confirm_password: "",
+            sex: "",
+            valide: false,
+        },
+
+        fields: [
+            {
+                name: "email",
+                type: "email",
+                label: "Email",
+                description: "Votre Email",
+                placeholder: "nom@domaine.com",
+                validation: {
+                    type: "email",
+                    required: "L'email est requis",
+                },
+            },
+            {
+                name: "password",
+                type: "password",
+                label: "Mot de passe",
+
+                validation: {
+                    type: "string",
+                    required: "Le mot de passe est requis",
+                    min: {
+                        value: 6,
+                        message: "Le mot de passe doit contenir au moins 6 caractères",
+                    },
+                },
+            },
+            {
+                name: "confirm_password",
+                type: "password",
+                label: "Confirmez le mot de passe",
+                description: "Saisissez votre mot de passe",
+                validation: {
+                    type: "string",
+                    sameAs: {
+                        value: "password",
+                        message: "Les mots de passe ne correspondent pas",
+                    },
+                },
+            },
+            {
+                name: "sex",
+                type: "select",
+                label: "Sexe",
+                options: [
+                    { label: "Masculin", value: "male" },
+                    { label: "Féminin", value: "female" },
+                    { label: "Autre", value: "other" },
+                ],
+                placeholder: "Sélectionnez votre sexe",
+                description: "Saisissez votre mot de passe",
+                validation: {
+                    type: "enum",
+                    enumValues: ["male", "female", "other"],
+                    enumMessage: "Veuillez sélectionner un sexe valide",
+                },
+            },
+
+            {
+                name: "valide",
+                type: "checkbox",
+                label: "Accepter les conditions",
+                description: "Saisissez votre mot de passe",
+                validation: {
+                    type: "boolean",
+                    required: "Vous devez accepter les conditions",
+                },
+            },
+        ],
+        submit: {
+            label: "Envoyer",
+        },
+        reset: {
+            label: "Réinitialiser",
+        },
+        cancel: {
+            label: "Annuler",
+        },
+    };
+
     return (
         <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
@@ -66,7 +154,6 @@ export default async function DashboardPage() {
                             : t("no_active_organization")}
                     </CardDescription>
                     <CardAction>
-                        <TestDialog />
                         {organization && (
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center gap-3">
@@ -157,6 +244,7 @@ export default async function DashboardPage() {
                     )}
                 </CardContent>
             </Card>
+            <FormGenerator formDescriptor={formDescriptor} />
         </div>
     );
 }
