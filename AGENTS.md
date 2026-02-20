@@ -159,11 +159,27 @@ bun prisma generate
 
 ### Setup New Project
 
-See `.github/SETUP_NEW_PROJECT.md` for complete guide, or run:
+See `.github/SETUP_NEW_PROJECT.md` for the complete guide.
+
+**Quick start:**
 
 ```bash
 ./scripts/setup-new-project.sh
 ```
+
+**What the script does:**
+
+1. Clones the boilerplate into a new directory
+2. Configures `upstream` (boilerplate) and `origin` (your project) remotes
+3. Activates `merge=theirs` strategy (defined in `.gitattributes`) to protect project files
+4. Updates `src/site-config.js` with the project name
+5. Creates an initial commit and pushes to your remote
+
+**Key files:**
+
+- `.gitattributes` - Defines which files are protected during upstream merges
+- `scripts/setup-new-project.sh` - Automated project creation script
+- `.github/SETUP_NEW_PROJECT.md` - Full documentation
 
 ## Code Conventions
 

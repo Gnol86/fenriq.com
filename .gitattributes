@@ -1,0 +1,39 @@
+# ============================================================
+# Git Merge Strategy - Multi-Project Architecture
+# ============================================================
+#
+# These files are PROTECTED during `git merge upstream/main`.
+# The `merge=theirs` strategy keeps YOUR version (the project's)
+# and ignores the upstream (boilerplate) version on merge.
+#
+# This allows projects derived from the boilerplate to receive
+# upstream updates without overwriting project-specific files.
+#
+# To activate, run once in your project:
+#   git config merge.theirs.driver true
+#
+# ============================================================
+
+# Project-specific code - never overwritten by upstream
+src/project/**                  merge=theirs
+
+# Project-specific translations
+src/messages/*.project.json     merge=theirs
+
+# Project-specific database models
+prisma/schema/project.prisma    merge=theirs
+
+# Project configuration
+src/site-config.js              merge=theirs
+
+# Landing page and styling
+src/app/page.js                 merge=theirs
+src/app/globals.css             merge=theirs
+
+# Project branding
+public/images/logo.png          merge=theirs
+public/images/icon.png          merge=theirs
+
+# Project-specific agent instructions
+AGENTS.md                       merge=theirs
+CLAUDE.md                       merge=theirs
