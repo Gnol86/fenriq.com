@@ -7,6 +7,7 @@ import { setLocaleAction } from "@/actions/locale.action";
 import {
     DropdownMenu,
     DropdownMenuContent,
+    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
@@ -28,18 +29,23 @@ export default function LocalizationButton({ currentLocale, size = 20 }) {
                 <Globe size={size} />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48" side="top">
-                <DropdownMenuLabel className="flex items-center justify-between">
-                    <ReactCountryFlag svg countryCode={flagId[currentLocale] ?? currentLocale} />
-                    {localeNames[currentLocale]}
-                    <Check className="text-primary h-4 w-4" />
-                </DropdownMenuLabel>
+                <DropdownMenuGroup>
+                    <DropdownMenuLabel className="flex items-center justify-between">
+                        <ReactCountryFlag
+                            svg
+                            countryCode={flagId[currentLocale] ?? currentLocale}
+                        />
+                        {localeNames[currentLocale]}
+                        <Check className="text-primary h-4 w-4" />
+                    </DropdownMenuLabel>
+                </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 {sortedLocales.map(locale => {
                     if (locale === currentLocale) return null;
                     return (
                         <DropdownMenuItem
                             key={locale}
-                            onSelect={async () => {
+                            onClick={async () => {
                                 if (isPending) return;
 
                                 await execute(() => setLocaleAction({ locale }), {

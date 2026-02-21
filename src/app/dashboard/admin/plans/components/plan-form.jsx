@@ -130,13 +130,13 @@ export default function PlanForm({ plan = null, trigger = null }) {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                {trigger ?? (
-                    <Button size="icon">
-                        <Plus />
-                    </Button>
-                )}
-            </DialogTrigger>
+            {trigger ? (
+                <DialogTrigger render={trigger} />
+            ) : (
+                <DialogTrigger render={<Button size="icon" nativeButton={false} />}>
+                    <Plus />
+                </DialogTrigger>
+            )}
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{isEditMode ? t("form_title_edit") : t("form_title")}</DialogTitle>

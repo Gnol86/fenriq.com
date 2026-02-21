@@ -31,10 +31,7 @@ export default function ThemeSubdropdown() {
             <DropdownMenuPortal>
                 <DropdownMenuSubContent className="w-48" side="top">
                     <DropdownMenuCheckboxItem
-                        onSelect={event => {
-                            event.preventDefault();
-                            setTheme("system");
-                        }}
+                        onClick={() => setTheme("system")}
                         disabled={theme === "system"}
                         checked={theme === "system"}
                     >
@@ -42,10 +39,7 @@ export default function ThemeSubdropdown() {
                         {tTheme("system").replace(/^./, c => c.toUpperCase())}
                     </DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem
-                        onSelect={event => {
-                            event.preventDefault();
-                            setTheme("light");
-                        }}
+                        onClick={() => setTheme("light")}
                         disabled={theme === "light"}
                         checked={theme === "light"}
                     >
@@ -54,10 +48,7 @@ export default function ThemeSubdropdown() {
                     </DropdownMenuCheckboxItem>
 
                     <DropdownMenuCheckboxItem
-                        onSelect={event => {
-                            event.preventDefault();
-                            setTheme("dark");
-                        }}
+                        onClick={() => setTheme("dark")}
                         disabled={theme === "dark"}
                         checked={theme === "dark"}
                     >

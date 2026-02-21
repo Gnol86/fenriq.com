@@ -53,12 +53,7 @@ export default function CreateOrganizationDialog() {
     };
 
     return (
-        <DropdownMenuItem
-            onSelect={event => {
-                event.preventDefault();
-                handleCreateOrganization();
-            }}
-        >
+        <DropdownMenuItem closeOnClick={false} onClick={() => handleCreateOrganization()}>
             <Plus className="" aria-hidden="true" />
             {t("trigger_button")}
         </DropdownMenuItem>

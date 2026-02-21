@@ -210,15 +210,19 @@ export default async function ManagePlan({ activeSubscription }) {
                                                 )}
                                             </span>
                                             {invoice.invoice_pdf && (
-                                                <Button size="sm" variant="outline" asChild>
-                                                    <Link
-                                                        href={invoice.invoice_pdf}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        <Download className="size-4" />
-                                                        PDF
-                                                    </Link>
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    render={
+                                                        <Link
+                                                            href={invoice.invoice_pdf}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                        />
+                                                    }
+                                                >
+                                                    <Download className="size-4" />
+                                                    PDF
                                                 </Button>
                                             )}
                                         </ItemActions>

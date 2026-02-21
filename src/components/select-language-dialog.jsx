@@ -14,13 +14,8 @@ export default function SelectLanguageDialog({ hasLocale = true }) {
     const [open, setOpen] = useState(!hasLocale);
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent
-                showCloseButton={false}
-                onEscapeKeyDown={e => e.preventDefault()}
-                onPointerDownOutside={e => e.preventDefault()}
-                onInteractOutside={e => e.preventDefault()}
-            >
+        <Dialog open={open}>
+            <DialogContent showCloseButton={false}>
                 <DialogHeader>
                     <DialogTitle>
                         <Globe />

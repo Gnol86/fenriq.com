@@ -57,11 +57,9 @@ export function FeedbackButton() {
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-                <SidebarMenuButton>
-                    <MessageSquare className="size-4" />
-                    <span>{t("button_label")}</span>
-                </SidebarMenuButton>
+            <DialogTrigger render={<SidebarMenuButton />}>
+                <MessageSquare className="size-4" />
+                <span>{t("button_label")}</span>
             </DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleSubmit}>

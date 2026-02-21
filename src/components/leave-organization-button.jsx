@@ -43,15 +43,17 @@ export default function LeaveOrganizationButton({ organization, isActive }) {
 
     return (
         <Tooltip>
-            <TooltipTrigger asChild>
-                <Button
-                    variant="destructive"
-                    size="icon-sm"
-                    onClick={handleLeaveOrganization}
-                    aria-label={t("button_aria_label")}
-                >
-                    <LogOut />
-                </Button>
+            <TooltipTrigger
+                render={
+                    <Button
+                        variant="destructive"
+                        size="icon-sm"
+                        onClick={handleLeaveOrganization}
+                        aria-label={t("button_aria_label")}
+                    />
+                }
+            >
+                <LogOut />
             </TooltipTrigger>
             <TooltipContent>{t("button_aria_label")}</TooltipContent>
         </Tooltip>

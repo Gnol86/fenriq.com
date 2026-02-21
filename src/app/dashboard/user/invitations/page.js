@@ -92,11 +92,11 @@ export default async function Page() {
                                             <Button
                                                 size="sm"
                                                 className="flex items-center gap-2"
-                                                asChild
+                                                render={
+                                                    <Link href={`/invitations/${invitation.id}`} />
+                                                }
                                             >
-                                                <Link href={`/invitations/${invitation.id}`}>
-                                                    <Eye /> {t("view_button")}
-                                                </Link>
+                                                <Eye /> {t("view_button")}
                                             </Button>
                                         </ItemActions>
                                     </Item>

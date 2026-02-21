@@ -11,8 +11,8 @@ export default function AddOnSideBarContentDashboard() {
     //         <SidebarGroupContent>
     //             <SidebarMenu>
     //                 <SidebarMenuItem>
-    //                     <SidebarMenuButton asChild>
-    //                         <Link href="/dashboard">Test</Link>
+    //                     <SidebarMenuButton render={<Link href="/dashboard" />}>
+    //                         Test
     //                     </SidebarMenuButton>
     //                 </SidebarMenuItem>
     //             </SidebarMenu>

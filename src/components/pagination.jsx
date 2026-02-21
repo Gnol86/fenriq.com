@@ -48,10 +48,12 @@ export function Pagination({ totalPages, page }) {
                         <ChevronLeft />
                     </Button>
                     <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="secondary" size="icon-sm">
-                                <Hash className="h-4 w-4" />
-                            </Button>
+                        <DropdownMenuTrigger
+                            render={
+                                <Button variant="secondary" size="icon-sm" nativeButton={false} />
+                            }
+                        >
+                            <Hash className="h-4 w-4" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent side="top">
                             <ScrollArea onCard className="h-48 pr-3">

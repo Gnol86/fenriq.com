@@ -35,8 +35,7 @@ export default function LocalizationSubdropdown({ currentLocale }) {
                         return (
                             <DropdownMenuCheckboxItem
                                 key={locale}
-                                onSelect={async event => {
-                                    event.preventDefault();
+                                onClick={async () => {
                                     if (isPending) return;
 
                                     await execute(() => setLocaleAction({ locale }), {

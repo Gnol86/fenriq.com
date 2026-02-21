@@ -34,27 +34,21 @@ export default async function AppSideBar() {
                 <SidebarGroupContent>
                     <SidebarMenu>
                         <SidebarMenuItem>
-                            <SidebarMenuButton asChild>
-                                <Link href="/app/products">
-                                    <Package className="opacity-60" />
-                                    <span>{t("products")}</span>
-                                </Link>
+                            <SidebarMenuButton render={<Link href="/app/products" />}>
+                                <Package className="opacity-60" />
+                                <span>{t("products")}</span>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                            <SidebarMenuButton asChild>
-                                <Link href="/app/orders">
-                                    <ShoppingCart className="opacity-60" />
-                                    <span>{t("orders")}</span>
-                                </Link>
+                            <SidebarMenuButton render={<Link href="/app/orders" />}>
+                                <ShoppingCart className="opacity-60" />
+                                <span>{t("orders")}</span>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                            <SidebarMenuButton asChild>
-                                <Link href="/app/analytics">
-                                    <BarChart className="opacity-60" />
-                                    <span>{t("analytics")}</span>
-                                </Link>
+                            <SidebarMenuButton render={<Link href="/app/analytics" />}>
+                                <BarChart className="opacity-60" />
+                                <span>{t("analytics")}</span>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     </SidebarMenu>

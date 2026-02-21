@@ -6,6 +6,7 @@ import { setActiveOrganizationAction } from "@/actions/organization.action";
 import {
     DropdownMenu,
     DropdownMenuContent,
+    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
@@ -27,34 +28,39 @@ export default function OrgButton({ userOrganizations, activeUserOrganization })
     return (
         <SidebarMenuItem className="mt-2">
             <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton
-                        size="lg"
-                        className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                    >
-                        <ImageProfile
-                            entity={activeUserOrganization}
-                            size="sm"
-                            defaultImage="/images/logo.png"
+                <DropdownMenuTrigger
+                    render={
+                        <SidebarMenuButton
+                            size="lg"
+                            className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
                         />
-                        <div className="grid flex-1 text-left text-sm leading-tight">
-                            <span className="truncate font-medium">{SiteConfig.title}</span>
-                            <span className="truncate text-xs">
-                                {activeUserOrganization?.name ||
-                                    tDashboard("no_active_organization")}
-                            </span>
-                        </div>
-                        <ChevronsUpDown className="ml-auto size-4" />
-                    </SidebarMenuButton>
+                    }
+                >
+                    <ImageProfile
+                        entity={activeUserOrganization}
+                        size="sm"
+                        defaultImage="/images/logo.png"
+                    />
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-medium">{SiteConfig.title}</span>
+                        <span className="truncate text-xs">
+                            {activeUserOrganization?.name || tDashboard("no_active_organization")}
+                        </span>
+                    </div>
+                    <ChevronsUpDown className="ml-auto size-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                    className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                    className="w-(--anchor-width) min-w-56 rounded-lg"
                     side={isMobile ? "top" : "right"}
                     align="end"
                     sideOffset={4}
                     onCloseAutoFocus={event => event.preventDefault()}
                 >
-                    <DropdownMenuLabel>{tDashboard("my_organizations_title")}</DropdownMenuLabel>
+                    <DropdownMenuGroup>
+                        <DropdownMenuLabel>
+                            {tDashboard("my_organizations_title")}
+                        </DropdownMenuLabel>
+                    </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     {userOrganizations && userOrganizations.length > 0 ? (
                         userOrganizations.map(organization => {
@@ -63,7 +69,7 @@ export default function OrgButton({ userOrganizations, activeUserOrganization })
                             return (
                                 <DropdownMenuItem
                                     key={organization.id}
-                                    onSelect={async _event => {
+                                    onClick={async () => {
                                         if (isMobile) {
                                             setOpenMobile(false);
                                         }

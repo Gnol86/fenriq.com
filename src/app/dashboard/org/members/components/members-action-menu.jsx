@@ -95,24 +95,25 @@ export default function MembersActionMenu({
         <ButtonGroup>
             {canUpdate && (
                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            aria-label="Actions du membre"
-                            disabled={isPending}
-                        >
-                            {t("menu_change_role")}
-                        </Button>
+                    <DropdownMenuTrigger
+                        render={
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                nativeButton={false}
+                                aria-label="Actions du membre"
+                                disabled={isPending}
+                            />
+                        }
+                    >
+                        {t("menu_change_role")}
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         {roleOptions.map(([role, label]) => (
                             <DropdownMenuItem
                                 key={role}
-                                onSelect={event => {
-                                    event.preventDefault();
-                                    handleRoleChange(role);
-                                }}
+                                closeOnClick={false}
+                                onClick={() => handleRoleChange(role)}
                                 disabled={isPending}
                             >
                                 <span className="text-sm">{label}</span>

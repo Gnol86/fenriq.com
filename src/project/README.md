@@ -154,11 +154,9 @@ export default async function AppSideBar() {
             <SidebarGroupContent>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                            <Link href="/app/products">
-                                <Package className="opacity-60" />
-                                {t("my_products")}
-                            </Link>
+                        <SidebarMenuButton render={<Link href="/app/products" />}>
+                            <Package className="opacity-60" />
+                            {t("my_products")}
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>

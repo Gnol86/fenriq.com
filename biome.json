@@ -20,7 +20,8 @@
             "!**/src/generated",
             "!**/prisma/generated",
             "!**/.env*",
-            "!**/public"
+            "!**/public",
+            "!**/src/components/ui"
         ]
     },
     "assist": { "actions": { "source": { "organizeImports": "on" } } },

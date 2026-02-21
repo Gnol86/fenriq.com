@@ -72,18 +72,15 @@ export function DialogComponent(props) {
     };
 
     return (
-        <Modal open={true} onOpenChange={handleCancel} dismissible={!dialog.loading}>
-            <ModalContent
-                onEscapeKeyDown={e => {
-                    if (dialog.loading) e.preventDefault();
-                }}
-                onPointerDownOutside={e => {
-                    if (dialog.loading) e.preventDefault();
-                }}
-                onInteractOutside={e => {
-                    if (dialog.loading) e.preventDefault();
-                }}
-            >
+        <Modal
+            open={true}
+            onOpenChange={open => {
+                if (!open && dialog.loading) return;
+                handleCancel();
+            }}
+            dismissible={!dialog.loading}
+        >
+            <ModalContent>
                 <ModalHeader
                     className={cn({
                         "flex flex-col items-center gap-2": dialog.style === "centered",

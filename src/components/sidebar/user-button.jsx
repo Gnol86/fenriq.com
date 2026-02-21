@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import {
     DropdownMenu,
     DropdownMenuContent,
+    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuPortal,
@@ -68,9 +69,7 @@ export default function UserButton({ user, isImpersonating = null, currentLocale
         });
     };
 
-    const handleNavigate = href => event => {
-        event.preventDefault();
-
+    const handleNavigate = href => () => {
         if (isMobile) {
             setOpenMobile(false);
         }
@@ -80,47 +79,51 @@ export default function UserButton({ user, isImpersonating = null, currentLocale
     return (
         <SidebarMenuItem className="mb-2">
             <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton
-                        size="lg"
-                        className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                    >
-                        <ImageProfile entity={user} size="sm" />
+                <DropdownMenuTrigger
+                    render={
+                        <SidebarMenuButton
+                            size="lg"
+                            className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
+                        />
+                    }
+                >
+                    <ImageProfile entity={user} size="sm" />
 
-                        <div className="grid flex-1 text-left text-sm leading-tight">
-                            <span
-                                className={cn(
-                                    "truncate font-medium",
-                                    isImpersonating && "text-destructive"
-                                )}
-                            >
-                                {user.name || t("default_name")}
-                            </span>
-                            <span className="truncate text-xs">{user.email}</span>
-                        </div>
-                        <ChevronsUpDown className="ml-auto size-4" />
-                    </SidebarMenuButton>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span
+                            className={cn(
+                                "truncate font-medium",
+                                isImpersonating && "text-destructive"
+                            )}
+                        >
+                            {user.name || t("default_name")}
+                        </span>
+                        <span className="truncate text-xs">{user.email}</span>
+                    </div>
+                    <ChevronsUpDown className="ml-auto size-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                    className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                    className="w-(--anchor-width) min-w-56 rounded-lg"
                     side={isMobile ? "bottom" : "right"}
                     align="end"
                     sideOffset={4}
                     onCloseAutoFocus={event => event.preventDefault()}
                 >
-                    <DropdownMenuLabel className="p-0 font-normal">
-                        <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                            <ImageProfile entity={user} size="sm" />
-                            <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-medium">{user.name}</span>
-                                <span className="truncate text-xs">{user.email}</span>
+                    <DropdownMenuGroup>
+                        <DropdownMenuLabel className="p-0 font-normal">
+                            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                                <ImageProfile entity={user} size="sm" />
+                                <div className="grid flex-1 text-left text-sm leading-tight">
+                                    <span className="truncate font-medium">{user.name}</span>
+                                    <span className="truncate text-xs">{user.email}</span>
+                                </div>
                             </div>
-                        </div>
-                    </DropdownMenuLabel>
+                        </DropdownMenuLabel>
+                    </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     {!isOnApp && (
                         <DropdownMenuItem
-                            onSelect={handleNavigate("/app")}
+                            onClick={handleNavigate("/app")}
                             className="flex items-center gap-2"
                         >
                             <AppWindow size={16} className="opacity-60" aria-hidden="true" />
@@ -129,7 +132,7 @@ export default function UserButton({ user, isImpersonating = null, currentLocale
                     )}
                     {!isOnDashboard && (
                         <DropdownMenuItem
-                            onSelect={handleNavigate("/dashboard")}
+                            onClick={handleNavigate("/dashboard")}
                             className="flex items-center gap-2"
                         >
                             <LayoutDashboard size={16} className="opacity-60" aria-hidden="true" />
@@ -151,8 +154,8 @@ export default function UserButton({ user, isImpersonating = null, currentLocale
                     {isImpersonating ? (
                         <DropdownMenuItem
                             variant="destructive"
-                            onSelect={event => {
-                                event.preventDefault();
+                            closeOnClick={false}
+                            onClick={() => {
                                 if (!isStoppingImpersonation) {
                                     handleStopImpersonating();
                                 }
@@ -174,8 +177,8 @@ export default function UserButton({ user, isImpersonating = null, currentLocale
                     ) : (
                         <DropdownMenuItem
                             variant="destructive"
-                            onSelect={event => {
-                                event.preventDefault();
+                            closeOnClick={false}
+                            onClick={() => {
                                 if (!isSigningOut) {
                                     handleSignOut();
                                 }

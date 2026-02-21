@@ -26,17 +26,21 @@ export function ActiveSidebarLink({ href, children, className }) {
     const isActive = pathname === href;
 
     return (
-        <SidebarMenuButton asChild isActive={isActive} className={className}>
-            <Link
-                href={href}
-                onNavigate={() => {
-                    if (isMobile) {
-                        setOpenMobile(false);
-                    }
-                }}
-            >
-                <LinkContent>{children}</LinkContent>
-            </Link>
+        <SidebarMenuButton
+            render={
+                <Link
+                    href={href}
+                    onNavigate={() => {
+                        if (isMobile) {
+                            setOpenMobile(false);
+                        }
+                    }}
+                />
+            }
+            isActive={isActive}
+            className={className}
+        >
+            <LinkContent>{children}</LinkContent>
         </SidebarMenuButton>
     );
 }

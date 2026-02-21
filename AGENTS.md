@@ -181,6 +181,12 @@ See `.github/SETUP_NEW_PROJECT.md` for the complete guide.
 - `scripts/setup-new-project.sh` - Automated project creation script
 - `.github/SETUP_NEW_PROJECT.md` - Full documentation
 
+## 🚨 ABSOLUTE RULES - DO NOT BREAK
+
+### NEVER modify `src/components/ui/` files
+
+The files in `src/components/ui/` are managed by shadcn/ui CLI and updated via the boilerplate upstream. **NEVER edit, modify, or touch any file in `src/components/ui/`**. These are auto-generated wrapper components. If there's a bug or incompatibility in a UI wrapper, inform the user instead of modifying the file.
+
 ## Code Conventions
 
 ### React/Next.js
