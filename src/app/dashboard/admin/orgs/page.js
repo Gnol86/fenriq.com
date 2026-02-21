@@ -68,21 +68,24 @@ export default async function AdminOrganizationsPage({ searchParams }) {
         take: limit,
     });
 
-    // Fetch subscriptions separately (no direct relation in schema)
+    // Récupérer les subscriptions via referenceId (pas de relation Prisma directe)
     const orgIds = orgs.map(o => o.id);
-    const subscriptions = orgIds.length
-        ? await prisma.subscription.findMany({
-              where: { referenceId: { in: orgIds } },
-          })
-        : [];
-    const subByOrg = {};
+    const subscriptions = await prisma.subscription.findMany({
+        where: { referenceId: { in: orgIds } },
+        orderBy: { periodStart: "desc" },
+    });
+
+    // Associer la dernière subscription par org
+    const subscriptionByOrgId = {};
     for (const sub of subscriptions) {
-        if (!subByOrg[sub.referenceId]) subByOrg[sub.referenceId] = sub;
+        if (!subscriptionByOrgId[sub.referenceId]) {
+            subscriptionByOrgId[sub.referenceId] = sub;
+        }
     }
 
     const organizations = orgs.map(org => ({
         ...org,
-        subscriptions: subByOrg[org.id] ? [subByOrg[org.id]] : [],
+        subscription: subscriptionByOrgId[org.id] ?? null,
     }));
     const totalPages = Math.ceil(lengthTotalOrgs / ORGS_PER_PAGE);
 
@@ -150,13 +153,9 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                                 aria-label={t("table_status")}
                                             >
                                                 <Badge variant="outline" className="text-xs">
-                                                    {org.subscriptions?.[0]?.status
-                                                        ? tSub(
-                                                              `status_${org.subscriptions[0].status}`
-                                                          )
-                                                        : org._count.members > 0
-                                                          ? t("stats_status_active")
-                                                          : tCommon("n_a")}
+                                                    {org.subscription?.status
+                                                        ? tSub(`status_${org.subscription.status}`)
+                                                        : tCommon("n_a")}
                                                 </Badge>
                                             </Link>
                                         </TableCell>

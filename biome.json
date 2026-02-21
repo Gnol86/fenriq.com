@@ -10,6 +10,9 @@
         "includes": [
             "**",
             "!**/.next",
+            "!**/.agents",
+            "!**/.claude",
+            "!**/skills",
             "!**/node_modules",
             "!**/out",
             "!**/dist",
