@@ -107,7 +107,6 @@ export default function UserButton({ user, isImpersonating = null, currentLocale
                     side={isMobile ? "bottom" : "right"}
                     align="end"
                     sideOffset={4}
-                    onCloseAutoFocus={event => event.preventDefault()}
                 >
                     <DropdownMenuGroup>
                         <DropdownMenuLabel className="p-0 font-normal">

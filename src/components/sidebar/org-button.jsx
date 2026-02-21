@@ -54,7 +54,6 @@ export default function OrgButton({ userOrganizations, activeUserOrganization })
                     side={isMobile ? "top" : "right"}
                     align="end"
                     sideOffset={4}
-                    onCloseAutoFocus={event => event.preventDefault()}
                 >
                     <DropdownMenuGroup>
                         <DropdownMenuLabel>
