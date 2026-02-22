@@ -788,6 +788,7 @@
             "default_name": "Gebruiker",
             "return_to_app": "Terug naar applicatie",
             "dashboard": "Dashboard",
+            "settings": "Instellingen",
             "stop_impersonation": "Overname stoppen",
             "sign_out": "Afmelden",
             "success_stop_impersonation": "Overname beëindigd"

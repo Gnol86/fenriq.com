@@ -789,6 +789,7 @@
             "default_name": "Benutzer",
             "return_to_app": "Zur Anwendung zurückkehren",
             "dashboard": "Dashboard",
+            "settings": "Einstellungen",
             "stop_impersonation": "Übernahme beenden",
             "sign_out": "Abmelden",
             "success_stop_impersonation": "Übernahme beendet"

@@ -788,6 +788,7 @@
             "default_name": "Utilisateur",
             "return_to_app": "Retour à l'application",
             "dashboard": "Tableau de bord",
+            "settings": "Paramètres",
             "stop_impersonation": "Stopper usurpation",
             "sign_out": "Se déconnecter",
             "success_stop_impersonation": "Usurpation terminée"

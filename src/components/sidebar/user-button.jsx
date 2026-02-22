@@ -141,7 +141,7 @@ export default function UserButton({ user, isImpersonating = null, currentLocale
                     <DropdownMenuSub>
                         <DropdownMenuSubTrigger className="flex items-center gap-2">
                             <Settings2 size={16} className="opacity-60" aria-hidden="true" />
-                            <span>Parramètres</span>
+                            {t("settings")}
                         </DropdownMenuSubTrigger>
                         <DropdownMenuPortal>
                             <DropdownMenuSubContent>

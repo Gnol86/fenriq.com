@@ -788,6 +788,7 @@
             "default_name": "User",
             "return_to_app": "Return to Application",
             "dashboard": "Dashboard",
+            "settings": "Settings",
             "stop_impersonation": "Stop Impersonation",
             "sign_out": "Sign Out",
             "success_stop_impersonation": "Impersonation ended"
