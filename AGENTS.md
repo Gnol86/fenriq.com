@@ -2,7 +2,7 @@
 
 This file provides specific guidance for specialized agents working with this codebase.
 
-## About the project PolGPT
+## About the project Boilerplate
 
 Boilerplate for Next.js 16 projects with Prisma, Better-Auth, Resend, Tailwind CSS 4, Shadcn, lucide-react, React-Hook-Form, zod, Next-Themes, and more.
 
