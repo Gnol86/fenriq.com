@@ -825,7 +825,9 @@
         "users": "Users",
         "admin": "Administration",
         "settings": "Settings",
-        "subscription": "Subscription"
+        "subscription": "Subscription",
+        "plans": "Plans",
+        "feedbacks": "Feedbacks"
     },
     "roles": {
         "owner": "Owner",

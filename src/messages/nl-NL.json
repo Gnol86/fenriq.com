@@ -825,7 +825,9 @@
         "users": "Gebruikers",
         "admin": "Beheer",
         "settings": "Instellingen",
-        "subscription": "Abonnement"
+        "subscription": "Abonnement",
+        "plans": "Plannen",
+        "feedbacks": "Feedback"
     },
     "roles": {
         "owner": "Eigenaar",
