@@ -890,6 +890,8 @@
         "actions": "Actions",
         "yes": "Yes",
         "no": "No",
+        "show_password": "Show password",
+        "hide_password": "Hide password",
         "dialog": {
             "cancel": "Cancel",
             "confirm": "Confirm",

@@ -890,6 +890,8 @@
         "actions": "Acties",
         "yes": "Ja",
         "no": "Nee",
+        "show_password": "Wachtwoord weergeven",
+        "hide_password": "Wachtwoord verbergen",
         "dialog": {
             "cancel": "Annuleren",
             "confirm": "Bevestigen",

@@ -891,6 +891,8 @@
         "actions": "Aktionen",
         "yes": "Ja",
         "no": "Nein",
+        "show_password": "Passwort anzeigen",
+        "hide_password": "Passwort ausblenden",
         "dialog": {
             "cancel": "Abbrechen",
             "confirm": "Bestätigen",
