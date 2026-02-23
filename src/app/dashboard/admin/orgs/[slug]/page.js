@@ -60,7 +60,7 @@ export default async function AdminOrganizationPage({ params }) {
         notFound();
     }
 
-    const subscription = await prisma.subscription.findUnique({
+    const subscription = await prisma.subscription.findFirst({
         where: { referenceId: organisation.id },
     });
 
