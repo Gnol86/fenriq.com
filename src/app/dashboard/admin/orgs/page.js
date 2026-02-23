@@ -52,28 +52,39 @@ export default async function AdminOrganizationsPage({ searchParams }) {
         where: whereClause,
     });
 
-    const organizations = await prisma.organization.findMany({
+    const orgs = await prisma.organization.findMany({
         where: whereClause,
         orderBy: {
             [sortBy]: sortDirection,
         },
-
         include: {
             _count: {
                 select: {
                     members: true,
                 },
             },
-            subscriptions: {
-                take: 1,
-                orderBy: {
-                    createdAt: "desc",
-                },
-            },
         },
         skip: offset,
         take: limit,
     });
+
+    // Fetch subscriptions separately (no direct relation in schema)
+    const orgIds = orgs.map(o => o.id);
+    const subscriptions = orgIds.length
+        ? await prisma.subscription.findMany({
+              where: { referenceId: { in: orgIds } },
+              orderBy: { createdAt: "desc" },
+          })
+        : [];
+    const subByOrg = {};
+    for (const sub of subscriptions) {
+        if (!subByOrg[sub.referenceId]) subByOrg[sub.referenceId] = sub;
+    }
+
+    const organizations = orgs.map(org => ({
+        ...org,
+        subscriptions: subByOrg[org.id] ? [subByOrg[org.id]] : [],
+    }));
     const totalPages = Math.ceil(lengthTotalOrgs / ORGS_PER_PAGE);
 
     return (
