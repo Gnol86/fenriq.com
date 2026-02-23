@@ -73,7 +73,6 @@ export default async function AdminOrganizationsPage({ searchParams }) {
     const subscriptions = orgIds.length
         ? await prisma.subscription.findMany({
               where: { referenceId: { in: orgIds } },
-              orderBy: { createdAt: "desc" },
           })
         : [];
     const subByOrg = {};
