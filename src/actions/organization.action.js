@@ -47,7 +47,7 @@ export async function deleteOrganizationAction({ organizationId }) {
 }
 
 export async function inviteMemberAction({ email, role, organizationId }) {
-    return await auth.api.createInvitation({
+    const result = await auth.api.createInvitation({
         body: {
             email: email,
             role: role,
@@ -56,6 +56,8 @@ export async function inviteMemberAction({ email, role, organizationId }) {
         },
         headers: await headers(),
     });
+    // Return only serializable data to avoid Server Components boundary errors
+    return { id: result?.id, status: result?.status ?? "sent" };
 }
 
 export async function updateMemberRoleAction({ memberId, role, organizationId }) {
