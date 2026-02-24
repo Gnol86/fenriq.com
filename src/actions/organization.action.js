@@ -5,13 +5,22 @@ import { auth } from "@/lib/auth";
 import { nameToSlug } from "@/lib/utils";
 
 export async function createOrganizationAction({ name }) {
-    return await auth.api.createOrganization({
+    const hdrs = await headers();
+    const org = await auth.api.createOrganization({
         body: {
             name: name,
             slug: nameToSlug(name),
         },
-        headers: await headers(),
+        headers: hdrs,
     });
+    // Auto-select the newly created organization
+    if (org?.id) {
+        await auth.api.setActiveOrganization({
+            body: { organizationId: org.id },
+            headers: hdrs,
+        });
+    }
+    return org;
 }
 
 export async function updateOrganizationAction({ name, logo, organizationId }) {
