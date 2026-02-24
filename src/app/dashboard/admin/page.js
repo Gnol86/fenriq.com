@@ -1,7 +1,7 @@
-import { requireAdmin } from "@root/src/lib/access-control";
 import { redirect } from "next/navigation";
+import { requireAdmin } from "@/lib/access-control";
 
-export default function Page() {
-    requireAdmin();
-    redirect("/dashboard");
+export default async function AdminPage() {
+    await requireAdmin();
+    redirect("/dashboard/admin/users");
 }
