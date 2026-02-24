@@ -724,6 +724,7 @@
             "hide_resolved": "{count, plural, one {# afgehandelde feedback} other {# afgehandelde feedbacks}} verbergen",
             "table_user": "Gebruiker",
             "table_rating": "Beoordeling",
+            "table_comment": "Opmerking",
             "table_status": "Status",
             "table_date": "Datum",
             "table_actions": "Acties",

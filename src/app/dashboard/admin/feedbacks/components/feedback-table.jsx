@@ -21,7 +21,7 @@ export default function FeedbackTable({ feedbacks, resolvedCount }) {
         <>
             {resolvedCount > 0 && (
                 <tr>
-                    <td colSpan={4} className="p-2">
+                    <td colSpan={5} className="p-2">
                         <Button
                             variant="outline"
                             size="sm"

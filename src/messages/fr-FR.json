@@ -724,6 +724,7 @@
             "hide_resolved": "Masquer les {count, plural, one {# feedback traité} other {# feedbacks traités}}",
             "table_user": "Utilisateur",
             "table_rating": "Note",
+            "table_comment": "Commentaire",
             "table_status": "Statut",
             "table_date": "Date",
             "table_actions": "Actions",

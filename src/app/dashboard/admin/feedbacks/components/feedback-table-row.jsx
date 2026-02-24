@@ -56,6 +56,13 @@ export default function FeedbackTableRow({ feedback, isExpanded, onToggle }) {
                     </div>
                 </TableCell>
 
+                {/* Commentaire */}
+                <TableCell>
+                    <span className="text-muted-foreground text-sm line-clamp-1">
+                        {feedback.comment || t("no_comment")}
+                    </span>
+                </TableCell>
+
                 {/* Statut */}
                 <TableCell>
                     <div className="flex flex-col gap-1">

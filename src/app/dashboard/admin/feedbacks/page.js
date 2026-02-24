@@ -52,6 +52,7 @@ export default async function AdminFeedbacksPage() {
                             <TableRow>
                                 <TableHead>{t("table_user")}</TableHead>
                                 <TableHead>{t("table_rating")}</TableHead>
+                                <TableHead>{t("table_comment")}</TableHead>
                                 <TableHead>{t("table_status")}</TableHead>
                                 <TableHead>{t("table_date")}</TableHead>
                             </TableRow>
