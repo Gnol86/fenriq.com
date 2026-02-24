@@ -34,8 +34,8 @@ export const SiteConfig = {
 
     // ========== EMAIL CONFIGURATION ==========
     mail: {
-        from: "PolGPT <noreply@polgpt.be>", // ← TODO: Change sender email
-        signature: "L'équipe de PolGPT", // ← TODO: Change email signature
+        from: "Boilerplate <noreply@example.com>", // ← TODO: Change sender email
+        signature: "L'équipe Boilerplate", // ← TODO: Change email signature
     },
 
     // ========== BRAND STYLING ==========
