@@ -3,10 +3,12 @@ import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { requireAuth } from "@/lib/access-control";
+import ChangePasswordForm from "@/features/user/change-password-form";
 import UserSettingsForm from "./form";
 
 export default async function UserSettingsPage() {
     const t = await getTranslations("user.settings");
+    const tPassword = await getTranslations("user.settings.change_password");
 
     // Vérifie que l'utilisateur est authentifié
     const { user } = await requireAuth();
@@ -24,6 +26,16 @@ export default async function UserSettingsPage() {
                         <ManageImageProfile entity={user} user size="2xl" />
                     </div>
                     <UserSettingsForm user={user} />
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>{tPassword("card_title")}</CardTitle>
+                    <CardDescription>{tPassword("card_description")}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <ChangePasswordForm />
                 </CardContent>
             </Card>
         </div>

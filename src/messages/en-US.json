@@ -125,7 +125,17 @@
             "success_message": "Settings updated successfully",
             "error_message": "Error updating settings",
             "no_user_error": "Unable to load user information.",
-            "reconnect_message": "Please sign in again to access your settings."
+            "reconnect_message": "Please sign in again to access your settings.",
+            "change_password": {
+                "card_title": "Change Password",
+                "card_description": "Update your password to keep your account secure.",
+                "current_password_label": "Current Password",
+                "new_password_label": "New Password",
+                "confirm_password_label": "Confirm New Password",
+                "submit_button": "Update Password",
+                "success_message": "Password updated successfully",
+                "error_message": "Error updating password"
+            }
         },
         "danger_zone": {
             "card_description": "Deleting your account is irreversible. You will lose access to all your data and all organizations. Enter your email address to confirm.",

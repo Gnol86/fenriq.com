@@ -5,6 +5,17 @@ import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
+export async function changePasswordAction({ currentPassword, newPassword }) {
+    return await auth.api.changePassword({
+        body: {
+            currentPassword,
+            newPassword,
+            revokeOtherSessions: false,
+        },
+        headers: await headers(),
+    });
+}
+
 export async function updateUserAction({ name, email, image }) {
     return await auth.api.updateUser({
         body: {

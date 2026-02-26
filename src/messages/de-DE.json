@@ -125,7 +125,17 @@
             "success_message": "Einstellungen erfolgreich aktualisiert",
             "error_message": "Fehler beim Aktualisieren der Einstellungen",
             "no_user_error": "Benutzerinformationen können nicht geladen werden.",
-            "reconnect_message": "Melden Sie sich erneut an, um auf Ihre Einstellungen zuzugreifen."
+            "reconnect_message": "Melden Sie sich erneut an, um auf Ihre Einstellungen zuzugreifen.",
+            "change_password": {
+                "card_title": "Passwort ändern",
+                "card_description": "Aktualisieren Sie Ihr Passwort, um Ihr Konto zu sichern.",
+                "current_password_label": "Aktuelles Passwort",
+                "new_password_label": "Neues Passwort",
+                "confirm_password_label": "Neues Passwort bestätigen",
+                "submit_button": "Passwort aktualisieren",
+                "success_message": "Passwort erfolgreich aktualisiert",
+                "error_message": "Fehler beim Aktualisieren des Passworts"
+            }
         },
         "danger_zone": {
             "card_description": "Das Löschen Ihres Kontos ist unwiderruflich. Sie verlieren den Zugriff auf alle Ihre Daten und Organisationen. Geben Sie zur Bestätigung Ihre E-Mail-Adresse ein.",

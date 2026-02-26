@@ -125,7 +125,17 @@
             "success_message": "Paramètres mis à jour avec succès",
             "error_message": "Erreur lors de la mise à jour des paramètres",
             "no_user_error": "Impossible de charger les informations utilisateur.",
-            "reconnect_message": "Veuillez vous reconnecter pour accéder à vos paramètres."
+            "reconnect_message": "Veuillez vous reconnecter pour accéder à vos paramètres.",
+            "change_password": {
+                "card_title": "Changer le mot de passe",
+                "card_description": "Mettez à jour votre mot de passe pour sécuriser votre compte.",
+                "current_password_label": "Mot de passe actuel",
+                "new_password_label": "Nouveau mot de passe",
+                "confirm_password_label": "Confirmer le nouveau mot de passe",
+                "submit_button": "Mettre à jour le mot de passe",
+                "success_message": "Mot de passe mis à jour avec succès",
+                "error_message": "Erreur lors du changement de mot de passe"
+            }
         },
         "danger_zone": {
             "card_description": "Supprimer votre compte est une action irréversible. Vous perdrez l'accès à toutes vos données et à toutes les organisations. Saisissez votre adresse email pour confirmer.",

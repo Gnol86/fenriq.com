@@ -125,7 +125,17 @@
             "success_message": "Instellingen succesvol bijgewerkt",
             "error_message": "Fout bij het bijwerken van de instellingen",
             "no_user_error": "Gebruikersgegevens kunnen niet worden geladen.",
-            "reconnect_message": "Log opnieuw in om toegang te krijgen tot uw instellingen."
+            "reconnect_message": "Log opnieuw in om toegang te krijgen tot uw instellingen.",
+            "change_password": {
+                "card_title": "Wachtwoord wijzigen",
+                "card_description": "Werk uw wachtwoord bij om uw account veilig te houden.",
+                "current_password_label": "Huidig wachtwoord",
+                "new_password_label": "Nieuw wachtwoord",
+                "confirm_password_label": "Bevestig nieuw wachtwoord",
+                "submit_button": "Wachtwoord bijwerken",
+                "success_message": "Wachtwoord succesvol bijgewerkt",
+                "error_message": "Fout bij het bijwerken van het wachtwoord"
+            }
         },
         "danger_zone": {
             "card_description": "Het verwijderen van uw account is onomkeerbaar. U verliest toegang tot al uw gegevens en alle organisaties. Voer uw e-mailadres in ter bevestiging.",
