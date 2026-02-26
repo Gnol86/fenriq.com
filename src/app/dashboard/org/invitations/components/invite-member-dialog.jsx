@@ -121,7 +121,9 @@ export default function InviteMemberDialog({ organizationId, organizationName })
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder={t("role_placeholder")} />
+                                                <SelectValue placeholder={t("role_placeholder")}>
+                                                    {field.value ? tRoles(field.value) : null}
+                                                </SelectValue>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
