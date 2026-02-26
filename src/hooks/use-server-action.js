@@ -25,13 +25,15 @@ export function useServerAction() {
             setError(null);
             setData(null);
 
+            let actionSucceeded = false;
+
             return toast.promise(action(), {
                 loading: "Opération en cours...",
                 success: data => {
                     setData(data);
-
                     setIsSuccess(true);
                     setIsPending(false);
+                    actionSucceeded = true;
 
                     return successMessage;
                 },
@@ -58,6 +60,9 @@ export function useServerAction() {
                     return errorMessage;
                 },
                 finally: () => {
+                    // Only redirect/refresh on success, not on error
+                    if (!actionSucceeded) return;
+
                     // Push first, then refresh to ensure data is updated on the new page
                     if (redirectOnSuccess) {
                         router.push(redirectOnSuccess);

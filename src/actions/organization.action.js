@@ -56,17 +56,30 @@ export async function deleteOrganizationAction({ organizationId }) {
 }
 
 export async function inviteMemberAction({ email, role, organizationId }) {
-    const result = await auth.api.createInvitation({
-        body: {
-            email: email,
-            role: role,
-            organizationId: organizationId,
-            resend: true,
-        },
-        headers: await headers(),
-    });
-    // Return only serializable data to avoid Server Components boundary errors
-    return { id: result?.id, status: result?.status ?? "sent" };
+    try {
+        const result = await auth.api.createInvitation({
+            body: {
+                email: email,
+                role: role,
+                organizationId: organizationId,
+                resend: true,
+            },
+            headers: await headers(),
+        });
+        // Return only serializable data to avoid Server Components boundary errors
+        return { id: result?.id, status: result?.status ?? "sent" };
+    } catch (error) {
+        console.error("[inviteMemberAction] Error creating invitation:", {
+            email,
+            role,
+            organizationId,
+            errorMessage: error?.message,
+            errorStatus: error?.status,
+            errorBody: error?.body,
+            errorName: error?.name,
+        });
+        throw error;
+    }
 }
 
 export async function updateMemberRoleAction({ memberId, role, organizationId }) {
