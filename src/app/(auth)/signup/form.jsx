@@ -70,7 +70,7 @@ export default function FormSignup() {
                 {
                     onSuccess: () => {
                         toast.success(t("success_message"));
-                        router.push(`/verify-email?email=${values.email}`);
+                        router.push(`/verify-email?email=${encodeURIComponent(values.email)}`);
                     },
                     onError: ctx => {
                         toast.error(ctx.error.message || t("error_submission"));
