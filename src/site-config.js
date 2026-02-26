@@ -34,7 +34,7 @@ export const SiteConfig = {
 
     // ========== EMAIL CONFIGURATION ==========
     mail: {
-        from: "Boilerplate <noreply@example.com>", // ← TODO: Change sender email
+        from: process.env.EMAIL_FROM || "Boilerplate <noreply@example.com>", // ← Override with EMAIL_FROM env var
         signature: "L'équipe Boilerplate", // ← TODO: Change email signature
     },
 
