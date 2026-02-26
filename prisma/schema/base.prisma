@@ -148,6 +148,9 @@ model Subscription {
     periodStart          DateTime?
     periodEnd            DateTime?
     cancelAtPeriodEnd    Boolean?  @default(false)
+    cancelAt             DateTime?
+    canceledAt           DateTime?
+    endedAt              DateTime?
     seats                Int?      @default(1)
     trialStart           DateTime?
     trialEnd             DateTime?

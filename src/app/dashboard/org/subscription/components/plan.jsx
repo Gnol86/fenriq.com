@@ -34,7 +34,7 @@ export default async function Plan({ organization }) {
             </CardHeader>
             <CardContent>
                 {plans.length > 0 ? (
-                    <Tabs defaultValue="monthly" className="w-full justify-center items-center">
+                    <Tabs defaultValue="monthly" className="w-full flex flex-col justify-center items-center">
                         {hasAnnualPlans && (
                             <TabsList className="mb-4">
                                 <TabsTrigger value="monthly">
