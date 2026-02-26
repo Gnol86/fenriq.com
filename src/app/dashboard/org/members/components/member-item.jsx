@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import ImageProfile from "@/components/image-profile";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,6 +19,7 @@ export default function MemberItem({
     canUpdate,
     canDelete,
 }) {
+    const tRoles = useTranslations("roles");
     const user = member.user;
     const memberRole = member?.role ?? "member";
     const showActions = canUpdate || canDelete;
@@ -28,7 +32,7 @@ export default function MemberItem({
             <ItemContent>
                 <ItemTitle>
                     {user.name}
-                    {memberRole !== "member" && <Badge>{memberRole}</Badge>}
+                    {memberRole !== "member" && <Badge>{tRoles(memberRole)}</Badge>}
                 </ItemTitle>
                 <ItemDescription>{user.email}</ItemDescription>
             </ItemContent>
