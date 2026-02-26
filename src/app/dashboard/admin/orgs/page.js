@@ -154,7 +154,9 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                                                         ? tSub(
                                                               `status_${org.subscriptions[0].status}`
                                                           )
-                                                        : tCommon("n_a")}
+                                                        : org._count.members > 0
+                                                          ? t("stats_status_active")
+                                                          : tCommon("n_a")}
                                                 </Badge>
                                             </Link>
                                         </TableCell>
