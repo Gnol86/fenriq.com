@@ -56,8 +56,8 @@ export const SiteConfig = {
 
     // ========== QUOTA CONFIGURATION ==========
     quota: {
-        enabled: true, // Set to true to enable quantity-based billing
-        minimum: 10, // Minimum quantity per subscription
-        step: 5, // Quantity increment step (1 = any number, 5 = multiples of 5)
+        enabled: false, // Set to true to enable quantity-based billing
+        minimum: 1, // Minimum quantity per subscription
+        step: 1, // Quantity increment step (1 = any number, 5 = multiples of 5)
     },
 };
