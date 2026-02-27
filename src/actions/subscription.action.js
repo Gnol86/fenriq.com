@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { requireActiveOrganization, requirePermission } from "@/lib/access-control";
 import prisma from "@/lib/prisma";
 import stripe from "@/lib/stripe";
+import { SiteConfig } from "@/site-config";
 import { auth } from "../lib/auth";
 import { getServerUrl } from "../lib/server-url";
 
@@ -122,7 +123,7 @@ export async function getOrganizationMemberCount() {
  * Crée une session de checkout Stripe pour s'abonner à un plan
  * Valide le priceId et la quantité côté serveur pour éviter les manipulations
  */
-export async function createCheckoutSession({ planId, annual = false }) {
+export async function createCheckoutSession({ planId, annual = false, seats }) {
     const { organization } = await requirePermission({
         permissions: { billing: ["manage"] },
     });
@@ -148,7 +149,12 @@ export async function createCheckoutSession({ planId, annual = false }) {
             plan: plan.name,
             annual: annual,
             referenceId: organization.id,
-            seats: plan.name === "team" ? memberCount : undefined,
+            seats:
+                plan.name === "team"
+                    ? memberCount
+                    : SiteConfig.quota?.enabled && seats
+                      ? seats
+                      : undefined,
             successUrl: `${getServerUrl()}/dashboard/org/subscription?success=true`,
             cancelUrl: `${getServerUrl()}/dashboard/org/subscription?canceled=true`,
             returnUrl: `${getServerUrl()}/dashboard/org/subscription`,

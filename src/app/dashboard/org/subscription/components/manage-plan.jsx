@@ -16,6 +16,8 @@ import {
     ItemTitle,
 } from "@/components/ui/item";
 import { requirePermission } from "@/lib/access-control";
+import { SiteConfig } from "@/site-config";
+import QuantitySelector from "./quantity-selector";
 
 export default async function ManagePlan({ activeSubscription }) {
     await requirePermission({
@@ -112,6 +114,32 @@ export default async function ManagePlan({ activeSubscription }) {
                     </div>
                 </CardContent>
             </Card>
+
+            {SiteConfig.quota?.enabled && !isTeamPlan && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{t("quota_title")}</CardTitle>
+                        <CardDescription>{t("quota_description")}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex flex-col gap-4">
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium">
+                                    {t("quota_current", { count: activeSubscription.seats || 1 })}
+                                </span>
+                            </div>
+                            <QuantitySelector
+                                currentSeats={activeSubscription.seats || 1}
+                                unitPrice={price.unit_amount}
+                                currency={price.currency}
+                                locale={locale}
+                                minimum={SiteConfig.quota.minimum}
+                                step={SiteConfig.quota.step}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
 
             <Card>
                 <CardHeader>

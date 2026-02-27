@@ -53,4 +53,11 @@ export const SiteConfig = {
             invitationExpiresIn: 60 * 60 * 24 * 30, // Invitation expiry (30 days)
         },
     },
+
+    // ========== QUOTA CONFIGURATION ==========
+    quota: {
+        enabled: false, // Set to true to enable quantity-based billing
+        minimum: 1, // Minimum quantity per subscription
+        step: 1, // Quantity increment step (1 = any number, 5 = multiples of 5)
+    },
 };

@@ -1,8 +1,10 @@
 import { MagicCard } from "@root/src/components/ui/magic-card";
 import { formatPrice } from "@root/src/lib/utils";
+import { SiteConfig } from "@root/src/site-config";
 import { getTranslations } from "next-intl/server";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import PlanQuantityPicker from "./plan-quantity-picker";
 import SubscriptionButton from "./subscription-button";
 
 // Fonction pour calculer le pourcentage d'économie
@@ -83,7 +85,19 @@ export default async function PlanCard({ plan, annual = false, memberCount, loca
                         {annual ? t("price_per_year") : t("price_per_month")}
                     </div>
                 )}
-                <SubscriptionButton planId={plan.id} annual={annual} />
+                {SiteConfig.quota?.enabled && !isTeamPlan ? (
+                    <PlanQuantityPicker
+                        planId={plan.id}
+                        annual={annual}
+                        unitPrice={priceAmount}
+                        currency={currency}
+                        locale={locale}
+                        minimum={SiteConfig.quota.minimum}
+                        step={SiteConfig.quota.step}
+                    />
+                ) : (
+                    <SubscriptionButton planId={plan.id} annual={annual} />
+                )}
             </div>
         </MagicCard>
     );
