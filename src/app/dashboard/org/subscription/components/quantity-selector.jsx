@@ -19,9 +19,10 @@ export default function QuantitySelector({
 }) {
     const t = useTranslations("organization.subscription");
     const { execute, isPending } = useServerAction();
-    const [quantity, setQuantity] = useState(currentSeats);
-
     const effectiveMinimum = Math.max(minimum, currentUsage);
+    const [quantity, setQuantity] = useState(
+        Math.max(currentSeats, effectiveMinimum)
+    );
 
     const handleDecrement = () => {
         const newValue = quantity - step;
