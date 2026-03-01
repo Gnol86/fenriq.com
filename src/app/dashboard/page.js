@@ -1,6 +1,7 @@
 import { ButtonGroup } from "@root/src/components/ui/button-group";
 import { getActiveOrganization, requireAuth } from "@root/src/lib/access-control";
 import { headers } from "next/headers";
+import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import ImageProfile from "@/components/image-profile";
@@ -151,6 +152,15 @@ export default async function DashboardPage() {
                     ) : (
                         <div className="text-muted-foreground rounded-lg border border-dashed px-4 py-6 text-center text-sm">
                             {t("no_organizations")}
+                            <div className="absolute top-0 left-0 pointer-events-none">
+                                <Image
+                                    src="/images/arrow.svg"
+                                    alt="Arrow pointing down"
+                                    width={200}
+                                    height={200}
+                                    className="mx-auto mt-6 animate-pulse rotate-200"
+                                />
+                            </div>
                         </div>
                     )}
                 </CardContent>

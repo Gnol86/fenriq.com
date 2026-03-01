@@ -10,7 +10,7 @@ export async function changePasswordAction({ currentPassword, newPassword }) {
         body: {
             currentPassword,
             newPassword,
-            revokeOtherSessions: false,
+            revokeOtherSessions: true,
         },
         headers: await headers(),
     });

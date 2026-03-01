@@ -20,7 +20,11 @@ export default async function Page() {
             </CardHeader>
             <CardContent>
                 <div className="flex gap-2">
-                    <Button className="w-full" render={<Link href="/app" className="flex-1" />}>
+                    <Button
+                        className="w-full"
+                        nativeButton={false}
+                        render={<Link href="/app" className="flex-1" />}
+                    >
                         {t("go_to_app_button")}
                     </Button>
                 </div>
