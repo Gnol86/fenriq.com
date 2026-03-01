@@ -39,9 +39,7 @@ export async function updateSubscriptionQuantityAction({ quantity }) {
     }
 
     // Récupérer le subscription item Stripe
-    const stripeSub = await stripe.subscriptions.retrieve(
-        subscription.stripeSubscriptionId
-    );
+    const stripeSub = await stripe.subscriptions.retrieve(subscription.stripeSubscriptionId);
     const itemId = stripeSub.items.data[0].id;
 
     // Mettre à jour la quantité sur Stripe (prorata automatique)

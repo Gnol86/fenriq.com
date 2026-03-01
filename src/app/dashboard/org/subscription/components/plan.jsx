@@ -88,7 +88,11 @@ export default async function Plan({ organization }) {
                         </EmptyHeader>
                         {checkAdmin() && (
                             <EmptyContent>
-                                <Button size="icon" render={<Link href="/dashboard/admin/plans" />}>
+                                <Button
+                                    size="icon"
+                                    nativeButton={false}
+                                    render={<Link href="/dashboard/admin/plans" />}
+                                >
                                     <Plus />
                                 </Button>
                             </EmptyContent>

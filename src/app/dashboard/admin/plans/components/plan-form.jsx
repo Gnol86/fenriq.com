@@ -133,7 +133,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
             {trigger ? (
                 <DialogTrigger render={trigger} />
             ) : (
-                <DialogTrigger render={<Button size="icon" nativeButton={false} />}>
+                <DialogTrigger nativeButton render={<Button size="icon" />}>
                     <Plus />
                 </DialogTrigger>
             )}

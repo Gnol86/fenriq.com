@@ -152,7 +152,9 @@ async function main() {
     }
 
     console.log("\n✨ Seed complete!");
-    console.log("\n⚠️  IMPORTANT: Replace all 'REPLACE_ME' priceId values with real Stripe Price IDs.");
+    console.log(
+        "\n⚠️  IMPORTANT: Replace all 'REPLACE_ME' priceId values with real Stripe Price IDs."
+    );
     console.log("   See: https://dashboard.stripe.com/products");
 }
 

@@ -92,6 +92,7 @@ export default async function Page() {
                                             <Button
                                                 size="sm"
                                                 className="flex items-center gap-2"
+                                                nativeButton={false}
                                                 render={
                                                     <Link href={`/invitations/${invitation.id}`} />
                                                 }

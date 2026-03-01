@@ -4,7 +4,7 @@ import { SiteConfig } from "@root/src/site-config";
 import { getTranslations } from "next-intl/server";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import PlanQuantityPicker from "./plan-quantity-picker";
+import QuantitySelector from "@/components/quantity-selector";
 import SubscriptionButton from "./subscription-button";
 
 // Fonction pour calculer le pourcentage d'économie
@@ -86,9 +86,10 @@ export default async function PlanCard({ plan, annual = false, memberCount, loca
                     </div>
                 )}
                 {SiteConfig.quota?.enabled && !isTeamPlan ? (
-                    <PlanQuantityPicker
+                    <QuantitySelector
                         planId={plan.id}
                         annual={annual}
+                        freeTrialDays={plan.freeTrialDays}
                         unitPrice={priceAmount}
                         currency={currency}
                         locale={locale}
@@ -96,7 +97,11 @@ export default async function PlanCard({ plan, annual = false, memberCount, loca
                         step={SiteConfig.quota.step}
                     />
                 ) : (
-                    <SubscriptionButton planId={plan.id} annual={annual} />
+                    <SubscriptionButton
+                        planId={plan.id}
+                        annual={annual}
+                        freeTrialDays={plan.freeTrialDays}
+                    />
                 )}
             </div>
         </MagicCard>

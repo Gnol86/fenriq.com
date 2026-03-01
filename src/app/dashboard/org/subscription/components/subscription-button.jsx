@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createCheckoutSession } from "@/actions/subscription.action";
 import { Button } from "@/components/ui/button";
 
-export default function SubscriptionButton({ planId, annual = false, seats }) {
+export default function SubscriptionButton({ planId, annual = false, seats, freeTrialDays }) {
     const [isPending, setIsPending] = useState(false);
     const t = useTranslations("organization.subscription");
 
@@ -17,9 +17,11 @@ export default function SubscriptionButton({ planId, annual = false, seats }) {
         }
     };
 
+    const label = freeTrialDays ? t("free_trial_subscribe") : t("subscribe_to_plan");
+
     return (
         <Button size="lg" className="w-full" onClick={handleSubscribe} disabled={isPending}>
-            {isPending ? t("processing_subscription") : t("subscribe_to_plan")}
+            {isPending ? t("processing_subscription") : label}
         </Button>
     );
 }

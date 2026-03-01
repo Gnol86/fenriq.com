@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Fragment } from "react";
 import { getSubscriptionDetails } from "@/actions/subscription.action";
+import QuantitySelector from "@/components/quantity-selector";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/item";
 import { requirePermission } from "@/lib/access-control";
 import { SiteConfig } from "@/site-config";
-import QuantitySelector from "./quantity-selector";
 
 export default async function ManagePlan({ activeSubscription }) {
     await requirePermission({
@@ -241,6 +241,7 @@ export default async function ManagePlan({ activeSubscription }) {
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
+                                                    nativeButton={false}
                                                     render={
                                                         <Link
                                                             href={invoice.invoice_pdf}
