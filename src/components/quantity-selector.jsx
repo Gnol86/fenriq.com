@@ -9,10 +9,12 @@ import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
 import { useServerAction } from "@/hooks/use-server-action";
-import { formatPrice } from "@/lib/utils";
+import { calculateTieredPrice, formatPrice } from "@/lib/utils";
 
 export default function QuantitySelector({
     unitPrice,
+    tiers,
+    tiersMode,
     currency,
     locale,
     minimum = 1,
@@ -110,17 +112,23 @@ export default function QuantitySelector({
                 <p className="text-xs text-muted-foreground">{t("quota_step", { step })}</p>
             )}
 
-            {unitPrice > 0 && (
-                <p
-                    className={
-                        isSubscribeMode ? "text-sm font-bold" : "text-sm text-muted-foreground"
-                    }
-                >
-                    {t("quota_total", {
-                        amount: formatPrice(quantity * unitPrice, currency, locale),
-                    })}
-                </p>
-            )}
+            {(() => {
+                const isTiered = !!tiersMode && !!tiers;
+                const totalAmount = isTiered
+                    ? calculateTieredPrice(tiers, quantity, tiersMode)
+                    : quantity * unitPrice;
+                return totalAmount > 0 ? (
+                    <p
+                        className={
+                            isSubscribeMode ? "text-sm font-bold" : "text-sm text-muted-foreground"
+                        }
+                    >
+                        {t("quota_total", {
+                            amount: formatPrice(totalAmount, currency, locale),
+                        })}
+                    </p>
+                ) : null;
+            })()}
 
             {isSubscribeMode && (
                 <Button

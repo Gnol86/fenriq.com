@@ -30,14 +30,14 @@ export async function getPlansWithStripeData() {
             try {
                 // Récupérer le prix mensuel avec les informations du produit
                 const monthlyPrice = await stripe.prices.retrieve(plan.priceId, {
-                    expand: ["product"],
+                    expand: ["product", "tiers"],
                 });
 
                 // Récupérer le prix annuel si disponible
                 let annualPrice = null;
                 if (plan.annualDiscountPriceId) {
                     annualPrice = await stripe.prices.retrieve(plan.annualDiscountPriceId, {
-                        expand: ["product"],
+                        expand: ["product", "tiers"],
                     });
                 }
 
@@ -62,6 +62,13 @@ export async function getPlansWithStripeData() {
                     }
                 }
 
+                const mapTiers = tiers =>
+                    tiers?.map(t => ({
+                        up_to: t.up_to,
+                        unit_amount: t.unit_amount,
+                        flat_amount: t.flat_amount,
+                    })) ?? null;
+
                 return {
                     id: plan.id,
                     name: plan.name,
@@ -72,6 +79,8 @@ export async function getPlansWithStripeData() {
                         id: monthlyPrice.id,
                         amount: monthlyPrice.unit_amount,
                         currency: monthlyPrice.currency,
+                        tiersMode: monthlyPrice.tiers_mode ?? null,
+                        tiers: mapTiers(monthlyPrice.tiers),
                         product: {
                             id: monthlyPrice.product.id,
                             name: monthlyPrice.product.name,
@@ -84,6 +93,8 @@ export async function getPlansWithStripeData() {
                               id: annualPrice.id,
                               amount: annualPrice.unit_amount,
                               currency: annualPrice.currency,
+                              tiersMode: annualPrice.tiers_mode ?? null,
+                              tiers: mapTiers(annualPrice.tiers),
                               product: {
                                   id: annualPrice.product.id,
                                   name: annualPrice.product.name,
@@ -210,7 +221,7 @@ export async function getSubscriptionDetails(subscriptionId) {
         // Récupérer le prix et le produit
         const priceId = subscription.items.data[0].price.id;
         const price = await stripe.prices.retrieve(priceId, {
-            expand: ["product"],
+            expand: ["product", "tiers"],
         });
 
         // Depuis l'API 2025-03-31, les dates sont dans les items
@@ -254,6 +265,14 @@ export async function getSubscriptionDetails(subscriptionId) {
                 id: price.id,
                 unit_amount: price.unit_amount,
                 currency: price.currency,
+                tiersMode: price.tiers_mode ?? null,
+                tiers: price.tiers
+                    ? price.tiers.map(t => ({
+                          up_to: t.up_to,
+                          unit_amount: t.unit_amount,
+                          flat_amount: t.flat_amount,
+                      }))
+                    : null,
                 recurring: {
                     interval: price.recurring?.interval,
                     interval_count: price.recurring?.interval_count,

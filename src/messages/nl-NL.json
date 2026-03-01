@@ -290,7 +290,12 @@
             "quota_total": "Totaal: {amount}",
             "quota_minimum": "Minimum: {min}",
             "quota_step": "In stappen van {step}",
-            "quota_choose": "Kies uw aantal"
+            "quota_choose": "Kies uw aantal",
+            "starting_at": "Vanaf",
+            "price_per_unit": "per eenheid",
+            "tier_base": "{amount} voor de eerste {count} eenheden",
+            "tier_range": "{amount} / eenheid van {from} tot {to}",
+            "tier_beyond": "{amount} / eenheid vanaf {from}"
         },
         "manage": {
             "page_title": "Organisatie beheren",

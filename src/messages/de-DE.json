@@ -290,7 +290,12 @@
             "quota_total": "Gesamt: {amount}",
             "quota_minimum": "Minimum: {min}",
             "quota_step": "In Schritten von {step}",
-            "quota_choose": "Wählen Sie Ihre Menge"
+            "quota_choose": "Wählen Sie Ihre Menge",
+            "starting_at": "Ab",
+            "price_per_unit": "pro Einheit",
+            "tier_base": "{amount} für die ersten {count} Einheiten",
+            "tier_range": "{amount} / Einheit von {from} bis {to}",
+            "tier_beyond": "{amount} / Einheit ab {from}"
         },
         "manage": {
             "page_title": "Organisation verwalten",

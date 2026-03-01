@@ -54,3 +54,43 @@ export function formatPrice(amount, currency, locale) {
         currency: currency.toUpperCase(),
     }).format(amount / 100);
 }
+
+/**
+ * Calcule le prix total pour un tarif échelonné Stripe.
+ * @param {Array} tiers - Tableau de paliers Stripe [{up_to, unit_amount, flat_amount}, ...]
+ * @param {number} quantity - La quantité à facturer
+ * @param {string} tiersMode - "graduated" ou "volume"
+ * @returns {number} Prix total en centimes
+ */
+export function calculateTieredPrice(tiers, quantity, tiersMode) {
+    if (!tiers?.length || quantity <= 0) return 0;
+
+    if (tiersMode === "volume") {
+        for (const tier of tiers) {
+            if (tier.up_to === null || quantity <= tier.up_to) {
+                return (tier.unit_amount ?? 0) * quantity + (tier.flat_amount ?? 0);
+            }
+        }
+        const lastTier = tiers[tiers.length - 1];
+        return (lastTier.unit_amount ?? 0) * quantity + (lastTier.flat_amount ?? 0);
+    }
+
+    // graduated : chaque palier est facturé séparément
+    let total = 0;
+    let remaining = quantity;
+    let previousUpTo = 0;
+
+    for (const tier of tiers) {
+        if (remaining <= 0) break;
+
+        const tierCapacity = tier.up_to === null ? remaining : tier.up_to - previousUpTo;
+        const unitsInTier = Math.min(remaining, tierCapacity);
+
+        total += (tier.unit_amount ?? 0) * unitsInTier + (tier.flat_amount ?? 0);
+
+        remaining -= unitsInTier;
+        previousUpTo = tier.up_to ?? previousUpTo + tierCapacity;
+    }
+
+    return total;
+}

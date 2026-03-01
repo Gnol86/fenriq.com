@@ -1,5 +1,5 @@
 import { MagicCard } from "@root/src/components/ui/magic-card";
-import { formatPrice } from "@root/src/lib/utils";
+import { calculateTieredPrice, formatPrice } from "@root/src/lib/utils";
 import { SiteConfig } from "@root/src/site-config";
 import { getTranslations } from "next-intl/server";
 import ReactMarkdown from "react-markdown";
@@ -7,10 +7,22 @@ import remarkGfm from "remark-gfm";
 import QuantitySelector from "@/components/quantity-selector";
 import SubscriptionButton from "./subscription-button";
 
+// Retourne la quantité minimum pour un tarif échelonné (up_to du premier palier)
+const getTieredMinimum = tiers => tiers?.[0]?.up_to ?? 1;
+
+// Retourne le prix de base pour un tarif (flat ou échelonné)
+const getBasePrice = price => {
+    if (!price.tiersMode) return price.amount;
+    return calculateTieredPrice(price.tiers, getTieredMinimum(price.tiers), price.tiersMode);
+};
+
 // Fonction pour calculer le pourcentage d'économie
 const calculateSavings = (monthlyPrice, annualPrice) => {
-    const monthlyYearlyCost = monthlyPrice.amount * 12;
-    const savings = ((monthlyYearlyCost - annualPrice.amount) / monthlyYearlyCost) * 100;
+    const monthlyAmount = getBasePrice(monthlyPrice);
+    const annualAmount = getBasePrice(annualPrice);
+    const monthlyYearlyCost = monthlyAmount * 12;
+    if (monthlyYearlyCost === 0) return null;
+    const savings = ((monthlyYearlyCost - annualAmount) / monthlyYearlyCost) * 100;
     return Math.round(savings);
 };
 
@@ -20,7 +32,11 @@ export default async function PlanCard({ plan, annual = false, memberCount, loca
     const isTeamPlan = plan.name.toLowerCase() === "team";
     const currentPrice = annual && plan.annualPrice ? plan.annualPrice : plan.monthlyPrice;
 
-    const priceAmount = currentPrice.amount;
+    const isTiered = !!currentPrice.tiersMode;
+    const tieredMinimum = isTiered ? getTieredMinimum(currentPrice.tiers) : null;
+    const priceAmount = isTiered
+        ? calculateTieredPrice(currentPrice.tiers, tieredMinimum, currentPrice.tiersMode)
+        : currentPrice.amount;
     const currency = currentPrice.currency;
 
     const savings =
@@ -37,12 +53,15 @@ export default async function PlanCard({ plan, annual = false, memberCount, loca
                 {savings && (
                     <span className="relative -mb-4">
                         <span className="line-through text-sm text-muted-foreground mr-2">
-                            {formatPrice(plan.monthlyPrice.amount * 12, currency, locale)}
+                            {formatPrice(getBasePrice(plan.monthlyPrice) * 12, currency, locale)}
                         </span>
                         <span className="bg-success text-success-foreground px-1 rounded-sm font-bold">
                             -{savings}%
                         </span>
                     </span>
+                )}
+                {isTiered && (
+                    <span className="text-xs text-muted-foreground">{t("starting_at")}</span>
                 )}
                 <span className="text-3xl font-black whitespace-nowrap">
                     {formatPrice(priceAmount, currency, locale)}
@@ -51,6 +70,41 @@ export default async function PlanCard({ plan, annual = false, memberCount, loca
                     {annual ? t("price_per_year") : t("price_per_month")}
                     {isTeamPlan && <> {t("price_per_membre")}</>}
                 </span>
+                {isTiered && currentPrice.tiers && (
+                    <ul className="flex flex-col gap-1 text-xs text-muted-foreground">
+                        {currentPrice.tiers.map((tier, index) => {
+                            const prevUpTo = index === 0 ? 0 : currentPrice.tiers[index - 1].up_to;
+                            const from = prevUpTo + 1;
+                            const hasFlatOnly =
+                                (tier.flat_amount ?? 0) > 0 && (tier.unit_amount ?? 0) === 0;
+                            const hasUnit = (tier.unit_amount ?? 0) > 0;
+                            const isLast = tier.up_to === null;
+
+                            return (
+                                <li key={tier.up_to ?? "inf"}>
+                                    {hasFlatOnly &&
+                                        t("tier_base", {
+                                            amount: formatPrice(tier.flat_amount, currency, locale),
+                                            count: tier.up_to,
+                                        })}
+                                    {hasUnit &&
+                                        !isLast &&
+                                        t("tier_range", {
+                                            amount: formatPrice(tier.unit_amount, currency, locale),
+                                            from,
+                                            to: tier.up_to,
+                                        })}
+                                    {hasUnit &&
+                                        isLast &&
+                                        t("tier_beyond", {
+                                            amount: formatPrice(tier.unit_amount, currency, locale),
+                                            from,
+                                        })}
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
                 {isTeamPlan && (
                     <div className="flex flex-col gap-2 text-sm text-muted-foreground">
                         <span>
@@ -81,7 +135,17 @@ export default async function PlanCard({ plan, annual = false, memberCount, loca
                 {isTeamPlan && (
                     <div className="font-bold">
                         {t("team_plan_total")}{" "}
-                        {formatPrice(memberCount * priceAmount, currency, locale)}{" "}
+                        {formatPrice(
+                            isTiered
+                                ? calculateTieredPrice(
+                                      currentPrice.tiers,
+                                      memberCount,
+                                      currentPrice.tiersMode
+                                  )
+                                : memberCount * priceAmount,
+                            currency,
+                            locale
+                        )}{" "}
                         {annual ? t("price_per_year") : t("price_per_month")}
                     </div>
                 )}
@@ -90,10 +154,16 @@ export default async function PlanCard({ plan, annual = false, memberCount, loca
                         planId={plan.id}
                         annual={annual}
                         freeTrialDays={plan.freeTrialDays}
-                        unitPrice={priceAmount}
+                        unitPrice={isTiered ? null : priceAmount}
+                        tiers={isTiered ? currentPrice.tiers : null}
+                        tiersMode={isTiered ? currentPrice.tiersMode : null}
                         currency={currency}
                         locale={locale}
-                        minimum={SiteConfig.quota.minimum}
+                        minimum={
+                            isTiered
+                                ? Math.max(tieredMinimum, SiteConfig.quota.minimum)
+                                : SiteConfig.quota.minimum
+                        }
                         step={SiteConfig.quota.step}
                     />
                 ) : (

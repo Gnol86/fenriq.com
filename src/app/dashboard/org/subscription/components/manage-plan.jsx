@@ -17,6 +17,7 @@ import {
     ItemTitle,
 } from "@/components/ui/item";
 import { requirePermission } from "@/lib/access-control";
+import { calculateTieredPrice } from "@/lib/utils";
 import { SiteConfig } from "@/site-config";
 
 export default async function ManagePlan({ activeSubscription }) {
@@ -65,6 +66,12 @@ export default async function ManagePlan({ activeSubscription }) {
 
     const { subscription, invoices, price, product } = stripeData;
 
+    const isTiered = !!price.tiersMode;
+    const subscriptionQuantity = subscription.items.data[0].quantity ?? 1;
+    const displayedAmount = isTiered
+        ? calculateTieredPrice(price.tiers, subscriptionQuantity, price.tiersMode)
+        : price.unit_amount;
+
     return (
         <div className="flex flex-col gap-6">
             <Card>
@@ -98,7 +105,7 @@ export default async function ManagePlan({ activeSubscription }) {
                         <div className="flex items-center justify-between">
                             <span className="text-sm font-medium">{t("amount_label")}</span>
                             <span className="text-sm font-semibold">
-                                {formatAmount(price.unit_amount, price.currency)} /{" "}
+                                {formatAmount(displayedAmount, price.currency)} /{" "}
                                 {t(`interval_${price.recurring.interval}`)}
                             </span>
                         </div>
@@ -130,7 +137,9 @@ export default async function ManagePlan({ activeSubscription }) {
                             </div>
                             <QuantitySelector
                                 currentSeats={activeSubscription.seats || 1}
-                                unitPrice={price.unit_amount}
+                                unitPrice={isTiered ? null : price.unit_amount}
+                                tiers={isTiered ? price.tiers : null}
+                                tiersMode={isTiered ? price.tiersMode : null}
                                 currency={price.currency}
                                 locale={locale}
                                 minimum={SiteConfig.quota.minimum}

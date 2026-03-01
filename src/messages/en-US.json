@@ -290,7 +290,12 @@
             "quota_total": "Total: {amount}",
             "quota_minimum": "Minimum: {min}",
             "quota_step": "In steps of {step}",
-            "quota_choose": "Choose your quantity"
+            "quota_choose": "Choose your quantity",
+            "starting_at": "Starting at",
+            "price_per_unit": "per unit",
+            "tier_base": "{amount} for the first {count} units",
+            "tier_range": "{amount} / unit from {from} to {to}",
+            "tier_beyond": "{amount} / unit beyond {from}"
         },
         "manage": {
             "page_title": "Manage Organization",

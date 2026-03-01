@@ -8,7 +8,17 @@ import { getPlansWithStripeData } from "@/actions/subscription.action";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { calculateTieredPrice } from "@/lib/utils";
 import PlanCard from "./plan-card";
+
+const getSortableAmount = priceData => {
+    if (priceData.amount !== null && priceData.amount !== undefined) return priceData.amount;
+    if (priceData.tiers?.length > 0) {
+        const minimum = priceData.tiers[0].up_to ?? 1;
+        return calculateTieredPrice(priceData.tiers, minimum, priceData.tiersMode);
+    }
+    return 0;
+};
 
 export default async function Plan({ organization }) {
     const t = await getTranslations("organization.subscription");
@@ -51,7 +61,11 @@ export default async function Plan({ organization }) {
                         <TabsContent value="monthly" className="flex flex-col lg:flex-row gap-4">
                             {plans
                                 .filter(plan => plan.monthlyPrice !== null)
-                                .sort((a, b) => a.monthlyPrice.amount - b.monthlyPrice.amount)
+                                .sort(
+                                    (a, b) =>
+                                        getSortableAmount(a.monthlyPrice) -
+                                        getSortableAmount(b.monthlyPrice)
+                                )
                                 .map(plan => (
                                     <PlanCard
                                         plan={plan}
@@ -65,7 +79,11 @@ export default async function Plan({ organization }) {
                             <TabsContent value="annual" className="flex flex-col lg:flex-row gap-4">
                                 {plans
                                     .filter(plan => plan.annualPrice !== null)
-                                    .sort((a, b) => a.annualPrice.amount - b.annualPrice.amount)
+                                    .sort(
+                                        (a, b) =>
+                                            getSortableAmount(a.annualPrice) -
+                                            getSortableAmount(b.annualPrice)
+                                    )
                                     .map(plan => (
                                         <PlanCard
                                             plan={plan}
