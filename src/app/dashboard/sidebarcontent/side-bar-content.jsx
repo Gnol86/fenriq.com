@@ -2,6 +2,7 @@ import { ActiveSidebarLink } from "@components/sidebar/active-sidebar-link";
 import {
     AlertTriangle,
     Building,
+    ChevronRight,
     Euro,
     LayoutDashboard,
     MailPlus,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -108,137 +110,161 @@ export default async function SideBarContent() {
                     canInvitationsRead ||
                     canOrgsDelete ||
                     canBillingManage) && (
-                    <SidebarGroup>
-                        <SidebarGroupLabel className="flex items-center gap-1 uppercase">
-                            {activeUserOrganization?.name ?? t("organization_fallback")}
-                        </SidebarGroupLabel>
+                    <Collapsible defaultOpen className="group/collapsible">
+                        <SidebarGroup>
+                            <SidebarGroupLabel
+                                render={<CollapsibleTrigger />}
+                                className="flex items-center gap-1 uppercase [&[data-panel-open]>svg]:rotate-90"
+                            >
+                                {activeUserOrganization?.name ?? t("organization_fallback")}
+                                <ChevronRight className="ml-auto transition-transform" />
+                            </SidebarGroupLabel>
 
-                        <SidebarGroupContent>
-                            <SidebarMenu>
-                                {canMembresRead && (
-                                    <SidebarMenuItem>
-                                        <ActiveSidebarLink href="/dashboard/org/members">
-                                            <Users className="opacity-60" />
-                                            <span>{t("members")}</span>
-                                        </ActiveSidebarLink>
-                                    </SidebarMenuItem>
-                                )}
-                                {canInvitationsRead && (
-                                    <SidebarMenuItem>
-                                        <ActiveSidebarLink href="/dashboard/org/invitations">
-                                            <MailPlusIcon className="opacity-60" />
-                                            <span>{t("invitations")}</span>
-                                        </ActiveSidebarLink>
-                                    </SidebarMenuItem>
-                                )}
-                                {canBillingManage && (
-                                    <SidebarMenuItem>
-                                        <ActiveSidebarLink href="/dashboard/org/subscription">
-                                            <Euro className="opacity-60" />
-                                            <span>{t("subscription")}</span>
-                                        </ActiveSidebarLink>
-                                    </SidebarMenuItem>
-                                )}
-                                {canOrgsUpdate && (
-                                    <SidebarMenuItem>
-                                        <ActiveSidebarLink href="/dashboard/org/manage">
-                                            <Settings className="opacity-60" />
-                                            <span>{t("manage_organization")}</span>
-                                        </ActiveSidebarLink>
-                                    </SidebarMenuItem>
-                                )}
-                                {canOrgsDelete && (
-                                    <SidebarMenuItem>
-                                        <ActiveSidebarLink
-                                            href="/dashboard/org/danger-zone"
-                                            className="text-destructive"
-                                        >
-                                            <AlertTriangle className="opacity-60" />
-                                            <span>{t("danger")}</span>
-                                        </ActiveSidebarLink>
-                                    </SidebarMenuItem>
-                                )}
-                            </SidebarMenu>
-                        </SidebarGroupContent>
-                    </SidebarGroup>
+                            <CollapsibleContent>
+                                <SidebarGroupContent>
+                                    <SidebarMenu>
+                                        {canMembresRead && (
+                                            <SidebarMenuItem>
+                                                <ActiveSidebarLink href="/dashboard/org/members">
+                                                    <Users className="opacity-60" />
+                                                    <span>{t("members")}</span>
+                                                </ActiveSidebarLink>
+                                            </SidebarMenuItem>
+                                        )}
+                                        {canInvitationsRead && (
+                                            <SidebarMenuItem>
+                                                <ActiveSidebarLink href="/dashboard/org/invitations">
+                                                    <MailPlusIcon className="opacity-60" />
+                                                    <span>{t("invitations")}</span>
+                                                </ActiveSidebarLink>
+                                            </SidebarMenuItem>
+                                        )}
+                                        {canBillingManage && (
+                                            <SidebarMenuItem>
+                                                <ActiveSidebarLink href="/dashboard/org/subscription">
+                                                    <Euro className="opacity-60" />
+                                                    <span>{t("subscription")}</span>
+                                                </ActiveSidebarLink>
+                                            </SidebarMenuItem>
+                                        )}
+                                        {canOrgsUpdate && (
+                                            <SidebarMenuItem>
+                                                <ActiveSidebarLink href="/dashboard/org/manage">
+                                                    <Settings className="opacity-60" />
+                                                    <span>{t("manage_organization")}</span>
+                                                </ActiveSidebarLink>
+                                            </SidebarMenuItem>
+                                        )}
+                                        {canOrgsDelete && (
+                                            <SidebarMenuItem>
+                                                <ActiveSidebarLink
+                                                    href="/dashboard/org/danger-zone"
+                                                    className="text-destructive"
+                                                >
+                                                    <AlertTriangle className="opacity-60" />
+                                                    <span>{t("danger")}</span>
+                                                </ActiveSidebarLink>
+                                            </SidebarMenuItem>
+                                        )}
+                                    </SidebarMenu>
+                                </SidebarGroupContent>
+                            </CollapsibleContent>
+                        </SidebarGroup>
+                    </Collapsible>
                 )}
 
             {isAdmin && (
-                <SidebarGroup>
-                    <SidebarGroupLabel className="flex items-center gap-1 uppercase">
-                        {t("administration")}
-                    </SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            <SidebarMenuItem>
-                                <ActiveSidebarLink href="/dashboard/admin/users">
-                                    <Users className="opacity-60" />
-                                    <span>{t("users")}</span>
-                                </ActiveSidebarLink>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <ActiveSidebarLink href="/dashboard/admin/orgs">
-                                    <Building className="opacity-60" />
-                                    <span>{t("organizations")}</span>
-                                </ActiveSidebarLink>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <ActiveSidebarLink href="/dashboard/admin/plans">
-                                    <ReceiptEuro className="opacity-60" />
-                                    <span>{t("plans")}</span>
-                                </ActiveSidebarLink>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <ActiveSidebarLink href="/dashboard/admin/feedbacks">
-                                    <MessageSquare className="opacity-60" />
-                                    <span>{t("feedbacks")}</span>
-                                </ActiveSidebarLink>
-                                {feedbacks_count > 0 && (
-                                    <SidebarMenuBadge className="bg-destructive text-destructive-foreground peer-hover/menu-button:text-destructive-foreground font-bold">
-                                        {feedbacks_count}
-                                    </SidebarMenuBadge>
-                                )}
-                            </SidebarMenuItem>
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
+                <Collapsible defaultOpen className="group/collapsible">
+                    <SidebarGroup>
+                        <SidebarGroupLabel
+                            render={<CollapsibleTrigger />}
+                            className="flex items-center gap-1 uppercase [&[data-panel-open]>svg]:rotate-90"
+                        >
+                            {t("administration")}
+                            <ChevronRight className="ml-auto transition-transform" />
+                        </SidebarGroupLabel>
+                        <CollapsibleContent>
+                            <SidebarGroupContent>
+                                <SidebarMenu>
+                                    <SidebarMenuItem>
+                                        <ActiveSidebarLink href="/dashboard/admin/users">
+                                            <Users className="opacity-60" />
+                                            <span>{t("users")}</span>
+                                        </ActiveSidebarLink>
+                                    </SidebarMenuItem>
+                                    <SidebarMenuItem>
+                                        <ActiveSidebarLink href="/dashboard/admin/orgs">
+                                            <Building className="opacity-60" />
+                                            <span>{t("organizations")}</span>
+                                        </ActiveSidebarLink>
+                                    </SidebarMenuItem>
+                                    <SidebarMenuItem>
+                                        <ActiveSidebarLink href="/dashboard/admin/plans">
+                                            <ReceiptEuro className="opacity-60" />
+                                            <span>{t("plans")}</span>
+                                        </ActiveSidebarLink>
+                                    </SidebarMenuItem>
+                                    <SidebarMenuItem>
+                                        <ActiveSidebarLink href="/dashboard/admin/feedbacks">
+                                            <MessageSquare className="opacity-60" />
+                                            <span>{t("feedbacks")}</span>
+                                        </ActiveSidebarLink>
+                                        {feedbacks_count > 0 && (
+                                            <SidebarMenuBadge className="bg-destructive text-destructive-foreground peer-hover/menu-button:text-destructive-foreground font-bold">
+                                                {feedbacks_count}
+                                            </SidebarMenuBadge>
+                                        )}
+                                    </SidebarMenuItem>
+                                </SidebarMenu>
+                            </SidebarGroupContent>
+                        </CollapsibleContent>
+                    </SidebarGroup>
+                </Collapsible>
             )}
 
-            <SidebarGroup>
-                <SidebarGroupLabel className="flex items-center gap-1 uppercase">
-                    {user.name}
-                </SidebarGroupLabel>
-                <SidebarGroupContent>
-                    <SidebarMenu>
-                        <SidebarMenuItem>
-                            <ActiveSidebarLink href="/dashboard/user/invitations">
-                                <MailPlus className="opacity-60" />
-                                <span>{t("invitations")}</span>
-                            </ActiveSidebarLink>
-                            {invitations_count > 0 && (
-                                <SidebarMenuBadge className="bg-destructive text-destructive-foreground peer-hover/menu-button:text-destructive-foreground font-bold">
-                                    {invitations_count}
-                                </SidebarMenuBadge>
-                            )}
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <ActiveSidebarLink href="/dashboard/user/settings">
-                                <Settings className="opacity-60" />
-                                <span>{t("settings")}</span>
-                            </ActiveSidebarLink>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <ActiveSidebarLink
-                                href="/dashboard/user/danger-zone"
-                                className="text-destructive"
-                            >
-                                <AlertTriangle className="opacity-60" />
-                                <span>{t("danger")}</span>
-                            </ActiveSidebarLink>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarGroupContent>
-            </SidebarGroup>
+            <Collapsible defaultOpen className="group/collapsible">
+                <SidebarGroup>
+                    <SidebarGroupLabel
+                        render={<CollapsibleTrigger />}
+                        className="flex items-center gap-1 uppercase [&[data-panel-open]>svg]:rotate-90"
+                    >
+                        {user.name}
+                        <ChevronRight className="ml-auto transition-transform" />
+                    </SidebarGroupLabel>
+                    <CollapsibleContent>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                <SidebarMenuItem>
+                                    <ActiveSidebarLink href="/dashboard/user/invitations">
+                                        <MailPlus className="opacity-60" />
+                                        <span>{t("invitations")}</span>
+                                    </ActiveSidebarLink>
+                                    {invitations_count > 0 && (
+                                        <SidebarMenuBadge className="bg-destructive text-destructive-foreground peer-hover/menu-button:text-destructive-foreground font-bold">
+                                            {invitations_count}
+                                        </SidebarMenuBadge>
+                                    )}
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <ActiveSidebarLink href="/dashboard/user/settings">
+                                        <Settings className="opacity-60" />
+                                        <span>{t("settings")}</span>
+                                    </ActiveSidebarLink>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <ActiveSidebarLink
+                                        href="/dashboard/user/danger-zone"
+                                        className="text-destructive"
+                                    >
+                                        <AlertTriangle className="opacity-60" />
+                                        <span>{t("danger")}</span>
+                                    </ActiveSidebarLink>
+                                </SidebarMenuItem>
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </CollapsibleContent>
+                </SidebarGroup>
+            </Collapsible>
         </>
     );
 }

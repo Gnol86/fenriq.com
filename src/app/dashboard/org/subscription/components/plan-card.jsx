@@ -56,7 +56,11 @@ export default async function PlanCard({ plan, annual = false, memberCount, loca
                             {formatPrice(getBasePrice(plan.monthlyPrice) * 12, currency, locale)}
                         </span>
                         <span className="bg-success text-success-foreground px-1 rounded-sm font-bold">
-                            -{savings}%
+                            {Intl.NumberFormat(locale, {
+                                style: "percent",
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 2,
+                            }).format(savings / 100)}
                         </span>
                     </span>
                 )}

@@ -45,7 +45,11 @@ export default function QuantitySelector({
     };
 
     const handleIncrement = () => {
-        setQuantity(quantity + step);
+        if (quantity + step >= effectiveMinimum) {
+            setQuantity(quantity + step);
+        } else {
+            setQuantity(effectiveMinimum);
+        }
     };
 
     const handleInputChange = value => {
@@ -58,9 +62,7 @@ export default function QuantitySelector({
             return;
         }
         const newValue = parseInt(value, 10);
-        if (newValue >= effectiveMinimum) {
-            setQuantity(newValue);
-        }
+        setQuantity(newValue);
     };
 
     const handleSubscribe = async () => {
@@ -83,7 +85,6 @@ export default function QuantitySelector({
     return (
         <div className="flex flex-col gap-3">
             {isSubscribeMode && <p className="text-sm font-medium">{t("quota_choose")}</p>}
-
             <ButtonGroup>
                 <Button
                     variant="outline"
@@ -107,11 +108,9 @@ export default function QuantitySelector({
                     <Plus className="size-4" />
                 </Button>
             </ButtonGroup>
-
             {step > 1 && (
                 <p className="text-xs text-muted-foreground">{t("quota_step", { step })}</p>
             )}
-
             {(() => {
                 const isTiered = !!tiersMode && !!tiers;
                 const totalAmount = isTiered
@@ -129,7 +128,11 @@ export default function QuantitySelector({
                     </p>
                 ) : null;
             })()}
-
+            {quantity < effectiveMinimum && (
+                <p className="text-xs text-red-500">
+                    {t("quota_minimum", { min: effectiveMinimum })}
+                </p>
+            )}
             {isSubscribeMode && (
                 <Button
                     size="lg"
@@ -144,7 +147,6 @@ export default function QuantitySelector({
                           : t("subscribe_to_plan")}
                 </Button>
             )}
-
             {!isSubscribeMode && hasChanged && (
                 <Button
                     onClick={handleUpdate}
