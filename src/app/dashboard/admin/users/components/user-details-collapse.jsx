@@ -162,7 +162,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                 <div className="flex w-full flex-col gap-2">
                     <div className="flex w-full items-center justify-between">
                         <div className="flex items-center gap-1.5 font-bold">
-                            <Shield className="mt-0.25 h-4 w-4" />
+                            <Shield className="mt-px h-4 w-4" />
                             {tUsers("details_title")}
                         </div>
                     </div>
@@ -232,7 +232,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                 <div className="flex w-full flex-col gap-2">
                     <div className="flex w-full items-center justify-between">
                         <div className="flex items-center gap-1.5 font-bold">
-                            <Monitor className="mt-0.25 h-4 w-4" />
+                            <Monitor className="mt-px h-4 w-4" />
                             {tUsers("sessions_title", {
                                 count: sessions.length,
                             })}

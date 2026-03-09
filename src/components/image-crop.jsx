@@ -170,7 +170,7 @@ export const ImageCropContent = ({ style, className }) => {
     return (
         <div className="flex justify-center">
             <ReactCrop
-                className={cn("max-h-[500px] max-w-full", className)}
+                className={cn("max-h-125 max-w-full", className)}
                 crop={crop}
                 onChange={handleChange}
                 onComplete={handleComplete}

@@ -109,7 +109,7 @@ export default function QuantitySelector({
                 const totalAmount = isTiered
                     ? calculateTieredPrice(tiers, quantity, tiersMode)
                     : quantity * unitPrice;
-                return totalAmount > 0 ? (
+                return quantity >= effectiveMinimum ? (
                     <p
                         className={
                             isSubscribeMode ? "text-sm font-bold" : "text-sm text-muted-foreground"
