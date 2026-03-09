@@ -220,6 +220,20 @@ export const ImageCropPreview = ({ style, className }) => {
 
         ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
         ctx.imageSmoothingQuality = "high";
+        ctx.clearRect(0, 0, crop.width, crop.height);
+
+        if (reactCropProps?.circularCrop) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(
+                crop.width / 2,
+                crop.height / 2,
+                Math.min(crop.width, crop.height) / 2,
+                0,
+                2 * Math.PI
+            );
+            ctx.clip();
+        }
 
         ctx.drawImage(
             image,
@@ -232,7 +246,11 @@ export const ImageCropPreview = ({ style, className }) => {
             crop.width,
             crop.height
         );
-    }, [completedCrop, imgSrc, imgRef]);
+
+        if (reactCropProps?.circularCrop) {
+            ctx.restore();
+        }
+    }, [completedCrop, imgSrc, imgRef, reactCropProps?.circularCrop]);
 
     if (!completedCrop || !imgSrc) {
         return null;

@@ -145,7 +145,7 @@ export default function ManageImageProfile({ entity, user = false, orga = false,
                     </DialogHeader>
 
                     {selectedFile && (
-                        <ImageCrop file={selectedFile} aspect={1}>
+                        <ImageCrop file={selectedFile} aspect={1} circularCrop>
                             <ImageCropContent />
                             <div className="flex w-full justify-center">
                                 <ImageCropPreview className="h-20 w-20" />
