@@ -8,6 +8,303 @@
         "success": "Actie succesvol voltooid!",
         "error": "Er is een fout opgetreden"
     },
+    "app": {
+        "index": {
+            "page_title": "Boilerplate-documentatie",
+            "page_description": "Volledige gids om de boilerplate te installeren, configureren en gebruiken.",
+            "sidebar_label": "Documentatie",
+            "hero": {
+                "eyebrow": "Volledige gids",
+                "title": "Boilerplate-documentatie",
+                "description": "Deze pagina bundelt installatie, configuratie, architectuur, belangrijke helpers en de updateworkflow van de boilerplate."
+            },
+            "stack": [
+                "Next.js 16 App Router",
+                "React 19",
+                "Prisma 7 + PostgreSQL",
+                "Better Auth",
+                "Stripe",
+                "Resend",
+                "Tailwind CSS 4",
+                "shadcn/ui",
+                "next-intl"
+            ],
+            "summary_cards": [
+                {
+                    "title": "Snelle start",
+                    "description": "Kloon de repository, configureer `.env`, genereer Prisma en start `bun dev`."
+                },
+                {
+                    "title": "Aangepaste code",
+                    "description": "Plaats je businesslogica in `src/project/*` zodat ze beschermd blijft bij upstream merges."
+                },
+                {
+                    "title": "Beveiliging",
+                    "description": "Gebruik `src/lib/access-control.js` voor alle authenticatie-, rol- en permissiecontroles."
+                },
+                {
+                    "title": "Internationalisatie",
+                    "description": "Elke nieuwe gebruikersgerichte tekst moet via `next-intl` lopen en in alle vier de talen bestaan."
+                }
+            ],
+            "commands": [
+                {
+                    "command": "bun dev",
+                    "description": "Start de ontwikkelserver en voert `prisma generate --no-hints` uit voor Next.js."
+                },
+                {
+                    "command": "bun build",
+                    "description": "Bouwt de applicatie voor productie met Prisma-regeneratie."
+                },
+                {
+                    "command": "bun start",
+                    "description": "Voert `prisma migrate deploy` uit en start daarna Next.js in productiemodus."
+                },
+                {
+                    "command": "bun lint",
+                    "description": "Voert `biome check .` uit om JavaScript, JSX, JSON en formatting te valideren."
+                },
+                {
+                    "command": "bun format",
+                    "description": "Past Biome-formattering toe op de volledige repository."
+                },
+                {
+                    "command": "bun studio",
+                    "description": "Opent Prisma Studio om lokale data te bekijken."
+                },
+                {
+                    "command": "bun db:seed",
+                    "description": "Voert `prisma/seed.js` uit om de database te vullen."
+                },
+                {
+                    "command": "bun stripe-webhooks",
+                    "description": "Luistert lokaal naar Stripe-webhooks en stuurt ze door naar `/api/auth/stripe/webhook`."
+                }
+            ],
+            "section_order": [
+                "overview",
+                "installation",
+                "commands",
+                "configuration",
+                "structure",
+                "access-control",
+                "organizations",
+                "server-actions",
+                "billing-email",
+                "i18n",
+                "updates"
+            ],
+            "sections": {
+                "overview": {
+                    "nav_label": "Overzicht",
+                    "eyebrow": "Projectbasis",
+                    "title": "Wat de boilerplate bevat",
+                    "description": "De repository biedt een SaaS-klare basis met authenticatie, organisaties, facturatie, transactionele e-mails en een admininterface die al zijn aangesloten.",
+                    "paragraphs": [
+                        "De huidige stack gebruikt Next.js 16 met App Router, React 19, Prisma 7, Better Auth, Tailwind CSS 4, shadcn/ui, Stripe, Resend en next-intl.",
+                        "Het doel is om je businesslogica toe te voegen in de beschermde projectzones en tegelijk verbeteringen uit de boilerplate te blijven ophalen via `git merge upstream/main`."
+                    ],
+                    "bullets_title": "Belangrijke regels",
+                    "bullets": [
+                        "Bewerk `src/components/ui/*` niet: deze shadcn/ui-wrappers worden door de boilerplate beheerd.",
+                        "Plaats projectspecifieke code in `src/project/*` zodat die beschermd blijft bij upstream updates.",
+                        "Gebruik `src/lib/access-control.js` voor alle authenticatie-, rol- en permissiecontroles.",
+                        "Sla alle gebruikersgerichte tekst op in `src/messages/*.json` of `*.project.json`.",
+                        "Voer na elke wijziging `bun lint` uit voor je klaar bent."
+                    ],
+                    "note": "De bron van waarheid is de code van de repository zelf, vooral `package.json`, `src/lib/*`, `src/actions/*` en de Prisma-bestanden."
+                },
+                "installation": {
+                    "nav_label": "Installatie",
+                    "eyebrow": "Aan de slag",
+                    "title": "Een nieuw project installeren",
+                    "description": "Je kunt de setupscript gebruiken voor een snelle bootstrap of de manuele procedure volgen als je elke stap zelf wilt sturen.",
+                    "paragraphs": [
+                        "Voor je de app start, heb je Git, Bun, een PostgreSQL-database en een lege Git-repository voor je eindproject nodig.",
+                        "Het script `./scripts/setup-new-project.sh` configureert `origin` en `upstream`, activeert `merge=theirs` voor beschermde bestanden en werkt `src/site-config.js` bij."
+                    ],
+                    "bullets_title": "Vereisten",
+                    "bullets": [
+                        "Git moet geïnstalleerd en geconfigureerd zijn.",
+                        "Bun moet lokaal beschikbaar zijn.",
+                        "Een PostgreSQL-database moet klaarstaan voor ontwikkeling.",
+                        "Maak een lege Git-repository voor het eindproject.",
+                        "Kopieer `.env.example` naar `.env` voor de eerste start."
+                    ],
+                    "snippet_title": "Installeren en starten"
+                },
+                "commands": {
+                    "nav_label": "Commando's",
+                    "eyebrow": "Ontwikkeling",
+                    "title": "Handige scripts",
+                    "description": "De scripts in `package.json` dekken opstarten, codekwaliteit, Prisma-taken en Stripe-webhooks.",
+                    "paragraphs": [
+                        "In ontwikkeling herstart `bun dev` Next.js en regenereert Prisma voor de server opstart.",
+                        "Voor productie voert `bun start` eerst `prisma migrate deploy` uit en start daarna Next.js."
+                    ],
+                    "bullets_title": "Wanneer gebruiken",
+                    "bullets": [
+                        "Gebruik `bun dev` voor lokale ontwikkeling.",
+                        "Gebruik `bun build` om de productiebuild te valideren.",
+                        "Gebruik `bun lint` en `bun format` voor codekwaliteit.",
+                        "Gebruik `bun studio` en `bun db:seed` om de database te bekijken en te vullen."
+                    ]
+                },
+                "configuration": {
+                    "nav_label": "Configuratie",
+                    "eyebrow": "Omgeving en branding",
+                    "title": "De omgeving configureren",
+                    "description": "De initiële configuratie draait rond omgevingsvariabelen, branding en externe diensten.",
+                    "paragraphs": [
+                        "Start vanuit `.env.example` en pas daarna `src/site-config.js` aan met projectnaam, beschrijving, URLs, afzender-e-mail en organisatieopties.",
+                        "Het Prisma-schema van de boilerplate leeft in `prisma/schema/base.prisma`; je eigen businessmodellen horen in `prisma/schema/project.prisma`."
+                    ],
+                    "bullets_title": "Bestanden om aan te passen",
+                    "bullets": [
+                        "`.env` voor database, Better Auth, Resend, Stripe en S3-opslag.",
+                        "`src/site-config.js` voor branding, app-id, e-mails en organisatielimieten.",
+                        "`public/images/logo.png` en `public/images/icon.png` voor de visuele identiteit.",
+                        "`prisma/schema/project.prisma` voor projectspecifieke Prisma-modellen.",
+                        "`src/messages/*.project.json` voor je projectvertalingen."
+                    ],
+                    "snippet_title": "Essentiële omgevingsvariabelen"
+                },
+                "structure": {
+                    "nav_label": "Structuur",
+                    "eyebrow": "Architectuur",
+                    "title": "Waar je code moet komen",
+                    "description": "De repository scheidt duidelijk wat bij de boilerplate hoort en wat bij je project hoort.",
+                    "paragraphs": [
+                        "`src/actions`, `src/components`, `src/hooks`, `src/lib` en een groot deel van `src/app` worden vanuit upstream bijgewerkt.",
+                        "Je belangrijkste aanpaszone is `src/project/`, samen met `prisma/schema/project.prisma`, `*.project.json`, `src/app/page.js`, `src/app/globals.css` en `src/site-config.js`."
+                    ],
+                    "bullets_title": "Aanbevolen locaties",
+                    "bullets": [
+                        "`src/project/components/` voor je businesscomponenten.",
+                        "`src/project/actions/*.action.js` voor projectspecifieke Server Actions.",
+                        "`src/project/hooks/` en `src/project/lib/` voor hooks en utilities.",
+                        "`src/project/features/` voor feature-gebaseerde modules.",
+                        "`src/project/sidebar/` voor applicatienavigatie.",
+                        "Gebruik `@/` voor boilerplatecode en `@project/` voor beschermde projectcode."
+                    ],
+                    "snippet_title": "Aanbevolen import-aliases"
+                },
+                "access-control": {
+                    "nav_label": "Toegang",
+                    "eyebrow": "Beveiliging",
+                    "title": "Authenticatie en toegangscontrole",
+                    "description": "Toegang is gecentraliseerd zodat controles consistent blijven en niet overal worden gedupliceerd.",
+                    "paragraphs": [
+                        "Om een serverpagina te beschermen gebruik je `requireAuth`, `requireActiveOrganization`, `requirePermission` of `requireAdmin` uit `src/lib/access-control.js`.",
+                        "Voor conditionele UI gebruik je beter `checkPermission` en `checkAdmin`, die booleans teruggeven in plaats van `notFound()` te gooien."
+                    ],
+                    "bullets_title": "Beschikbare helpers",
+                    "bullets": [
+                        "`requireAuth()` geeft `{ session, user }` terug en blokkeert anonieme toegang.",
+                        "`requireActiveOrganization()` voegt de actieve organisatie toe aan het resultaat.",
+                        "`requirePermission({ permissions })` valideert Better Auth-permissies op de actieve organisatie.",
+                        "`requireAdmin()` beschermt globale adminschermen.",
+                        "`checkPermission()` en `checkAdmin()` zijn bedoeld voor conditionele rendering."
+                    ],
+                    "note": "Vermijd manuele checks zoals `user.role === \"admin\"` of directe `auth.api.getSession()`-aanroepen in pagina's.",
+                    "snippet_title": "Voorbeeld van een beschermde pagina"
+                },
+                "organizations": {
+                    "nav_label": "Organisaties",
+                    "eyebrow": "Multi-tenant",
+                    "title": "Organisatiebeheer en permissies",
+                    "description": "Organisaties, leden, uitnodigingen en rollen zijn al gekoppeld aan Better Auth Organization.",
+                    "paragraphs": [
+                        "De sessie bewaart `activeOrganizationId` en de acties in `src/actions/organization.action.js` sturen aanmaken, selecteren, uitnodigen en verwijderen aan.",
+                        "De momenteel beschikbare permissies zijn `app.use`, `organization.update/delete`, `member.create/update/delete/read`, `invitation.read/create/cancel` en `billing.manage`."
+                    ],
+                    "bullets_title": "Ingebouwde flows",
+                    "bullets": [
+                        "Organisatie aanmaken met automatische slug.",
+                        "De nieuwe organisatie direct actief zetten na creatie.",
+                        "Leden per e-mail uitnodigen met rol `member` of `admin`.",
+                        "Rollen wijzigen, leden verwijderen en uitnodigingen annuleren.",
+                        "Verschillende permissiematrices voor `owner`, `admin` en `member`."
+                    ],
+                    "snippet_title": "Organisatieacties"
+                },
+                "server-actions": {
+                    "nav_label": "Server Actions",
+                    "eyebrow": "Mutaties",
+                    "title": "Server actions, formulieren en bevestigingen",
+                    "description": "De boilerplate scheidt servermutaties van client-UI en levert een gedeelde wrapper voor pending state en toasts.",
+                    "paragraphs": [
+                        "Definieer mutaties in een `.action.js`-bestand met `'use server'` en roep ze in clientcomponenten aan via `useServerAction()`.",
+                        "Voor formulieren combineert het bestaande patroon React Hook Form, Zod en de componenten uit `@/components/ui/form`."
+                    ],
+                    "bullets_title": "Aanbevolen patroon",
+                    "bullets": [
+                        "Definieer Zod-schema's in de clientcomponent wanneer validatieberichten afhangen van `useTranslations()`.",
+                        "Roep `execute(() => myAction(values), { successMessage, redirectOnSuccess, refreshOnSuccess })` aan.",
+                        "Gebruik `dialogManager.confirm(...)` voor destructieve flows die al in de repository bestaan.",
+                        "Houd clientcomponenten klein en laad data zoveel mogelijk in Server Components."
+                    ],
+                    "snippet_title": "Formulier met `useServerAction()`"
+                },
+                "billing-email": {
+                    "nav_label": "Stripe en e-mail",
+                    "eyebrow": "Integraties",
+                    "title": "Facturatie, plannen en transactionele e-mail",
+                    "description": "Stripe en Resend zijn al geïntegreerd voor facturatie, abonnementen en transactionele e-mails.",
+                    "paragraphs": [
+                        "Plannen worden in Prisma opgeslagen en verrijkt met Stripe-prijsdata in `src/actions/subscription.action.js`.",
+                        "Verificatie- en uitnodigingsmails worden via Resend verstuurd vanuit `src/actions/email.action.js`, met branding uit `src/site-config.js`."
+                    ],
+                    "bullets_title": "Integratiepunten",
+                    "bullets": [
+                        "Gebruik `bun stripe-webhooks` om Stripe-webhooks lokaal te beluisteren.",
+                        "`createCheckoutSession()` opent een veilige checkout op basis van een `planId`.",
+                        "`createBillingPortalSession()` stuurt door naar het Stripe-klantenportaal.",
+                        "Abonnementsplannen worden beheerd in `src/actions/plan.action.js` en de bijbehorende adminschermen.",
+                        "E-mails gebruiken `RESEND_API_KEY`, `EMAIL_FROM` en de React Email-templates in `src/components/email/`."
+                    ],
+                    "snippet_title": "Checkout, portaal en e-mail"
+                },
+                "i18n": {
+                    "nav_label": "i18n",
+                    "eyebrow": "Lokalisatie",
+                    "title": "Vertalingen en taalwisseling",
+                    "description": "Het project gebruikt next-intl op server en client, met een `NEXT_LOCALE`-cookie om de gekozen taal te onthouden.",
+                    "paragraphs": [
+                        "De momenteel ondersteunde talen zijn `fr-FR`, `en-US`, `nl-NL` en `de-DE`. De huidige standaardtaal in de code is `en-US` in `src/lib/i18n/config.js`.",
+                        "Boilerplate-berichten leven in `src/messages/*.json`, terwijl je eigen vertalingen in `src/messages/*.project.json` horen."
+                    ],
+                    "bullets_title": "i18n best practices",
+                    "bullets": [
+                        "Gebruik `getTranslations()` in Server Components en `useTranslations()` in Client Components.",
+                        "Voeg elke nieuwe sleutel toe aan alle vier de basislocales.",
+                        "Vertaal dynamische labels vanuit business keys, bijvoorbeeld `tRoles(member.role)`.",
+                        "Gebruik `setLocaleAction({ locale })` om de keuze van de gebruiker op te slaan."
+                    ],
+                    "note": "Als je Frans als standaardtaal wilt, wijzig dan `defaultLocale` in `src/lib/i18n/config.js`.",
+                    "snippet_title": "Server- en clientpatronen"
+                },
+                "updates": {
+                    "nav_label": "Updates",
+                    "eyebrow": "Onderhoud",
+                    "title": "Nieuwe boilerplate-updates ophalen",
+                    "description": "De updateworkflow is ontworpen om boilerplate-wijzigingen snel binnen te halen zonder je projectcode te overschrijven.",
+                    "paragraphs": [
+                        "Na `git fetch upstream` merge je `upstream/main` en installeer je indien nodig de dependencies opnieuw.",
+                        "Beschermde zones blijven lokaal dankzij `.gitattributes` en de strategie `merge=theirs`, maar `package.json` kan nog steeds een manuele merge vereisen als beide takken zijn aangepast."
+                    ],
+                    "bullets_title": "Checklist na merge",
+                    "bullets": [
+                        "Voer `bun install` uit als dependencies zijn veranderd.",
+                        "Voer `bun prisma generate` uit als het schema is gewijzigd.",
+                        "Controleer `package.json`, omgevingsvariabelen en eventuele migraties.",
+                        "Eindig met `bun lint` en idealiter `bun build`."
+                    ],
+                    "snippet_title": "Updaten vanaf upstream"
+                }
+            }
+        }
+    },
     "sidebar": {
         "application": "Applicatie",
         "products": "Producten",

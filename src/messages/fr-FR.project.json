@@ -8,6 +8,303 @@
         "success": "Action terminée avec succès !",
         "error": "Une erreur s'est produite"
     },
+    "app": {
+        "index": {
+            "page_title": "Documentation du boilerplate",
+            "page_description": "Guide complet pour installer, configurer et utiliser le boilerplate.",
+            "sidebar_label": "Documentation",
+            "hero": {
+                "eyebrow": "Guide complet",
+                "title": "Documentation du boilerplate",
+                "description": "Cette page centralise l'installation, la configuration, l'architecture, les helpers clés et le workflow de mise à jour du boilerplate."
+            },
+            "stack": [
+                "Next.js 16 App Router",
+                "React 19",
+                "Prisma 7 + PostgreSQL",
+                "Better Auth",
+                "Stripe",
+                "Resend",
+                "Tailwind CSS 4",
+                "shadcn/ui",
+                "next-intl"
+            ],
+            "summary_cards": [
+                {
+                    "title": "Démarrage rapide",
+                    "description": "Clonez le dépôt, configurez `.env`, générez Prisma et lancez `bun dev`."
+                },
+                {
+                    "title": "Code personnalisé",
+                    "description": "Mettez votre logique métier dans `src/project/*` pour la protéger lors des merges upstream."
+                },
+                {
+                    "title": "Sécurité",
+                    "description": "Utilisez `src/lib/access-control.js` pour toutes les vérifications d'authentification, de rôle et de permission."
+                },
+                {
+                    "title": "Internationalisation",
+                    "description": "Toute nouvelle chaîne utilisateur doit passer par `next-intl` et exister dans les quatre locales."
+                }
+            ],
+            "commands": [
+                {
+                    "command": "bun dev",
+                    "description": "Démarre le serveur de développement et exécute `prisma generate --no-hints` avant Next.js."
+                },
+                {
+                    "command": "bun build",
+                    "description": "Construit l'application pour la production avec une régénération Prisma."
+                },
+                {
+                    "command": "bun start",
+                    "description": "Applique `prisma migrate deploy` puis démarre Next.js en mode production."
+                },
+                {
+                    "command": "bun lint",
+                    "description": "Lance `biome check .` pour valider JavaScript, JSX, JSON et formatage."
+                },
+                {
+                    "command": "bun format",
+                    "description": "Applique le formatage Biome sur tout le dépôt."
+                },
+                {
+                    "command": "bun studio",
+                    "description": "Ouvre Prisma Studio pour explorer les données localement."
+                },
+                {
+                    "command": "bun db:seed",
+                    "description": "Exécute `prisma/seed.js` pour peupler la base."
+                },
+                {
+                    "command": "bun stripe-webhooks",
+                    "description": "Écoute les webhooks Stripe en local et les redirige vers `/api/auth/stripe/webhook`."
+                }
+            ],
+            "section_order": [
+                "overview",
+                "installation",
+                "commands",
+                "configuration",
+                "structure",
+                "access-control",
+                "organizations",
+                "server-actions",
+                "billing-email",
+                "i18n",
+                "updates"
+            ],
+            "sections": {
+                "overview": {
+                    "nav_label": "Vue d'ensemble",
+                    "eyebrow": "Base du projet",
+                    "title": "Ce que contient le boilerplate",
+                    "description": "Le dépôt fournit une base SaaS prête à étendre, avec authentification, organisations, facturation, emails transactionnels et interface d'administration déjà câblés.",
+                    "paragraphs": [
+                        "La pile actuelle du code repose sur Next.js 16 avec App Router, React 19, Prisma 7, Better Auth, Tailwind CSS 4, shadcn/ui, Stripe, Resend et next-intl.",
+                        "L'objectif est d'ajouter votre logique métier dans les zones protégées du projet tout en continuant à récupérer les améliorations du boilerplate via `git merge upstream/main`."
+                    ],
+                    "bullets_title": "Conventions à retenir",
+                    "bullets": [
+                        "Ne modifiez pas `src/components/ui/*` : ces wrappers shadcn/ui sont gérés par le boilerplate.",
+                        "Placez tout code spécifique dans `src/project/*` pour le protéger lors des mises à jour upstream.",
+                        "Utilisez `src/lib/access-control.js` pour tous les contrôles d'authentification, de rôle et de permission.",
+                        "Ajoutez tout texte utilisateur dans les fichiers `src/messages/*.json` ou `*.project.json`.",
+                        "Après chaque modification, exécutez `bun lint` avant de valider."
+                    ],
+                    "note": "La source de vérité reste le code du dépôt, en particulier `package.json`, `src/lib/*`, `src/actions/*` et les fichiers Prisma."
+                },
+                "installation": {
+                    "nav_label": "Installation",
+                    "eyebrow": "Mise en route",
+                    "title": "Installer un nouveau projet",
+                    "description": "Deux approches existent : le script automatique pour initialiser un nouveau projet, ou la procédure manuelle si vous voulez contrôler chaque étape.",
+                    "paragraphs": [
+                        "Avant de lancer l'application, préparez Git, Bun, une base PostgreSQL et un dépôt Git vide pour votre futur projet.",
+                        "Le script `./scripts/setup-new-project.sh` configure `origin` et `upstream`, applique la stratégie `merge=theirs` sur les fichiers protégés et met à jour `src/site-config.js`."
+                    ],
+                    "bullets_title": "Pré-requis",
+                    "bullets": [
+                        "Git doit être installé et configuré.",
+                        "Bun doit être disponible localement.",
+                        "Une base PostgreSQL doit être prête pour le développement.",
+                        "Créez un dépôt Git vide pour héberger votre projet final.",
+                        "Copiez `.env.example` vers `.env` avant le premier démarrage."
+                    ],
+                    "snippet_title": "Installation et démarrage"
+                },
+                "commands": {
+                    "nav_label": "Commandes",
+                    "eyebrow": "Développement",
+                    "title": "Scripts utiles",
+                    "description": "Les scripts du `package.json` couvrent le démarrage, la qualité, Prisma et les webhooks Stripe.",
+                    "paragraphs": [
+                        "En développement, `bun dev` relance Next.js et régénère Prisma avant le boot.",
+                        "Pour la production, `bun start` applique `prisma migrate deploy` avant de démarrer le serveur Next.js."
+                    ],
+                    "bullets_title": "Quand les utiliser",
+                    "bullets": [
+                        "`bun dev` pour travailler localement.",
+                        "`bun build` pour valider la compilation de production.",
+                        "`bun lint` et `bun format` pour la qualité du code.",
+                        "`bun studio` et `bun db:seed` pour inspecter et alimenter la base."
+                    ]
+                },
+                "configuration": {
+                    "nav_label": "Configuration",
+                    "eyebrow": "Variables et branding",
+                    "title": "Configurer l'environnement",
+                    "description": "La configuration initiale se concentre sur l'environnement, le branding et les services externes.",
+                    "paragraphs": [
+                        "Commencez par renseigner `.env` à partir de `.env.example`, puis personnalisez `src/site-config.js` avec le nom, la description, les URLs, l'email d'envoi et les options d'organisation.",
+                        "Le schéma Prisma du boilerplate vit dans `prisma/schema/base.prisma`; vos modèles métier doivent aller dans `prisma/schema/project.prisma`."
+                    ],
+                    "bullets_title": "Fichiers à personnaliser",
+                    "bullets": [
+                        "`.env` pour la base de données, Better Auth, Resend, Stripe et le stockage S3.",
+                        "`src/site-config.js` pour le branding, l'identifiant applicatif, les emails et les limites d'organisation.",
+                        "`public/images/logo.png` et `public/images/icon.png` pour l'identité visuelle.",
+                        "`prisma/schema/project.prisma` pour vos modèles Prisma spécifiques.",
+                        "`src/messages/*.project.json` pour vos traductions métier."
+                    ],
+                    "snippet_title": "Variables d'environnement essentielles"
+                },
+                "structure": {
+                    "nav_label": "Structure",
+                    "eyebrow": "Architecture",
+                    "title": "Où placer votre code",
+                    "description": "Le dépôt distingue clairement ce qui vient du boilerplate et ce qui appartient à votre projet.",
+                    "paragraphs": [
+                        "Les dossiers `src/actions`, `src/components`, `src/hooks`, `src/lib` et une grande partie de `src/app` sont mis à jour depuis l'upstream.",
+                        "Votre zone de personnalisation principale est `src/project/`, complétée par `prisma/schema/project.prisma`, les fichiers `*.project.json`, `src/app/page.js`, `src/app/globals.css` et `src/site-config.js`."
+                    ],
+                    "bullets_title": "Où mettre votre code",
+                    "bullets": [
+                        "`src/project/components/` pour vos composants métier.",
+                        "`src/project/actions/*.action.js` pour vos Server Actions spécifiques.",
+                        "`src/project/hooks/` et `src/project/lib/` pour vos hooks et utilitaires.",
+                        "`src/project/features/` pour des modules complets organisés par fonctionnalité.",
+                        "`src/project/sidebar/` pour votre navigation applicative.",
+                        "Utilisez `@/` pour le boilerplate et `@project/` pour votre code protégé."
+                    ],
+                    "snippet_title": "Aliases d'import recommandés"
+                },
+                "access-control": {
+                    "nav_label": "Accès",
+                    "eyebrow": "Sécurité",
+                    "title": "Authentification et contrôle d'accès",
+                    "description": "L'accès applicatif est centralisé pour éviter les vérifications dispersées et garder un comportement cohérent.",
+                    "paragraphs": [
+                        "Pour protéger une page serveur, utilisez `requireAuth`, `requireActiveOrganization`, `requirePermission` ou `requireAdmin` depuis `src/lib/access-control.js`.",
+                        "Pour l'affichage conditionnel, préférez `checkPermission` et `checkAdmin`, qui retournent un booléen sans déclencher de `notFound()`."
+                    ],
+                    "bullets_title": "Helpers disponibles",
+                    "bullets": [
+                        "`requireAuth()` retourne `{ session, user }` et coupe l'accès si l'utilisateur n'est pas connecté.",
+                        "`requireActiveOrganization()` ajoute l'organisation active à la réponse.",
+                        "`requirePermission({ permissions })` valide les permissions Better Auth sur l'organisation active.",
+                        "`requireAdmin()` protège les écrans réservés aux administrateurs globaux.",
+                        "`checkPermission()` et `checkAdmin()` servent à masquer ou afficher une partie de l'UI."
+                    ],
+                    "note": "Évitez les checks manuels du type `user.role === \"admin\"` ou les appels directs à `auth.api.getSession()` dans vos pages.",
+                    "snippet_title": "Exemple de page protégée"
+                },
+                "organizations": {
+                    "nav_label": "Organisations",
+                    "eyebrow": "Multi-tenant",
+                    "title": "Gestion d'organisation et permissions",
+                    "description": "Les organisations, membres, invitations et rôles sont déjà branchés sur le plugin Better Auth Organization.",
+                    "paragraphs": [
+                        "Une session garde `activeOrganizationId` et les actions de `src/actions/organization.action.js` pilotent la création, la sélection, l'invitation et la suppression.",
+                        "Les permissions métiers disponibles aujourd'hui sont `app.use`, `organization.update/delete`, `member.create/update/delete/read`, `invitation.read/create/cancel` et `billing.manage`."
+                    ],
+                    "bullets_title": "Flux déjà inclus",
+                    "bullets": [
+                        "Création d'organisation avec slug automatique.",
+                        "Sélection de l'organisation active juste après la création.",
+                        "Invitations membres par email avec rôle `member` ou `admin`.",
+                        "Changement de rôle, suppression de membre et annulation d'invitation.",
+                        "Matrice de permissions différente pour `owner`, `admin` et `member`."
+                    ],
+                    "snippet_title": "Actions d'organisation"
+                },
+                "server-actions": {
+                    "nav_label": "Server Actions",
+                    "eyebrow": "Mutations",
+                    "title": "Actions serveur, formulaires et confirmations",
+                    "description": "Le boilerplate sépare les mutations serveur et l'UI cliente, avec un wrapper commun pour les états et les toasts.",
+                    "paragraphs": [
+                        "Déclarez vos mutations dans un fichier `.action.js` avec `'use server'`, puis appelez-les côté client via `useServerAction()`.",
+                        "Pour les formulaires, le pattern existant combine React Hook Form, Zod et les composants de `@/components/ui/form`."
+                    ],
+                    "bullets_title": "Pattern recommandé",
+                    "bullets": [
+                        "Définissez les schémas Zod dans le composant client quand les messages de validation dépendent de `useTranslations()`.",
+                        "Appelez `execute(() => myAction(values), { successMessage, redirectOnSuccess, refreshOnSuccess })`.",
+                        "Utilisez `dialogManager.confirm(...)` pour encadrer les actions destructives déjà implémentées dans le dépôt.",
+                        "Gardez les composants client petits et laissez la récupération de données à des Server Components quand c'est possible."
+                    ],
+                    "snippet_title": "Formulaire avec `useServerAction()`"
+                },
+                "billing-email": {
+                    "nav_label": "Stripe et email",
+                    "eyebrow": "Intégrations",
+                    "title": "Facturation, plans et emails",
+                    "description": "Stripe et Resend sont déjà intégrés pour la facturation, les plans et les emails transactionnels.",
+                    "paragraphs": [
+                        "Les plans sont stockés en base via Prisma et enrichis avec les prix Stripe dans `src/actions/subscription.action.js`.",
+                        "Les emails de vérification et d'invitation sont envoyés par Resend via `src/actions/email.action.js`, avec le branding défini dans `src/site-config.js`."
+                    ],
+                    "bullets_title": "Points d'intégration",
+                    "bullets": [
+                        "Utilisez `bun stripe-webhooks` pour écouter les webhooks Stripe en local.",
+                        "`createCheckoutSession()` ouvre un checkout sécurisé à partir d'un `planId`.",
+                        "`createBillingPortalSession()` redirige vers le portail client Stripe.",
+                        "Les plans d'abonnement se gèrent dans `src/actions/plan.action.js` et les écrans admin associés.",
+                        "Les emails utilisent `RESEND_API_KEY`, `EMAIL_FROM` et les templates React Email du dossier `src/components/email/`."
+                    ],
+                    "snippet_title": "Checkout, portail et email"
+                },
+                "i18n": {
+                    "nav_label": "i18n",
+                    "eyebrow": "Localisation",
+                    "title": "Traductions et changement de langue",
+                    "description": "Le projet utilise next-intl côté serveur et côté client, avec un cookie `NEXT_LOCALE` pour mémoriser la langue choisie.",
+                    "paragraphs": [
+                        "Les locales supportées par le code actuel sont `fr-FR`, `en-US`, `nl-NL` et `de-DE`. La valeur par défaut configurée aujourd'hui est `en-US` dans `src/lib/i18n/config.js`.",
+                        "Les messages du boilerplate viennent de `src/messages/*.json`, tandis que vos ajouts métier doivent aller dans `src/messages/*.project.json`."
+                    ],
+                    "bullets_title": "Bonnes pratiques i18n",
+                    "bullets": [
+                        "Utilisez `getTranslations()` dans les Server Components et `useTranslations()` dans les Client Components.",
+                        "Ajoutez chaque nouvelle clé dans les quatre locales de base.",
+                        "Traduisez les labels dynamiques à partir de la clé métier, par exemple `tRoles(member.role)`.",
+                        "Utilisez `setLocaleAction({ locale })` pour persister le choix utilisateur."
+                    ],
+                    "note": "Si vous voulez un français par défaut, modifiez `defaultLocale` dans `src/lib/i18n/config.js`.",
+                    "snippet_title": "Patrons serveur et client"
+                },
+                "updates": {
+                    "nav_label": "Mises à jour",
+                    "eyebrow": "Maintenance",
+                    "title": "Récupérer les évolutions du boilerplate",
+                    "description": "Le workflow d'update est pensé pour récupérer rapidement les évolutions du boilerplate sans écraser votre code projet.",
+                    "paragraphs": [
+                        "Après un `git fetch upstream`, fusionnez `upstream/main` puis réinstallez les dépendances si besoin.",
+                        "Les zones protégées restent locales grâce à `.gitattributes` et à la stratégie `merge=theirs`, mais `package.json` peut demander une résolution manuelle si les deux branches ont changé."
+                    ],
+                    "bullets_title": "Checklist après merge",
+                    "bullets": [
+                        "Exécutez `bun install` si des dépendances ont changé.",
+                        "Exécutez `bun prisma generate` si le schéma a évolué.",
+                        "Vérifiez `package.json`, les variables d'environnement et les migrations éventuelles.",
+                        "Terminez par `bun lint` et idéalement `bun build`."
+                    ],
+                    "snippet_title": "Mettre à jour depuis l'upstream"
+                }
+            }
+        }
+    },
     "sidebar": {
         "application": "Application",
         "products": "Produits",
