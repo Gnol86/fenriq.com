@@ -30,14 +30,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useServerAction } from "@/hooks/use-server-action";
 
-export default function PlanForm({ plan = null, trigger = null }) {
-    const t = useTranslations("admin.plans");
-    const { execute, isPending } = useServerAction();
-    const [open, setOpen] = useState(false);
-
-    const isEditMode = !!plan;
-
-    const formSchema = z.object({
+function createPlanSchema(t) {
+    return z.object({
         name: z.string().min(1, t("validation_name_required")).min(2, t("validation_name_min")),
         description: z.string().optional(),
         priceId: z
@@ -63,17 +57,284 @@ export default function PlanForm({ plan = null, trigger = null }) {
             })
         ),
     });
+}
 
-    // Préparer les limites pour le mode édition
-    const parsedLimits = plan?.limits
-        ? Object.entries(JSON.parse(plan.limits)).map(([name, value]) => ({
-              name,
-              value: value.toString(),
-          }))
-        : [];
+function parsePlanLimits(plan) {
+    if (!plan?.limits) {
+        return [];
+    }
 
-    // Préparer le freeTrial pour le mode édition
-    const parsedFreeTrial = plan?.freeTrial ? JSON.parse(plan.freeTrial).days.toString() : "";
+    try {
+        return Object.entries(JSON.parse(plan.limits)).map(([name, value]) => ({
+            name,
+            value: value.toString(),
+        }));
+    } catch (error) {
+        console.error("Failed to parse plan limits", error);
+        return [];
+    }
+}
+
+function parseFreeTrial(plan) {
+    if (!plan?.freeTrial) {
+        return "";
+    }
+
+    try {
+        return JSON.parse(plan.freeTrial).days?.toString() ?? "";
+    } catch (error) {
+        console.error("Failed to parse free trial", error);
+        return "";
+    }
+}
+
+function getActionData(values) {
+    const limits = values.limits.reduce((acc, limit) => {
+        acc[limit.name] = parseInt(limit.value, 10);
+        return acc;
+    }, {});
+
+    const description = values.description.trim();
+    const annualDiscountPriceId = values.annualDiscountPriceId.trim();
+    const freeTrial = values.freeTrial.trim();
+
+    return {
+        name: values.name,
+        description: description ? description : null,
+        priceId: values.priceId,
+        annualDiscountPriceId: annualDiscountPriceId ? annualDiscountPriceId : null,
+        limits,
+        freeTrial: freeTrial ? freeTrial : null,
+        showInPricingPage: values.showInPricingPage,
+    };
+}
+
+function PlanBasicFields({ form, t, isPending }) {
+    return (
+        <>
+            <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>{t("form_name_label")}</FormLabel>
+                        <FormControl>
+                            <Input
+                                placeholder={t("form_name_placeholder")}
+                                disabled={isPending}
+                                {...field}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+
+            <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>{t("form_description_label")}</FormLabel>
+                        <FormControl>
+                            <Textarea
+                                placeholder={t("form_description_placeholder")}
+                                rows={4}
+                                disabled={isPending}
+                                {...field}
+                            />
+                        </FormControl>
+                        <FormDescription>{t("form_description_description")}</FormDescription>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+
+            <FormField
+                control={form.control}
+                name="priceId"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>{t("form_price_id_label")}</FormLabel>
+                        <FormControl>
+                            <Input
+                                placeholder={t("form_price_id_placeholder")}
+                                disabled={isPending}
+                                {...field}
+                            />
+                        </FormControl>
+                        <FormDescription>{t("form_price_id_description")}</FormDescription>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+
+            <FormField
+                control={form.control}
+                name="annualDiscountPriceId"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>{t("form_annual_discount_label")}</FormLabel>
+                        <FormControl>
+                            <Input
+                                placeholder={t("form_annual_discount_placeholder")}
+                                disabled={isPending}
+                                {...field}
+                            />
+                        </FormControl>
+                        <FormDescription>{t("form_annual_discount_description")}</FormDescription>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+
+            <FormField
+                control={form.control}
+                name="freeTrial"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>{t("form_free_trial_label")}</FormLabel>
+                        <FormControl>
+                            <Input
+                                type="number"
+                                placeholder={t("form_free_trial_placeholder")}
+                                disabled={isPending}
+                                {...field}
+                            />
+                        </FormControl>
+                        <FormDescription>{t("form_free_trial_description")}</FormDescription>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+
+            <FormField
+                control={form.control}
+                name="showInPricingPage"
+                render={({ field }) => (
+                    <FormItem className="flex flex-row items-start gap-3">
+                        <FormControl>
+                            <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                disabled={isPending}
+                            />
+                        </FormControl>
+                        <div className="flex flex-col gap-1">
+                            <FormLabel>{t("form_show_in_pricing_label")}</FormLabel>
+                            <FormDescription>
+                                {t("form_show_in_pricing_description")}
+                            </FormDescription>
+                        </div>
+                    </FormItem>
+                )}
+            />
+        </>
+    );
+}
+
+function PlanLimitsFields({ form, fields, append, remove, t, isPending }) {
+    return (
+        <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+                <h3 className="text-sm font-medium">{t("form_limits_title")}</h3>
+                <p className="text-muted-foreground text-sm">{t("form_limits_description")}</p>
+            </div>
+
+            {fields.map((field, index) => (
+                <div key={field.id} className="flex items-end gap-2">
+                    <FormField
+                        control={form.control}
+                        name={`limits.${index}.name`}
+                        render={({ field }) => (
+                            <FormItem className="flex-1">
+                                {index === 0 && (
+                                    <FormLabel>{t("form_limit_name_placeholder")}</FormLabel>
+                                )}
+                                <FormControl>
+                                    <Input
+                                        placeholder={t("form_limit_name_placeholder")}
+                                        disabled={isPending}
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name={`limits.${index}.value`}
+                        render={({ field }) => (
+                            <FormItem className="flex-1">
+                                {index === 0 && (
+                                    <FormLabel>{t("form_limit_value_placeholder")}</FormLabel>
+                                )}
+                                <FormControl>
+                                    <Input
+                                        type="number"
+                                        placeholder={t("form_limit_value_placeholder")}
+                                        disabled={isPending}
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        disabled={isPending}
+                        onClick={() => remove(index)}
+                    >
+                        <X className="h-4 w-4" />
+                    </Button>
+                </div>
+            ))}
+
+            <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={isPending}
+                onClick={() => append({ name: "", value: "" })}
+                className="w-fit"
+            >
+                <Plus className="mr-2 h-4 w-4" />
+                {t("form_add_limit")}
+            </Button>
+        </div>
+    );
+}
+
+function PlanSubmitButton({ isEditMode, isPending, t }) {
+    const label = isPending
+        ? isEditMode
+            ? t("form_submitting_edit")
+            : t("form_submitting")
+        : isEditMode
+          ? t("form_submit_button_edit")
+          : t("form_submit_button");
+
+    return (
+        <Button type="submit" disabled={isPending} className="w-fit">
+            {label}
+        </Button>
+    );
+}
+
+export default function PlanForm({ plan = null, trigger = null }) {
+    const t = useTranslations("admin.plans");
+    const { execute, isPending } = useServerAction();
+    const [open, setOpen] = useState(false);
+    const isEditMode = !!plan;
+    const formSchema = createPlanSchema(t);
+    const parsedLimits = parsePlanLimits(plan);
+    const parsedFreeTrial = parseFreeTrial(plan);
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -94,21 +355,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
     });
 
     const onSubmit = async values => {
-        // Convertir les limites en objet
-        const limitsObject = values.limits.reduce((acc, limit) => {
-            acc[limit.name] = parseInt(limit.value, 10);
-            return acc;
-        }, {});
-
-        const actionData = {
-            name: values.name,
-            description: values.description || null,
-            priceId: values.priceId,
-            annualDiscountPriceId: values.annualDiscountPriceId || null,
-            limits: limitsObject,
-            freeTrial: values.freeTrial || null,
-            showInPricingPage: values.showInPricingPage,
-        };
+        const actionData = getActionData(values);
 
         await execute(
             () =>
@@ -121,7 +368,6 @@ export default function PlanForm({ plan = null, trigger = null }) {
             }
         );
 
-        // Fermer le dialog et réinitialiser le formulaire après succès
         setOpen(false);
         if (!isEditMode) {
             form.reset();
@@ -146,222 +392,16 @@ export default function PlanForm({ plan = null, trigger = null }) {
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
-                        {/* Nom du plan */}
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t("form_name_label")}</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder={t("form_name_placeholder")}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                        <PlanBasicFields form={form} t={t} isPending={isPending} />
+                        <PlanLimitsFields
+                            form={form}
+                            fields={fields}
+                            append={append}
+                            remove={remove}
+                            t={t}
+                            isPending={isPending}
                         />
-
-                        {/* Description */}
-                        <FormField
-                            control={form.control}
-                            name="description"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t("form_description_label")}</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder={t("form_description_placeholder")}
-                                            rows={4}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        {t("form_description_description")}
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Price ID */}
-                        <FormField
-                            control={form.control}
-                            name="priceId"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t("form_price_id_label")}</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder={t("form_price_id_placeholder")}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        {t("form_price_id_description")}
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Annual Discount Price ID */}
-                        <FormField
-                            control={form.control}
-                            name="annualDiscountPriceId"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t("form_annual_discount_label")}</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder={t("form_annual_discount_placeholder")}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        {t("form_annual_discount_description")}
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Free Trial */}
-                        <FormField
-                            control={form.control}
-                            name="freeTrial"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t("form_free_trial_label")}</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="number"
-                                            placeholder={t("form_free_trial_placeholder")}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        {t("form_free_trial_description")}
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Show in Pricing Page */}
-                        <FormField
-                            control={form.control}
-                            name="showInPricingPage"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-row items-start gap-3 space-y-0">
-                                    <FormControl>
-                                        <Checkbox
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                        />
-                                    </FormControl>
-                                    <div className="flex flex-col gap-1">
-                                        <FormLabel>{t("form_show_in_pricing_label")}</FormLabel>
-                                        <FormDescription>
-                                            {t("form_show_in_pricing_description")}
-                                        </FormDescription>
-                                    </div>
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Limits */}
-                        <div className="flex flex-col gap-4">
-                            <div className="flex flex-col gap-2">
-                                <h3 className="text-sm font-medium">{t("form_limits_title")}</h3>
-                                <p className="text-muted-foreground text-sm">
-                                    {t("form_limits_description")}
-                                </p>
-                            </div>
-
-                            {fields.map((field, index) => (
-                                <div key={field.id} className="flex items-end gap-2">
-                                    <FormField
-                                        control={form.control}
-                                        name={`limits.${index}.name`}
-                                        render={({ field }) => (
-                                            <FormItem className="flex-1">
-                                                {index === 0 && (
-                                                    <FormLabel>
-                                                        {t("form_limit_name_placeholder")}
-                                                    </FormLabel>
-                                                )}
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder={t(
-                                                            "form_limit_name_placeholder"
-                                                        )}
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name={`limits.${index}.value`}
-                                        render={({ field }) => (
-                                            <FormItem className="flex-1">
-                                                {index === 0 && (
-                                                    <FormLabel>
-                                                        {t("form_limit_value_placeholder")}
-                                                    </FormLabel>
-                                                )}
-                                                <FormControl>
-                                                    <Input
-                                                        type="number"
-                                                        placeholder={t(
-                                                            "form_limit_value_placeholder"
-                                                        )}
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <Button
-                                        type="button"
-                                        variant="destructive"
-                                        size="icon"
-                                        onClick={() => remove(index)}
-                                    >
-                                        <X className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                            ))}
-
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => append({ name: "", value: "" })}
-                                className="w-fit"
-                            >
-                                <Plus className="mr-2 h-4 w-4" />
-                                {t("form_add_limit")}
-                            </Button>
-                        </div>
-
-                        <Button type="submit" disabled={isPending} className="w-fit">
-                            {isPending
-                                ? isEditMode
-                                    ? t("form_submitting_edit")
-                                    : t("form_submitting")
-                                : isEditMode
-                                  ? t("form_submit_button_edit")
-                                  : t("form_submit_button")}
-                        </Button>
+                        <PlanSubmitButton isEditMode={isEditMode} isPending={isPending} t={t} />
                     </form>
                 </Form>
             </DialogContent>

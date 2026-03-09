@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 
 import "react-image-crop/dist/ReactCrop.css";
 
+const DEFAULT_MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
 const centerAspectCrop = (mediaWidth, mediaHeight, aspect) =>
     centerCrop(
         aspect
@@ -75,7 +77,7 @@ const useImageCrop = () => {
 
 export const ImageCrop = ({
     file,
-    maxImageSize = 1024 * 1024 * 5,
+    maxImageSize = DEFAULT_MAX_IMAGE_SIZE,
     onCrop,
     children,
     onChange,

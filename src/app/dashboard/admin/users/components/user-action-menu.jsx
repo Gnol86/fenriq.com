@@ -22,6 +22,19 @@ import { useServerAction } from "@/hooks/use-server-action";
 import { authClient } from "@/lib/auth-client";
 import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 
+async function impersonateUser(userId) {
+    try {
+        const result = await authClient.admin.impersonateUser({
+            userId,
+        });
+
+        return Boolean(result?.data?.session);
+    } catch (error) {
+        console.error("Erreur lors de l'usurpation:", error);
+        return false;
+    }
+}
+
 export default function UserActionMenu({ user, isCurrentUser }) {
     const t = useTranslations("admin.users");
     const tRoles = useTranslations("roles");
@@ -58,20 +71,16 @@ export default function UserActionMenu({ user, isCurrentUser }) {
     };
 
     const handleImpersonateUser = async () => {
-        try {
-            const result = await authClient.admin.impersonateUser({
-                userId: user.id,
-            });
+        const impersonationStarted = await impersonateUser(user.id);
 
-            if (result.data?.session) {
-                toast.success(t("success_impersonate"));
-                router.push("/dashboard");
-                router.refresh();
-            }
-        } catch (error) {
-            console.error("Erreur lors de l'usurpation:", error);
+        if (!impersonationStarted) {
             toast.error(t("impersonate_error"));
+            return;
         }
+
+        toast.success(t("success_impersonate"));
+        router.push("/dashboard");
+        router.refresh();
     };
 
     const handleRemoveUser = async () => {

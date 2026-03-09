@@ -13,7 +13,7 @@ import {
     UserLock,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import {
     listUserSessionsAction,
     revokeUserSessionAction,
@@ -27,32 +27,79 @@ import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 import { formatDate } from "@/lib/utils";
 import UserActionMenu from "./user-action-menu";
 
+const initialSessionsState = {
+    sessions: [],
+    loading: false,
+};
+
+function sessionsReducer(state, action) {
+    switch (action.type) {
+        case "load-started":
+            return {
+                ...state,
+                loading: true,
+            };
+        case "loaded":
+            return {
+                sessions: action.sessions,
+                loading: false,
+            };
+        case "session-revoked":
+            return {
+                ...state,
+                sessions: state.sessions.filter(session => session.token !== action.sessionToken),
+            };
+        case "sessions-cleared":
+            return {
+                ...state,
+                sessions: [],
+            };
+        default:
+            return state;
+    }
+}
+
+async function fetchUserSessions(userId) {
+    try {
+        const result = await listUserSessionsAction({
+            userId,
+        });
+
+        return result?.sessions ?? [];
+    } catch (error) {
+        console.error("Erreur lors du chargement des sessions:", error);
+        return [];
+    }
+}
+
 export default function UserDetailsCollapse({ user, isCurrentUser }) {
-    const [sessions, setSessions] = useState([]);
-    const [loadingSessions, setLoadingSessions] = useState(false);
+    const [sessionsState, dispatch] = useReducer(sessionsReducer, initialSessionsState);
     const { execute } = useServerAction();
     const tUsers = useTranslations("admin.users");
     const tCommon = useTranslations("common");
     const locale = useLocale();
+    const sessions = sessionsState.sessions;
+    const loadingSessions = sessionsState.loading;
 
-    // Charger les sessions de l'utilisateur
     useEffect(() => {
-        const loadSessions = async () => {
-            setLoadingSessions(true);
-            try {
-                const result = await listUserSessionsAction({
-                    userId: user.id,
-                });
-                setSessions(result?.sessions || []);
-            } catch (error) {
-                console.error("Erreur lors du chargement des sessions:", error);
-                setSessions([]);
-            } finally {
-                setLoadingSessions(false);
-            }
-        };
+        let cancelled = false;
 
-        loadSessions();
+        dispatch({ type: "load-started" });
+
+        void fetchUserSessions(user.id).then(nextSessions => {
+            if (cancelled) {
+                return;
+            }
+
+            dispatch({
+                type: "loaded",
+                sessions: nextSessions,
+            });
+        });
+
+        return () => {
+            cancelled = true;
+        };
     }, [user.id]);
 
     const handleRevokeSession = async sessionToken => {
@@ -60,8 +107,10 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
             successMessage: tUsers("sessions_revoke_success"),
         });
 
-        // Recharger les sessions
-        setSessions(prev => prev.filter(session => session.token !== sessionToken));
+        dispatch({
+            type: "session-revoked",
+            sessionToken,
+        });
     };
 
     const handleRevokeAllSessions = async () => {
@@ -76,7 +125,7 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                     await execute(() => revokeUserSessionsAction({ userId: user.id }), {
                         successMessage: tUsers("sessions_revoke_all_success"),
                     });
-                    setSessions([]);
+                    dispatch({ type: "sessions-cleared" });
                 },
             },
         });
