@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { requireActiveOrganization, requirePermission } from "@/lib/access-control";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { validateQuotaQuantity } from "@/lib/quota";
 import { getServerUrl } from "@/lib/server-url";
 import stripe from "@/lib/stripe";
 import {
@@ -137,6 +138,14 @@ export async function createCheckoutSession({ planId, annual = false, seats }) {
         throw new Error("Plan not found");
     }
 
+    const normalizedSeats =
+        plan.name === "team" || !SiteConfig.quota?.enabled
+            ? undefined
+            : validateQuotaQuantity(seats, {
+                  minimum: SiteConfig.quota.minimum,
+                  step: SiteConfig.quota.step,
+              });
+
     if (annual) {
         if (!plan.annualDiscountPriceId) {
             throw new Error(t("annual_checkout_unavailable"));
@@ -171,12 +180,7 @@ export async function createCheckoutSession({ planId, annual = false, seats }) {
             plan: plan.name,
             annual: annual,
             referenceId: organization.id,
-            seats:
-                plan.name === "team"
-                    ? memberCount
-                    : SiteConfig.quota?.enabled && seats
-                      ? seats
-                      : undefined,
+            seats: plan.name === "team" ? memberCount : normalizedSeats,
             successUrl: `${getServerUrl()}/dashboard/org/subscription?success=true`,
             cancelUrl: `${getServerUrl()}/dashboard/org/subscription?canceled=true`,
             returnUrl: `${getServerUrl()}/dashboard/org/subscription`,

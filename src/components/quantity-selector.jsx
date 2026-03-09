@@ -11,6 +11,20 @@ import { Input } from "@/components/ui/input";
 import { useServerAction } from "@/hooks/use-server-action";
 import { calculateTieredPrice, formatPrice } from "@/lib/utils";
 
+function parseQuantityInput(value) {
+    if (value === "" || !/^\d+$/.test(value)) {
+        return null;
+    }
+
+    const parsedValue = Number(value);
+
+    if (!Number.isFinite(parsedValue) || !Number.isInteger(parsedValue)) {
+        return null;
+    }
+
+    return parsedValue;
+}
+
 export default function QuantitySelector({
     unitPrice,
     tiers,
@@ -34,35 +48,68 @@ export default function QuantitySelector({
 
     const isSubscribeMode = !!planId;
     const effectiveMinimum = Math.max(minimum, currentUsage);
-    const [quantity, setQuantity] = useState(
-        isSubscribeMode ? minimum : Math.max(currentSeats ?? minimum, effectiveMinimum)
-    );
+    const initialQuantity = isSubscribeMode
+        ? minimum
+        : Math.max(currentSeats ?? minimum, effectiveMinimum);
+    const [quantity, setQuantity] = useState(initialQuantity);
+    const [inputValue, setInputValue] = useState(String(initialQuantity));
+    const parsedInputQuantity = parseQuantityInput(inputValue);
+    const isValidQuantity =
+        parsedInputQuantity != null &&
+        parsedInputQuantity >= effectiveMinimum &&
+        (!step || step <= 1 || parsedInputQuantity % step === 0);
+    const showMinimumError = parsedInputQuantity != null && parsedInputQuantity < effectiveMinimum;
+    const shouldShowTotal = parsedInputQuantity != null && parsedInputQuantity >= effectiveMinimum;
 
     const handleDecrement = () => {
-        setQuantity(currentQuantity => Math.max(effectiveMinimum, currentQuantity - step));
+        const nextQuantity = Math.max(effectiveMinimum, quantity - step);
+        setQuantity(nextQuantity);
+        setInputValue(String(nextQuantity));
     };
 
     const handleIncrement = () => {
-        setQuantity(currentQuantity => Math.max(effectiveMinimum, currentQuantity + step));
+        const nextQuantity = Math.max(effectiveMinimum, quantity + step);
+        setQuantity(nextQuantity);
+        setInputValue(String(nextQuantity));
     };
 
     const handleInputChange = value => {
+        if (value !== "" && !/^\d+$/.test(value)) {
+            return;
+        }
+
+        setInputValue(value);
+
         if (value === "") {
-            setQuantity(0);
             return;
         }
-        // si value n'est pas un nombre, ne rien faire
-        if (Number.isNaN(value)) {
+
+        const newValue = parseQuantityInput(value);
+
+        if (newValue == null) {
             return;
         }
-        const newValue = parseInt(value, 10);
+
         setQuantity(newValue);
     };
 
+    const handleInputBlur = () => {
+        if (parsedInputQuantity == null) {
+            setInputValue(String(quantity));
+            return;
+        }
+
+        setInputValue(String(parsedInputQuantity));
+    };
+
     const handleSubscribe = async () => {
+        if (!isValidQuantity || parsedInputQuantity == null) {
+            return;
+        }
+
         setIsRedirecting(true);
         const result = await execute(
-            () => createCheckoutSession({ planId, annual, seats: quantity }),
+            () => createCheckoutSession({ planId, annual, seats: parsedInputQuantity }),
             {
                 refreshOnSuccess: false,
             }
@@ -77,12 +124,17 @@ export default function QuantitySelector({
     };
 
     const handleUpdate = async () => {
-        await execute(() => updateSubscriptionQuantityAction({ quantity }), {
+        if (!isValidQuantity || parsedInputQuantity == null) {
+            return;
+        }
+
+        await execute(() => updateSubscriptionQuantityAction({ quantity: parsedInputQuantity }), {
             successMessage: t("quota_updated"),
         });
     };
 
-    const hasChanged = currentSeats != null && quantity !== currentSeats;
+    const hasChanged =
+        currentSeats != null && parsedInputQuantity != null && parsedInputQuantity !== currentSeats;
     const isDisabled = isPending || isRedirecting;
 
     return (
@@ -98,9 +150,16 @@ export default function QuantitySelector({
                     <Minus className="size-4" />
                 </Button>
                 <Input
-                    value={quantity}
+                    value={inputValue}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     className="text-center"
                     onChange={e => handleInputChange(e.target.value)}
+                    onBlur={handleInputBlur}
+                    aria-invalid={
+                        inputValue !== "" && (parsedInputQuantity == null || !isValidQuantity)
+                    }
                 />
                 <Button
                     variant="outline"
@@ -117,9 +176,9 @@ export default function QuantitySelector({
             {(() => {
                 const isTiered = !!tiersMode && !!tiers;
                 const totalAmount = isTiered
-                    ? calculateTieredPrice(tiers, quantity, tiersMode)
-                    : quantity * unitPrice;
-                return quantity >= effectiveMinimum ? (
+                    ? calculateTieredPrice(tiers, parsedInputQuantity, tiersMode)
+                    : parsedInputQuantity * unitPrice;
+                return shouldShowTotal ? (
                     <p
                         className={
                             isSubscribeMode ? "text-sm font-bold" : "text-sm text-muted-foreground"
@@ -131,7 +190,7 @@ export default function QuantitySelector({
                     </p>
                 ) : null;
             })()}
-            {quantity < effectiveMinimum && (
+            {showMinimumError && (
                 <p className="text-xs text-red-500">
                     {t("quota_minimum", { min: effectiveMinimum })}
                 </p>
@@ -141,12 +200,7 @@ export default function QuantitySelector({
                     size="lg"
                     className="w-full"
                     onClick={handleSubscribe}
-                    disabled={
-                        isRedirecting ||
-                        isPending ||
-                        quantity < effectiveMinimum ||
-                        subscribeDisabled
-                    }
+                    disabled={isRedirecting || isPending || !isValidQuantity || subscribeDisabled}
                 >
                     {isRedirecting || isPending
                         ? t("processing_subscription")
@@ -158,7 +212,7 @@ export default function QuantitySelector({
             {!isSubscribeMode && hasChanged && (
                 <Button
                     onClick={handleUpdate}
-                    disabled={isPending || quantity < effectiveMinimum}
+                    disabled={isPending || !isValidQuantity}
                     size="sm"
                     className="w-fit"
                 >

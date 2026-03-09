@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requirePermission } from "@/lib/access-control";
 import prisma from "@/lib/prisma";
+import { validateQuotaQuantity } from "@/lib/quota";
 import stripe from "@/lib/stripe";
 import { SiteConfig } from "@/site-config";
 
@@ -19,12 +20,10 @@ export async function updateSubscriptionQuantityAction({ quantity }) {
         throw new Error("Quota system is not enabled");
     }
     const { minimum, step } = SiteConfig.quota;
-    if (quantity < minimum) {
-        throw new Error(`Minimum ${minimum} unités`);
-    }
-    if (step && step > 1 && quantity % step !== 0) {
-        throw new Error(`La quantité doit être un multiple de ${step}`);
-    }
+    const normalizedQuantity = validateQuotaQuantity(quantity, {
+        minimum,
+        step,
+    });
 
     // Récupérer l'abonnement actif
     const subscription = await prisma.subscription.findFirst({
@@ -44,16 +43,16 @@ export async function updateSubscriptionQuantityAction({ quantity }) {
 
     // Mettre à jour la quantité sur Stripe (prorata automatique)
     await stripe.subscriptionItems.update(itemId, {
-        quantity,
+        quantity: normalizedQuantity,
         proration_behavior: "create_prorations",
     });
 
     // Mettre à jour seats en DB
     await prisma.subscription.update({
         where: { id: subscription.id },
-        data: { seats: quantity },
+        data: { seats: normalizedQuantity },
     });
 
     revalidatePath("/dashboard/org/subscription");
-    return { success: true, seats: quantity };
+    return { success: true, seats: normalizedQuantity };
 }
