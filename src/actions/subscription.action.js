@@ -1,12 +1,51 @@
 "use server";
 
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import { requireActiveOrganization, requirePermission } from "@/lib/access-control";
+import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { getServerUrl } from "@/lib/server-url";
 import stripe from "@/lib/stripe";
+import {
+    getValidatedPlanStripePricing,
+    StripePlanValidationError,
+} from "@/lib/stripe-plan-pricing";
 import { SiteConfig } from "@/site-config";
-import { auth } from "../lib/auth";
-import { getServerUrl } from "../lib/server-url";
+
+function parsePlanLimits(limitsJson) {
+    if (!limitsJson) {
+        return {};
+    }
+
+    try {
+        return JSON.parse(limitsJson);
+    } catch (error) {
+        console.error("Error parsing limits:", error);
+        return {};
+    }
+}
+
+function parseFreeTrialDays(freeTrialJson) {
+    if (!freeTrialJson) {
+        return null;
+    }
+
+    try {
+        const freeTrial = JSON.parse(freeTrialJson);
+        return freeTrial.days ?? null;
+    } catch (error) {
+        console.error("Error parsing freeTrial:", error);
+        return null;
+    }
+}
+
+function shouldBlockAnnualCheckout(error) {
+    return (
+        error instanceof StripePlanValidationError ||
+        (error instanceof Error && error.message === "ANNUAL_PRICE_MORE_EXPENSIVE")
+    );
+}
 
 /**
  * Récupère tous les plans avec leurs informations Stripe
@@ -28,81 +67,29 @@ export async function getPlansWithStripeData() {
     const plansWithStripeData = await Promise.all(
         plans.map(async plan => {
             try {
-                // Récupérer le prix mensuel avec les informations du produit
-                const monthlyPrice = await stripe.prices.retrieve(plan.priceId, {
-                    expand: ["product", "tiers"],
-                });
+                const { monthlyPrice, annualPrice, annualComparison, annualValidationError } =
+                    await getValidatedPlanStripePricing({
+                        priceId: plan.priceId,
+                        annualDiscountPriceId: plan.annualDiscountPriceId,
+                        allowInvalidAnnual: true,
+                    });
 
-                // Récupérer le prix annuel si disponible
-                let annualPrice = null;
-                if (plan.annualDiscountPriceId) {
-                    annualPrice = await stripe.prices.retrieve(plan.annualDiscountPriceId, {
-                        expand: ["product", "tiers"],
+                if (annualValidationError) {
+                    console.error(`Invalid annual Stripe price for plan ${plan.name}:`, {
+                        code: annualValidationError.code,
+                        details: annualValidationError.details,
                     });
                 }
-
-                // Parser les limites JSON
-                let limits = {};
-                if (plan.limits) {
-                    try {
-                        limits = JSON.parse(plan.limits);
-                    } catch (e) {
-                        console.error("Error parsing limits:", e);
-                    }
-                }
-
-                // Parser le free trial JSON
-                let freeTrialDays = null;
-                if (plan.freeTrial) {
-                    try {
-                        const freeTrialObj = JSON.parse(plan.freeTrial);
-                        freeTrialDays = freeTrialObj.days;
-                    } catch (e) {
-                        console.error("Error parsing freeTrial:", e);
-                    }
-                }
-
-                const mapTiers = tiers =>
-                    tiers?.map(t => ({
-                        up_to: t.up_to,
-                        unit_amount: t.unit_amount,
-                        flat_amount: t.flat_amount,
-                    })) ?? null;
 
                 return {
                     id: plan.id,
                     name: plan.name,
                     description: plan.description,
-                    limits,
-                    freeTrialDays,
-                    monthlyPrice: {
-                        id: monthlyPrice.id,
-                        amount: monthlyPrice.unit_amount,
-                        currency: monthlyPrice.currency,
-                        tiersMode: monthlyPrice.tiers_mode ?? null,
-                        tiers: mapTiers(monthlyPrice.tiers),
-                        product: {
-                            id: monthlyPrice.product.id,
-                            name: monthlyPrice.product.name,
-                            description: monthlyPrice.product.description,
-                            metadata: monthlyPrice.product.metadata,
-                        },
-                    },
-                    annualPrice: annualPrice
-                        ? {
-                              id: annualPrice.id,
-                              amount: annualPrice.unit_amount,
-                              currency: annualPrice.currency,
-                              tiersMode: annualPrice.tiers_mode ?? null,
-                              tiers: mapTiers(annualPrice.tiers),
-                              product: {
-                                  id: annualPrice.product.id,
-                                  name: annualPrice.product.name,
-                                  description: annualPrice.product.description,
-                                  metadata: annualPrice.product.metadata,
-                              },
-                          }
-                        : null,
+                    limits: parsePlanLimits(plan.limits),
+                    freeTrialDays: parseFreeTrialDays(plan.freeTrial),
+                    monthlyPrice,
+                    annualPrice,
+                    annualComparison,
                 };
             } catch (error) {
                 console.error(`Error fetching Stripe data for plan ${plan.name}:`, error);
@@ -138,6 +125,7 @@ export async function createCheckoutSession({ planId, annual = false, seats }) {
     const { organization } = await requirePermission({
         permissions: { billing: ["manage"] },
     });
+    const t = await getTranslations("organization.subscription");
 
     const plan = await prisma.plan.findUnique({
         where: {
@@ -147,6 +135,29 @@ export async function createCheckoutSession({ planId, annual = false, seats }) {
 
     if (!plan) {
         throw new Error("Plan not found");
+    }
+
+    if (annual) {
+        if (!plan.annualDiscountPriceId) {
+            throw new Error(t("annual_checkout_unavailable"));
+        }
+
+        try {
+            const { annualComparison } = await getValidatedPlanStripePricing({
+                priceId: plan.priceId,
+                annualDiscountPriceId: plan.annualDiscountPriceId,
+            });
+
+            if (annualComparison?.isMoreExpensive) {
+                throw new Error("ANNUAL_PRICE_MORE_EXPENSIVE");
+            }
+        } catch (error) {
+            if (shouldBlockAnnualCheckout(error)) {
+                throw new Error(t("annual_checkout_unavailable"));
+            }
+
+            throw error;
+        }
     }
 
     const memberCount = await prisma.member.count({

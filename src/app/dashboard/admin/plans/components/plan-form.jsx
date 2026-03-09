@@ -357,7 +357,7 @@ export default function PlanForm({ plan = null, trigger = null }) {
     const onSubmit = async values => {
         const actionData = getActionData(values);
 
-        await execute(
+        const result = await execute(
             () =>
                 isEditMode
                     ? updatePlanAction({ planId: plan.id, ...actionData })
@@ -367,6 +367,10 @@ export default function PlanForm({ plan = null, trigger = null }) {
                 errorMessage: isEditMode ? t("error_update") : t("error_create"),
             }
         );
+
+        if (!result.success) {
+            return;
+        }
 
         setOpen(false);
         if (!isEditMode) {

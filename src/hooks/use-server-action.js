@@ -3,6 +3,19 @@ import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
+function getActionErrorMessage(err, fallbackMessage = null) {
+    if (err?.message) {
+        const apiErrorMatch = err.message.match(/\[Error \[APIError\]: (.*?)\]/);
+        if (apiErrorMatch) {
+            return apiErrorMatch[1];
+        }
+
+        return err.message;
+    }
+
+    return fallbackMessage ?? "Une erreur s'est produite";
+}
+
 export function useServerAction() {
     const [isPending, setIsPending] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -14,7 +27,9 @@ export function useServerAction() {
     const execute = useCallback(
         async (action, options = {}) => {
             const {
+                loadingMessage = "Opération en cours...",
                 successMessage = null,
+                errorMessage = null,
                 refreshOnSuccess = true,
                 redirectOnSuccess = null,
             } = options;
@@ -25,53 +40,54 @@ export function useServerAction() {
             setError(null);
             setData(null);
 
-            let actionSucceeded = false;
+            const toastId = toast.loading(loadingMessage);
 
-            return toast.promise(action(), {
-                loading: "Opération en cours...",
-                success: data => {
-                    setData(data);
-                    setIsSuccess(true);
-                    setIsPending(false);
-                    actionSucceeded = true;
+            try {
+                const actionData = await action();
 
-                    return successMessage;
-                },
-                error: err => {
-                    console.error("Server action error:", err);
+                setData(actionData);
+                setIsSuccess(true);
+                setIsPending(false);
 
-                    // Extract error message
-                    let errorMessage = "Une erreur s'est produite";
+                if (successMessage) {
+                    toast.success(successMessage, {
+                        id: toastId,
+                    });
+                } else {
+                    toast.dismiss(toastId);
+                }
 
-                    if (err?.message) {
-                        // Check if it's a Better-Auth APIError format
-                        const apiErrorMatch = err.message.match(/\[Error \[APIError\]: (.*?)\]/);
-                        if (apiErrorMatch) {
-                            errorMessage = apiErrorMatch[1];
-                        } else {
-                            errorMessage = err.message;
-                        }
-                    }
+                if (redirectOnSuccess) {
+                    router.push(redirectOnSuccess);
+                }
+                if (refreshOnSuccess) {
+                    router.refresh();
+                }
 
-                    setError(err);
-                    setIsError(true);
-                    setIsPending(false);
+                return {
+                    success: true,
+                    data: actionData,
+                    error: null,
+                };
+            } catch (err) {
+                console.error("Server action error:", err);
 
-                    return errorMessage;
-                },
-                finally: () => {
-                    // Only redirect/refresh on success, not on error
-                    if (!actionSucceeded) return;
+                const resolvedErrorMessage = getActionErrorMessage(err, errorMessage);
 
-                    // Push first, then refresh to ensure data is updated on the new page
-                    if (redirectOnSuccess) {
-                        router.push(redirectOnSuccess);
-                    }
-                    if (refreshOnSuccess) {
-                        router.refresh();
-                    }
-                },
-            });
+                setError(err);
+                setIsError(true);
+                setIsPending(false);
+
+                toast.error(resolvedErrorMessage, {
+                    id: toastId,
+                });
+
+                return {
+                    success: false,
+                    data: null,
+                    error: err,
+                };
+            }
         },
         [router]
     );

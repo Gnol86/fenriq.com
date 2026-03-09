@@ -1,36 +1,27 @@
 import { MagicCard } from "@root/src/components/ui/magic-card";
 import { calculateTieredPrice, formatPrice } from "@root/src/lib/utils";
 import { SiteConfig } from "@root/src/site-config";
+import { AlertTriangle } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import QuantitySelector from "@/components/quantity-selector";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import SubscriptionButton from "./subscription-button";
 
 // Retourne la quantité minimum pour un tarif échelonné (up_to du premier palier)
 const getTieredMinimum = tiers => tiers?.[0]?.up_to ?? 1;
-
-// Retourne le prix de base pour un tarif (flat ou échelonné)
-const getBasePrice = price => {
-    if (!price.tiersMode) return price.amount;
-    return calculateTieredPrice(price.tiers, getTieredMinimum(price.tiers), price.tiersMode);
-};
-
-// Fonction pour calculer le pourcentage d'économie
-const calculateSavings = (monthlyPrice, annualPrice) => {
-    const monthlyAmount = getBasePrice(monthlyPrice);
-    const annualAmount = getBasePrice(annualPrice);
-    const monthlyYearlyCost = monthlyAmount * 12;
-    if (monthlyYearlyCost === 0) return null;
-    const savings = ((monthlyYearlyCost - annualAmount) / monthlyYearlyCost) * 100;
-    return Math.round(savings);
-};
 
 export default async function PlanCard({ plan, annual = false, memberCount, locale }) {
     const t = await getTranslations("organization.subscription");
 
     const isTeamPlan = plan.name.toLowerCase() === "team";
     const currentPrice = annual && plan.annualPrice ? plan.annualPrice : plan.monthlyPrice;
+    const annualComparison = annual ? plan.annualComparison : null;
+    const showAnnualWarning = annualComparison?.isMoreExpensive;
+    const showSavings =
+        annualComparison?.isDiscounted && (annualComparison.savingsPercentage ?? 0) > 0;
+    const annualCheckoutBlocked = annual && showAnnualWarning;
 
     const isTiered = !!currentPrice.tiersMode;
     const tieredMinimum = isTiered ? getTieredMinimum(currentPrice.tiers) : null;
@@ -39,28 +30,23 @@ export default async function PlanCard({ plan, annual = false, memberCount, loca
         : currentPrice.amount;
     const currency = currentPrice.currency;
 
-    const savings =
-        annual && plan.annualPrice && plan.monthlyPrice
-            ? calculateSavings(plan.monthlyPrice, plan.annualPrice)
-            : null;
-
     return (
         <MagicCard className="w-64 p-4 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-transform">
             <div className="flex flex-col gap-4 h-full">
                 <span className="text-lg w-fit bg-primary text-primary-foreground px-2 font-bold rounded-sm self-center -translate-y-6 group-hover:translate-y-0 transition-transform">
                     {currentPrice.product.name}
                 </span>
-                {savings && (
+                {showSavings && (
                     <span className="relative -mb-4">
                         <span className="line-through text-sm text-muted-foreground mr-2">
-                            {formatPrice(getBasePrice(plan.monthlyPrice) * 12, currency, locale)}
+                            {formatPrice(annualComparison.monthlyYearlyAmount, currency, locale)}
                         </span>
                         <span className="bg-success text-success-foreground px-1 rounded-sm font-bold">
                             {Intl.NumberFormat(locale, {
                                 style: "percent",
                                 minimumFractionDigits: 0,
                                 maximumFractionDigits: 2,
-                            }).format(savings / 100)}
+                            }).format(annualComparison.savingsPercentage / 100)}
                         </span>
                     </span>
                 )}
@@ -74,6 +60,13 @@ export default async function PlanCard({ plan, annual = false, memberCount, loca
                     {annual ? t("price_per_year") : t("price_per_month")}
                     {isTeamPlan && <> {t("price_per_membre")}</>}
                 </span>
+                {showAnnualWarning && (
+                    <Alert>
+                        <AlertTriangle className="size-4" />
+                        <AlertTitle>{t("annual_price_warning_title")}</AlertTitle>
+                        <AlertDescription>{t("annual_price_warning_description")}</AlertDescription>
+                    </Alert>
+                )}
                 {isTiered && currentPrice.tiers && (
                     <ul className="flex flex-col gap-1 text-xs text-muted-foreground">
                         {currentPrice.tiers.map((tier, index) => {
@@ -169,12 +162,14 @@ export default async function PlanCard({ plan, annual = false, memberCount, loca
                                 : SiteConfig.quota.minimum
                         }
                         step={SiteConfig.quota.step}
+                        subscribeDisabled={annualCheckoutBlocked}
                     />
                 ) : (
                     <SubscriptionButton
                         planId={plan.id}
                         annual={annual}
                         freeTrialDays={plan.freeTrialDays}
+                        subscribeDisabled={annualCheckoutBlocked}
                     />
                 )}
             </div>

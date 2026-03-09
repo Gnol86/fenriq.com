@@ -23,6 +23,7 @@ export default function QuantitySelector({
     planId,
     annual = false,
     freeTrialDays,
+    subscribeDisabled = false,
     // Update mode (existing subscription)
     currentSeats,
     currentUsage = 0,
@@ -60,10 +61,19 @@ export default function QuantitySelector({
 
     const handleSubscribe = async () => {
         setIsRedirecting(true);
-        const data = await createCheckoutSession({ planId, annual, seats: quantity });
-        if (data?.url) {
-            window.location.href = data.url;
+        const result = await execute(
+            () => createCheckoutSession({ planId, annual, seats: quantity }),
+            {
+                refreshOnSuccess: false,
+            }
+        );
+
+        if (result.success && result.data?.url) {
+            window.location.href = result.data.url;
+            return;
         }
+
+        setIsRedirecting(false);
     };
 
     const handleUpdate = async () => {
@@ -131,9 +141,14 @@ export default function QuantitySelector({
                     size="lg"
                     className="w-full"
                     onClick={handleSubscribe}
-                    disabled={isRedirecting || quantity < effectiveMinimum}
+                    disabled={
+                        isRedirecting ||
+                        isPending ||
+                        quantity < effectiveMinimum ||
+                        subscribeDisabled
+                    }
                 >
-                    {isRedirecting
+                    {isRedirecting || isPending
                         ? t("processing_subscription")
                         : freeTrialDays
                           ? t("free_trial_subscribe")
