@@ -19,20 +19,23 @@ function MemberRow({ member, currentUserId }) {
     const fallbackName = member.user?.name || member.user?.email || tDetails("fallback_user");
 
     const handleImpersonateUser = async () => {
+        let result;
+
         try {
             // Utiliser authClient directement au lieu d'une server action
-            const result = await authClient.admin.impersonateUser({
+            result = await authClient.admin.impersonateUser({
                 userId: member.userId,
             });
-
-            if (result.data?.session) {
-                toast.success(tMembers("success_impersonate", { name: fallbackName }));
-                router.push("/dashboard");
-                router.refresh();
-            }
         } catch (error) {
             console.error("Erreur lors de l'usurpation:", error);
             toast.error(tMembers("impersonate_error"));
+            return;
+        }
+
+        if (result.data?.session) {
+            toast.success(tMembers("success_impersonate", { name: fallbackName }));
+            router.push("/dashboard");
+            router.refresh();
         }
     };
 
@@ -67,6 +70,7 @@ export default function OrganizationDetailsCollapse({ organization, currentUserI
     const tDetails = useTranslations("admin.org_details");
     const tMembers = useTranslations("admin.org_members");
     const locale = useLocale();
+    const owners = organization.members?.filter(member => member.role === "owner") ?? [];
 
     const formatDescription = description => {
         if (!description) return tDetails("field_description_empty");
@@ -136,29 +140,25 @@ export default function OrganizationDetailsCollapse({ organization, currentUserI
                         <div className="flex items-center gap-1.5 font-bold">
                             <Users className="mt-0.25 h-4 w-4" />
                             {tMembers("owners_title", {
-                                count:
-                                    organization.members?.filter(member => member.role === "owner")
-                                        .length || 0,
+                                count: owners.length,
                             })}
                         </div>
                     </div>
                     <div className="flex flex-col gap-2 text-sm">
-                        {!organization.members?.filter(member => member.role === "owner").length ? (
+                        {!owners.length ? (
                             <div className="text-muted-foreground py-4 text-center">
                                 {tMembers("owners_empty")}
                             </div>
                         ) : (
                             <ScrollArea onCard className="max-h-40">
                                 <div className="flex flex-col gap-2">
-                                    {organization.members
-                                        .filter(member => member.role === "owner")
-                                        .map(member => (
-                                            <MemberRow
-                                                key={member.id}
-                                                member={member}
-                                                currentUserId={currentUserId}
-                                            />
-                                        ))}
+                                    {owners.map(member => (
+                                        <MemberRow
+                                            key={member.id}
+                                            member={member}
+                                            currentUserId={currentUserId}
+                                        />
+                                    ))}
                                 </div>
                             </ScrollArea>
                         )}

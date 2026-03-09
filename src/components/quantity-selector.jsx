@@ -38,18 +38,11 @@ export default function QuantitySelector({
     );
 
     const handleDecrement = () => {
-        const newValue = quantity - step;
-        if (newValue >= effectiveMinimum) {
-            setQuantity(newValue);
-        }
+        setQuantity(currentQuantity => Math.max(effectiveMinimum, currentQuantity - step));
     };
 
     const handleIncrement = () => {
-        if (quantity + step >= effectiveMinimum) {
-            setQuantity(quantity + step);
-        } else {
-            setQuantity(effectiveMinimum);
-        }
+        setQuantity(currentQuantity => Math.max(effectiveMinimum, currentQuantity + step));
     };
 
     const handleInputChange = value => {

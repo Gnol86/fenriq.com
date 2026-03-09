@@ -2,7 +2,6 @@
 
 import { Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useMemo } from "react";
 import { removeMemberAction, updateMemberRoleAction } from "@/actions/organization.action";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -26,35 +25,29 @@ export default function MembersActionMenu({
     const t = useTranslations("organization.members");
     const tRoles = useTranslations("roles");
     const { execute, isPending } = useServerAction();
+    const memberUserId = member?.user?.id ?? member?.userId;
+    const isSelf = Boolean(currentUserId && memberUserId === currentUserId);
 
-    const isSelf = useMemo(() => {
-        const memberUserId = member?.user?.id ?? member?.userId;
-        return Boolean(currentUserId && memberUserId === currentUserId);
-    }, [currentUserId, member]);
+    const handleRoleChange = async role => {
+        if (!organizationId || !member?.id || role === memberRole) {
+            return;
+        }
 
-    const handleRoleChange = useCallback(
-        async role => {
-            if (!organizationId || !member?.id || role === memberRole) {
-                return;
+        await execute(
+            () =>
+                updateMemberRoleAction({
+                    memberId: member.id,
+                    role,
+                    organizationId,
+                }),
+            {
+                successMessage: t("success_role_updated"),
+                errorMessage: t("error_role_update"),
             }
+        );
+    };
 
-            await execute(
-                () =>
-                    updateMemberRoleAction({
-                        memberId: member.id,
-                        role,
-                        organizationId,
-                    }),
-                {
-                    successMessage: t("success_role_updated"),
-                    errorMessage: t("error_role_update"),
-                }
-            );
-        },
-        [member?.id, memberRole, organizationId, execute, t]
-    );
-
-    const handleRemoveMember = useCallback(async () => {
+    const handleRemoveMember = async () => {
         if (!organizationId || !member?.id) {
             return;
         }
@@ -78,16 +71,13 @@ export default function MembersActionMenu({
                 successMessage: t("success_member_removed"),
             },
         });
-    }, [member, organizationId, t]);
+    };
 
-    const roleOptions = useMemo(
-        () => [
-            ["owner", tRoles("owner")],
-            ["admin", tRoles("admin")],
-            ["member", tRoles("member")],
-        ],
-        [tRoles]
-    );
+    const roleOptions = [
+        ["owner", tRoles("owner")],
+        ["admin", tRoles("admin")],
+        ["member", tRoles("member")],
+    ];
 
     if (isSelf) return null;
 

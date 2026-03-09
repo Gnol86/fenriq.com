@@ -14,14 +14,13 @@ export default function BreadcrumbSlot() {
     // Need at least 2 segments to show breadcrumbs (e.g., /dashboard/something)
     if (segments.length < 2) return null;
 
-    let href = "";
-    const items = segments.map(seg => {
-        href += `/${seg}`;
+    const items = segments.map((seg, index) => {
         const key = seg.replace(/-/g, "_");
         const name = t.has(key) ? t(key) : decodeURIComponent(seg);
+
         return {
             name,
-            href: href,
+            href: `/${segments.slice(0, index + 1).join("/")}`,
         };
     });
 

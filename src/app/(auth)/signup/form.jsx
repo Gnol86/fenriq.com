@@ -1,9 +1,9 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -21,10 +21,8 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { PasswordStrengthInput } from "@/components/ui/password-strength-input";
 import { authClient } from "@/lib/auth-client";
 
-export default function FormSignup() {
+export default function FormSignup({ initialEmail = "" }) {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const email = searchParams.get("email");
     const t = useTranslations("auth.signup");
     const tValidation = useTranslations("validation");
 
@@ -52,10 +50,14 @@ export default function FormSignup() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
-            email: email || "",
+            email: initialEmail,
             password: "",
             password_confirm: "",
         },
+    });
+    const emailValue = useWatch({
+        control: form.control,
+        name: "email",
     });
 
     const onSubmit = async values => {
@@ -171,9 +173,7 @@ export default function FormSignup() {
                 <div className="flex items-center justify-center gap-2 text-xs">
                     {t("already_account_text")}
                     <Link
-                        href={
-                            form.watch("email") ? `/signin?email=${form.watch("email")}` : "/signin"
-                        }
+                        href={emailValue ? `/signin?email=${emailValue}` : "/signin"}
                         className="text-primary hover:underline"
                     >
                         {t("signin_link")}

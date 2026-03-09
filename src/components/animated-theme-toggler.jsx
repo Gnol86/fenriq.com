@@ -1,31 +1,50 @@
 "use client";
 import { Loader2, Monitor, Moon, SunDim } from "lucide-react";
+import { useReducedMotion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useSyncExternalStore } from "react";
 import { flushSync } from "react-dom";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 const THEME_ORDER = ["light", "dark", "system"];
+const subscribeToMountedState = () => () => {};
+const getMountedSnapshot = () => true;
+const getServerMountedSnapshot = () => false;
+
 export const AnimatedThemeToggler = ({ className, size = 20 }) => {
     const { theme = "system", setTheme } = useTheme();
     const buttonRef = useRef(null);
-    const [mounted, setMounted] = useState(false);
+    const mounted = useSyncExternalStore(
+        subscribeToMountedState,
+        getMountedSnapshot,
+        getServerMountedSnapshot
+    );
+    const shouldReduceMotion = useReducedMotion();
     const tTheme = useTranslations("theme.toggler");
 
     const currentThemeIndex = THEME_ORDER.indexOf(theme);
 
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-
     const changeTheme = async () => {
-        if (!buttonRef.current) return;
-
         const normalizedIndex =
             currentThemeIndex === -1 ? THEME_ORDER.indexOf("system") : currentThemeIndex;
         const nextTheme = THEME_ORDER[(normalizedIndex + 1) % THEME_ORDER.length];
+        const themeLabel = tTheme(nextTheme);
+        const canAnimateTransition =
+            !shouldReduceMotion &&
+            buttonRef.current &&
+            typeof document.startViewTransition === "function";
+
+        if (!canAnimateTransition) {
+            setTheme(nextTheme);
+            toast.success(
+                tTheme("toast_success", {
+                    theme: themeLabel,
+                })
+            );
+            return;
+        }
 
         const transition = document.startViewTransition(() => {
             flushSync(() => {
@@ -61,7 +80,6 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
             // Animation may be cancelled; we still show feedback at the end of handler
         }
 
-        const themeLabel = tTheme(nextTheme);
         toast.success(
             tTheme("toast_success", {
                 theme: themeLabel,
@@ -73,11 +91,14 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
         return <Loader2 size={size} className="animate-spin" />;
     }
 
-    const renderIcon = () => {
-        if (theme === "dark") return <Moon size={size} />;
-        if (theme === "system") return <Monitor size={size} />;
-        return <SunDim size={size} />;
-    };
+    const icon =
+        theme === "dark" ? (
+            <Moon size={size} />
+        ) : theme === "system" ? (
+            <Monitor size={size} />
+        ) : (
+            <SunDim size={size} />
+        );
 
     return (
         <button
@@ -87,7 +108,7 @@ export const AnimatedThemeToggler = ({ className, size = 20 }) => {
             className={cn(className)}
             aria-label={tTheme("button_aria_label")}
         >
-            {renderIcon()}
+            {icon}
         </button>
     );
 };

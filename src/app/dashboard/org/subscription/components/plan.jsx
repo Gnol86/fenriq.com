@@ -21,18 +21,17 @@ const getSortableAmount = priceData => {
 };
 
 export default async function Plan({ organization }) {
-    const t = await getTranslations("organization.subscription");
-
-    // Récupérer les plans avec les données Stripe
-    const plans = await getPlansWithStripeData();
-
-    const locale = await getLocale();
-
-    const lengthTotalMembres = await prisma.member.count({
-        where: {
-            organizationId: organization.id,
-        },
-    });
+    const [t, plans, locale, lengthTotalMembres, isAdmin] = await Promise.all([
+        getTranslations("organization.subscription"),
+        getPlansWithStripeData(),
+        getLocale(),
+        prisma.member.count({
+            where: {
+                organizationId: organization.id,
+            },
+        }),
+        checkAdmin(),
+    ]);
 
     const hasAnnualPlans = plans.some(plan => plan.annualPrice !== null);
 
@@ -104,7 +103,7 @@ export default async function Plan({ organization }) {
                             </EmptyMedia>
                             <EmptyTitle>{t("plan_not_configured")}</EmptyTitle>
                         </EmptyHeader>
-                        {checkAdmin() && (
+                        {isAdmin && (
                             <EmptyContent>
                                 <Button
                                     size="icon"

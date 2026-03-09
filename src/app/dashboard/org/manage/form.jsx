@@ -12,7 +12,7 @@ import { useServerAction } from "@/hooks/use-server-action";
 export default function ManageOrganizationForm({ organization }) {
     const t = useTranslations("organization.manage");
     const tValidation = useTranslations("validation.organization_name");
-    const { execute, isPending, isSuccess } = useServerAction();
+    const { execute, isPending, isSuccess, reset } = useServerAction();
 
     const formSchema = z.object({
         name: z
@@ -62,6 +62,7 @@ export default function ManageOrganizationForm({ organization }) {
                                     description={t("name_description")}
                                     loading={isPending}
                                     isSuccess={isSuccess}
+                                    onEditStart={reset}
                                     type="text"
                                     {...field}
                                 />

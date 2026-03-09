@@ -1,6 +1,6 @@
 "use client";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     Modal,
     ModalContent,
@@ -26,11 +26,23 @@ export function DialogComponent(props) {
     const [inputValue, setInputValue] = useState(
         dialog.type === "input" ? (dialog.input.defaultValue ?? "") : ""
     );
+    const confirmInputRef = useRef(null);
+    const textInputRef = useRef(null);
 
     // Synchronize isPending state with dialog store
     useEffect(() => {
         setLoading(dialog.id, isPending);
     }, [isPending, dialog.id, setLoading]);
+
+    useEffect(() => {
+        if (dialog.type === "confirm" && dialog.confirmText) {
+            confirmInputRef.current?.focus();
+        }
+
+        if (dialog.type === "input") {
+            textInputRef.current?.focus();
+        }
+    }, [dialog.type, dialog.confirmText]);
 
     if (dialog.type === "custom") {
         return (
@@ -112,7 +124,7 @@ export function DialogComponent(props) {
                             })}
                         </p>
                         <Input
-                            autoFocus
+                            ref={confirmInputRef}
                             value={confirmText}
                             onChange={e => setConfirmText(e.target.value)}
                             onKeyDown={e => {
@@ -130,10 +142,10 @@ export function DialogComponent(props) {
                     <div className="mt-2">
                         <Label>{dialog.input.label}</Label>
                         <Input
+                            ref={textInputRef}
                             value={inputValue}
                             placeholder={dialog.input.placeholder}
                             onChange={e => setInputValue(e.target.value)}
-                            ref={ref => ref?.focus()}
                             onKeyDown={e => {
                                 if (e.key === "Enter" && !e.shiftKey) {
                                     e.preventDefault();

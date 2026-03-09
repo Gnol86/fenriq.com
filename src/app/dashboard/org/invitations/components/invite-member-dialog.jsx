@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, MailPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { inviteMemberAction } from "@/actions/organization.action";
@@ -41,6 +41,7 @@ export default function InviteMemberDialog({ organizationId, organizationName })
     const tRoles = useTranslations("roles");
     const { execute, isPending } = useServerAction();
     const [open, setOpen] = useState(false);
+    const emailInputRef = useRef(null);
 
     const inviteSchema = z.object({
         email: z.email(tValidation("email.invalid_short")).trim(),
@@ -53,6 +54,12 @@ export default function InviteMemberDialog({ organizationId, organizationName })
         resolver: zodResolver(inviteSchema),
         defaultValues: { email: "", role: "member" },
     });
+
+    useEffect(() => {
+        if (!open) return;
+
+        emailInputRef.current?.focus();
+    }, [open]);
 
     const onInvite = async values => {
         await execute(
@@ -100,7 +107,10 @@ export default function InviteMemberDialog({ organizationId, organizationName })
                                             {...field}
                                             type="email"
                                             placeholder={t("email_placeholder")}
-                                            autoFocus
+                                            ref={node => {
+                                                field.ref(node);
+                                                emailInputRef.current = node;
+                                            }}
                                             disabled={isPending}
                                         />
                                     </FormControl>

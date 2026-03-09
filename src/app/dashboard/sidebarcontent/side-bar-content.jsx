@@ -33,51 +33,55 @@ export default async function SideBarContent() {
 
     // Vérifie que l'utilisateur est authentifié
     const { user } = await requireAuth();
+    const requestHeaders = await headers();
 
-    // Récupère l'organisation active
-    const userOrganizations = await auth.api.listOrganizations({
-        headers: await headers(),
-    });
-
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+    const [
+        userOrganizations,
+        session,
+        canOrgsUpdate,
+        canMembresRead,
+        canInvitationsRead,
+        canOrgsDelete,
+        canBillingManage,
+        isAdmin,
+        invitations_count,
+    ] = await Promise.all([
+        auth.api.listOrganizations({
+            headers: requestHeaders,
+        }),
+        auth.api.getSession({
+            headers: requestHeaders,
+        }),
+        checkPermission({
+            permissions: { organization: ["update"] },
+        }),
+        checkPermission({
+            permissions: { member: ["read"] },
+        }),
+        checkPermission({
+            permissions: { invitation: ["read"] },
+        }),
+        checkPermission({
+            permissions: { organization: ["delete"] },
+        }),
+        checkPermission({
+            permissions: { billing: ["manage"] },
+        }),
+        checkAdmin(),
+        prisma.invitation.count({
+            where: {
+                email: user.email,
+                status: "pending",
+                expiresAt: {
+                    gt: new Date(),
+                },
+            },
+        }),
+    ]);
 
     const activeUserOrganization = userOrganizations?.find(
         org => org.id === session.session.activeOrganizationId
     );
-
-    // Vérifie les permissions pour l'UI conditionnelle
-    const canOrgsUpdate = await checkPermission({
-        permissions: { organization: ["update"] },
-    });
-
-    const canMembresRead = await checkPermission({
-        permissions: { member: ["read"] },
-    });
-
-    const canInvitationsRead = await checkPermission({
-        permissions: { invitation: ["read"] },
-    });
-
-    const canOrgsDelete = await checkPermission({
-        permissions: { organization: ["delete"] },
-    });
-
-    const canBillingManage = await checkPermission({
-        permissions: { billing: ["manage"] },
-    });
-
-    const isAdmin = await checkAdmin();
-    const invitations_count = await prisma.invitation.count({
-        where: {
-            email: user.email,
-            status: "pending",
-            expiresAt: {
-                gt: new Date(),
-            },
-        },
-    });
 
     const feedbacks_count = isAdmin
         ? await prisma.feedback.count({

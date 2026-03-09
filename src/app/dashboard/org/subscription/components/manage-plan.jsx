@@ -25,12 +25,12 @@ export default async function ManagePlan({ activeSubscription }) {
         permissions: { billing: ["manage"] },
     });
 
-    const t = await getTranslations("organization.subscription");
-    const locale = await getLocale();
+    const [t, locale, stripeData] = await Promise.all([
+        getTranslations("organization.subscription"),
+        getLocale(),
+        getSubscriptionDetails(activeSubscription.stripeSubscriptionId),
+    ]);
     const isTeamPlan = activeSubscription.plan.toLowerCase() === "team";
-
-    // Récupérer les détails complets depuis Stripe
-    const stripeData = await getSubscriptionDetails(activeSubscription.stripeSubscriptionId);
 
     const formatDate = date => {
         if (!date) return "N/A";

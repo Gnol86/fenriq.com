@@ -72,7 +72,11 @@ export default async function AdminUsersPage({ searchParams }) {
 
                 <CardContent className="flex w-full flex-col gap-4">
                     {/* Search */}
-                    <SearchInput placeholder={tUsers("search_placeholder")} />
+                    <SearchInput
+                        placeholder={tUsers("search_placeholder")}
+                        initialValue={searchValue}
+                        searchParams={resolvedSearchParams}
+                    />
 
                     {/* Users table */}
                     <Table>

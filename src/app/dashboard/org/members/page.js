@@ -30,11 +30,21 @@ const MEMBRES_PER_PAGE = 10;
 export default async function OrganizationMembersPage({ searchParams }) {
     const t = await getTranslations("organization.members");
     const resolvedSearchParams = await searchParams;
-    const searchValue = resolvedSearchParams?.search || "";
+    const rawSearchParam = resolvedSearchParams?.search;
+    const searchValue = Array.isArray(rawSearchParam)
+        ? (rawSearchParam[rawSearchParam.length - 1] ?? "")
+        : (rawSearchParam ?? "");
     const limit = MEMBRES_PER_PAGE;
-    const page = parseInt(resolvedSearchParams?.page || "1", 10);
+    const rawPageParam = resolvedSearchParams?.page;
+    const pageValue = Array.isArray(rawPageParam)
+        ? (rawPageParam[rawPageParam.length - 1] ?? "1")
+        : (rawPageParam ?? "1");
+    const page = parseInt(pageValue, 10);
     const offset = (page - 1) * MEMBRES_PER_PAGE;
-    const sortDirection = resolvedSearchParams?.sortDirection || "asc";
+    const rawSortDirection = resolvedSearchParams?.sortDirection;
+    const sortDirection = Array.isArray(rawSortDirection)
+        ? (rawSortDirection[rawSortDirection.length - 1] ?? "asc")
+        : (rawSortDirection ?? "asc");
 
     // Vérifie les permissions et récupère les données nécessaires
     const { user, organization } = await requirePermission({
@@ -122,7 +132,11 @@ export default async function OrganizationMembersPage({ searchParams }) {
                         </Empty>
                     ) : (
                         <>
-                            <SearchInput placeholder={t("search_placeholder")} />
+                            <SearchInput
+                                placeholder={t("search_placeholder")}
+                                initialValue={searchValue}
+                                searchParams={resolvedSearchParams}
+                            />
                             <ItemGroup>
                                 {members.map((member, index) => (
                                     <React.Fragment key={member.id}>
@@ -137,7 +151,11 @@ export default async function OrganizationMembersPage({ searchParams }) {
                                     </React.Fragment>
                                 ))}
                             </ItemGroup>
-                            <Pagination totalPages={totalPages} page={page} />
+                            <Pagination
+                                totalPages={totalPages}
+                                page={page}
+                                searchParams={resolvedSearchParams}
+                            />
                         </>
                     )}
                 </CardContent>

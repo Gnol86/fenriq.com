@@ -3,8 +3,13 @@ import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import FormResendVerification from "./form";
 
-export default async function Page() {
+export default async function Page({ searchParams }) {
     const t = await getTranslations("auth.verify_email");
+    const resolvedSearchParams = await searchParams;
+    const rawEmail = resolvedSearchParams?.email;
+    const email = Array.isArray(rawEmail)
+        ? (rawEmail[rawEmail.length - 1] ?? "")
+        : (rawEmail ?? "");
 
     return (
         <Card className="w-sm">
@@ -18,7 +23,7 @@ export default async function Page() {
                 </div>
             </CardHeader>
             <CardContent>
-                <FormResendVerification />
+                <FormResendVerification initialEmail={email} />
             </CardContent>
         </Card>
     );

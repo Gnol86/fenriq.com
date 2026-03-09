@@ -122,8 +122,16 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
 
                 <CardContent>
                     <ButtonGroup className="mb-4 w-full">
-                        <SearchInput placeholder={t("search_placeholder")} />
-                        <ToggleViewButton label={toggleButtonLabel} />
+                        <SearchInput
+                            placeholder={t("search_placeholder")}
+                            initialValue={searchValue}
+                            searchParams={resolvedSearchParams}
+                        />
+                        <ToggleViewButton
+                            label={toggleButtonLabel}
+                            isShowingAll={isShowingAllInvitations}
+                            searchParams={resolvedSearchParams}
+                        />
                     </ButtonGroup>
                     {!invitations.length ? (
                         <Empty className="border border-dashed">
@@ -162,7 +170,11 @@ export default async function OrganizationInvitationsPage({ searchParams }) {
                                     </React.Fragment>
                                 ))}
                             </ItemGroup>
-                            <Pagination totalPages={totalPages} page={page} />
+                            <Pagination
+                                totalPages={totalPages}
+                                page={page}
+                                searchParams={resolvedSearchParams}
+                            />
                         </>
                     )}
                 </CardContent>

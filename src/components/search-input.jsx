@@ -1,28 +1,28 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
+import { createUrlSearchParams } from "@/lib/utils";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { Spinner } from "./ui/spinner";
+
+const EMPTY_SEARCH_PARAMS = {};
 
 export default function SearchInput({
     placeholder = "Search...",
     searchParam = "search",
     debounceMs = 300,
+    initialValue = "",
+    searchParams = EMPTY_SEARCH_PARAMS,
 }) {
-    const searchParams = useSearchParams();
     const pathname = usePathname();
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
 
-    const [searchValue, setSearchValue] = useState(() => {
-        return searchParams.get(searchParam) ?? "";
-    });
-
-    const debouncedSearch = useDebouncedCallback(value => {
-        const params = new URLSearchParams(searchParams.toString());
+    const debouncedSearch = useDebouncedCallback((value, currentSearchParams) => {
+        const params = createUrlSearchParams(currentSearchParams);
 
         if (value.trim()) {
             params.set(searchParam, value.trim());
@@ -34,29 +34,23 @@ export default function SearchInput({
         params.delete("page");
 
         startTransition(() => {
-            router.replace(`${pathname}?${params.toString()}`);
+            const query = params.toString();
+            router.replace(`${pathname}${query ? `?${query}` : ""}`);
         });
     }, debounceMs);
 
     const handleInputChange = e => {
-        const value = e.target.value;
-        setSearchValue(value);
-        debouncedSearch(value);
+        debouncedSearch(e.target.value, searchParams);
     };
-
-    // Sync with URL changes (e.g., when navigating back/forward)
-    useEffect(() => {
-        const urlSearchValue = searchParams.get(searchParam) ?? "";
-        setSearchValue(urlSearchValue);
-    }, [searchParams, searchParam]);
 
     return (
         <InputGroup>
             <InputGroupAddon>{isPending ? <Spinner /> : <Search />}</InputGroupAddon>
             <InputGroupInput
+                key={`${searchParam}:${initialValue}`}
                 type="text"
                 placeholder={placeholder}
-                value={searchValue}
+                defaultValue={initialValue}
                 onChange={handleInputChange}
                 disabled={isPending}
             />

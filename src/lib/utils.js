@@ -5,6 +5,27 @@ export function cn(...inputs) {
     return twMerge(clsx(inputs));
 }
 
+export function createUrlSearchParams(searchParams = {}) {
+    if (searchParams instanceof URLSearchParams) {
+        return new URLSearchParams(searchParams.toString());
+    }
+
+    const params = new URLSearchParams();
+
+    for (const [key, rawValue] of Object.entries(searchParams)) {
+        if (rawValue == null) continue;
+
+        const values = Array.isArray(rawValue) ? rawValue : [rawValue];
+
+        for (const value of values) {
+            if (value == null) continue;
+            params.append(key, String(value));
+        }
+    }
+
+    return params;
+}
+
 export function getInitials(name) {
     return name
         .split(" ")

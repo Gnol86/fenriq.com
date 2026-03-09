@@ -1,19 +1,23 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Button } from "@/components/ui/button";
+import { createUrlSearchParams } from "@/lib/utils";
 
-export default function ToggleViewButton({ label }) {
-    const searchParams = useSearchParams();
+const EMPTY_SEARCH_PARAMS = {};
+
+export default function ToggleViewButton({
+    label,
+    searchParams = EMPTY_SEARCH_PARAMS,
+    isShowingAll = false,
+}) {
     const pathname = usePathname();
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
 
-    const isShowingAll = searchParams.get("view") === "all";
-
     const handleToggle = () => {
-        const params = new URLSearchParams(searchParams.toString());
+        const params = createUrlSearchParams(searchParams);
 
         if (isShowingAll) {
             // Switch back to pending view (remove view param)

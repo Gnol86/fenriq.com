@@ -12,7 +12,7 @@ import { useServerAction } from "@/hooks/use-server-action";
 export default function UserSettingsForm({ user }) {
     const t = useTranslations("user.settings");
     const tValidation = useTranslations("validation.name");
-    const { execute, isPending, isSuccess } = useServerAction();
+    const { execute, isPending, isSuccess, reset } = useServerAction();
 
     const formSchema = z.object({
         name: z
@@ -56,6 +56,7 @@ export default function UserSettingsForm({ user }) {
                                     description={t("name_description")}
                                     loading={isPending}
                                     isSuccess={isSuccess}
+                                    onEditStart={reset}
                                     type="text"
                                     {...field}
                                 />

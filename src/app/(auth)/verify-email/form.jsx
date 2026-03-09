@@ -1,7 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -19,9 +18,7 @@ import FormButton from "@/components/ui/form-button";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 
-export default function FormResendVerification() {
-    const searchParams = useSearchParams();
-    const email = searchParams.get("email");
+export default function FormResendVerification({ initialEmail = "" }) {
     const t = useTranslations("auth.verify_email");
     const tValidation = useTranslations("validation");
 
@@ -32,7 +29,7 @@ export default function FormResendVerification() {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            email: email || "",
+            email: initialEmail,
         },
     });
 

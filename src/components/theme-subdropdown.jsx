@@ -15,17 +15,19 @@ export default function ThemeSubdropdown() {
     const { theme = "system", setTheme } = useTheme();
     const tTheme = useTranslations("theme.toggler");
 
-    const renderIcon = () => {
-        if (theme === "dark") return <Moon size={16} className="opacity-60" aria-hidden="true" />;
-        if (theme === "system")
-            return <Monitor size={16} className="opacity-60" aria-hidden="true" />;
-        return <SunDim size={16} className="opacity-60" aria-hidden="true" />;
-    };
+    const icon =
+        theme === "dark" ? (
+            <Moon size={16} className="opacity-60" aria-hidden="true" />
+        ) : theme === "system" ? (
+            <Monitor size={16} className="opacity-60" aria-hidden="true" />
+        ) : (
+            <SunDim size={16} className="opacity-60" aria-hidden="true" />
+        );
 
     return (
         <DropdownMenuSub>
             <DropdownMenuSubTrigger className="flex items-center gap-2">
-                {renderIcon()}
+                {icon}
                 {tTheme("label")}
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>

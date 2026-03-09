@@ -18,33 +18,30 @@ export default function ChangeInput({
     loading,
     isSuccess,
     value,
+    onEditStart,
     ...props
 }) {
     const [changeMode, setChangeMode] = useState(false);
+    const [initialValue, setInitialValue] = useState("");
     const containerRef = useRef(null);
-    const initialValueRef = useRef(value);
+    const isEditing = changeMode && !isSuccess;
 
     useEffect(() => {
-        if (isSuccess === true) {
-            setChangeMode(false);
-        }
-    }, [isSuccess]);
-
-    useEffect(() => {
-        if (changeMode && containerRef.current) {
+        if (isEditing && containerRef.current) {
             const input = containerRef.current.querySelector("input");
             input?.focus();
         }
-    }, [changeMode]);
+    }, [isEditing]);
 
     const handleOpenChangeMode = () => {
-        initialValueRef.current = value;
+        onEditStart?.();
+        setInitialValue(value);
         setChangeMode(true);
     };
 
     const handleBlur = () => {
         // Fermer seulement si la valeur n'a pas été modifiée
-        if (value === initialValueRef.current) {
+        if (value === initialValue) {
             setChangeMode(false);
         }
     };
@@ -52,14 +49,14 @@ export default function ChangeInput({
     const handleCancel = e => {
         e.stopPropagation();
         // Remettre la valeur initiale et fermer
-        props.onChange?.(initialValueRef.current);
+        props.onChange?.(initialValue);
         setChangeMode(false);
     };
 
     return (
         <div className="group flex cursor-pointer flex-col gap-1">
             <FormLabel>{label}</FormLabel>
-            {changeMode ? (
+            {isEditing ? (
                 // biome-ignore lint/a11y/noStaticElementInteractions: role="presentation" indicates this is not an interactive element, events are for propagation control only
                 <div
                     role="presentation"
@@ -76,7 +73,7 @@ export default function ChangeInput({
                         <InputGroupAddon align="inline-end">
                             {loading ? (
                                 <Spinner />
-                            ) : value !== initialValueRef.current ? (
+                            ) : value !== initialValue ? (
                                 <>
                                     <InputGroupButton type="button" onClick={handleCancel}>
                                         <X className="text-destructive" />

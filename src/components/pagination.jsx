@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, ChevronLeft, ChevronRight, Ellipsis, Hash } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -10,21 +10,22 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { cn, createUrlSearchParams } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 
-export function Pagination({ totalPages, page }) {
+const EMPTY_SEARCH_PARAMS = {};
+
+export function Pagination({ totalPages, page, searchParams = EMPTY_SEARCH_PARAMS }) {
     const router = useRouter();
     const pathname = usePathname();
-    const searchParams = useSearchParams();
 
     // Get a new searchParams string by merging the current
     // searchParams with a provided key/value pair
     const createQueryString = useCallback(
         (name, value) => {
-            const params = new URLSearchParams(searchParams);
-            params.set(name, value);
+            const params = createUrlSearchParams(searchParams);
+            params.set(name, String(value));
 
             return params.toString();
         },
@@ -111,6 +112,10 @@ export function Pagination({ totalPages, page }) {
                         // For larger totals, show up to 3 middle pages around current page
                         const start = Math.max(2, Math.min(p - 1, tp - 3));
                         const end = Math.min(tp - 1, start + 2);
+                        const middlePages = Array.from(
+                            { length: Math.max(end - start + 1, 0) },
+                            (_, pageIndex) => start + pageIndex
+                        );
 
                         if (start > 2) {
                             elems.push(
@@ -120,19 +125,19 @@ export function Pagination({ totalPages, page }) {
                             );
                         }
 
-                        for (let i = start; i <= end; i++) {
+                        for (const pageNumber of middlePages) {
                             elems.push(
                                 <Button
-                                    key={i}
+                                    key={pageNumber}
                                     size="icon-sm"
-                                    variant={cn(page === i ? "default" : "secondary")}
+                                    variant={cn(page === pageNumber ? "default" : "secondary")}
                                     onClick={() => {
                                         router.replace(
-                                            `${pathname}?${createQueryString("page", i)}`
+                                            `${pathname}?${createQueryString("page", pageNumber)}`
                                         );
                                     }}
                                 >
-                                    {i}
+                                    {pageNumber}
                                 </Button>
                             );
                         }

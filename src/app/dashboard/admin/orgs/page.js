@@ -104,7 +104,11 @@ export default async function AdminOrganizationsPage({ searchParams }) {
 
                 <CardContent className="flex w-full flex-col gap-4">
                     {/* Search */}
-                    <SearchInput placeholder={t("search_placeholder")} />
+                    <SearchInput
+                        placeholder={t("search_placeholder")}
+                        initialValue={searchValue}
+                        searchParams={resolvedSearchParams}
+                    />
 
                     {/* Organizations table */}
                     <Table>
@@ -186,7 +190,11 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                             })}
                         </TableBody>
                     </Table>
-                    <Pagination totalPages={totalPages} page={page} />
+                    <Pagination
+                        totalPages={totalPages}
+                        page={page}
+                        searchParams={resolvedSearchParams}
+                    />
                 </CardContent>
             </Card>
         </div>

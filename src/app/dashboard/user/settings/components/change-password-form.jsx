@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { changePasswordAction } from "@/actions/user.action";
@@ -48,26 +47,25 @@ export default function ChangePasswordForm() {
         },
     });
 
-    const { execute, isPending, isSuccess } = useServerAction();
-
-    // Reset form after successful password change
-    useEffect(() => {
-        if (isSuccess) {
-            form.reset();
-        }
-    }, [isSuccess, form]);
+    const { execute, isPending } = useServerAction();
 
     const onSubmit = async values => {
-        await execute(
-            () =>
-                changePasswordAction({
-                    currentPassword: values.currentPassword,
-                    newPassword: values.newPassword,
-                }),
-            {
-                successMessage: t("success_message"),
-            }
-        );
+        try {
+            await execute(
+                () =>
+                    changePasswordAction({
+                        currentPassword: values.currentPassword,
+                        newPassword: values.newPassword,
+                    }),
+                {
+                    successMessage: t("success_message"),
+                }
+            );
+
+            form.reset();
+        } catch (_error) {
+            // Error feedback is already handled by useServerAction
+        }
     };
 
     return (
