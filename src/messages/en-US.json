@@ -922,6 +922,17 @@
         "no": "No",
         "show_password": "Show password",
         "hide_password": "Hide password",
+        "password_strength": {
+            "progress_aria_label": "Password strength",
+            "requirements_aria_label": "Password requirements",
+            "title": "Must contain:",
+            "min_length": "At least 8 characters",
+            "digit_required": "At least 1 digit",
+            "lowercase_required": "At least 1 lowercase letter",
+            "uppercase_required": "At least 1 uppercase letter",
+            "requirement_met": "Requirement met",
+            "requirement_unmet": "Requirement not met"
+        },
         "dialog": {
             "cancel": "Cancel",
             "confirm": "Confirm",

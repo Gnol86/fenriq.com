@@ -922,6 +922,17 @@
         "no": "Non",
         "show_password": "Afficher le mot de passe",
         "hide_password": "Masquer le mot de passe",
+        "password_strength": {
+            "progress_aria_label": "Force du mot de passe",
+            "requirements_aria_label": "Exigences du mot de passe",
+            "title": "Doit contenir :",
+            "min_length": "Au moins 8 caractères",
+            "digit_required": "Au moins 1 chiffre",
+            "lowercase_required": "Au moins 1 minuscule",
+            "uppercase_required": "Au moins 1 majuscule",
+            "requirement_met": "Exigence respectée",
+            "requirement_unmet": "Exigence non respectée"
+        },
         "dialog": {
             "cancel": "Annuler",
             "confirm": "Confirmer",

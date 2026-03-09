@@ -922,6 +922,17 @@
         "no": "Nee",
         "show_password": "Wachtwoord weergeven",
         "hide_password": "Wachtwoord verbergen",
+        "password_strength": {
+            "progress_aria_label": "Wachtwoordsterkte",
+            "requirements_aria_label": "Wachtwoordvereisten",
+            "title": "Moet bevatten:",
+            "min_length": "Minstens 8 tekens",
+            "digit_required": "Minstens 1 cijfer",
+            "lowercase_required": "Minstens 1 kleine letter",
+            "uppercase_required": "Minstens 1 hoofdletter",
+            "requirement_met": "Vereiste voldaan",
+            "requirement_unmet": "Vereiste niet voldaan"
+        },
         "dialog": {
             "cancel": "Annuleren",
             "confirm": "Bevestigen",

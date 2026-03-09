@@ -923,6 +923,17 @@
         "no": "Nein",
         "show_password": "Passwort anzeigen",
         "hide_password": "Passwort ausblenden",
+        "password_strength": {
+            "progress_aria_label": "Passwortstärke",
+            "requirements_aria_label": "Passwortanforderungen",
+            "title": "Muss enthalten:",
+            "min_length": "Mindestens 8 Zeichen",
+            "digit_required": "Mindestens 1 Zahl",
+            "lowercase_required": "Mindestens 1 Kleinbuchstabe",
+            "uppercase_required": "Mindestens 1 Großbuchstabe",
+            "requirement_met": "Anforderung erfüllt",
+            "requirement_unmet": "Anforderung nicht erfüllt"
+        },
         "dialog": {
             "cancel": "Abbrechen",
             "confirm": "Bestätigen",

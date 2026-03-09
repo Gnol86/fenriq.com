@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { changePasswordAction } from "@/actions/user.action";
+import { PasswordStrengthInput } from "@/components/password-strength-input";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -15,7 +16,6 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { PasswordInput } from "@/components/ui/password-input";
-import { PasswordStrengthInput } from "@/components/ui/password-strength-input";
 import { useServerAction } from "@/hooks/use-server-action";
 
 export default function ChangePasswordForm() {

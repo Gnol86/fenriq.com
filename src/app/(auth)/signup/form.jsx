@@ -1,4 +1,5 @@
 "use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -6,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { PasswordStrengthInput } from "@/components/password-strength-input";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -18,7 +20,6 @@ import {
 import FormButton from "@/components/ui/form-button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { PasswordStrengthInput } from "@/components/ui/password-strength-input";
 import { authClient } from "@/lib/auth-client";
 
 export default function FormSignup({ initialEmail = "" }) {
