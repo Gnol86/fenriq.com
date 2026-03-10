@@ -26,7 +26,7 @@ const PasswordStrengthInput = React.forwardRef(({ className, ...props }, ref) =>
     const [showPassword, setShowPassword] = React.useState(false);
     const [password, setPassword] = React.useState(props.value ?? props.defaultValue ?? "");
     const t = useTranslations("common");
-    const disabled = props.disabled;
+    const isToggleDisabled = props.disabled || password === "";
 
     const requirements = PASSWORD_REQUIREMENTS.map(requirement => ({
         ...requirement,
@@ -47,6 +47,12 @@ const PasswordStrengthInput = React.forwardRef(({ className, ...props }, ref) =>
         }
     }, [props.value]);
 
+    React.useEffect(() => {
+        if (password === "") {
+            setShowPassword(false);
+        }
+    }, [password]);
+
     return (
         <div>
             <div className="relative">
@@ -62,11 +68,11 @@ const PasswordStrengthInput = React.forwardRef(({ className, ...props }, ref) =>
                     type="button"
                     className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute top-0 right-0 flex h-full items-center justify-center px-3 py-2 transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                     onClick={() => setShowPassword(previous => !previous)}
-                    disabled={disabled}
+                    disabled={isToggleDisabled}
                     aria-label={showPassword ? t("hide_password") : t("show_password")}
                     aria-pressed={showPassword}
                 >
-                    {showPassword && !disabled ? (
+                    {showPassword && !isToggleDisabled ? (
                         <EyeIcon className="h-4 w-4" aria-hidden="true" />
                     ) : (
                         <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
