@@ -57,7 +57,7 @@ export function Pagination({ totalPages, page, searchParams = EMPTY_SEARCH_PARAM
                             <Hash className="h-4 w-4" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent side="top">
-                            <ScrollArea onCard className="h-48 pr-3">
+                            <ScrollArea className="h-48 pr-3">
                                 {Array.from({ length: Number(totalPages) }, (_, i) => {
                                     const p = i + 1;
                                     return (

@@ -3,6 +3,30 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 
+function getSessionExpirationTimestamp(expiresAt) {
+    if (expiresAt instanceof Date) {
+        const timestamp = expiresAt.getTime();
+        return Number.isNaN(timestamp) ? null : timestamp;
+    }
+
+    if (typeof expiresAt === "string") {
+        const timestamp = new Date(expiresAt).getTime();
+        return Number.isNaN(timestamp) ? null : timestamp;
+    }
+
+    return null;
+}
+
+function isActiveSession(session, now) {
+    const expirationTimestamp = getSessionExpirationTimestamp(session?.expiresAt);
+
+    if (expirationTimestamp === null) {
+        return false;
+    }
+
+    return expirationTimestamp > now;
+}
+
 export async function listUsersAction({
     searchValue = "",
     searchField = "name",
@@ -105,10 +129,22 @@ export async function removeUserAction({ userId }) {
 }
 
 export async function listUserSessionsAction({ userId }) {
-    return await auth.api.listUserSessions({
+    const result = await auth.api.listUserSessions({
         body: { userId },
         headers: await headers(),
     });
+
+    if (!result || !Array.isArray(result.sessions)) {
+        return result;
+    }
+
+    const now = Date.now();
+    const sessions = result.sessions.filter(session => isActiveSession(session, now));
+
+    return {
+        ...result,
+        sessions,
+    };
 }
 
 export async function revokeUserSessionAction({ sessionToken }) {
