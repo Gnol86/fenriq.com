@@ -41,6 +41,7 @@ function extractErrorInfo(error, t) {
 export default function ErrorPage({ error, reset }) {
     const t = useTranslations("errors.page_error");
     const errorInfo = extractErrorInfo(error, t);
+    const showDebugDetails = process.env.NODE_ENV === "development";
 
     return (
         <main className="flex h-dvh w-full flex-col items-center justify-center gap-4">
@@ -56,7 +57,7 @@ export default function ErrorPage({ error, reset }) {
                     <Button variant="outline">{t("home_button")}</Button>
                 </Link>
             </div>
-            {process.env.VERCEL_ENV !== "production" && (
+            {showDebugDetails && (
                 <Alert variant="destructive" className={"w-md"}>
                     <Button
                         variant="ghost"

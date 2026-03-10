@@ -46,6 +46,7 @@ function getStatusMessage(_status, statusCode) {
 export default function GlobalErrorPage({ error, reset }) {
     const errorInfo = extractErrorInfo(error);
     const statusMessage = getStatusMessage(errorInfo.status, errorInfo.statusCode);
+    const showDebugDetails = process.env.NODE_ENV === "development";
 
     return (
         <main className="flex h-dvh w-full flex-col items-center justify-center gap-4">
@@ -61,7 +62,7 @@ export default function GlobalErrorPage({ error, reset }) {
                     <Button variant="outline">Retour à l&apos;accueil</Button>
                 </Link>
             </div>
-            {process.env.VERCEL_ENV !== "production" && (
+            {showDebugDetails && (
                 <Alert variant="destructive" className={"w-md"}>
                     <Button
                         variant="ghost"
