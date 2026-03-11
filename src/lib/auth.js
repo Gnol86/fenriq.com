@@ -3,6 +3,7 @@
 import { stripe } from "@better-auth/stripe";
 import { APIError, betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { nextCookies } from "better-auth/next-js";
 import { admin, createAuthMiddleware, organization } from "better-auth/plugins";
 import { localization } from "better-auth-localization";
 import { cookies } from "next/headers";
@@ -285,5 +286,6 @@ export const auth = betterAuth({
                 }
             },
         }),
+        nextCookies(),
     ],
 });
