@@ -191,6 +191,12 @@ export default async function SideBarContent() {
                             <SidebarGroupContent>
                                 <SidebarMenu>
                                     <SidebarMenuItem>
+                                        <ActiveSidebarLink href="/dashboard/admin">
+                                            <LayoutDashboard className="opacity-60" />
+                                            <span>{t("admin_dashboard")}</span>
+                                        </ActiveSidebarLink>
+                                    </SidebarMenuItem>
+                                    <SidebarMenuItem>
                                         <ActiveSidebarLink href="/dashboard/admin/users">
                                             <Users className="opacity-60" />
                                             <span>{t("users")}</span>
