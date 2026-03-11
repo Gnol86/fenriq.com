@@ -110,6 +110,17 @@ export default function FormSignin({ initialEmail = "", callbackURL = "/app" }) 
                         </FormItem>
                     )}
                 />
+                <div className="flex justify-end">
+                    <Link
+                        href={
+                            emailValue ? `/forgot-password?email=${emailValue}` : "/forgot-password"
+                        }
+                    >
+                        <Button variant="link" className="h-auto px-0">
+                            {t("forgot_password_link")}
+                        </Button>
+                    </Link>
+                </div>
                 <div className="flex gap-2">
                     <FormButton
                         type="submit"

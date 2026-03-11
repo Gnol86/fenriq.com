@@ -11,6 +11,7 @@
             "page_description": "Sign in to your account to access the application",
             "email_label": "Email",
             "password_label": "Password",
+            "forgot_password_link": "Forgot password?",
             "submit_button": "Sign In",
             "cancel_button": "Cancel",
             "no_account_text": "Don't have an account?",
@@ -19,6 +20,29 @@
             "error_email_not_verified": "Your email address is not verified.",
             "error_signin_failed": "Sign in failed",
             "error_try_again": "Sign in failed. Please try again."
+        },
+        "forgot_password": {
+            "page_title": "Forgot password",
+            "page_description": "Enter your email address to receive a reset link.",
+            "email_label": "Email",
+            "submit_button": "Send reset link",
+            "back_button": "Back",
+            "success_title": "Link sent if the account exists",
+            "success_message": "If this email address exists, you will receive a reset link shortly.",
+            "error_message": "Error sending the email. Please try again."
+        },
+        "reset_password": {
+            "page_title": "Reset password",
+            "page_description": "Choose a new password for your account.",
+            "new_password_label": "New password",
+            "confirm_password_label": "Confirm password",
+            "submit_button": "Update password",
+            "back_to_signin_button": "Back to sign in",
+            "request_new_link_button": "Request a new link",
+            "success_message": "Password reset successfully",
+            "error_message": "Error resetting the password. Please try again.",
+            "invalid_token_title": "Invalid or expired link",
+            "invalid_token_description": "This reset link is no longer valid. Request a new one to continue."
         },
         "signup": {
             "page_title": "Sign Up",

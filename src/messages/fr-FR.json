@@ -11,6 +11,7 @@
             "page_description": "Connectez-vous à votre compte pour accéder à l'application",
             "email_label": "Email",
             "password_label": "Mot de passe",
+            "forgot_password_link": "Mot de passe oublié ?",
             "submit_button": "Se connecter",
             "cancel_button": "Annuler",
             "no_account_text": "Vous n'avez pas de compte ?",
@@ -19,6 +20,29 @@
             "error_email_not_verified": "Votre adresse email n'est pas vérifiée.",
             "error_signin_failed": "Échec de la connexion",
             "error_try_again": "Échec de la connexion. Veuillez réessayer."
+        },
+        "forgot_password": {
+            "page_title": "Mot de passe oublié",
+            "page_description": "Saisissez votre adresse email pour recevoir un lien de réinitialisation.",
+            "email_label": "Email",
+            "submit_button": "Envoyer le lien",
+            "back_button": "Retour",
+            "success_title": "Lien envoyé si le compte existe",
+            "success_message": "Si cette adresse email existe, vous allez recevoir un lien de réinitialisation dans quelques instants.",
+            "error_message": "Erreur lors de l'envoi de l'email. Veuillez réessayer."
+        },
+        "reset_password": {
+            "page_title": "Réinitialiser le mot de passe",
+            "page_description": "Choisissez un nouveau mot de passe pour votre compte.",
+            "new_password_label": "Nouveau mot de passe",
+            "confirm_password_label": "Confirmer le mot de passe",
+            "submit_button": "Mettre à jour le mot de passe",
+            "back_to_signin_button": "Retour à la connexion",
+            "request_new_link_button": "Demander un nouveau lien",
+            "success_message": "Mot de passe réinitialisé avec succès",
+            "error_message": "Erreur lors de la réinitialisation du mot de passe. Veuillez réessayer.",
+            "invalid_token_title": "Lien invalide ou expiré",
+            "invalid_token_description": "Ce lien de réinitialisation n'est plus valide. Demandez un nouveau lien pour continuer."
         },
         "signup": {
             "page_title": "S'inscrire",

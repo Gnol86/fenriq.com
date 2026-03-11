@@ -169,6 +169,19 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: true,
+        revokeSessionsOnPasswordReset: true,
+        sendResetPassword: async ({ user, url }) => {
+            try {
+                const { sendResetPasswordEmail } = await import("@/actions/email.action");
+                await sendResetPasswordEmail({
+                    email: user.email,
+                    name: user.name,
+                    url,
+                });
+            } catch (error) {
+                console.error("Error sending reset password email:", error);
+            }
+        },
     },
     emailVerification: {
         sendVerificationEmail: async ({ user, url }) => {

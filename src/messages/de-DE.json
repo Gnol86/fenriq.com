@@ -11,6 +11,7 @@
             "page_description": "Melden Sie sich bei Ihrem Konto an, um auf die Anwendung zuzugreifen",
             "email_label": "E-Mail",
             "password_label": "Passwort",
+            "forgot_password_link": "Passwort vergessen?",
             "submit_button": "Anmelden",
             "cancel_button": "Abbrechen",
             "no_account_text": "Noch kein Konto?",
@@ -19,6 +20,29 @@
             "error_email_not_verified": "Ihre E-Mail-Adresse ist nicht verifiziert.",
             "error_signin_failed": "Anmeldung fehlgeschlagen",
             "error_try_again": "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut."
+        },
+        "forgot_password": {
+            "page_title": "Passwort vergessen",
+            "page_description": "Geben Sie Ihre E-Mail-Adresse ein, um einen Reset-Link zu erhalten.",
+            "email_label": "E-Mail",
+            "submit_button": "Reset-Link senden",
+            "back_button": "Zurück",
+            "success_title": "Link gesendet, falls das Konto existiert",
+            "success_message": "Falls diese E-Mail-Adresse existiert, erhalten Sie in Kürze einen Reset-Link.",
+            "error_message": "Fehler beim Senden der E-Mail. Bitte versuchen Sie es erneut."
+        },
+        "reset_password": {
+            "page_title": "Passwort zurücksetzen",
+            "page_description": "Wählen Sie ein neues Passwort für Ihr Konto.",
+            "new_password_label": "Neues Passwort",
+            "confirm_password_label": "Passwort bestätigen",
+            "submit_button": "Passwort aktualisieren",
+            "back_to_signin_button": "Zurück zur Anmeldung",
+            "request_new_link_button": "Neuen Link anfordern",
+            "success_message": "Passwort erfolgreich zurückgesetzt",
+            "error_message": "Fehler beim Zurücksetzen des Passworts. Bitte versuchen Sie es erneut.",
+            "invalid_token_title": "Ungültiger oder abgelaufener Link",
+            "invalid_token_description": "Dieser Reset-Link ist nicht mehr gültig. Fordern Sie einen neuen Link an, um fortzufahren."
         },
         "signup": {
             "page_title": "Registrieren",

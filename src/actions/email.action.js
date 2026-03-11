@@ -2,6 +2,7 @@
 
 import { Resend } from "resend";
 import { OrganizationInvitationTemplate } from "@/components/email/organization-invitation-template";
+import { ResetPasswordTemplate } from "@/components/email/reset-password-template";
 import { VerificationEmailTemplate } from "@/components/email/verification-template";
 import { SiteConfig } from "@/site-config";
 
@@ -28,6 +29,30 @@ export async function sendVerificationEmail({ email, name, url }) {
     } catch (error) {
         console.error("Invitation email sending error:", error);
         throw new Error("Failed to send invitation email");
+    }
+}
+
+export async function sendResetPasswordEmail({ email, name, url }) {
+    try {
+        const { data, error } = await resend.emails.send({
+            from: SiteConfig.mail.from,
+            to: email,
+            subject: `${SiteConfig.title} - Réinitialisez votre mot de passe`,
+            react: ResetPasswordTemplate({
+                name,
+                resetPasswordUrl: url,
+            }),
+        });
+
+        if (error) {
+            console.error("Resend error:", error);
+            throw new Error("Failed to send reset password email");
+        }
+
+        return { success: true, data };
+    } catch (error) {
+        console.error("Reset password email sending error:", error);
+        throw new Error("Failed to send reset password email");
     }
 }
 
