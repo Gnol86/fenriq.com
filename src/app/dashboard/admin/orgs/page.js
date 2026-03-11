@@ -15,10 +15,17 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { requireAdmin } from "@/lib/access-control";
+import {
+    ensureValidListPage,
+    getLastSearchParamValue,
+    getPageParamState,
+} from "@/lib/list-page-search-params";
 import prisma from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 
 const ORGS_PER_PAGE = 10;
+const ALLOWED_SORT_FIELDS = new Set(["createdAt", "name", "slug"]);
+const ALLOWED_SORT_DIRECTIONS = new Set(["asc", "desc"]);
 
 export default async function AdminOrganizationsPage({ searchParams }) {
     // Vérifie que l'utilisateur est admin
@@ -30,27 +37,51 @@ export default async function AdminOrganizationsPage({ searchParams }) {
     const locale = await getLocale();
     // Parse search parameters
     const resolvedSearchParams = await searchParams;
-    const searchValue = resolvedSearchParams?.search || "";
-    const limit = ORGS_PER_PAGE;
-    const page = parseInt(resolvedSearchParams?.page || "1", 10);
-    const offset = (page - 1) * ORGS_PER_PAGE;
-    const sortBy = resolvedSearchParams?.sortBy || "name";
-    const sortDirection = resolvedSearchParams?.sortDirection || "asc";
+    const searchValue = getLastSearchParamValue(resolvedSearchParams?.search, "");
+    const { page, shouldRedirect } = getPageParamState(resolvedSearchParams);
+    const sortByCandidate = getLastSearchParamValue(resolvedSearchParams?.sortBy, "name");
+    const sortDirectionCandidate = getLastSearchParamValue(
+        resolvedSearchParams?.sortDirection,
+        "asc"
+    );
+    const sortBy = ALLOWED_SORT_FIELDS.has(sortByCandidate) ? sortByCandidate : "name";
+    const sortDirection = ALLOWED_SORT_DIRECTIONS.has(sortDirectionCandidate)
+        ? sortDirectionCandidate
+        : "asc";
 
     // Fetch organizations avec leurs membres - optimisation pour éviter les doublons
 
     const whereClause = searchValue
         ? {
-              name: {
-                  contains: searchValue,
-                  mode: "insensitive",
-              },
+              OR: [
+                  {
+                      name: {
+                          contains: searchValue,
+                          mode: "insensitive",
+                      },
+                  },
+                  {
+                      slug: {
+                          contains: searchValue,
+                          mode: "insensitive",
+                      },
+                  },
+              ],
           }
         : {};
 
     const lengthTotalOrgs = await prisma.organization.count({
         where: whereClause,
     });
+    const totalPages = Math.ceil(lengthTotalOrgs / ORGS_PER_PAGE);
+    const safePage = ensureValidListPage({
+        pathname: "/dashboard/admin/orgs",
+        searchParams: resolvedSearchParams,
+        page,
+        totalPages,
+        forceRedirect: shouldRedirect,
+    });
+    const offset = (safePage - 1) * ORGS_PER_PAGE;
 
     const orgs = await prisma.organization.findMany({
         where: whereClause,
@@ -65,7 +96,7 @@ export default async function AdminOrganizationsPage({ searchParams }) {
             },
         },
         skip: offset,
-        take: limit,
+        take: ORGS_PER_PAGE,
     });
 
     // Récupérer les subscriptions via referenceId (pas de relation Prisma directe)
@@ -87,7 +118,6 @@ export default async function AdminOrganizationsPage({ searchParams }) {
         ...org,
         subscription: subscriptionByOrgId[org.id] ?? null,
     }));
-    const totalPages = Math.ceil(lengthTotalOrgs / ORGS_PER_PAGE);
 
     return (
         <div className="flex flex-col gap-6">
@@ -192,7 +222,7 @@ export default async function AdminOrganizationsPage({ searchParams }) {
                     </Table>
                     <Pagination
                         totalPages={totalPages}
-                        page={page}
+                        page={safePage}
                         searchParams={resolvedSearchParams}
                     />
                 </CardContent>

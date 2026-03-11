@@ -735,6 +735,7 @@
         "plans": {
             "page_title": "Planbeheer",
             "page_description": "Beheer de Stripe-abonnementsplannen voor het platform.",
+            "search_placeholder": "Zoek op naam of prijs-ID...",
             "table_name": "Naam",
             "table_price_id": "Prijs-ID",
             "table_annual_discount": "Jaarlijkse korting",
@@ -743,6 +744,7 @@
             "table_show_in_pricing": "Prijzenpagina",
             "table_actions": "Acties",
             "no_plans": "Geen plannen geconfigureerd.",
+            "no_search_results": "Geen plannen gevonden voor deze zoekopdracht.",
             "delete_button": "Verwijderen",
             "confirm_delete": "Weet u zeker dat u het plan \"{name}\" wilt verwijderen?",
             "confirm_delete_label": "Verwijderen",
@@ -813,7 +815,10 @@
         "feedbacks": {
             "page_title": "Feedbackbeheer",
             "page_description": "{total, plural, one {# feedback totaal} other {# feedbacks totaal}} · Gemiddelde: {average}/5 · {unread, plural, =0 {Geen ongelezen} one {# ongelezen} other {# ongelezen}} · {unresolved, plural, =0 {Geen openstaand} one {# openstaand} other {# openstaand}}",
+            "search_placeholder": "Zoek op naam, e-mail of opmerking...",
             "no_feedbacks": "Nog geen feedback ontvangen.",
+            "no_pending_feedbacks": "Er is momenteel geen openstaande feedback.",
+            "no_search_results": "Geen feedback gevonden voor deze zoekopdracht.",
             "show_resolved": "{count, plural, one {# afgehandelde feedback} other {# afgehandelde feedbacks}} tonen",
             "hide_resolved": "{count, plural, one {# afgehandelde feedback} other {# afgehandelde feedbacks}} verbergen",
             "table_user": "Gebruiker",

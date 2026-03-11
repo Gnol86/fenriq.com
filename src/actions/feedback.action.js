@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { requireAdmin } from "@/lib/access-control";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
@@ -28,73 +29,101 @@ export async function createFeedbackAction({ rating, comment, allowUseAsTestimon
     return feedback;
 }
 
-export async function getAllFeedbacksAction() {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+function getFeedbackWhereClause({ searchValue = "", includeResolved = false } = {}) {
+    return {
+        ...(includeResolved ? {} : { isResolved: false }),
+        ...(searchValue
+            ? {
+                  OR: [
+                      {
+                          userName: {
+                              contains: searchValue,
+                              mode: "insensitive",
+                          },
+                      },
+                      {
+                          userEmail: {
+                              contains: searchValue,
+                              mode: "insensitive",
+                          },
+                      },
+                      {
+                          comment: {
+                              contains: searchValue,
+                              mode: "insensitive",
+                          },
+                      },
+                  ],
+              }
+            : {}),
+    };
+}
 
-    if (!session?.user || session.user.role !== "admin") {
-        throw new Error("Unauthorized - Admin access required");
-    }
+function revalidateFeedbacksPath() {
+    revalidatePath("/dashboard/admin/feedbacks");
+}
 
-    const feedbacks = await prisma.feedback.findMany({
-        orderBy: {
-            createdAt: "desc",
-        },
-    });
+export async function getAllFeedbacksAction({
+    searchValue = "",
+    includeResolved = false,
+    limit = 10,
+    offset = 0,
+} = {}) {
+    await requireAdmin();
 
-    return feedbacks;
+    const whereClause = getFeedbackWhereClause({ searchValue, includeResolved });
+
+    const [feedbacks, total] = await Promise.all([
+        prisma.feedback.findMany({
+            where: whereClause,
+            orderBy: {
+                createdAt: "desc",
+            },
+            skip: offset,
+            take: limit,
+        }),
+        prisma.feedback.count({
+            where: whereClause,
+        }),
+    ]);
+
+    return {
+        feedbacks,
+        total,
+    };
 }
 
 export async function markFeedbackAsReadAction({ feedbackId }) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
-
-    if (!session?.user || session.user.role !== "admin") {
-        throw new Error("Unauthorized - Admin access required");
-    }
+    await requireAdmin();
 
     const feedback = await prisma.feedback.update({
         where: { id: feedbackId },
         data: { isRead: true },
     });
 
-    revalidatePath("/admin/feedbacks");
+    revalidateFeedbacksPath();
     return feedback;
 }
 
 export async function markFeedbackAsResolvedAction({ feedbackId }) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
-
-    if (!session?.user || session.user.role !== "admin") {
-        throw new Error("Unauthorized - Admin access required");
-    }
+    await requireAdmin();
 
     const feedback = await prisma.feedback.update({
         where: { id: feedbackId },
         data: { isResolved: true, isRead: true },
     });
 
-    revalidatePath("/admin/feedbacks");
+    revalidateFeedbacksPath();
     return feedback;
 }
 
 export async function deleteFeedbackAction({ feedbackId }) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
-
-    if (!session?.user || session.user.role !== "admin") {
-        throw new Error("Unauthorized - Admin access required");
-    }
+    await requireAdmin();
 
     await prisma.feedback.delete({
         where: { id: feedbackId },
     });
 
-    revalidatePath("/admin/feedbacks");
+    revalidateFeedbacksPath();
     return { success: true };
 }

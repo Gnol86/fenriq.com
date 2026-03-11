@@ -1,6 +1,8 @@
-import { ButtonGroup } from "@root/src/components/ui/button-group";
 import { getTranslations } from "next-intl/server";
 import { getPlansAction } from "@/actions/plan.action";
+import { Pagination } from "@/components/pagination";
+import SearchInput from "@/components/search-input";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
     Card,
     CardAction,
@@ -19,18 +21,41 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { requireAdmin } from "@/lib/access-control";
+import {
+    ensureValidListPage,
+    getLastSearchParamValue,
+    getPageParamState,
+} from "@/lib/list-page-search-params";
 import DeletePlanButton from "./components/delete-plan-button";
 import EditPlanButton from "./components/edit-plan-button";
 import PlanForm from "./components/plan-form";
 
-export default async function AdminPlansPage() {
+const PLANS_PER_PAGE = 10;
+
+export default async function AdminPlansPage({ searchParams }) {
     const t = await getTranslations("admin.plans");
 
     // Vérifie que l'utilisateur est admin
     await requireAdmin();
 
-    // Récupère tous les plans
-    const plans = await getPlansAction();
+    const resolvedSearchParams = await searchParams;
+    const searchValue = getLastSearchParamValue(resolvedSearchParams?.search, "");
+    const { page, shouldRedirect } = getPageParamState(resolvedSearchParams);
+    const offset = (page - 1) * PLANS_PER_PAGE;
+
+    const { plans, total } = await getPlansAction({
+        searchValue,
+        limit: PLANS_PER_PAGE,
+        offset,
+    });
+    const totalPages = Math.ceil(total / PLANS_PER_PAGE);
+    const safePage = ensureValidListPage({
+        pathname: "/dashboard/admin/plans",
+        searchParams: resolvedSearchParams,
+        page,
+        totalPages,
+        forceRedirect: shouldRedirect,
+    });
 
     return (
         <Card>
@@ -43,8 +68,17 @@ export default async function AdminPlansPage() {
             </CardHeader>
 
             <CardContent className="flex w-full flex-col gap-4">
+                <SearchInput
+                    placeholder={t("search_placeholder")}
+                    initialValue={searchValue}
+                    searchParams={resolvedSearchParams}
+                />
                 <Table>
-                    {!plans.length && <TableCaption>{t("no_plans")}</TableCaption>}
+                    {!plans.length && (
+                        <TableCaption>
+                            {searchValue ? t("no_search_results") : t("no_plans")}
+                        </TableCaption>
+                    )}
                     <TableHeader>
                         <TableRow>
                             <TableHead>{t("table_name")}</TableHead>
@@ -123,6 +157,11 @@ export default async function AdminPlansPage() {
                         })}
                     </TableBody>
                 </Table>
+                <Pagination
+                    totalPages={totalPages}
+                    page={safePage}
+                    searchParams={resolvedSearchParams}
+                />
             </CardContent>
         </Card>
     );

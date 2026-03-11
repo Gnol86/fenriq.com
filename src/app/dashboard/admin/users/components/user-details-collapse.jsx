@@ -217,10 +217,11 @@ export default function UserDetailsCollapse({ user, isCurrentUser }) {
                                             {tUsers("details_ban_reason")}: {user.banReason}
                                         </div>
                                     )}
-                                    {user.banExpiresIn && (
+                                    {user.banExpires && (
                                         <div className="flex items-center gap-1">
                                             <Clock className="h-3 w-3" />
-                                            {tUsers("details_ban_expires")}: {user.banExpiresIn}
+                                            {tUsers("details_ban_expires")}:{" "}
+                                            {formatSessionDate(user.banExpires)}
                                         </div>
                                     )}
                                 </div>

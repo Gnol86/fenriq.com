@@ -148,16 +148,52 @@ function revalidatePlanPaths() {
 /**
  * Récupère tous les plans
  */
-export async function getPlansAction() {
+export async function getPlansAction({ searchValue = "", limit = 10, offset = 0 } = {}) {
     await requireAdmin();
 
-    const plans = await prisma.plan.findMany({
-        orderBy: {
-            name: "asc",
-        },
-    });
+    const whereClause = searchValue
+        ? {
+              OR: [
+                  {
+                      name: {
+                          contains: searchValue,
+                          mode: "insensitive",
+                      },
+                  },
+                  {
+                      priceId: {
+                          contains: searchValue,
+                          mode: "insensitive",
+                      },
+                  },
+                  {
+                      annualDiscountPriceId: {
+                          contains: searchValue,
+                          mode: "insensitive",
+                      },
+                  },
+              ],
+          }
+        : {};
 
-    return plans;
+    const [plans, total] = await Promise.all([
+        prisma.plan.findMany({
+            where: whereClause,
+            orderBy: {
+                name: "asc",
+            },
+            skip: offset,
+            take: limit,
+        }),
+        prisma.plan.count({
+            where: whereClause,
+        }),
+    ]);
+
+    return {
+        plans,
+        total,
+    };
 }
 
 /**

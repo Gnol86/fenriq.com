@@ -1,15 +1,7 @@
-import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
+import { Pagination } from "@/components/pagination";
 import SearchInput from "@/components/search-input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-    Pagination,
-    PaginationContent,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
     Table,
     TableBody,
@@ -19,10 +11,17 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { requireAdmin } from "@/lib/access-control";
-import { auth } from "@/lib/auth";
+import {
+    ensureValidListPage,
+    getLastSearchParamValue,
+    getPageParamState,
+} from "@/lib/list-page-search-params";
+import prisma from "@/lib/prisma";
 import UserTableRow from "./components/user-table-row";
 
 const USERS_PER_PAGE = 10;
+const ALLOWED_SORT_FIELDS = new Set(["createdAt", "name", "email"]);
+const ALLOWED_SORT_DIRECTIONS = new Set(["asc", "desc"]);
 
 export default async function AdminUsersPage({ searchParams }) {
     const tUsers = await getTranslations("admin.users");
@@ -32,33 +31,59 @@ export default async function AdminUsersPage({ searchParams }) {
 
     // Parse search parameters
     const resolvedSearchParams = await searchParams;
-    const searchValue = resolvedSearchParams?.search || "";
-    const page = parseInt(resolvedSearchParams?.page || "1", 10);
-    const sortBy = resolvedSearchParams?.sortBy || "createdAt";
-    const sortDirection = resolvedSearchParams?.sortDirection || "desc";
+    const searchValue = getLastSearchParamValue(resolvedSearchParams?.search, "");
+    const { page, shouldRedirect } = getPageParamState(resolvedSearchParams);
+    const rawSortBy = getLastSearchParamValue(resolvedSearchParams?.sortBy, "createdAt");
+    const rawSortDirection = getLastSearchParamValue(resolvedSearchParams?.sortDirection, "desc");
+    const sortBy = ALLOWED_SORT_FIELDS.has(rawSortBy) ? rawSortBy : "createdAt";
+    const sortDirection = ALLOWED_SORT_DIRECTIONS.has(rawSortDirection) ? rawSortDirection : "desc";
 
-    // Calculate pagination
-    const offset = (page - 1) * USERS_PER_PAGE;
+    const whereClause = searchValue
+        ? {
+              OR: [
+                  {
+                      name: {
+                          contains: searchValue,
+                          mode: "insensitive",
+                      },
+                  },
+                  {
+                      email: {
+                          contains: searchValue,
+                          mode: "insensitive",
+                      },
+                  },
+              ],
+          }
+        : {};
 
-    // Fetch users with pagination and search
-    const usersResponse = await auth.api.listUsers({
-        query: {
-            query: {
-                searchValue,
-                searchField: "name",
-                searchOperator: "contains",
-                limit: USERS_PER_PAGE,
-                offset,
-                sortBy,
-                sortDirection,
-            },
-        },
-        headers: await headers(),
+    const totalUsers = await prisma.user.count({
+        where: whereClause,
     });
-
-    const users = usersResponse?.users || [];
-    const totalUsers = usersResponse?.total || 0;
     const totalPages = Math.ceil(totalUsers / USERS_PER_PAGE);
+    const safePage = ensureValidListPage({
+        pathname: "/dashboard/admin/users",
+        searchParams: resolvedSearchParams,
+        page,
+        totalPages,
+        forceRedirect: shouldRedirect,
+    });
+    const offset = (safePage - 1) * USERS_PER_PAGE;
+
+    const users = (
+        await prisma.user.findMany({
+            where: whereClause,
+            orderBy: {
+                [sortBy]: sortDirection,
+            },
+            skip: offset,
+            take: USERS_PER_PAGE,
+        })
+    ).map(userItem => ({
+        ...userItem,
+        banned: Boolean(userItem.banned),
+        role: userItem.role ?? "user",
+    }));
 
     return (
         <div className="flex flex-col gap-6">
@@ -104,59 +129,11 @@ export default async function AdminUsersPage({ searchParams }) {
                         </TableBody>
                     </Table>
 
-                    {/* Pagination */}
-                    {totalPages > 1 && (
-                        <div className="flex justify-center">
-                            <Pagination>
-                                <PaginationContent>
-                                    {page > 1 && (
-                                        <PaginationItem>
-                                            <PaginationPrevious
-                                                href={`?${new URLSearchParams({
-                                                    ...resolvedSearchParams,
-                                                    page: (page - 1).toString(),
-                                                }).toString()}`}
-                                            />
-                                        </PaginationItem>
-                                    )}
-
-                                    {/* Page numbers */}
-                                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                                        const pageNum = Math.max(
-                                            1,
-                                            Math.min(page - 2 + i, totalPages - 4 + i)
-                                        );
-                                        if (pageNum > totalPages) return null;
-
-                                        return (
-                                            <PaginationItem key={pageNum}>
-                                                <PaginationLink
-                                                    href={`?${new URLSearchParams({
-                                                        ...resolvedSearchParams,
-                                                        page: pageNum.toString(),
-                                                    }).toString()}`}
-                                                    isActive={pageNum === page}
-                                                >
-                                                    {pageNum}
-                                                </PaginationLink>
-                                            </PaginationItem>
-                                        );
-                                    })}
-
-                                    {page < totalPages && (
-                                        <PaginationItem>
-                                            <PaginationNext
-                                                href={`?${new URLSearchParams({
-                                                    ...resolvedSearchParams,
-                                                    page: (page + 1).toString(),
-                                                }).toString()}`}
-                                            />
-                                        </PaginationItem>
-                                    )}
-                                </PaginationContent>
-                            </Pagination>
-                        </div>
-                    )}
+                    <Pagination
+                        totalPages={totalPages}
+                        page={safePage}
+                        searchParams={resolvedSearchParams}
+                    />
                 </CardContent>
             </Card>
         </div>

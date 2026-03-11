@@ -735,6 +735,7 @@
         "plans": {
             "page_title": "Plan Management",
             "page_description": "Manage the Stripe subscription plans for the platform.",
+            "search_placeholder": "Search by name or price ID...",
             "table_name": "Name",
             "table_price_id": "Price ID",
             "table_annual_discount": "Annual Discount",
@@ -743,6 +744,7 @@
             "table_show_in_pricing": "Pricing Page",
             "table_actions": "Actions",
             "no_plans": "No plans configured.",
+            "no_search_results": "No plans found for this search.",
             "delete_button": "Delete",
             "confirm_delete": "Are you sure you want to delete the plan \"{name}\"?",
             "confirm_delete_label": "Delete",
@@ -813,7 +815,10 @@
         "feedbacks": {
             "page_title": "Feedback Management",
             "page_description": "{total, plural, one {# feedback total} other {# feedbacks total}} · Average: {average}/5 · {unread, plural, =0 {None unread} one {# unread} other {# unread}} · {unresolved, plural, =0 {None pending} one {# pending} other {# pending}}",
+            "search_placeholder": "Search by name, email, or comment...",
             "no_feedbacks": "No feedback received yet.",
+            "no_pending_feedbacks": "No pending feedback at the moment.",
+            "no_search_results": "No feedback found for this search.",
             "show_resolved": "Show {count, plural, one {# resolved feedback} other {# resolved feedbacks}}",
             "hide_resolved": "Hide {count, plural, one {# resolved feedback} other {# resolved feedbacks}}",
             "table_user": "User",

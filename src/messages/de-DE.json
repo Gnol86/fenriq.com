@@ -736,6 +736,7 @@
         "plans": {
             "page_title": "Plan-Verwaltung",
             "page_description": "Verwalten Sie die Stripe-Abonnementpläne für die Plattform.",
+            "search_placeholder": "Nach Name oder Preis-ID suchen...",
             "table_name": "Name",
             "table_price_id": "Preis-ID",
             "table_annual_discount": "Jahresrabatt",
@@ -744,6 +745,7 @@
             "table_show_in_pricing": "Preisseite",
             "table_actions": "Aktionen",
             "no_plans": "Keine Pläne konfiguriert.",
+            "no_search_results": "Keine Pläne für diese Suche gefunden.",
             "delete_button": "Löschen",
             "confirm_delete": "Sind Sie sicher, dass Sie den Plan \"{name}\" löschen möchten?",
             "confirm_delete_label": "Löschen",
@@ -814,7 +816,10 @@
         "feedbacks": {
             "page_title": "Feedback-Verwaltung",
             "page_description": "{total, plural, one {# Feedback insgesamt} other {# Feedbacks insgesamt}} · Durchschnitt: {average}/5 · {unread, plural, =0 {Keine ungelesen} one {# ungelesen} other {# ungelesen}} · {unresolved, plural, =0 {Keine ausstehend} one {# ausstehend} other {# ausstehend}}",
+            "search_placeholder": "Nach Name, E-Mail oder Kommentar suchen...",
             "no_feedbacks": "Noch kein Feedback erhalten.",
+            "no_pending_feedbacks": "Derzeit gibt es kein ausstehendes Feedback.",
+            "no_search_results": "Kein Feedback für diese Suche gefunden.",
             "show_resolved": "{count, plural, one {# bearbeitetes Feedback} other {# bearbeitete Feedbacks}} anzeigen",
             "hide_resolved": "{count, plural, one {# bearbeitetes Feedback} other {# bearbeitete Feedbacks}} ausblenden",
             "table_user": "Benutzer",
