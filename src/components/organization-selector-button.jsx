@@ -34,7 +34,7 @@ export default function OrganizationSelectorButton({
 
     if (isActive) {
         return (
-            <Button variant="ghost" size="sm">
+            <Button variant="secondary" size="sm">
                 <Check className="text-success h-4 w-4" />
                 {t("active_label")}
             </Button>
@@ -43,11 +43,10 @@ export default function OrganizationSelectorButton({
 
     return (
         <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={handleSelectOrganization}
             disabled={isPending}
-            className="flex items-center gap-2"
         >
             {isPending ? (
                 <>
