@@ -1,9 +1,10 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -17,7 +18,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import FormButton from "@/components/ui/form-button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { authClient } from "@/lib/auth-client";
@@ -28,6 +28,8 @@ export default function FormSignin({ initialEmail = "", callbackURL = "/app" }) 
     const t = useTranslations("auth.signin");
     const tValidation = useTranslations("validation");
     const [invalidAttempts, setInvalidAttempts] = useState(0);
+    const [rateLimitResetAt, setRateLimitResetAt] = useState(null);
+    const [rateLimitSeconds, setRateLimitSeconds] = useState(0);
 
     const formSchema = z.object({
         email: z.email(tValidation("email.invalid")).trim(),
@@ -51,13 +53,48 @@ export default function FormSignin({ initialEmail = "", callbackURL = "/app" }) 
     const forgotPasswordHref = emailValue
         ? `/forgot-password?email=${encodeURIComponent(emailValue)}`
         : "/forgot-password";
-    const showRecoveryHint = invalidAttempts >= recoveryHintThreshold;
+    const isRateLimited = rateLimitSeconds > 0;
+    const showRecoveryHint = !isRateLimited && invalidAttempts >= recoveryHintThreshold;
 
     const isInvalidCredentialsError = error =>
         error?.code === "INVALID_EMAIL_OR_PASSWORD" ||
         (error?.status === 401 && error?.message === "Invalid email or password");
 
+    useEffect(() => {
+        if (!rateLimitResetAt) {
+            return;
+        }
+
+        const intervalId = window.setInterval(() => {
+            const remainingSeconds = Math.max(0, Math.ceil((rateLimitResetAt - Date.now()) / 1000));
+
+            setRateLimitSeconds(remainingSeconds);
+
+            if (remainingSeconds === 0) {
+                setRateLimitResetAt(null);
+            }
+        }, 1000);
+
+        return () => {
+            window.clearInterval(intervalId);
+        };
+    }, [rateLimitResetAt]);
+
+    const getRetryAfterSeconds = response => {
+        const retryAfter = Number.parseInt(response?.headers?.get("X-Retry-After") ?? "", 10);
+
+        if (Number.isFinite(retryAfter) && retryAfter > 0) {
+            return retryAfter;
+        }
+
+        return 10;
+    };
+
     const onSubmit = async values => {
+        if (isRateLimited) {
+            return;
+        }
+
         try {
             await authClient.signIn.email(
                 {
@@ -68,19 +105,33 @@ export default function FormSignin({ initialEmail = "", callbackURL = "/app" }) 
                 {
                     onSuccess: () => {
                         setInvalidAttempts(0);
+                        setRateLimitSeconds(0);
+                        setRateLimitResetAt(null);
                         toast.success(t("success_message"));
                     },
                     onError: ctx => {
                         if (ctx.error.status === 403) {
                             // Rediriger vers la page de vérification avec l'email
                             setInvalidAttempts(0);
+                            setRateLimitSeconds(0);
+                            setRateLimitResetAt(null);
                             toast.error(t("error_email_not_verified"));
                             router.push(`/verify-email?email=${encodeURIComponent(values.email)}`);
+                        } else if (ctx.error.status === 429) {
+                            const retryAfterSeconds = getRetryAfterSeconds(ctx.response);
+
+                            setInvalidAttempts(0);
+                            setRateLimitSeconds(retryAfterSeconds);
+                            setRateLimitResetAt(Date.now() + retryAfterSeconds * 1000);
                         } else if (isInvalidCredentialsError(ctx.error)) {
                             setInvalidAttempts(currentAttempts => currentAttempts + 1);
+                            setRateLimitSeconds(0);
+                            setRateLimitResetAt(null);
                             toast.error(ctx.error.message || t("error_signin_failed"));
                         } else {
                             setInvalidAttempts(0);
+                            setRateLimitSeconds(0);
+                            setRateLimitResetAt(null);
                             toast.error(ctx.error.message || t("error_signin_failed"));
                         }
                     },
@@ -146,6 +197,14 @@ export default function FormSignin({ initialEmail = "", callbackURL = "/app" }) 
                         </Button>
                     </Link>
                 </div>
+                {isRateLimited ? (
+                    <Alert>
+                        <AlertTitle>{t("rate_limit_title")}</AlertTitle>
+                        <AlertDescription>
+                            {t("rate_limit_description", { seconds: rateLimitSeconds })}
+                        </AlertDescription>
+                    </Alert>
+                ) : null}
                 {showRecoveryHint ? (
                     <div className="flex flex-col gap-2">
                         <Alert variant="destructive">
@@ -162,13 +221,14 @@ export default function FormSignin({ initialEmail = "", callbackURL = "/app" }) 
                     </div>
                 ) : null}
                 <div className="flex gap-2">
-                    <FormButton
+                    <Button
                         type="submit"
-                        loading={form.formState.isSubmitting}
+                        disabled={form.formState.isSubmitting || isRateLimited}
                         className="flex-1"
                     >
+                        {form.formState.isSubmitting ? <Loader2 className="animate-spin" /> : null}
                         {t("submit_button")}
-                    </FormButton>
+                    </Button>
                     <Link href="/">
                         <Button variant="ghost">{t("cancel_button")}</Button>
                     </Link>

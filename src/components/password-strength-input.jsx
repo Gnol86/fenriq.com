@@ -14,12 +14,44 @@ const PASSWORD_REQUIREMENTS = [
     { key: "uppercase_required", regex: /[A-Z]/ },
 ];
 
-const getStrengthColor = score => {
-    if (score === 0) return "bg-border";
-    if (score <= 1) return "bg-red-500";
-    if (score <= 2) return "bg-orange-500";
-    if (score === 3) return "bg-amber-500";
-    return "bg-emerald-500";
+const getStrengthState = score => {
+    if (score === 0) {
+        return {
+            indicatorClassName: "bg-border",
+            textClassName: "text-muted-foreground",
+            labelKey: "level_weak",
+        };
+    }
+
+    if (score === 1) {
+        return {
+            indicatorClassName: "bg-red-500",
+            textClassName: "text-red-500",
+            labelKey: "level_weak",
+        };
+    }
+
+    if (score === 2) {
+        return {
+            indicatorClassName: "bg-orange-500",
+            textClassName: "text-orange-500",
+            labelKey: "level_medium",
+        };
+    }
+
+    if (score === 3) {
+        return {
+            indicatorClassName: "bg-amber-500",
+            textClassName: "text-amber-500",
+            labelKey: "level_medium",
+        };
+    }
+
+    return {
+        indicatorClassName: "bg-emerald-500",
+        textClassName: "text-emerald-500",
+        labelKey: "level_strong",
+    };
 };
 
 const PasswordStrengthInput = React.forwardRef(({ className, ...props }, ref) => {
@@ -34,6 +66,7 @@ const PasswordStrengthInput = React.forwardRef(({ className, ...props }, ref) =>
         text: t(`password_strength.${requirement.key}`),
     }));
     const strengthScore = requirements.filter(requirement => requirement.met).length;
+    const strengthState = getStrengthState(strengthScore);
 
     const handleChange = event => {
         const { value } = event.target;
@@ -92,7 +125,7 @@ const PasswordStrengthInput = React.forwardRef(({ className, ...props }, ref) =>
             {password && (
                 <>
                     <div
-                        className="bg-border mt-3 mb-4 h-1 w-full overflow-hidden rounded-full"
+                        className="bg-border mt-3 mb-1 h-1 w-full overflow-hidden rounded-full"
                         role="progressbar"
                         aria-valuenow={strengthScore}
                         aria-valuemin={0}
@@ -100,12 +133,17 @@ const PasswordStrengthInput = React.forwardRef(({ className, ...props }, ref) =>
                         aria-label={t("password_strength.progress_aria_label")}
                     >
                         <div
-                            className={`h-full ${getStrengthColor(strengthScore)} transition-all duration-500 ease-out`}
+                            className={`h-full ${strengthState.indicatorClassName} transition-all duration-500 ease-out`}
                             style={{
                                 width: `${(strengthScore / 4) * 100}%`,
                             }}
                         />
                     </div>
+
+                    <p className={cn("mb-2 text-xs font-bold", strengthState.textClassName)}>
+                        {t("password_strength.level_label")}:{" "}
+                        {t(`password_strength.${strengthState.labelKey}`)}
+                    </p>
 
                     <p className="text-muted-foreground mb-2 text-sm font-medium">
                         {t("password_strength.title")}

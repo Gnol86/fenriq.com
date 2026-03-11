@@ -20,6 +20,8 @@
             "error_email_not_verified": "Votre adresse email n'est pas vérifiée.",
             "error_signin_failed": "Échec de la connexion",
             "error_try_again": "Échec de la connexion. Veuillez réessayer.",
+            "rate_limit_title": "Trop de tentatives de connexion",
+            "rate_limit_description": "Patientez encore {seconds} seconde{seconds, plural, one {} other {s}} avant de réessayer.",
             "invalid_credentials_recovery_title": "Mot de passe oublié ?",
             "invalid_credentials_recovery_description": "Si vous ne vous souvenez plus de votre mot de passe, demandez un lien de réinitialisation pour retrouver l'accès à votre compte.",
             "invalid_credentials_recovery_cta": "Réinitialiser mon mot de passe"
@@ -1029,6 +1031,10 @@
         "password_strength": {
             "progress_aria_label": "Force du mot de passe",
             "requirements_aria_label": "Exigences du mot de passe",
+            "level_label": "Niveau",
+            "level_weak": "Faible",
+            "level_medium": "Moyen",
+            "level_strong": "Fort",
             "title": "Doit contenir :",
             "min_length": "Au moins 8 caractères",
             "digit_required": "Au moins 1 chiffre",

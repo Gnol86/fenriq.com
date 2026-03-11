@@ -20,6 +20,8 @@
             "error_email_not_verified": "Ihre E-Mail-Adresse ist nicht verifiziert.",
             "error_signin_failed": "Anmeldung fehlgeschlagen",
             "error_try_again": "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+            "rate_limit_title": "Zu viele Anmeldeversuche",
+            "rate_limit_description": "Warten Sie noch {seconds} Sekunde{seconds, plural, one {} other {n}}, bevor Sie es erneut versuchen.",
             "invalid_credentials_recovery_title": "Passwort vergessen?",
             "invalid_credentials_recovery_description": "Wenn Sie sich nicht mehr an Ihr Passwort erinnern, fordern Sie einen Reset-Link an, um wieder Zugriff auf Ihr Konto zu erhalten.",
             "invalid_credentials_recovery_cta": "Mein Passwort zurücksetzen"
@@ -418,7 +420,6 @@
             "remove_dialog_title": "Dieses Mitglied entfernen?",
             "remove_dialog_description": "Diese Aktion entzieht {name} den Zugriff auf die Organisation.",
             "remove_dialog_description_fallback": "Diese Aktion entzieht diesem Mitglied den Zugriff auf die Organisation.",
-            "remove_dialog_cancel": "Abbrechen",
             "remove_dialog_confirm": "Entfernen",
             "stats_label": "{count, plural, one {# aktives Mitglied} other {# aktive Mitglieder}}"
         },
@@ -1030,6 +1031,10 @@
         "password_strength": {
             "progress_aria_label": "Passwortstärke",
             "requirements_aria_label": "Passwortanforderungen",
+            "level_label": "Niveau",
+            "level_weak": "Schwach",
+            "level_medium": "Mittel",
+            "level_strong": "Stark",
             "title": "Muss enthalten:",
             "min_length": "Mindestens 8 Zeichen",
             "digit_required": "Mindestens 1 Zahl",

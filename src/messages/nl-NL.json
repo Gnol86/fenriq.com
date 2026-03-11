@@ -20,6 +20,8 @@
             "error_email_not_verified": "Uw e-mailadres is niet geverifieerd.",
             "error_signin_failed": "Inloggen mislukt",
             "error_try_again": "Inloggen mislukt. Probeer het opnieuw.",
+            "rate_limit_title": "Te veel inlogpogingen",
+            "rate_limit_description": "Wacht nog {seconds} seconde{seconds, plural, one {} other {n}} voordat u opnieuw probeert.",
             "invalid_credentials_recovery_title": "Wachtwoord vergeten?",
             "invalid_credentials_recovery_description": "Als u uw wachtwoord niet meer weet, vraag dan een resetlink aan om opnieuw toegang te krijgen tot uw account.",
             "invalid_credentials_recovery_cta": "Mijn wachtwoord resetten"
@@ -1029,6 +1031,10 @@
         "password_strength": {
             "progress_aria_label": "Wachtwoordsterkte",
             "requirements_aria_label": "Wachtwoordvereisten",
+            "level_label": "Niveau",
+            "level_weak": "Zwak",
+            "level_medium": "Gemiddeld",
+            "level_strong": "Sterk",
             "title": "Moet bevatten:",
             "min_length": "Minstens 8 tekens",
             "digit_required": "Minstens 1 cijfer",
