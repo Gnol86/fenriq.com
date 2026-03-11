@@ -1,5 +1,6 @@
 "use server";
 
+import { Prisma } from "@root/prisma/generated/client/client";
 import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/access-control";
@@ -73,6 +74,51 @@ function getStripeValidationMessage(t, error) {
     }
 }
 
+function getUniqueConstraintTarget(error) {
+    if (!(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== "P2002") {
+        return null;
+    }
+
+    const target = error.meta?.target;
+
+    if (Array.isArray(target)) {
+        return target.find(entry => typeof entry === "string") ?? null;
+    }
+
+    return typeof target === "string" ? target : null;
+}
+
+function getPlanUniqueConstraintMessage(t, error) {
+    const target = getUniqueConstraintTarget(error);
+
+    switch (target) {
+        case "name":
+            return t("validation_name_taken");
+        case "priceId":
+            return t("validation_price_id_taken");
+        case "annualDiscountPriceId":
+            return t("validation_annual_discount_price_id_taken");
+        default:
+            return error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002"
+                ? t("validation_unique_conflict_generic")
+                : null;
+    }
+}
+
+async function executePlanMutation(t, mutation) {
+    try {
+        return await mutation();
+    } catch (error) {
+        const message = getPlanUniqueConstraintMessage(t, error);
+
+        if (message) {
+            throw new Error(message);
+        }
+
+        throw error;
+    }
+}
+
 async function validatePlanStripeConfiguration(t, { priceId, annualDiscountPriceId }) {
     try {
         const { annualComparison } = await getValidatedPlanStripePricing({
@@ -134,17 +180,19 @@ export async function createPlanAction({
         annualDiscountPriceId,
     });
 
-    const plan = await prisma.plan.create({
-        data: getPlanPersistenceData({
-            name,
-            description,
-            priceId,
-            annualDiscountPriceId,
-            limits,
-            freeTrial,
-            showInPricingPage,
-        }),
-    });
+    const plan = await executePlanMutation(t, () =>
+        prisma.plan.create({
+            data: getPlanPersistenceData({
+                name,
+                description,
+                priceId,
+                annualDiscountPriceId,
+                limits,
+                freeTrial,
+                showInPricingPage,
+            }),
+        })
+    );
 
     revalidatePlanPaths();
 
@@ -172,20 +220,22 @@ export async function updatePlanAction({
         annualDiscountPriceId,
     });
 
-    const plan = await prisma.plan.update({
-        where: {
-            id: planId,
-        },
-        data: getPlanPersistenceData({
-            name,
-            description,
-            priceId,
-            annualDiscountPriceId,
-            limits,
-            freeTrial,
-            showInPricingPage,
-        }),
-    });
+    const plan = await executePlanMutation(t, () =>
+        prisma.plan.update({
+            where: {
+                id: planId,
+            },
+            data: getPlanPersistenceData({
+                name,
+                description,
+                priceId,
+                annualDiscountPriceId,
+                limits,
+                freeTrial,
+                showInPricingPage,
+            }),
+        })
+    );
 
     revalidatePlanPaths();
 
