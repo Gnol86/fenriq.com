@@ -1,17 +1,28 @@
 import { Mailbox } from "lucide-react";
-import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/access-control";
+import { getInvitationDisplayStatus } from "@/lib/invitation-utils";
 import prisma from "@/lib/prisma";
 import AcceptInvitationClient from "./accept-invitation-client";
 
-export default async function InvitationPage({ params }) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+function getStatusMessageKey(statusKey) {
+    switch (statusKey) {
+        case "accepted":
+            return "already_accepted_message";
+        case "rejected":
+            return "already_rejected_message";
+        case "canceled":
+            return "canceled_message";
+        case "outdated":
+            return "outdated_message";
+        default:
+            return "invalid_message";
+    }
+}
 
+export default async function InvitationPage({ params }) {
     const { invitationId } = await params;
     const t = await getTranslations("auth.invitation");
     const tRoles = await getTranslations("roles");
@@ -29,13 +40,21 @@ export default async function InvitationPage({ params }) {
         notFound();
     }
 
-    if (!session) {
+    const { user } = await getAuth();
+
+    if (!user) {
         redirect(`/signin?callback=${encodeURIComponent(`/invitations/${invitationId}`)}`);
     }
 
-    if (session && session.user.email !== invitation.email) {
+    if (user.email.toLowerCase() !== invitation.email.toLowerCase()) {
         notFound();
     }
+
+    const invitationRole = invitation.role ?? "member";
+    const inviterName = invitation.user.name ?? invitation.user.email ?? "--";
+    const invitationStatus = getInvitationDisplayStatus(invitation);
+    const isActionable = invitationStatus === "pending";
+    const statusMessageKey = getStatusMessageKey(invitationStatus);
 
     return (
         <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-12">
@@ -49,9 +68,9 @@ export default async function InvitationPage({ params }) {
                         </CardTitle>
                         <CardDescription>
                             {t("page_description", {
-                                userName: invitation.user.name,
+                                userName: inviterName,
                                 orgName: invitation.organization.name,
-                                role: tRoles(invitation.role),
+                                role: tRoles(invitationRole),
                             })}
                         </CardDescription>
                     </div>
@@ -60,7 +79,11 @@ export default async function InvitationPage({ params }) {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <AcceptInvitationClient invitationId={invitationId} />
+                    {isActionable ? (
+                        <AcceptInvitationClient invitationId={invitationId} />
+                    ) : (
+                        <p className="text-muted-foreground text-sm">{t(statusMessageKey)}</p>
+                    )}
                 </CardContent>
             </Card>
         </div>
