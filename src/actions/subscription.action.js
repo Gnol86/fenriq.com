@@ -138,8 +138,11 @@ export async function createCheckoutSession({ planId, annual = false, seats }) {
         throw new Error("Plan not found");
     }
 
+    // The Team plan is identified by name and must remain case-insensitive to stay aligned with UI behavior.
+    const isTeamPlan = plan.name.trim().toLowerCase() === "team";
+
     const normalizedSeats =
-        plan.name === "team" || !SiteConfig.quota?.enabled
+        isTeamPlan || !SiteConfig.quota?.enabled
             ? undefined
             : validateQuotaQuantity(seats, {
                   minimum: SiteConfig.quota.minimum,
@@ -180,7 +183,7 @@ export async function createCheckoutSession({ planId, annual = false, seats }) {
             plan: plan.name,
             annual: annual,
             referenceId: organization.id,
-            seats: plan.name === "team" ? memberCount : normalizedSeats,
+            seats: isTeamPlan ? memberCount : normalizedSeats,
             successUrl: `${getServerUrl()}/dashboard/org/subscription?success=true`,
             cancelUrl: `${getServerUrl()}/dashboard/org/subscription?canceled=true`,
             returnUrl: `${getServerUrl()}/dashboard/org/subscription`,
