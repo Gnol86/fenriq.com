@@ -34,10 +34,10 @@ export default function OrganizationSelectorButton({
 
     if (isActive) {
         return (
-            <div className="flex items-center gap-2">
-                <Check className="text-primary h-4 w-4" />
-                <span className="text-primary text-sm font-medium">{t("active_label")}</span>
-            </div>
+            <Button variant="ghost" size="sm">
+                <Check className="text-success h-4 w-4" />
+                {t("active_label")}
+            </Button>
         );
     }
 

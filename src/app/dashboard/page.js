@@ -140,10 +140,7 @@ export default async function DashboardPage() {
                                                 isActive={org?.id === organization?.id}
                                                 activeOrganizationId={organization?.id}
                                             />
-                                            <LeaveOrganizationButton
-                                                organization={org}
-                                                isActive={org?.id === organization?.id}
-                                            />
+                                            <LeaveOrganizationButton organization={org} />
                                         </ButtonGroup>
                                     </div>
                                 </div>

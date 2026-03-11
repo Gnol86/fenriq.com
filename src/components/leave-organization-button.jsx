@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 
-export default function LeaveOrganizationButton({ organization, isActive }) {
+export default function LeaveOrganizationButton({ organization }) {
     const t = useTranslations("organization.leave");
 
     const handleLeaveOrganization = useCallback(async () => {
@@ -35,11 +35,6 @@ export default function LeaveOrganizationButton({ organization, isActive }) {
             },
         });
     }, [organization, t]);
-
-    // Ne pas afficher le bouton si c'est l'organisation active
-    if (isActive) {
-        return null;
-    }
 
     return (
         <Tooltip>
