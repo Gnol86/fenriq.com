@@ -155,6 +155,21 @@
             "error_message": "Erreur lors de la mise à jour des paramètres",
             "no_user_error": "Impossible de charger les informations utilisateur.",
             "reconnect_message": "Veuillez vous reconnecter pour accéder à vos paramètres.",
+            "change_email": {
+                "card_title": "Changer l'adresse email",
+                "card_description": "Mettez à jour l'adresse email utilisée pour vous connecter à votre compte.",
+                "new_email_label": "Nouvelle adresse email",
+                "new_email_placeholder": "nouvelle-adresse@exemple.com",
+                "current_email_description": "Adresse actuelle : {email}.",
+                "new_email_description": "Après validation, vous devrez confirmer la demande depuis votre adresse actuelle, puis vérifier la nouvelle adresse email.",
+                "submit_button": "Demander le changement d'email",
+                "success_message": "Un email de confirmation a été envoyé à votre adresse actuelle.",
+                "error_message": "Erreur lors de la demande de changement d'adresse email",
+                "verification_sent_title": "Vérifiez la nouvelle adresse email",
+                "verification_sent_description": "Votre demande a bien été confirmée. Un email de vérification a été envoyé à la nouvelle adresse email renseignée. Votre adresse actuelle ne sera remplacée qu'après validation de ce second email.",
+                "same_email_error": "Veuillez saisir une adresse email différente de l'adresse actuelle.",
+                "use_dedicated_action_error": "Utilisez l'action dédiée au changement d'adresse email."
+            },
             "change_password": {
                 "card_title": "Changer le mot de passe",
                 "card_description": "Mettez à jour votre mot de passe pour sécuriser votre compte.",

@@ -155,6 +155,21 @@
             "error_message": "Fehler beim Aktualisieren der Einstellungen",
             "no_user_error": "Benutzerinformationen können nicht geladen werden.",
             "reconnect_message": "Melden Sie sich erneut an, um auf Ihre Einstellungen zuzugreifen.",
+            "change_email": {
+                "card_title": "E-Mail-Adresse ändern",
+                "card_description": "Aktualisieren Sie die E-Mail-Adresse, die Sie für die Anmeldung bei Ihrem Konto verwenden.",
+                "new_email_label": "Neue E-Mail-Adresse",
+                "new_email_placeholder": "neue-adresse@beispiel.com",
+                "current_email_description": "Aktuelle E-Mail-Adresse: {email}.",
+                "new_email_description": "Nach dem Absenden müssen Sie die Anfrage zuerst über Ihre aktuelle E-Mail-Adresse bestätigen und anschließend die neue Adresse verifizieren.",
+                "submit_button": "E-Mail-Änderung anfordern",
+                "success_message": "Eine Bestätigungs-E-Mail wurde an Ihre aktuelle E-Mail-Adresse gesendet.",
+                "error_message": "Fehler beim Anfordern der Änderung der E-Mail-Adresse",
+                "verification_sent_title": "Bestätigen Sie die neue E-Mail-Adresse",
+                "verification_sent_description": "Ihre Anfrage wurde bestätigt. Eine Verifizierungs-E-Mail wurde an die neue von Ihnen angegebene E-Mail-Adresse gesendet. Ihre aktuelle Adresse wird erst nach dieser zweiten Bestätigung ersetzt.",
+                "same_email_error": "Bitte geben Sie eine andere E-Mail-Adresse als die aktuelle ein.",
+                "use_dedicated_action_error": "Verwenden Sie die dedizierte Aktion zum Ändern der E-Mail-Adresse."
+            },
             "change_password": {
                 "card_title": "Passwort ändern",
                 "card_description": "Aktualisieren Sie Ihr Passwort, um Ihr Konto zu sichern.",

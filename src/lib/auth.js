@@ -36,6 +36,12 @@ async function getLocale() {
     return cookieStore.get("NEXT_LOCALE")?.value ?? defaultLocale;
 }
 
+function withCallbackUrl(url, callbackURL) {
+    const resolvedUrl = new URL(url);
+    resolvedUrl.searchParams.set("callbackURL", callbackURL);
+    return resolvedUrl.toString();
+}
+
 const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2025-09-30.clover", // Latest API version as of Stripe SDK v19
 });
@@ -127,6 +133,24 @@ export const auth = betterAuth({
         cookiePrefix: SiteConfig.appId,
     },
     user: {
+        changeEmail: {
+            enabled: true,
+            sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
+                try {
+                    const { sendChangeEmailConfirmationEmail } = await import(
+                        "@/actions/email.action"
+                    );
+                    await sendChangeEmailConfirmationEmail({
+                        email: user.email,
+                        name: user.name,
+                        newEmail,
+                        url,
+                    });
+                } catch (error) {
+                    console.error("Error sending change email confirmation:", error);
+                }
+            },
+        },
         deleteUser: {
             enabled: true,
             beforeDelete: async user => {
@@ -186,11 +210,26 @@ export const auth = betterAuth({
     emailVerification: {
         sendVerificationEmail: async ({ user, url }) => {
             try {
+                let verificationUrl = url;
+
+                const currentUser = await prisma.user.findUnique({
+                    where: { id: user.id },
+                    select: { email: true },
+                });
+
+                const isPendingEmailChange =
+                    currentUser?.email &&
+                    currentUser.email.toLowerCase() !== user.email.toLowerCase();
+
+                if (isPendingEmailChange) {
+                    verificationUrl = withCallbackUrl(url, "/dashboard/user/settings");
+                }
+
                 const { sendVerificationEmail } = await import("@/actions/email.action");
                 await sendVerificationEmail({
                     email: user.email,
                     name: user.name,
-                    url,
+                    url: verificationUrl,
                 });
             } catch (error) {
                 console.error("Error sending verification email:", error);

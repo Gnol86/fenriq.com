@@ -155,6 +155,21 @@
             "error_message": "Error updating settings",
             "no_user_error": "Unable to load user information.",
             "reconnect_message": "Please sign in again to access your settings.",
+            "change_email": {
+                "card_title": "Change Email Address",
+                "card_description": "Update the email address used to sign in to your account.",
+                "new_email_label": "New Email Address",
+                "new_email_placeholder": "new-address@example.com",
+                "current_email_description": "Current email: {email}.",
+                "new_email_description": "After submission, you will first confirm the request from your current email address, then verify the new email address.",
+                "submit_button": "Request Email Change",
+                "success_message": "A confirmation email has been sent to your current email address.",
+                "error_message": "Error requesting the email address change",
+                "verification_sent_title": "Verify the new email address",
+                "verification_sent_description": "Your request has been confirmed. A verification email has been sent to the new email address you entered. Your current address will only be replaced after this second verification.",
+                "same_email_error": "Please enter an email address different from the current one.",
+                "use_dedicated_action_error": "Use the dedicated email change action."
+            },
             "change_password": {
                 "card_title": "Change Password",
                 "card_description": "Update your password to keep your account secure.",

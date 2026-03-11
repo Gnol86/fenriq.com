@@ -155,6 +155,21 @@
             "error_message": "Fout bij het bijwerken van de instellingen",
             "no_user_error": "Gebruikersgegevens kunnen niet worden geladen.",
             "reconnect_message": "Log opnieuw in om toegang te krijgen tot uw instellingen.",
+            "change_email": {
+                "card_title": "E-mailadres wijzigen",
+                "card_description": "Werk het e-mailadres bij dat u gebruikt om in te loggen op uw account.",
+                "new_email_label": "Nieuw e-mailadres",
+                "new_email_placeholder": "nieuw-adres@voorbeeld.com",
+                "current_email_description": "Huidig e-mailadres: {email}.",
+                "new_email_description": "Na het indienen moet u de aanvraag eerst bevestigen via uw huidige e-mailadres en daarna het nieuwe e-mailadres verifiëren.",
+                "submit_button": "Wijziging van e-mailadres aanvragen",
+                "success_message": "Er is een bevestigingsmail verzonden naar uw huidige e-mailadres.",
+                "error_message": "Fout bij het aanvragen van de wijziging van het e-mailadres",
+                "verification_sent_title": "Verifieer het nieuwe e-mailadres",
+                "verification_sent_description": "Uw aanvraag is bevestigd. Er is een verificatie-e-mail verzonden naar het nieuwe e-mailadres dat u hebt opgegeven. Uw huidige adres wordt pas vervangen nadat deze tweede verificatie is voltooid.",
+                "same_email_error": "Voer een e-mailadres in dat verschilt van het huidige adres.",
+                "use_dedicated_action_error": "Gebruik de speciale actie voor het wijzigen van het e-mailadres."
+            },
             "change_password": {
                 "card_title": "Wachtwoord wijzigen",
                 "card_description": "Werk uw wachtwoord bij om uw account veilig te houden.",

@@ -17,11 +17,25 @@ export async function changePasswordAction({ currentPassword, newPassword }) {
 }
 
 export async function updateUserAction({ name, email, image }) {
+    if (email !== undefined) {
+        const t = await getTranslations("user.settings.change_email");
+        throw new Error(t("use_dedicated_action_error"));
+    }
+
     return await auth.api.updateUser({
         body: {
-            name: name,
-            email: email,
-            image: image,
+            name,
+            image,
+        },
+        headers: await headers(),
+    });
+}
+
+export async function changeEmailAction({ newEmail }) {
+    return await auth.api.changeEmail({
+        body: {
+            newEmail: newEmail.trim().toLowerCase(),
+            callbackURL: "/dashboard/user/settings?changeEmailNotice=verification-sent",
         },
         headers: await headers(),
     });

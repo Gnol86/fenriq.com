@@ -1,6 +1,7 @@
 "use server";
 
 import { Resend } from "resend";
+import { ChangeEmailConfirmationTemplate } from "@/components/email/change-email-confirmation-template";
 import { OrganizationInvitationTemplate } from "@/components/email/organization-invitation-template";
 import { ResetPasswordTemplate } from "@/components/email/reset-password-template";
 import { VerificationEmailTemplate } from "@/components/email/verification-template";
@@ -15,20 +16,45 @@ export async function sendVerificationEmail({ email, name, url }) {
             to: email,
             subject: `${SiteConfig.title} - Vérifiez votre adresse email`,
             react: VerificationEmailTemplate({
-                name: name,
+                name,
                 verificationUrl: url,
             }),
         });
 
         if (error) {
             console.error("Resend error:", error);
-            throw new Error("Failed to send invitation email");
+            throw new Error("Failed to send verification email");
         }
 
         return { success: true, data };
     } catch (error) {
-        console.error("Invitation email sending error:", error);
-        throw new Error("Failed to send invitation email");
+        console.error("Verification email sending error:", error);
+        throw new Error("Failed to send verification email");
+    }
+}
+
+export async function sendChangeEmailConfirmationEmail({ email, name, newEmail, url }) {
+    try {
+        const { data, error } = await resend.emails.send({
+            from: SiteConfig.mail.from,
+            to: email,
+            subject: `${SiteConfig.title} - Confirmez votre changement d'adresse email`,
+            react: ChangeEmailConfirmationTemplate({
+                name,
+                newEmail,
+                confirmationUrl: url,
+            }),
+        });
+
+        if (error) {
+            console.error("Resend error:", error);
+            throw new Error("Failed to send change email confirmation");
+        }
+
+        return { success: true, data };
+    } catch (error) {
+        console.error("Change email confirmation sending error:", error);
+        throw new Error("Failed to send change email confirmation");
     }
 }
 

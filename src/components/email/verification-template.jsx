@@ -1,14 +1,24 @@
 import { SiteConfig } from "@/site-config";
 
-export function VerificationEmailTemplate({ name, verificationUrl }) {
+export function VerificationEmailTemplate({
+    name,
+    verificationUrl,
+    title = "Vérifiez votre adresse email",
+    description,
+    buttonLabel = "Vérifier mon email",
+    ignoreText = "Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.",
+}) {
+    const resolvedDescription =
+        description ??
+        "Pour confirmer votre adresse email sur " +
+            SiteConfig.title +
+            ", veuillez cliquer sur le lien ci-dessous :";
+
     return (
         <div>
-            <h1>Vérifiez votre adresse email</h1>
+            <h1>{title}</h1>
             <p>Bonjour {name ?? "Utilisateur"},</p>
-            <p>
-                Pour terminer la création de votre compte {SiteConfig.title}, veuillez vérifier
-                votre adresse email en cliquant sur le lien ci-dessous :
-            </p>
+            <p>{resolvedDescription}</p>
             <p>
                 <a
                     href={verificationUrl}
@@ -21,7 +31,7 @@ export function VerificationEmailTemplate({ name, verificationUrl }) {
                         display: "inline-block",
                     }}
                 >
-                    Vérifier mon email
+                    {buttonLabel}
                 </a>
             </p>
             <p>
@@ -30,7 +40,7 @@ export function VerificationEmailTemplate({ name, verificationUrl }) {
                 <a href={verificationUrl}>{verificationUrl}</a>
             </p>
             <p>Ce lien expirera dans 24 heures.</p>
-            <p>Si vous n&apos;avez pas créé de compte, ignorez cet email.</p>
+            <p>{ignoreText}</p>
             <p>Cordialement,</p>
             <p>{SiteConfig.mail.signature}</p>
         </div>
