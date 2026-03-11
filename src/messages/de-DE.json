@@ -19,7 +19,10 @@
             "success_message": "Erfolgreich angemeldet",
             "error_email_not_verified": "Ihre E-Mail-Adresse ist nicht verifiziert.",
             "error_signin_failed": "Anmeldung fehlgeschlagen",
-            "error_try_again": "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut."
+            "error_try_again": "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+            "invalid_credentials_recovery_title": "Passwort vergessen?",
+            "invalid_credentials_recovery_description": "Wenn Sie sich nicht mehr an Ihr Passwort erinnern, fordern Sie einen Reset-Link an, um wieder Zugriff auf Ihr Konto zu erhalten.",
+            "invalid_credentials_recovery_cta": "Mein Passwort zurücksetzen"
         },
         "forgot_password": {
             "page_title": "Passwort vergessen",

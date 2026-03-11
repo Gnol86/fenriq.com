@@ -19,7 +19,10 @@
             "success_message": "Connexion réussie",
             "error_email_not_verified": "Votre adresse email n'est pas vérifiée.",
             "error_signin_failed": "Échec de la connexion",
-            "error_try_again": "Échec de la connexion. Veuillez réessayer."
+            "error_try_again": "Échec de la connexion. Veuillez réessayer.",
+            "invalid_credentials_recovery_title": "Mot de passe oublié ?",
+            "invalid_credentials_recovery_description": "Si vous ne vous souvenez plus de votre mot de passe, demandez un lien de réinitialisation pour retrouver l'accès à votre compte.",
+            "invalid_credentials_recovery_cta": "Réinitialiser mon mot de passe"
         },
         "forgot_password": {
             "page_title": "Mot de passe oublié",

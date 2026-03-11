@@ -19,7 +19,10 @@
             "success_message": "Succesvol ingelogd",
             "error_email_not_verified": "Uw e-mailadres is niet geverifieerd.",
             "error_signin_failed": "Inloggen mislukt",
-            "error_try_again": "Inloggen mislukt. Probeer het opnieuw."
+            "error_try_again": "Inloggen mislukt. Probeer het opnieuw.",
+            "invalid_credentials_recovery_title": "Wachtwoord vergeten?",
+            "invalid_credentials_recovery_description": "Als u uw wachtwoord niet meer weet, vraag dan een resetlink aan om opnieuw toegang te krijgen tot uw account.",
+            "invalid_credentials_recovery_cta": "Mijn wachtwoord resetten"
         },
         "forgot_password": {
             "page_title": "Wachtwoord vergeten",

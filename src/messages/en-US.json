@@ -19,7 +19,10 @@
             "success_message": "Successfully signed in",
             "error_email_not_verified": "Your email address is not verified.",
             "error_signin_failed": "Sign in failed",
-            "error_try_again": "Sign in failed. Please try again."
+            "error_try_again": "Sign in failed. Please try again.",
+            "invalid_credentials_recovery_title": "Forgot your password?",
+            "invalid_credentials_recovery_description": "If you can't remember your password, request a reset link to regain access to your account.",
+            "invalid_credentials_recovery_cta": "Reset my password"
         },
         "forgot_password": {
             "page_title": "Forgot password",
