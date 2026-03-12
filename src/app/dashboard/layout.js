@@ -8,8 +8,8 @@ export default async function Layout({ children }) {
     const requestHeaders = await headers();
     const pathname = requestHeaders.get("x-pathname") ?? "";
     const isChecklistBuilderPage =
-        pathname === "/dashboard/charroi/checklists/new" ||
-        /^\/dashboard\/charroi\/checklists\/[^/]+\/edit$/.test(pathname);
+        pathname === "/dashboard/project/charroi/checklists/new" ||
+        /^\/dashboard\/project\/charroi\/checklists\/[^/]+\/edit$/.test(pathname);
 
     return (
         <>

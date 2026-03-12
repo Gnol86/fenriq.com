@@ -53,7 +53,7 @@ export default async function AddOnSideBarContentDashboard() {
                 <SidebarMenu>
                     {canReadVehicles && (
                         <SidebarMenuItem>
-                            <ActiveSidebarLink href="/dashboard/charroi/vehicles">
+                            <ActiveSidebarLink href="/dashboard/project/charroi/vehicles">
                                 <Truck className="opacity-60" />
                                 <span>{t("vehicles")}</span>
                             </ActiveSidebarLink>
@@ -61,7 +61,7 @@ export default async function AddOnSideBarContentDashboard() {
                     )}
                     {canReadChecklists && (
                         <SidebarMenuItem>
-                            <ActiveSidebarLink href="/dashboard/charroi/checklists">
+                            <ActiveSidebarLink href="/dashboard/project/charroi/checklists">
                                 <ClipboardCheck className="opacity-60" />
                                 <span>{t("checklists")}</span>
                             </ActiveSidebarLink>
@@ -69,7 +69,7 @@ export default async function AddOnSideBarContentDashboard() {
                     )}
                     {canReadCategories && (
                         <SidebarMenuItem>
-                            <ActiveSidebarLink href="/dashboard/charroi/categories">
+                            <ActiveSidebarLink href="/dashboard/project/charroi/categories">
                                 <Tags className="opacity-60" />
                                 <span>{t("categories")}</span>
                             </ActiveSidebarLink>
@@ -77,7 +77,7 @@ export default async function AddOnSideBarContentDashboard() {
                     )}
                     {canReadSubscriptions && (
                         <SidebarMenuItem>
-                            <ActiveSidebarLink href="/dashboard/charroi/subscriptions">
+                            <ActiveSidebarLink href="/dashboard/project/charroi/subscriptions">
                                 <FileText className="opacity-60" />
                                 <span>{t("subscriptions")}</span>
                             </ActiveSidebarLink>
@@ -85,7 +85,7 @@ export default async function AddOnSideBarContentDashboard() {
                     )}
                     {canReadSubmissions && (
                         <SidebarMenuItem>
-                            <ActiveSidebarLink href="/dashboard/charroi/submissions">
+                            <ActiveSidebarLink href="/dashboard/project/charroi/submissions">
                                 <FileText className="opacity-60" />
                                 <span>{t("submissions")}</span>
                             </ActiveSidebarLink>

@@ -1617,7 +1617,7 @@ function ChecklistTemplateBuilderInner({ categories, template }) {
         }
 
         if (!template) {
-            router.replace(`/dashboard/charroi/checklists/${result.data.id}/edit`);
+            router.replace(`/dashboard/project/charroi/checklists/${result.data.id}/edit`);
             return;
         }
 
@@ -1662,7 +1662,7 @@ function ChecklistTemplateBuilderInner({ categories, template }) {
                                     return;
                                 }
 
-                                router.push("/dashboard/charroi/checklists");
+                                router.push("/dashboard/project/charroi/checklists");
                             }}
                         >
                             {t("back_button")}

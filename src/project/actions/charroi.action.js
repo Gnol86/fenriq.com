@@ -19,12 +19,12 @@ import { requireActiveOrganization, requirePermission } from "@/lib/access-contr
 import prisma from "@/lib/prisma";
 
 function revalidateCharroiPaths() {
-    revalidatePath("/dashboard/charroi");
-    revalidatePath("/dashboard/charroi/vehicles");
-    revalidatePath("/dashboard/charroi/checklists");
-    revalidatePath("/dashboard/charroi/categories");
-    revalidatePath("/dashboard/charroi/subscriptions");
-    revalidatePath("/dashboard/charroi/submissions");
+    revalidatePath("/dashboard/project/charroi");
+    revalidatePath("/dashboard/project/charroi/vehicles");
+    revalidatePath("/dashboard/project/charroi/checklists");
+    revalidatePath("/dashboard/project/charroi/categories");
+    revalidatePath("/dashboard/project/charroi/subscriptions");
+    revalidatePath("/dashboard/project/charroi/submissions");
 }
 
 function getUniqueConstraintTarget(error) {

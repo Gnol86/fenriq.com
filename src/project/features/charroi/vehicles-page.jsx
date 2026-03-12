@@ -68,7 +68,7 @@ export default async function CharroiVehiclesPage() {
                 <VehiclesManager
                     canManageAssignments={canManageAssignments}
                     canManageVehicles={canManageVehicles}
-                    publicBaseUrl={`${getServerUrl()}/checklists`}
+                    publicBaseUrl={`${getServerUrl()}/app/checklist`}
                     templates={templates}
                     vehicles={vehicles.map(vehicle => ({
                         id: vehicle.id,

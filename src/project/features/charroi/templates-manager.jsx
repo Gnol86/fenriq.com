@@ -39,7 +39,7 @@ export function TemplatesManager({ canCreate, canManage, templates }) {
         <div className="flex flex-col gap-4">
             {canCreate && (
                 <div className="flex items-center justify-end">
-                    <Link href="/dashboard/charroi/checklists/new">
+                    <Link href="/dashboard/project/charroi/checklists/new">
                         <Button size="sm">
                             <Plus className="mr-2 h-4 w-4" />
                             {t("create_button")}
@@ -73,7 +73,7 @@ export function TemplatesManager({ canCreate, canManage, templates }) {
                             {canManage && (
                                 <ButtonGroup>
                                     <Link
-                                        href={`/dashboard/charroi/checklists/${template.id}/edit`}
+                                        href={`/dashboard/project/charroi/checklists/${template.id}/edit`}
                                     >
                                         <Button variant="outline" size="icon-sm">
                                             <Pencil className="h-4 w-4" />

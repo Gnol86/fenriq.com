@@ -10,7 +10,7 @@ import { getSubmissionVehicleLabel } from "./utils";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 function getSubmissionUrl(submissionId) {
-    return `${getServerUrl()}/dashboard/charroi/submissions/${submissionId}`;
+    return `${getServerUrl()}/dashboard/project/charroi/submissions/${submissionId}`;
 }
 
 function formatSubmittedAt(date, timeZone = SiteConfig.timeZone) {

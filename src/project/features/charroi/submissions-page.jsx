@@ -68,7 +68,9 @@ export default async function CharroiSubmissionsPage() {
                                         })}
                                     </span>
                                 </div>
-                                <Link href={`/dashboard/charroi/submissions/${submission.id}`}>
+                                <Link
+                                    href={`/dashboard/project/charroi/submissions/${submission.id}`}
+                                >
                                     <Button variant="outline" size="sm">
                                         {t("detail_button")}
                                     </Button>
