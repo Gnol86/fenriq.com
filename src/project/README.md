@@ -35,7 +35,11 @@ src/project/
 
 - Generic/reusable components (those go in boilerplate)
 - Modifications to existing boilerplate components
-- Auth, organization, or subscription logic (already in boilerplate)
+- Core auth, organization, or subscription logic that already exists in the boilerplate
+
+Exception: business-specific organization permissions can be extended from
+`src/project/add-on-organization-permissions.js`, and sidebar add-ons can live in
+`src/project/add-on-side-bar-content-dashboard.jsx`.
 
 ---
 

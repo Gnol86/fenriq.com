@@ -216,7 +216,7 @@
                     "description": "Organisaties, leden, uitnodigingen en rollen zijn al gekoppeld aan Better Auth Organization.",
                     "paragraphs": [
                         "De sessie bewaart `activeOrganizationId` en de acties in `src/actions/organization.action.js` sturen aanmaken, selecteren, uitnodigen en verwijderen aan.",
-                        "De momenteel beschikbare permissies zijn `app.use`, `organization.update/delete`, `member.create/update/delete/read`, `invitation.read/create/cancel` en `billing.manage`."
+                        "De basisset permissies bevat `app.use`, `organization.update/delete`, `member.create/update/delete/read`, `invitation.read/create/cancel` en `billing.manage`, en kan uitgebreid worden via `src/project/add-on-organization-permissions.js`."
                     ],
                     "bullets_title": "Ingebouwde flows",
                     "bullets": [

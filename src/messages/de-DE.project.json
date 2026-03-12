@@ -216,7 +216,7 @@
                     "description": "Organisationen, Mitglieder, Einladungen und Rollen sind bereits mit Better Auth Organization verbunden.",
                     "paragraphs": [
                         "Die Session speichert `activeOrganizationId`, und die Aktionen in `src/actions/organization.action.js` steuern Anlegen, Auswählen, Einladen und Löschen.",
-                        "Die derzeit verfügbaren Berechtigungen sind `app.use`, `organization.update/delete`, `member.create/update/delete/read`, `invitation.read/create/cancel` und `billing.manage`."
+                        "Das Basis-Set an Berechtigungen umfasst `app.use`, `organization.update/delete`, `member.create/update/delete/read`, `invitation.read/create/cancel` und `billing.manage` und kann über `src/project/add-on-organization-permissions.js` erweitert werden."
                     ],
                     "bullets_title": "Integrierte Abläufe",
                     "bullets": [
