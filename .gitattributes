@@ -30,6 +30,9 @@ src/site-config.js              merge=theirs
 src/app/page.js                 merge=theirs
 src/app/globals.css             merge=theirs
 
+# Project dashboard
+src/app/dashboard/project       merge=theirs
+
 # Project branding
 public/images/logo.png          merge=theirs
 public/images/icon.png          merge=theirs
