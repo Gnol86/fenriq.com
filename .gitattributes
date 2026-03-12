@@ -33,6 +33,9 @@ src/app/globals.css             merge=theirs
 # Project dashboard
 src/app/dashboard/project       merge=theirs
 
+# proxy
+src/proxy.js                    merge=theirs
+
 # Project branding
 public/images/logo.png          merge=theirs
 public/images/icon.png          merge=theirs
