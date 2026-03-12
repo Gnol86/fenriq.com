@@ -216,7 +216,7 @@
                     "description": "Organizations, members, invitations and roles are already connected to Better Auth Organization.",
                     "paragraphs": [
                         "The session stores `activeOrganizationId` and the actions in `src/actions/organization.action.js` drive creation, selection, invitations and deletion.",
-                        "The currently available permission set is `app.use`, `organization.update/delete`, `member.create/update/delete/read`, `invitation.read/create/cancel` and `billing.manage`."
+                        "The base permission set includes `app.use`, `organization.update/delete`, `member.create/update/delete/read`, `invitation.read/create/cancel` and `billing.manage`, and can be extended from `src/project/add-on-organization-permissions.js`."
                     ],
                     "bullets_title": "Built-in flows",
                     "bullets": [

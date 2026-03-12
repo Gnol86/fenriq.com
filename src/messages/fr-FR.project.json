@@ -216,7 +216,7 @@
                     "description": "Les organisations, membres, invitations et rôles sont déjà branchés sur le plugin Better Auth Organization.",
                     "paragraphs": [
                         "Une session garde `activeOrganizationId` et les actions de `src/actions/organization.action.js` pilotent la création, la sélection, l'invitation et la suppression.",
-                        "Les permissions métiers disponibles aujourd'hui sont `app.use`, `organization.update/delete`, `member.create/update/delete/read`, `invitation.read/create/cancel` et `billing.manage`."
+                        "Le socle de permissions inclut `app.use`, `organization.update/delete`, `member.create/update/delete/read`, `invitation.read/create/cancel` et `billing.manage`, et peut être étendu depuis `src/project/add-on-organization-permissions.js`."
                     ],
                     "bullets_title": "Flux déjà inclus",
                     "bullets": [
