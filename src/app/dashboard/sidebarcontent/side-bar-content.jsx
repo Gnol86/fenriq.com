@@ -114,7 +114,7 @@ export default async function SideBarContent() {
                     canInvitationsRead ||
                     canOrgsDelete ||
                     canBillingManage) && (
-                    <Collapsible defaultOpen className="group/collapsible">
+                    <Collapsible className="group/collapsible">
                         <SidebarGroup>
                             <SidebarGroupLabel
                                 render={<CollapsibleTrigger />}
@@ -178,7 +178,7 @@ export default async function SideBarContent() {
                 )}
 
             {isAdmin && (
-                <Collapsible defaultOpen className="group/collapsible">
+                <Collapsible className="group/collapsible">
                     <SidebarGroup>
                         <SidebarGroupLabel
                             render={<CollapsibleTrigger />}
@@ -232,7 +232,7 @@ export default async function SideBarContent() {
                 </Collapsible>
             )}
 
-            <Collapsible defaultOpen className="group/collapsible">
+            <Collapsible className="group/collapsible">
                 <SidebarGroup>
                     <SidebarGroupLabel
                         render={<CollapsibleTrigger />}
