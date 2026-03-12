@@ -48,3 +48,28 @@ export async function getPublicChecklistAssignment(token) {
         return null;
     }
 }
+
+export async function getLatestPublicChecklistSubmission(assignmentId) {
+    if (!assignmentId) {
+        return null;
+    }
+
+    return await prisma.checklistSubmission.findFirst({
+        where: {
+            assignmentId,
+        },
+        include: {
+            photos: {
+                select: {
+                    id: true,
+                    fieldId: true,
+                    originalName: true,
+                    url: true,
+                },
+            },
+        },
+        orderBy: {
+            submittedAt: "desc",
+        },
+    });
+}

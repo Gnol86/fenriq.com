@@ -4,16 +4,18 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChecklistFormRenderer, createInitialResponses } from "./checklist-form-renderer";
+import { ChecklistFormRenderer } from "./checklist-form-renderer";
 
 export function PublicChecklistForm({ assignment }) {
     const t = useTranslations("project.charroi.public");
-    const [submitterName, setSubmitterName] = useState("");
-    const [responses, setResponses] = useState(() =>
-        createInitialResponses(assignment.parsedSchema)
+    const [submitterName, setSubmitterName] = useState(assignment.initialSubmitterName);
+    const [rememberSubmitterName, setRememberSubmitterName] = useState(
+        assignment.hasRememberedSubmitterName
     );
+    const [responses, setResponses] = useState(assignment.initialResponses);
     const [isPending, setIsPending] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [uploadedPhotosByFieldId, setUploadedPhotosByFieldId] = useState({});
@@ -67,6 +69,7 @@ export function PublicChecklistForm({ assignment }) {
             },
             body: JSON.stringify({
                 submitterName,
+                rememberSubmitterName,
                 draftUploadKey,
                 responses,
             }),
@@ -105,6 +108,24 @@ export function PublicChecklistForm({ assignment }) {
                     required
                 />
             </div>
+            <div className="flex items-start gap-2 rounded-md border p-3">
+                <Checkbox
+                    id="rememberSubmitterName"
+                    checked={rememberSubmitterName}
+                    onCheckedChange={checked => setRememberSubmitterName(checked === true)}
+                />
+                <div className="flex flex-col gap-1">
+                    <Label
+                        htmlFor="rememberSubmitterName"
+                        className="cursor-pointer text-sm leading-none font-medium"
+                    >
+                        {t("remember_submitter_name_label")}
+                    </Label>
+                    <p className="text-muted-foreground text-xs">
+                        {t("remember_submitter_name_description")}
+                    </p>
+                </div>
+            </div>
             <ChecklistFormRenderer
                 schema={assignment.parsedSchema}
                 responses={responses}
@@ -115,6 +136,9 @@ export function PublicChecklistForm({ assignment }) {
                     }))
                 }
                 onFileUpload={handleFileUpload}
+                previousPhotosByFieldId={assignment.previousPhotosByFieldId}
+                previousPhotosHelpText={t("previous_photos_hint")}
+                previousPhotosLabel={t("previous_photos_label")}
                 uploadedPhotosByFieldId={uploadedPhotosByFieldId}
                 selectPlaceholder={t("select_placeholder")}
             />

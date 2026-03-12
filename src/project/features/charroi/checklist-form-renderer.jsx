@@ -1,5 +1,6 @@
 "use client";
 
+import { createChecklistInitialResponses } from "@project/lib/charroi/public-checklist-prefill";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,30 +13,17 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
-export function createInitialResponses(schema) {
-    return schema.sections.reduce((accumulator, section) => {
-        for (const field of section.fields) {
-            switch (field.type) {
-                case "checkbox":
-                    accumulator[field.id] = false;
-                    break;
-                case "multi_select":
-                case "photo":
-                    accumulator[field.id] = [];
-                    break;
-                default:
-                    accumulator[field.id] = "";
-            }
-        }
+const EMPTY_PHOTOS_BY_FIELD_ID = {};
 
-        return accumulator;
-    }, {});
-}
+export const createInitialResponses = createChecklistInitialResponses;
 
 function ChecklistFieldControl({
     disabled,
     field,
     onFileUpload,
+    previousPhotosByFieldId,
+    previousPhotosHelpText,
+    previousPhotosLabel,
     onValueChange,
     responses,
     selectPlaceholder,
@@ -145,6 +133,29 @@ function ChecklistFieldControl({
         case "photo":
             return (
                 <div className="flex flex-col gap-2">
+                    {(previousPhotosByFieldId[field.id] ?? []).length > 0 ? (
+                        <div className="flex flex-col gap-2 rounded-md border p-3">
+                            <span className="text-sm font-medium">{previousPhotosLabel}</span>
+                            <div className="flex flex-col gap-1">
+                                {(previousPhotosByFieldId[field.id] ?? []).map(photo => (
+                                    <a
+                                        key={photo.id}
+                                        href={photo.url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="text-sm underline"
+                                    >
+                                        {photo.originalName}
+                                    </a>
+                                ))}
+                            </div>
+                            {previousPhotosHelpText ? (
+                                <p className="text-muted-foreground text-xs">
+                                    {previousPhotosHelpText}
+                                </p>
+                            ) : null}
+                        </div>
+                    ) : null}
                     <Input
                         id={field.id}
                         type="file"
@@ -179,10 +190,13 @@ export function ChecklistFormRenderer({
     hideFieldMeta = false,
     onFileUpload = () => {},
     onValueChange = () => {},
+    previousPhotosByFieldId = EMPTY_PHOTOS_BY_FIELD_ID,
+    previousPhotosHelpText = "",
+    previousPhotosLabel = "",
     responses,
     schema,
     selectPlaceholder,
-    uploadedPhotosByFieldId = {},
+    uploadedPhotosByFieldId = EMPTY_PHOTOS_BY_FIELD_ID,
 }) {
     return (
         <div className={`flex flex-col gap-6 ${className}`}>
@@ -211,6 +225,9 @@ export function ChecklistFormRenderer({
                                 field={field}
                                 onFileUpload={onFileUpload}
                                 onValueChange={onValueChange}
+                                previousPhotosByFieldId={previousPhotosByFieldId}
+                                previousPhotosHelpText={previousPhotosHelpText}
+                                previousPhotosLabel={previousPhotosLabel}
                                 responses={responses}
                                 selectPlaceholder={selectPlaceholder}
                                 uploadedPhotosByFieldId={uploadedPhotosByFieldId}

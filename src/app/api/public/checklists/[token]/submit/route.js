@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { dispatchChecklistSubmissionNotifications } from "@project/lib/charroi/notifications";
+import {
+    PUBLIC_CHECKLIST_SUBMITTER_NAME_COOKIE,
+    PUBLIC_CHECKLIST_SUBMITTER_NAME_COOKIE_MAX_AGE,
+} from "@project/lib/charroi/public-checklist-prefill";
 import { getPublicChecklistAssignment } from "@project/lib/charroi/public-checklist";
 import { validateChecklistResponses } from "@project/lib/charroi/response-validation";
 import { evaluateChecklistRules } from "@project/lib/charroi/rule-engine";
@@ -125,12 +129,26 @@ export async function POST(request, { params }) {
             submissionId: submission.id,
         });
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             issuesCount: issues.length,
             notifications: notificationResult,
             submissionId: submission.id,
             success: true,
         });
+
+        if (payload.rememberSubmitterName) {
+            response.cookies.set(PUBLIC_CHECKLIST_SUBMITTER_NAME_COOKIE, payload.submitterName.trim(), {
+                maxAge: PUBLIC_CHECKLIST_SUBMITTER_NAME_COOKIE_MAX_AGE,
+                path: "/",
+            });
+        } else {
+            response.cookies.set(PUBLIC_CHECKLIST_SUBMITTER_NAME_COOKIE, "", {
+                maxAge: 0,
+                path: "/",
+            });
+        }
+
+        return response;
     } catch (error) {
         console.error("[charroi] Public checklist submission failed", {
             errorMessage: error?.message,

@@ -124,6 +124,7 @@ export const checklistSubscriptionInputSchema = z.object({
 
 export const publicChecklistSubmitSchema = z.object({
     submitterName: nonEmptyText.max(120),
+    rememberSubmitterName: z.boolean().optional().default(false),
     draftUploadKey: z.string().trim().optional().default(""),
     responses: z.record(z.string(), z.any()),
 });
