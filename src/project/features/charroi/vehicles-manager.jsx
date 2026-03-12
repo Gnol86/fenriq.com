@@ -295,7 +295,13 @@ function VehicleAssignmentsDialog({ canManageAssignments, publicBaseUrl, templat
                             disabled={isPending}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder={t("assignment_template_placeholder")} />
+                                <SelectValue placeholder={t("assignment_template_placeholder")}>
+                                    {
+                                        availableTemplates.find(
+                                            template => template.id === templateId
+                                        )?.name
+                                    }
+                                </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
                                 {availableTemplates.map(template => (

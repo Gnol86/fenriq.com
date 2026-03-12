@@ -20,10 +20,10 @@
 
 export const SiteConfig = {
     // ========== SITE INFORMATION ==========
-    title: "Fenriq", // ← TODO: Change to your project name
-    description: "Fenriq.com", // ← TODO: Change to your project description
-    prodUrl: "https://fenriq.com", // ← TODO: Change to your production URL
-    appId: "Fenriq", // ← TODO: Change to your app identifier (lowercase, no spaces)
+    title: "Fleecheck", // ← TODO: Change to your project name
+    description: "Fleecheck.com", // ← TODO: Change to your project description
+    prodUrl: "https://fleecheck.com", // ← TODO: Change to your production URL
+    appId: "Fleecheck", // ← TODO: Change to your app identifier (lowercase, no spaces)
     appIcon: "/images/logo.png", // ← TODO: Update with your logo path
     timeZone: "Europe/Brussels",
 
@@ -34,8 +34,8 @@ export const SiteConfig = {
 
     // ========== EMAIL CONFIGURATION ==========
     mail: {
-        from: process.env.EMAIL_FROM || "Fenriq <noreply@example.com>", // ← Override with EMAIL_FROM env var
-        signature: "L'équipe Fenriq", // ← TODO: Change email signature
+        from: process.env.EMAIL_FROM || "Fleecheck <noreply@fleecheck.com>", // ← Override with EMAIL_FROM env var
+        signature: "L'équipe Fleecheck", // ← TODO: Change email signature
     },
 
     // ========== BRAND STYLING ==========

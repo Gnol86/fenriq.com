@@ -155,7 +155,11 @@ function CategoryFormDialog({ canManage, category = null, trigger = null }) {
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue />
+                                                <SelectValue>
+                                                    {field.value === "IMMEDIATE"
+                                                        ? t("delivery_mode_immediate")
+                                                        : t("delivery_mode_digest")}
+                                                </SelectValue>
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>

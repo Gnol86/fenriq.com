@@ -81,7 +81,9 @@ function ChecklistFieldControl({
                     onValueChange={nextValue => onValueChange(field.id, nextValue)}
                 >
                     <SelectTrigger>
-                        <SelectValue placeholder={selectPlaceholder} />
+                        <SelectValue placeholder={selectPlaceholder}>
+                            {field.options.find(option => option.value === value)?.label}
+                        </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                         {field.options.map(option => (

@@ -33,7 +33,7 @@ export function createChecklistField(type = "text", overrides = {}) {
     };
 
     if (safeType === "number") {
-        baseField.label = "Valeur numérique";
+        baseField.label = "Numérique";
         baseField.placeholder = "0";
     }
 
@@ -108,12 +108,12 @@ export const FIELD_PRESETS = [
     },
     {
         id: "number",
-        label: "Kilométrage",
+        label: "Numérique",
         description: "Champ numérique",
         factory: () =>
             createChecklistField("number", {
-                label: "Kilométrage",
-                placeholder: "120500",
+                label: "Numérique",
+                placeholder: "0",
                 required: true,
             }),
     },

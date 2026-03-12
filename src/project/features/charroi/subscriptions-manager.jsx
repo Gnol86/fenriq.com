@@ -95,7 +95,13 @@ export function SubscriptionsManager({ categories, subscriptionsByCategoryId }) 
                                     disabled={currentPending || !isActive}
                                 >
                                     <SelectTrigger>
-                                        <SelectValue />
+                                        <SelectValue>
+                                            {currentOverride === "__default__"
+                                                ? t("override_default")
+                                                : currentOverride === "IMMEDIATE"
+                                                  ? t("override_immediate")
+                                                  : t("override_digest")}
+                                        </SelectValue>
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="__default__">
