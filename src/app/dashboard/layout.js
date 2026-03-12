@@ -1,9 +1,16 @@
+import { headers } from "next/headers";
 import BreadcrumbSlot from "@/components/breadcrumb-slot";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import SideBarContent from "./sidebarcontent/side-bar-content";
 
 export default async function Layout({ children }) {
+    const requestHeaders = await headers();
+    const pathname = requestHeaders.get("x-pathname") ?? "";
+    const isChecklistBuilderPage =
+        pathname === "/dashboard/charroi/checklists/new" ||
+        /^\/dashboard\/charroi\/checklists\/[^/]+\/edit$/.test(pathname);
+
     return (
         <>
             <AppSidebar>
@@ -14,7 +21,13 @@ export default async function Layout({ children }) {
                     <SidebarTrigger />
                     <BreadcrumbSlot />
                 </div>
-                <div className="mx-auto flex max-w-4xl flex-col gap-6 p-6">{children}</div>
+                <div
+                    className={`mx-auto flex flex-col gap-6 p-6 ${
+                        isChecklistBuilderPage ? "max-w-[1440px]" : "max-w-4xl"
+                    }`}
+                >
+                    {children}
+                </div>
             </main>
         </>
     );

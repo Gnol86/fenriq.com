@@ -10,6 +10,12 @@ export const ORG_RESOURCES = {
 const CUSTOM_RESOURCES = {
     app: ["use"],
     billing: ["manage"],
+    vehicle: ["create", "update", "delete", "read"],
+    checklist: ["create", "update", "delete", "read"],
+    checklistCategory: ["create", "update", "delete", "read"],
+    checklistAssignment: ["create", "update", "delete", "read"],
+    checklistSubmission: ["read"],
+    checklistSubscription: ["read", "update"],
 };
 
 export const statements = {
@@ -25,6 +31,12 @@ export const ownerPermissions = ac.newRole({
     member: ["update", "delete", "read"],
     invitation: ["read", "create", "cancel"],
     billing: ["manage"],
+    vehicle: ["create", "update", "delete", "read"],
+    checklist: ["create", "update", "delete", "read"],
+    checklistCategory: ["create", "update", "delete", "read"],
+    checklistAssignment: ["create", "update", "delete", "read"],
+    checklistSubmission: ["read"],
+    checklistSubscription: ["read", "update"],
 });
 
 // ADMIN: presque tout, sauf delete org / changer owner
@@ -32,10 +44,24 @@ export const adminPermissions = ac.newRole({
     app: ["use"],
     member: ["update", "delete", "read"],
     invitation: ["read", "create", "cancel"],
+    vehicle: ["create", "update", "delete", "read"],
+    checklist: ["create", "update", "delete", "read"],
+    checklistCategory: ["create", "update", "delete", "read"],
+    checklistAssignment: ["create", "update", "delete", "read"],
+    checklistSubmission: ["read"],
+    checklistSubscription: ["read", "update"],
 });
 
 // MEMBER: accès limité
-export const memberPermissions = ac.newRole({ app: ["use"] });
+export const memberPermissions = ac.newRole({
+    app: ["use"],
+    vehicle: ["read"],
+    checklist: ["read"],
+    checklistCategory: ["read"],
+    checklistAssignment: ["read"],
+    checklistSubmission: ["read"],
+    checklistSubscription: ["read", "update"],
+});
 
 export const roleMatrix = {
     owner: ownerPermissions,

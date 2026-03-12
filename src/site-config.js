@@ -20,10 +20,10 @@
 
 export const SiteConfig = {
     // ========== SITE INFORMATION ==========
-    title: "Boilerplate", // ← TODO: Change to your project name
-    description: "Boilerplate from Arnaud", // ← TODO: Change to your project description
-    prodUrl: "https://omka.cloud", // ← TODO: Change to your production URL
-    appId: "boilerplate", // ← TODO: Change to your app identifier (lowercase, no spaces)
+    title: "Fenriq", // ← TODO: Change to your project name
+    description: "Fenriq.com", // ← TODO: Change to your project description
+    prodUrl: "https://fenriq.com", // ← TODO: Change to your production URL
+    appId: "Fenriq", // ← TODO: Change to your app identifier (lowercase, no spaces)
     appIcon: "/images/logo.png", // ← TODO: Update with your logo path
     timeZone: "Europe/Brussels",
 
@@ -34,8 +34,8 @@ export const SiteConfig = {
 
     // ========== EMAIL CONFIGURATION ==========
     mail: {
-        from: process.env.EMAIL_FROM || "Boilerplate <noreply@example.com>", // ← Override with EMAIL_FROM env var
-        signature: "L'équipe Boilerplate", // ← TODO: Change email signature
+        from: process.env.EMAIL_FROM || "Fenriq <noreply@example.com>", // ← Override with EMAIL_FROM env var
+        signature: "L'équipe Fenriq", // ← TODO: Change email signature
     },
 
     // ========== BRAND STYLING ==========
@@ -57,7 +57,7 @@ export const SiteConfig = {
     // ========== QUOTA CONFIGURATION ==========
     quota: {
         enabled: true, // Set to true to enable quantity-based billing
-        minimum: 1, // Minimum quantity per subscription
+        minimum: 10, // Minimum quantity per subscription
         step: 1, // Quantity increment step (1 = any number, 5 = multiples of 5)
     },
 };

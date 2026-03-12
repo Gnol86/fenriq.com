@@ -49,3 +49,208 @@
 //    - Add relation: organization Organization @relation(...)
 //
 // ============================================================
+
+enum ChecklistDeliveryMode {
+    IMMEDIATE
+    DIGEST
+}
+
+enum ChecklistSubmissionStatus {
+    SUBMITTED
+}
+
+enum ChecklistNotificationType {
+    IMMEDIATE
+    DIGEST
+}
+
+enum ChecklistNotificationStatus {
+    PENDING
+    SENT
+    FAILED
+    SKIPPED
+}
+
+model Vehicle {
+    id                    String                      @id @default(cuid())
+    organizationId        String
+    plateNumber           String
+    plateNumberNormalized String
+    name                  String?
+    brand                 String?
+    model                 String?
+    isActive              Boolean                     @default(true)
+    assignments           VehicleChecklistAssignment[]
+    submissions           ChecklistSubmission[]
+    createdAt             DateTime                    @default(now())
+    updatedAt             DateTime                    @updatedAt
+
+    @@unique([organizationId, plateNumberNormalized])
+    @@index([organizationId, isActive])
+    @@map("vehicle")
+}
+
+model ChecklistTemplate {
+    id             String                      @id @default(cuid())
+    organizationId String
+    name           String
+    description    String?
+    schemaJson     Json
+    version        Int                         @default(1)
+    isActive       Boolean                     @default(true)
+    assignments    VehicleChecklistAssignment[]
+    submissions    ChecklistSubmission[]
+    createdAt      DateTime                    @default(now())
+    updatedAt      DateTime                    @updatedAt
+
+    @@unique([organizationId, name])
+    @@index([organizationId, isActive])
+    @@map("checklist_template")
+}
+
+model VehicleChecklistAssignment {
+    id                 String               @id @default(cuid())
+    organizationId     String
+    vehicleId          String
+    vehicle            Vehicle              @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+    checklistTemplateId String
+    checklistTemplate  ChecklistTemplate    @relation(fields: [checklistTemplateId], references: [id], onDelete: Cascade)
+    publicToken        String               @unique
+    isActive           Boolean              @default(true)
+    submissions        ChecklistSubmission[]
+    photos             ChecklistPhoto[]
+    createdAt          DateTime             @default(now())
+    updatedAt          DateTime             @updatedAt
+
+    @@unique([vehicleId, checklistTemplateId])
+    @@index([organizationId, isActive])
+    @@map("vehicle_checklist_assignment")
+}
+
+model ChecklistCategory {
+    id                  String                     @id @default(cuid())
+    organizationId      String
+    name                String
+    description         String?
+    defaultDeliveryMode ChecklistDeliveryMode     @default(IMMEDIATE)
+    defaultDigestCron   String?
+    timeZone            String                     @default("Europe/Brussels")
+    isActive            Boolean                    @default(true)
+    lastDigestRunAt     DateTime?
+    subscriptions       ChecklistMemberSubscription[]
+    issues              ChecklistIssue[]
+    notifications       ChecklistNotificationDelivery[]
+    createdAt           DateTime                   @default(now())
+    updatedAt           DateTime                   @updatedAt
+
+    @@unique([organizationId, name])
+    @@index([organizationId, isActive])
+    @@map("checklist_category")
+}
+
+model ChecklistMemberSubscription {
+    id                   String                 @id @default(cuid())
+    organizationId       String
+    categoryId           String
+    category             ChecklistCategory      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+    memberId             String
+    deliveryModeOverride ChecklistDeliveryMode?
+    isActive             Boolean                @default(true)
+    createdAt            DateTime               @default(now())
+    updatedAt            DateTime               @updatedAt
+
+    @@unique([categoryId, memberId])
+    @@index([organizationId, memberId])
+    @@map("checklist_member_subscription")
+}
+
+model ChecklistSubmission {
+    id                       String                     @id @default(cuid())
+    organizationId           String
+    assignmentId             String?
+    assignment               VehicleChecklistAssignment? @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+    vehicleId                String?
+    vehicle                  Vehicle?                   @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+    checklistTemplateId      String?
+    checklistTemplate        ChecklistTemplate?         @relation(fields: [checklistTemplateId], references: [id], onDelete: SetNull)
+    submitterName            String
+    responseJson             Json
+    schemaSnapshotJson       Json
+    status                   ChecklistSubmissionStatus  @default(SUBMITTED)
+    vehiclePlateNumberSnapshot String
+    vehicleNameSnapshot      String?
+    checklistNameSnapshot    String
+    checklistVersionSnapshot Int
+    issues                   ChecklistIssue[]
+    photos                   ChecklistPhoto[]
+    notifications            ChecklistNotificationDelivery[]
+    submittedAt              DateTime                   @default(now())
+    createdAt                DateTime                   @default(now())
+    updatedAt                DateTime                   @updatedAt
+
+    @@index([organizationId, submittedAt])
+    @@index([assignmentId, submittedAt])
+    @@map("checklist_submission")
+}
+
+model ChecklistIssue {
+    id                   String              @id @default(cuid())
+    organizationId       String
+    submissionId         String
+    submission           ChecklistSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+    categoryId           String?
+    category             ChecklistCategory?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+    ruleId               String
+    ruleTitle            String
+    description          String?
+    triggeredFieldIdsJson Json?
+    createdAt            DateTime            @default(now())
+
+    @@index([organizationId, categoryId])
+    @@index([submissionId])
+    @@map("checklist_issue")
+}
+
+model ChecklistPhoto {
+    id              String                @id @default(cuid())
+    organizationId  String
+    assignmentId    String?
+    assignment      VehicleChecklistAssignment? @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+    submissionId    String?
+    submission      ChecklistSubmission?  @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+    fieldId         String
+    tempUploadKey   String?
+    url             String
+    storageKey      String
+    originalName    String
+    mimeType        String
+    size            Int
+    createdAt       DateTime              @default(now())
+
+    @@index([organizationId, tempUploadKey])
+    @@index([submissionId, fieldId])
+    @@map("checklist_photo")
+}
+
+model ChecklistNotificationDelivery {
+    id                String                     @id @default(cuid())
+    organizationId    String
+    submissionId      String
+    submission        ChecklistSubmission        @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+    categoryId        String
+    category          ChecklistCategory          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+    recipientMemberId String
+    recipientEmail    String
+    notificationType  ChecklistNotificationType
+    status            ChecklistNotificationStatus @default(PENDING)
+    idempotencyKey    String                     @unique
+    errorMessage      String?
+    sentAt            DateTime?
+    createdAt         DateTime                   @default(now())
+    updatedAt         DateTime                   @updatedAt
+
+    @@unique([submissionId, categoryId, recipientMemberId, notificationType])
+    @@index([organizationId, status, notificationType])
+    @@index([categoryId, recipientMemberId, notificationType])
+    @@map("checklist_notification_delivery")
+}
