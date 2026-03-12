@@ -1,90 +1,90 @@
 {
-  "version": 1,
-  "skills": {
-    "better-auth-best-practices": {
-      "source": "better-auth/skills",
-      "sourceType": "github",
-      "computedHash": "a24359053259e55a75972cab4bf0b0e37e1393bac5f3756ec2e3a7b4b3778d2a"
-    },
-    "better-auth-security-best-practices": {
-      "source": "better-auth/skills",
-      "sourceType": "github",
-      "computedHash": "294d13881e083d41ff874b1da6689faf0c9eee4120579c0148a7a9c2aaa83e0c"
-    },
-    "email-and-password-best-practices": {
-      "source": "better-auth/skills",
-      "sourceType": "github",
-      "computedHash": "9105cc29a462e8d07da45bbdbc90c3a60be3ba32fbd9d99d49944f5b971f8f96"
-    },
-    "find-skills": {
-      "source": "vercel-labs/skills",
-      "sourceType": "github",
-      "computedHash": "6412eb4eb3b91595ebab937f0c69501240e7ba761b3d82510b5cf506ec5c7adc"
-    },
-    "next-best-practices": {
-      "source": "vercel-labs/next-skills",
-      "sourceType": "github",
-      "computedHash": "515ba75178bd44875812d9a560bdf14651f86709f89cf1d4f209638e879807f3"
-    },
-    "next-upgrade": {
-      "source": "vercel-labs/next-skills",
-      "sourceType": "github",
-      "computedHash": "be6bbf6ab1dc2cc6f2505cea52d497920c04f5b532c0846ee201f6029b803fb0"
-    },
-    "nextjs-app-router-patterns": {
-      "source": "wshobson/agents",
-      "sourceType": "github",
-      "computedHash": "59fb01d2fad75636fbf99b505b7212490cc0e2a79a99bbf103a255c8e18904f1"
-    },
-    "organization-best-practices": {
-      "source": "better-auth/skills",
-      "sourceType": "github",
-      "computedHash": "ec7bfca730d9263a357bfb059448035e62339ee58eb6191dfe9029088ed5bdf2"
-    },
-    "prisma-client-api": {
-      "source": "prisma/skills",
-      "sourceType": "github",
-      "computedHash": "ea94a5efcd3240e45c389bcdadd4613643245d226ffe1318c396e3b3edeb72ee"
-    },
-    "prisma-orm-v7-skills": {
-      "source": "gocallum/nextjs16-agent-skills",
-      "sourceType": "github",
-      "computedHash": "31ed4e62967e69619fe62e0f82890eb64ede7f3edd1fa5cac3ca8735d9735d48"
-    },
-    "react-email": {
-      "source": "resend/react-email",
-      "sourceType": "github",
-      "computedHash": "e4334584500b10b86b95d02b1fcfc39e7245b00694672607eba33082fc0265ac"
-    },
-    "resend": {
-      "source": "resend/resend-skills",
-      "sourceType": "github",
-      "computedHash": "318cfafb6bb004da64d0eac0349d99997b8b1c75e55870a4104dff9b5ff4ee3d"
-    },
-    "shadcn": {
-      "source": "shadcn/ui",
-      "sourceType": "github",
-      "computedHash": "91c02eb706f046fb9d6a061efbb96496e4be751b5b14c283cf82baaa50f3a985"
-    },
-    "shadcn-ui": {
-      "source": "giuseppe-trisciuoglio/developer-kit",
-      "sourceType": "github",
-      "computedHash": "fc286bef24c7ed9f6d22410ee524b3a83cc38825fb06313d46b5b13a90454135"
-    },
-    "stripe-integration": {
-      "source": "wshobson/agents",
-      "sourceType": "github",
-      "computedHash": "574c3d745d38408c71c9d4481c131d0eff8c8829e3fc4852bdf1561c799b64b2"
-    },
-    "tailwind-design-system": {
-      "source": "wshobson/agents",
-      "sourceType": "github",
-      "computedHash": "d0e4d2ba5a99cdc6e264d3927d1d81e85e79f551c8e246fa0a86123217eaad94"
-    },
-    "vercel-react-best-practices": {
-      "source": "vercel-labs/agent-skills",
-      "sourceType": "github",
-      "computedHash": "4365be772fd3b41994a72ad478472c6d680678e7f3859860ab010e9c46e48ee0"
+    "version": 1,
+    "skills": {
+        "better-auth-best-practices": {
+            "source": "better-auth/skills",
+            "sourceType": "github",
+            "computedHash": "a24359053259e55a75972cab4bf0b0e37e1393bac5f3756ec2e3a7b4b3778d2a"
+        },
+        "better-auth-security-best-practices": {
+            "source": "better-auth/skills",
+            "sourceType": "github",
+            "computedHash": "294d13881e083d41ff874b1da6689faf0c9eee4120579c0148a7a9c2aaa83e0c"
+        },
+        "email-and-password-best-practices": {
+            "source": "better-auth/skills",
+            "sourceType": "github",
+            "computedHash": "9105cc29a462e8d07da45bbdbc90c3a60be3ba32fbd9d99d49944f5b971f8f96"
+        },
+        "find-skills": {
+            "source": "vercel-labs/skills",
+            "sourceType": "github",
+            "computedHash": "6412eb4eb3b91595ebab937f0c69501240e7ba761b3d82510b5cf506ec5c7adc"
+        },
+        "next-best-practices": {
+            "source": "vercel-labs/next-skills",
+            "sourceType": "github",
+            "computedHash": "515ba75178bd44875812d9a560bdf14651f86709f89cf1d4f209638e879807f3"
+        },
+        "next-upgrade": {
+            "source": "vercel-labs/next-skills",
+            "sourceType": "github",
+            "computedHash": "be6bbf6ab1dc2cc6f2505cea52d497920c04f5b532c0846ee201f6029b803fb0"
+        },
+        "nextjs-app-router-patterns": {
+            "source": "wshobson/agents",
+            "sourceType": "github",
+            "computedHash": "59fb01d2fad75636fbf99b505b7212490cc0e2a79a99bbf103a255c8e18904f1"
+        },
+        "organization-best-practices": {
+            "source": "better-auth/skills",
+            "sourceType": "github",
+            "computedHash": "ec7bfca730d9263a357bfb059448035e62339ee58eb6191dfe9029088ed5bdf2"
+        },
+        "prisma-client-api": {
+            "source": "prisma/skills",
+            "sourceType": "github",
+            "computedHash": "ea94a5efcd3240e45c389bcdadd4613643245d226ffe1318c396e3b3edeb72ee"
+        },
+        "prisma-orm-v7-skills": {
+            "source": "gocallum/nextjs16-agent-skills",
+            "sourceType": "github",
+            "computedHash": "31ed4e62967e69619fe62e0f82890eb64ede7f3edd1fa5cac3ca8735d9735d48"
+        },
+        "react-email": {
+            "source": "resend/react-email",
+            "sourceType": "github",
+            "computedHash": "e4334584500b10b86b95d02b1fcfc39e7245b00694672607eba33082fc0265ac"
+        },
+        "resend": {
+            "source": "resend/resend-skills",
+            "sourceType": "github",
+            "computedHash": "318cfafb6bb004da64d0eac0349d99997b8b1c75e55870a4104dff9b5ff4ee3d"
+        },
+        "shadcn": {
+            "source": "shadcn/ui",
+            "sourceType": "github",
+            "computedHash": "91c02eb706f046fb9d6a061efbb96496e4be751b5b14c283cf82baaa50f3a985"
+        },
+        "shadcn-ui": {
+            "source": "giuseppe-trisciuoglio/developer-kit",
+            "sourceType": "github",
+            "computedHash": "fc286bef24c7ed9f6d22410ee524b3a83cc38825fb06313d46b5b13a90454135"
+        },
+        "stripe-integration": {
+            "source": "wshobson/agents",
+            "sourceType": "github",
+            "computedHash": "574c3d745d38408c71c9d4481c131d0eff8c8829e3fc4852bdf1561c799b64b2"
+        },
+        "tailwind-design-system": {
+            "source": "wshobson/agents",
+            "sourceType": "github",
+            "computedHash": "d0e4d2ba5a99cdc6e264d3927d1d81e85e79f551c8e246fa0a86123217eaad94"
+        },
+        "vercel-react-best-practices": {
+            "source": "vercel-labs/agent-skills",
+            "sourceType": "github",
+            "computedHash": "4365be772fd3b41994a72ad478472c6d680678e7f3859860ab010e9c46e48ee0"
+        }
     }
-  }
 }
