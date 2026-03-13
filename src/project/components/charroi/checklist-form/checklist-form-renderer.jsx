@@ -57,7 +57,7 @@ export function ChecklistFormRenderer({
             {schema.sections.map(section => (
                 <div key={section.id} className="flex flex-col gap-4 rounded-lg border p-4">
                     <div className="flex flex-col gap-1">
-                        <h2 className="font-medium">{section.title}</h2>
+                        <h2 className="font-medium text-xl">{section.title}</h2>
                         {section.description ? (
                             <p className="text-muted-foreground text-sm">{section.description}</p>
                         ) : null}
