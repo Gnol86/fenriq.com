@@ -5,6 +5,7 @@ import {
     submitPublicChecklistAction,
     uploadPublicChecklistPhotosAction,
 } from "@project/actions/charroi-public.action";
+import { ChecklistFormRenderer } from "@project/components/charroi/checklist-form/checklist-form-renderer";
 import {
     buildChecklistPhotoCommentsPayload,
     getChecklistPhotoCommentValue,
@@ -18,7 +19,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useServerAction } from "@/hooks/use-server-action";
-import { ChecklistFormRenderer } from "./checklist-form-renderer";
 
 function validateRequiredPhotoComments({ schema, responses, uploadedPhotosByFieldId, t }) {
     for (const section of schema.sections) {

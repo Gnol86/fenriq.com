@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
     duplicateField,
     normalizeFieldForType,
-} from "@project/features/charroi/checklist-template-builder-helpers";
+} from "@project/lib/charroi/checklist-template-builder-helpers";
 
 describe("checklist template builder helpers", () => {
     test("duplicates the photoCommentRequired option", () => {

@@ -5,6 +5,10 @@ import {
     createChecklistTemplateAction,
     updateChecklistTemplateAction,
 } from "@project/actions/charroi.action";
+import {
+    ChecklistFormRenderer,
+    createInitialResponses,
+} from "@project/components/charroi/checklist-form/checklist-form-renderer";
 import { useUnsavedChangesGuard } from "@project/hooks/use-unsaved-changes-guard";
 import {
     createChecklistRule,
@@ -20,6 +24,13 @@ import {
     reorderItems,
     serializeSchema,
 } from "@project/lib/charroi/checklist-builder-utils";
+import {
+    duplicateField,
+    duplicateRule,
+    duplicateSection,
+    getFieldTypeLabel,
+    normalizeFieldForType,
+} from "@project/lib/charroi/checklist-template-builder-helpers";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -29,26 +40,14 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useServerAction } from "@/hooks/use-server-action";
-import { ChecklistFormRenderer, createInitialResponses } from "./checklist-form-renderer";
-import {
-    duplicateField,
-    duplicateRule,
-    duplicateSection,
-    getFieldTypeLabel,
-    normalizeFieldForType,
-} from "./checklist-template-builder-helpers";
-import {
-    SelectedFieldDialog,
-    SelectedSectionDialog,
-} from "./checklist-template-builder-inspectors";
-import {
-    BuilderTabNavigation,
-    JsonEditorTab,
-    RulesPanel,
-    SelectedRuleDialog,
-    StructurePanel,
-    TemplateSettingsPanel,
-} from "./checklist-template-builder-panels";
+import { BuilderTabNavigation } from "./builder-tab-navigation";
+import { JsonEditorTab } from "./json-editor-tab";
+import { RulesPanel } from "./rules-panel";
+import { SelectedFieldDialog } from "./selected-field-dialog";
+import { SelectedRuleDialog } from "./selected-rule-dialog";
+import { SelectedSectionDialog } from "./selected-section-dialog";
+import { StructurePanel } from "./structure-panel";
+import { TemplateSettingsPanel } from "./template-settings-panel";
 
 function createBuilderFormSchema(t) {
     return z.object({
@@ -91,7 +90,7 @@ function resolveSelection(selection, selectedSection, selectedField, selectedRul
     return { kind: "template" };
 }
 
-function ChecklistTemplateBuilderInner({ categories, template }) {
+export function ChecklistTemplateBuilder({ categories, template }) {
     const t = useTranslations("project.charroi.builder");
     const { execute, isPending } = useServerAction();
     const router = useRouter();
@@ -649,8 +648,4 @@ function ChecklistTemplateBuilderInner({ categories, template }) {
             </form>
         </Form>
     );
-}
-
-export function ChecklistTemplateBuilder(props) {
-    return <ChecklistTemplateBuilderInner {...props} />;
 }

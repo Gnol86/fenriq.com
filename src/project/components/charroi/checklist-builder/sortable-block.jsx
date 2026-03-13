@@ -1,7 +1,6 @@
 "use client";
 
 import { useSortable } from "@dnd-kit/sortable";
-import { Button } from "@/components/ui/button";
 
 function transformToStyle(transform, transition) {
     if (!transform) {
@@ -51,28 +50,5 @@ export function SortableBlock({ children, id, isSelected = false, onClick }) {
         <div ref={setNodeRef} style={style} className={className}>
             {children({ attributes, listeners })}
         </div>
-    );
-}
-
-export function SortableHandle({ attributes, listeners }) {
-    return (
-        <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            className="cursor-grab active:cursor-grabbing"
-            {...attributes}
-            {...listeners}
-        >
-            <span className="sr-only">Réordonner</span>
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="size-4"
-            >
-                <path d="M10 4a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm8 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM10 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm8 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM10 20a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm8 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" />
-            </svg>
-        </Button>
     );
 }

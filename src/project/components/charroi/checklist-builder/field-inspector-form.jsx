@@ -9,13 +9,6 @@ import { CHECKLIST_FIELD_TYPES } from "@project/lib/charroi/constants";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -26,79 +19,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { SortableBlock, SortableHandle } from "./checklist-template-builder-sortable";
+import { SortableBlock } from "./sortable-block";
+import { SortableHandle } from "./sortable-handle";
 
-export function BuilderSelectionDialog({
-    children,
-    contentClassName = "",
-    description,
-    onClose,
-    open,
-    title,
-}) {
-    return (
-        <Dialog
-            open={open}
-            onOpenChange={nextOpen => {
-                if (!nextOpen) {
-                    onClose();
-                }
-            }}
-        >
-            {open ? (
-                <DialogContent
-                    className={`grid-rows-[auto_minmax(0,1fr)] overflow-hidden sm:max-h-[85vh] ${contentClassName}`}
-                >
-                    <DialogHeader>
-                        <DialogTitle>{title}</DialogTitle>
-                        <DialogDescription>{description}</DialogDescription>
-                    </DialogHeader>
-                    <div className="flex min-h-0 flex-col gap-4 overflow-y-auto pr-1">
-                        {children}
-                    </div>
-                </DialogContent>
-            ) : null}
-        </Dialog>
-    );
-}
-
-function SectionInspectorForm({ onChange, onDelete, onDuplicate, section }) {
-    const t = useTranslations("project.charroi.builder");
-
-    if (!section) {
-        return null;
-    }
-
-    return (
-        <div className="flex flex-col gap-4">
-            <div className="flex flex-wrap justify-end gap-2">
-                <Button type="button" variant="outline" size="sm" onClick={onDuplicate}>
-                    {t("duplicate_section")}
-                </Button>
-                <Button type="button" variant="destructive" size="sm" onClick={onDelete}>
-                    {t("delete_section")}
-                </Button>
-            </div>
-            <div className="flex flex-col gap-2">
-                <Label>{t("section_title_label")}</Label>
-                <Input
-                    value={section.title}
-                    onChange={event => onChange("title", event.target.value)}
-                />
-            </div>
-            <div className="flex flex-col gap-2">
-                <Label>{t("section_description_label")}</Label>
-                <Textarea
-                    rows={3}
-                    value={section.description}
-                    onChange={event => onChange("description", event.target.value)}
-                />
-            </div>
-        </div>
-    );
-}
-
-function FieldInspectorForm({
+export function FieldInspectorForm({
     field,
     getFieldTypeLabel,
     onChange,
@@ -294,56 +218,5 @@ function FieldInspectorForm({
                 </div>
             )}
         </div>
-    );
-}
-
-export function SelectedSectionDialog({ onChange, onClose, onDelete, onDuplicate, section }) {
-    const t = useTranslations("project.charroi.builder");
-
-    return (
-        <BuilderSelectionDialog
-            description={t("section_panel_description")}
-            open={Boolean(section)}
-            title={t("section_panel_title")}
-            onClose={onClose}
-        >
-            <SectionInspectorForm
-                section={section}
-                onChange={onChange}
-                onDelete={onDelete}
-                onDuplicate={onDuplicate}
-            />
-        </BuilderSelectionDialog>
-    );
-}
-
-export function SelectedFieldDialog({
-    field,
-    getFieldTypeLabel,
-    onChange,
-    onClose,
-    onDelete,
-    onDuplicate,
-    onOptionsChange,
-}) {
-    const t = useTranslations("project.charroi.builder");
-
-    return (
-        <BuilderSelectionDialog
-            description={t("field_panel_description")}
-            open={Boolean(field)}
-            contentClassName="sm:max-w-md"
-            title={t("field_panel_title")}
-            onClose={onClose}
-        >
-            <FieldInspectorForm
-                field={field}
-                getFieldTypeLabel={getFieldTypeLabel}
-                onChange={onChange}
-                onDelete={onDelete}
-                onDuplicate={onDuplicate}
-                onOptionsChange={onOptionsChange}
-            />
-        </BuilderSelectionDialog>
     );
 }

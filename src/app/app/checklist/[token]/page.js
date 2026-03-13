@@ -1,7 +1,77 @@
-import PublicChecklistPage from "@project/features/charroi/public-checklist-page";
+import {
+    getHistoricalPublicChecklistPhotos,
+    getHistoricalPublicChecklistTextEntries,
+    getLatestPublicChecklistSubmission,
+    getPublicChecklistAssignment,
+} from "@project/lib/charroi/public-checklist";
+import {
+    buildPublicChecklistPrefill,
+    getRememberedPublicChecklistSubmitterName,
+} from "@project/lib/charroi/public-checklist-prefill";
+import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { PublicChecklistForm } from "./components/public-checklist-form";
 
 export default async function Page({ params }) {
     const { token } = await params;
+    const [t, assignment, cookieStore] = await Promise.all([
+        getTranslations("project.charroi.public"),
+        getPublicChecklistAssignment(token),
+        cookies(),
+    ]);
 
-    return <PublicChecklistPage token={token} />;
+    if (!assignment) {
+        notFound();
+    }
+
+    const [latestSubmission, historicalPhotos, historicalTextEntries] = await Promise.all([
+        getLatestPublicChecklistSubmission(assignment.id),
+        getHistoricalPublicChecklistPhotos({
+            assignmentId: assignment.id,
+            schema: assignment.parsedSchema,
+        }),
+        getHistoricalPublicChecklistTextEntries({
+            assignmentId: assignment.id,
+            schema: assignment.parsedSchema,
+        }),
+    ]);
+    const { historicalPhotosByFieldId, historicalTextEntriesByFieldId, initialResponses } =
+        buildPublicChecklistPrefill({
+            schema: assignment.parsedSchema,
+            latestSubmission,
+            historicalPhotos,
+            historicalTextEntries,
+        });
+    const initialSubmitterName = getRememberedPublicChecklistSubmitterName(cookieStore);
+
+    return (
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-6 py-10">
+            <Card>
+                <CardHeader>
+                    <CardTitle>{assignment.checklistTemplate.name}</CardTitle>
+                    <CardDescription>
+                        {t("page_description", {
+                            organization: assignment.organization.name,
+                            plate: assignment.vehicle.plateNumber,
+                        })}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <PublicChecklistForm
+                        assignment={{
+                            publicToken: assignment.publicToken,
+                            parsedSchema: assignment.parsedSchema,
+                            initialResponses,
+                            historicalPhotosByFieldId,
+                            historicalTextEntriesByFieldId,
+                            initialSubmitterName,
+                            hasRememberedSubmitterName: initialSubmitterName !== "",
+                        }}
+                    />
+                </CardContent>
+            </Card>
+        </div>
+    );
 }

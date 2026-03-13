@@ -3,16 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
     createChecklistCategoryAction,
-    deleteChecklistCategoryAction,
     updateChecklistCategoryAction,
 } from "@project/actions/charroi.action";
 import { checklistCategoryInputSchema } from "@project/lib/charroi/template-schema";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
     Dialog,
@@ -41,9 +39,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useServerAction } from "@/hooks/use-server-action";
-import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 
-function CategoryFormDialog({ canManage, category = null, trigger = null }) {
+export function CategoryFormDialog({ canManage, category = null, trigger = null }) {
     const t = useTranslations("project.charroi.categories");
     const { execute, isPending } = useServerAction();
     const [open, setOpen] = useState(false);
@@ -231,82 +228,5 @@ function CategoryFormDialog({ canManage, category = null, trigger = null }) {
                 </Form>
             </DialogContent>
         </Dialog>
-    );
-}
-
-export function CategoriesManager({ canManage, categories, emptyMessage }) {
-    const t = useTranslations("project.charroi.categories");
-
-    const handleDelete = category => {
-        dialogManager.confirm({
-            title: t("delete_title"),
-            description: t("delete_description", { name: category.name }),
-            action: {
-                label: t("delete_button"),
-                variant: "destructive",
-                onClick: async () => {
-                    await deleteChecklistCategoryAction({
-                        categoryId: category.id,
-                    });
-                },
-                successMessage: t("category_deleted"),
-            },
-        });
-    };
-
-    return (
-        <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-end">
-                <CategoryFormDialog canManage={canManage} />
-            </div>
-            <div className="flex flex-col gap-3">
-                {categories.length === 0 ? (
-                    <p className="text-muted-foreground text-sm">
-                        {emptyMessage ?? t("empty_state")}
-                    </p>
-                ) : (
-                    categories.map(category => (
-                        <div
-                            key={category.id}
-                            className="flex items-start justify-between gap-4 rounded-lg border p-4"
-                        >
-                            <div className="flex flex-col gap-1">
-                                <span className="font-medium">{category.name}</span>
-                                <span className="text-muted-foreground text-sm">
-                                    {category.description || t("no_description")}
-                                </span>
-                                <span className="text-muted-foreground text-xs">
-                                    {category.defaultDeliveryMode === "IMMEDIATE"
-                                        ? t("delivery_mode_immediate")
-                                        : `${t("delivery_mode_digest")} - ${
-                                              category.defaultDigestCron || t("no_cron")
-                                          }`}
-                                </span>
-                            </div>
-                            {canManage && (
-                                <ButtonGroup>
-                                    <CategoryFormDialog
-                                        canManage={canManage}
-                                        category={category}
-                                        trigger={
-                                            <Button variant="outline" size="icon-sm">
-                                                <Pencil className="h-4 w-4" />
-                                            </Button>
-                                        }
-                                    />
-                                    <Button
-                                        variant="destructive"
-                                        size="icon-sm"
-                                        onClick={() => handleDelete(category)}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                </ButtonGroup>
-                            )}
-                        </div>
-                    ))
-                )}
-            </div>
-        </div>
     );
 }
