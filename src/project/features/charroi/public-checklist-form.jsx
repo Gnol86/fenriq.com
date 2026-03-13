@@ -1,6 +1,11 @@
 "use client";
 
 import {
+    deletePublicChecklistUploadAction,
+    submitPublicChecklistAction,
+    uploadPublicChecklistPhotosAction,
+} from "@project/actions/charroi-public.action";
+import {
     buildChecklistPhotoCommentsPayload,
     getChecklistPhotoCommentValue,
 } from "@project/lib/charroi/checklist-photo-comments";
@@ -11,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useServerAction } from "@/hooks/use-server-action";
 import { ChecklistFormRenderer } from "./checklist-form-renderer";
 
 function validateRequiredPhotoComments({ schema, responses, uploadedPhotosByFieldId, t }) {
@@ -39,26 +45,29 @@ function validateRequiredPhotoComments({ schema, responses, uploadedPhotosByFiel
 
 export function PublicChecklistForm({ assignment }) {
     const t = useTranslations("project.charroi.public");
+    const submitAction = useServerAction();
+    const uploadAction = useServerAction();
     const [submitterName, setSubmitterName] = useState(assignment.initialSubmitterName);
     const [rememberSubmitterName, setRememberSubmitterName] = useState(
         assignment.hasRememberedSubmitterName
     );
     const [removedHistoricalPhotoIds, setRemovedHistoricalPhotoIds] = useState([]);
     const [responses, setResponses] = useState(assignment.initialResponses);
-    const [isPending, setIsPending] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [pendingUploadedPhotoActionIds, setPendingUploadedPhotoActionIds] = useState([]);
     const [uploadedPhotosByFieldId, setUploadedPhotosByFieldId] = useState({});
     const [draftUploadKey] = useState(() => crypto.randomUUID());
+    const isBusy = submitAction.isPending || uploadAction.isPending;
 
     const handleFileUpload = async (fieldId, fileList) => {
         const files = Array.from(fileList ?? []);
 
-        if (files.length === 0) {
+        if (files.length === 0 || isBusy) {
             return;
         }
 
         const formData = new FormData();
+        formData.set("token", assignment.publicToken);
         formData.set("draftUploadKey", draftUploadKey);
         formData.set("fieldId", fieldId);
 
@@ -66,68 +75,60 @@ export function PublicChecklistForm({ assignment }) {
             formData.append("files", file);
         }
 
-        const response = await fetch(`/api/public/checklists/${assignment.publicToken}/uploads`, {
-            method: "POST",
-            body: formData,
-        });
-        const payload = await response.json();
+        const result = await uploadAction.execute(
+            () => uploadPublicChecklistPhotosAction(formData),
+            {
+                errorMessage: t("upload_error"),
+                refreshOnSuccess: false,
+            }
+        );
 
-        if (!response.ok) {
-            toast.error(payload.error ?? t("upload_error"));
+        if (!result.success) {
             return;
         }
 
         setUploadedPhotosByFieldId(current => ({
             ...current,
-            [fieldId]: [...(current[fieldId] ?? []), ...payload.photos],
+            [fieldId]: [...(current[fieldId] ?? []), ...result.data.photos],
         }));
         setResponses(current => ({
             ...current,
-            [fieldId]: [...(current[fieldId] ?? []), ...payload.photos.map(photo => photo.id)],
+            [fieldId]: [...(current[fieldId] ?? []), ...result.data.photos.map(photo => photo.id)],
         }));
         toast.success(t("upload_success"));
     };
 
     const handleUploadedPhotoCancel = async (fieldId, photoId) => {
-        if (pendingUploadedPhotoActionIds.includes(photoId)) {
+        if (isBusy || pendingUploadedPhotoActionIds.includes(photoId)) {
             return;
         }
 
         setPendingUploadedPhotoActionIds(current => [...current, photoId]);
 
-        const response = await fetch(
-            `/api/public/checklists/${assignment.publicToken}/uploads/${photoId}`,
-            {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    draftUploadKey,
-                }),
-            }
-        );
-        const payload = await response.json();
+        try {
+            await deletePublicChecklistUploadAction({
+                token: assignment.publicToken,
+                photoId,
+                draftUploadKey,
+            });
 
-        setPendingUploadedPhotoActionIds(current =>
-            current.filter(currentPhotoId => currentPhotoId !== photoId)
-        );
-
-        if (!response.ok) {
-            toast.error(payload.error ?? t("cancel_uploaded_photo_error"));
-            return;
+            setUploadedPhotosByFieldId(current => ({
+                ...current,
+                [fieldId]: (current[fieldId] ?? []).filter(photo => photo.id !== photoId),
+            }));
+            setResponses(current => ({
+                ...current,
+                [fieldId]: (current[fieldId] ?? []).filter(
+                    currentPhotoId => currentPhotoId !== photoId
+                ),
+            }));
+        } catch (error) {
+            toast.error(error?.message ?? t("cancel_uploaded_photo_error"));
+        } finally {
+            setPendingUploadedPhotoActionIds(current =>
+                current.filter(currentPhotoId => currentPhotoId !== photoId)
+            );
         }
-
-        setUploadedPhotosByFieldId(current => ({
-            ...current,
-            [fieldId]: (current[fieldId] ?? []).filter(photo => photo.id !== photoId),
-        }));
-        setResponses(current => ({
-            ...current,
-            [fieldId]: (current[fieldId] ?? []).filter(
-                currentPhotoId => currentPhotoId !== photoId
-            ),
-        }));
     };
 
     const handleUploadedPhotoCommentChange = (fieldId, photoId, comment) => {
@@ -146,6 +147,11 @@ export function PublicChecklistForm({ assignment }) {
 
     const handleSubmit = async event => {
         event.preventDefault();
+
+        if (isBusy) {
+            return;
+        }
+
         const photoCommentValidationError = validateRequiredPhotoComments({
             schema: assignment.parsedSchema,
             responses,
@@ -158,37 +164,33 @@ export function PublicChecklistForm({ assignment }) {
             return;
         }
 
-        setIsPending(true);
+        const result = await submitAction.execute(
+            () =>
+                submitPublicChecklistAction({
+                    token: assignment.publicToken,
+                    submitterName,
+                    rememberSubmitterName,
+                    draftUploadKey,
+                    removedHistoricalPhotoIds,
+                    photoComments: buildChecklistPhotoCommentsPayload(uploadedPhotosByFieldId),
+                    responses,
+                }),
+            {
+                errorMessage: t("submit_error"),
+                loadingMessage: t("submitting"),
+                refreshOnSuccess: false,
+                successMessage: t("submit_success"),
+            }
+        );
 
-        const response = await fetch(`/api/public/checklists/${assignment.publicToken}/submit`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                submitterName,
-                rememberSubmitterName,
-                draftUploadKey,
-                removedHistoricalPhotoIds,
-                photoComments: buildChecklistPhotoCommentsPayload(uploadedPhotosByFieldId),
-                responses,
-            }),
-        });
-        const payload = await response.json();
-
-        setIsPending(false);
-
-        if (!response.ok) {
-            toast.error(payload.error ?? t("submit_error"));
+        if (!result.success) {
             return;
         }
 
-        toast.success(t("submit_success"));
-
-        if ((payload.photoCleanup?.pendingRetryCount ?? 0) > 0) {
+        if ((result.data.photoCleanup?.pendingRetryCount ?? 0) > 0) {
             toast.error(
                 t("photo_cleanup_pending_warning", {
-                    count: payload.photoCleanup.pendingRetryCount,
+                    count: result.data.photoCleanup.pendingRetryCount,
                 })
             );
         }
@@ -215,6 +217,7 @@ export function PublicChecklistForm({ assignment }) {
                     onChange={event => setSubmitterName(event.target.value)}
                     placeholder={t("submitter_name_placeholder")}
                     required
+                    disabled={isBusy}
                 />
             </div>
             <div className="flex items-start gap-2 rounded-md border p-3">
@@ -222,6 +225,7 @@ export function PublicChecklistForm({ assignment }) {
                     id="rememberSubmitterName"
                     checked={rememberSubmitterName}
                     onCheckedChange={checked => setRememberSubmitterName(checked === true)}
+                    disabled={isBusy}
                 />
                 <div className="flex flex-col gap-1">
                     <Label
@@ -236,7 +240,7 @@ export function PublicChecklistForm({ assignment }) {
                 </div>
             </div>
             <ChecklistFormRenderer
-                disabled={isPending}
+                disabled={isBusy}
                 schema={assignment.parsedSchema}
                 responses={responses}
                 onValueChange={(fieldId, value) =>
@@ -273,8 +277,8 @@ export function PublicChecklistForm({ assignment }) {
                 uploadedPhotosByFieldId={uploadedPhotosByFieldId}
                 selectPlaceholder={t("select_placeholder")}
             />
-            <Button type="submit" disabled={isPending}>
-                {isPending ? t("submitting") : t("submit_button")}
+            <Button type="submit" disabled={isBusy}>
+                {submitAction.isPending ? t("submitting") : t("submit_button")}
             </Button>
         </form>
     );

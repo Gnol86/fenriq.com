@@ -13,7 +13,9 @@
         "format": "biome format --write .",
         "studio": "prisma studio",
         "stripe-webhooks": "stripe listen --forward-to localhost:3000/api/auth/stripe/webhook",
-        "db:seed": "bunx prisma db seed"
+        "db:seed": "bunx prisma db seed",
+        "charroi:run-digests": "bun scripts/charroi-run-digests.js",
+        "charroi:run-photo-cleanup": "bun scripts/charroi-run-photo-cleanup.js"
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.995.0",

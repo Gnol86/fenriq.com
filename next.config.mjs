@@ -6,6 +6,11 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.js");
 const nextConfig = {
     reactCompiler: true,
     cacheComponents: false, // Désactivé car incompatible avec headers() dans requireAuth
+    experimental: {
+        serverActions: {
+            bodySizeLimit: "5mb",
+        },
+    },
     devIndicators: {
         position: "top-right",
     },

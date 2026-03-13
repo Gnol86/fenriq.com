@@ -149,6 +149,13 @@ function ChecklistFieldControl({
         case "photo": {
             const historicalPhotos = historicalPhotosByFieldId[field.id] ?? [];
             const fileInputId = `${field.id}-upload`;
+            const uploadedPhotos = uploadedPhotosByFieldId[field.id] ?? [];
+            const disabledHistoricalPhotoActionIds = disabled
+                ? historicalPhotos.map(photo => photo.id)
+                : [];
+            const disabledUploadedPhotoActionIds = disabled
+                ? uploadedPhotos.map(photo => photo.id)
+                : pendingUploadedPhotoActionIds;
 
             return (
                 <div className="flex flex-col gap-2">
@@ -156,6 +163,7 @@ function ChecklistFieldControl({
                         <ChecklistPhotoGallery
                             label={historicalPhotosLabel}
                             photos={historicalPhotos}
+                            disabledPhotoActionIds={disabledHistoricalPhotoActionIds}
                             mutedPhotoIds={removedHistoricalPhotoIds}
                             mutedPhotoName={removedHistoricalPhotoName}
                             mutedPhotoNameClassName="text-destructive font-medium"
@@ -187,9 +195,9 @@ function ChecklistFieldControl({
                         <ChecklistPhotoGallery
                             label={uploadedPhotosLabel}
                             actionLabel={cancelUploadedPhotoButtonLabel}
-                            disabledPhotoActionIds={pendingUploadedPhotoActionIds}
+                            disabledPhotoActionIds={disabledUploadedPhotoActionIds}
                             onPhotoAction={photoId => onUploadedPhotoCancel(field.id, photoId)}
-                            photos={uploadedPhotosByFieldId[field.id] ?? []}
+                            photos={uploadedPhotos}
                             renderPhotoDetails={photo => (
                                 <Input
                                     value={photo.comment ?? ""}
