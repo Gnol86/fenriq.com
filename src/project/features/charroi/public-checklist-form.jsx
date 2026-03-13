@@ -1,5 +1,9 @@
 "use client";
 
+import {
+    buildChecklistPhotoCommentsPayload,
+    getChecklistPhotoCommentValue,
+} from "@project/lib/charroi/checklist-photo-comments";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -8,6 +12,30 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ChecklistFormRenderer } from "./checklist-form-renderer";
+
+function validateRequiredPhotoComments({ schema, responses, uploadedPhotosByFieldId, t }) {
+    for (const section of schema.sections) {
+        for (const field of section.fields) {
+            if (field.type !== "photo" || field.photoCommentRequired !== true) {
+                continue;
+            }
+
+            const uploadedPhotoMap = new Map(
+                (uploadedPhotosByFieldId[field.id] ?? []).map(photo => [photo.id, photo])
+            );
+
+            for (const photoId of Array.isArray(responses[field.id]) ? responses[field.id] : []) {
+                if (getChecklistPhotoCommentValue(uploadedPhotoMap.get(photoId)?.comment) === "") {
+                    return t("photo_comment_required_error", {
+                        field: field.label,
+                    });
+                }
+            }
+        }
+    }
+
+    return null;
+}
 
 export function PublicChecklistForm({ assignment }) {
     const t = useTranslations("project.charroi.public");
@@ -102,8 +130,34 @@ export function PublicChecklistForm({ assignment }) {
         }));
     };
 
+    const handleUploadedPhotoCommentChange = (fieldId, photoId, comment) => {
+        setUploadedPhotosByFieldId(current => ({
+            ...current,
+            [fieldId]: (current[fieldId] ?? []).map(photo =>
+                photo.id === photoId
+                    ? {
+                          ...photo,
+                          comment,
+                      }
+                    : photo
+            ),
+        }));
+    };
+
     const handleSubmit = async event => {
         event.preventDefault();
+        const photoCommentValidationError = validateRequiredPhotoComments({
+            schema: assignment.parsedSchema,
+            responses,
+            uploadedPhotosByFieldId,
+            t,
+        });
+
+        if (photoCommentValidationError) {
+            toast.error(photoCommentValidationError);
+            return;
+        }
+
         setIsPending(true);
 
         const response = await fetch(`/api/public/checklists/${assignment.publicToken}/submit`, {
@@ -116,6 +170,7 @@ export function PublicChecklistForm({ assignment }) {
                 rememberSubmitterName,
                 draftUploadKey,
                 removedHistoricalPhotoIds,
+                photoComments: buildChecklistPhotoCommentsPayload(uploadedPhotosByFieldId),
                 responses,
             }),
         });
@@ -181,6 +236,7 @@ export function PublicChecklistForm({ assignment }) {
                 </div>
             </div>
             <ChecklistFormRenderer
+                disabled={isPending}
                 schema={assignment.parsedSchema}
                 responses={responses}
                 onValueChange={(fieldId, value) =>
@@ -203,6 +259,7 @@ export function PublicChecklistForm({ assignment }) {
                     )
                 }
                 onUploadedPhotoCancel={handleUploadedPhotoCancel}
+                onUploadedPhotoCommentChange={handleUploadedPhotoCommentChange}
                 pendingUploadedPhotoActionIds={pendingUploadedPhotoActionIds}
                 historicalPhotosLabel={t("historical_photos_label")}
                 markPhotoForDeletionLabel={t("mark_photo_for_deletion_button")}
@@ -210,6 +267,8 @@ export function PublicChecklistForm({ assignment }) {
                 restoreHistoricalPhotoLabel={t("restore_historical_photo_button")}
                 addPhotoButtonLabel={t("add_photo_button")}
                 cancelUploadedPhotoButtonLabel={t("cancel_uploaded_photo_button")}
+                photoCommentLabel={t("photo_comment_label")}
+                photoCommentPlaceholder={t("photo_comment_placeholder")}
                 uploadedPhotosLabel={t("uploaded_photos_label")}
                 uploadedPhotosByFieldId={uploadedPhotosByFieldId}
                 selectPlaceholder={t("select_placeholder")}

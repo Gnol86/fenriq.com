@@ -234,7 +234,7 @@ function CategoryFormDialog({ canManage, category = null, trigger = null }) {
     );
 }
 
-export function CategoriesManager({ canManage, categories }) {
+export function CategoriesManager({ canManage, categories, emptyMessage }) {
     const t = useTranslations("project.charroi.categories");
 
     const handleDelete = category => {
@@ -261,7 +261,9 @@ export function CategoriesManager({ canManage, categories }) {
             </div>
             <div className="flex flex-col gap-3">
                 {categories.length === 0 ? (
-                    <p className="text-muted-foreground text-sm">{t("empty_state")}</p>
+                    <p className="text-muted-foreground text-sm">
+                        {emptyMessage ?? t("empty_state")}
+                    </p>
                 ) : (
                     categories.map(category => (
                         <div

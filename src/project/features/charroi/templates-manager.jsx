@@ -12,7 +12,7 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { useServerAction } from "@/hooks/use-server-action";
 import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 
-export function TemplatesManager({ canCreate, canManage, templates }) {
+export function TemplatesManager({ canCreate, canManage, emptyMessage, templates }) {
     const t = useTranslations("project.charroi.checklists");
     const { execute } = useServerAction();
 
@@ -49,7 +49,9 @@ export function TemplatesManager({ canCreate, canManage, templates }) {
             )}
             <div className="flex flex-col gap-3">
                 {templates.length === 0 ? (
-                    <p className="text-muted-foreground text-sm">{t("empty_state")}</p>
+                    <p className="text-muted-foreground text-sm">
+                        {emptyMessage ?? t("empty_state")}
+                    </p>
                 ) : (
                     templates.map(template => (
                         <div

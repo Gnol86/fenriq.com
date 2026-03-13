@@ -30,7 +30,10 @@ function ChecklistFieldControl({
     onHistoricalPhotoRemove,
     onHistoricalPhotoRestore,
     onUploadedPhotoCancel,
+    onUploadedPhotoCommentChange,
     pendingUploadedPhotoActionIds,
+    photoCommentLabel,
+    photoCommentPlaceholder,
     removedHistoricalPhotoIds,
     removedHistoricalPhotoName,
     restoreHistoricalPhotoLabel,
@@ -187,6 +190,23 @@ function ChecklistFieldControl({
                             disabledPhotoActionIds={pendingUploadedPhotoActionIds}
                             onPhotoAction={photoId => onUploadedPhotoCancel(field.id, photoId)}
                             photos={uploadedPhotosByFieldId[field.id] ?? []}
+                            renderPhotoDetails={photo => (
+                                <Input
+                                    value={photo.comment ?? ""}
+                                    placeholder={photoCommentPlaceholder}
+                                    aria-label={photoCommentLabel}
+                                    disabled={
+                                        disabled || pendingUploadedPhotoActionIds.includes(photo.id)
+                                    }
+                                    onChange={event =>
+                                        onUploadedPhotoCommentChange(
+                                            field.id,
+                                            photo.id,
+                                            event.target.value
+                                        )
+                                    }
+                                />
+                            )}
                         />
                     ) : null}
                     <Button
@@ -216,8 +236,11 @@ export function ChecklistFormRenderer({
     onHistoricalPhotoRemove = () => {},
     onHistoricalPhotoRestore = () => {},
     onUploadedPhotoCancel = () => {},
+    onUploadedPhotoCommentChange = () => {},
     onValueChange = () => {},
     pendingUploadedPhotoActionIds = EMPTY_REMOVED_HISTORICAL_PHOTO_IDS,
+    photoCommentLabel = "",
+    photoCommentPlaceholder = "",
     removedHistoricalPhotoIds = EMPTY_REMOVED_HISTORICAL_PHOTO_IDS,
     removedHistoricalPhotoName = "",
     restoreHistoricalPhotoLabel = "",
@@ -261,8 +284,11 @@ export function ChecklistFormRenderer({
                                 onHistoricalPhotoRemove={onHistoricalPhotoRemove}
                                 onHistoricalPhotoRestore={onHistoricalPhotoRestore}
                                 onUploadedPhotoCancel={onUploadedPhotoCancel}
+                                onUploadedPhotoCommentChange={onUploadedPhotoCommentChange}
                                 onValueChange={onValueChange}
                                 pendingUploadedPhotoActionIds={pendingUploadedPhotoActionIds}
+                                photoCommentLabel={photoCommentLabel}
+                                photoCommentPlaceholder={photoCommentPlaceholder}
                                 removedHistoricalPhotoIds={removedHistoricalPhotoIds}
                                 removedHistoricalPhotoName={removedHistoricalPhotoName}
                                 restoreHistoricalPhotoLabel={restoreHistoricalPhotoLabel}

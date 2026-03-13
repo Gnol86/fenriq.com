@@ -6,6 +6,7 @@ import {
     getChecklistPhotoFieldIds,
     runChecklistPhotoDeletionCleanup,
 } from "@project/lib/charroi/checklist-photo-cleanup";
+import { validateChecklistPhotoComments } from "@project/lib/charroi/checklist-photo-comments";
 import { dispatchChecklistSubmissionNotifications } from "@project/lib/charroi/notifications";
 import {
     PUBLIC_CHECKLIST_SUBMITTER_NAME_COOKIE,
@@ -65,13 +66,13 @@ export async function POST(request, { params }) {
         const removableHistoricalPhotoIdSet = new Set(
             removableHistoricalPhotos.map(photo => photo.id)
         );
-        const referencedPhotoIds = Object.entries(sanitizedResponses).flatMap(([fieldId, value]) => {
-            if (fieldMap.get(fieldId)?.type !== "photo") {
-                return [];
-            }
-
-            return Array.isArray(value) ? value : [];
-        });
+        const { normalizedPhotoComments, referencedPhotoIds } =
+            validateChecklistPhotoComments({
+                fieldMap,
+                photoComments: payload.photoComments,
+                sanitizedResponses,
+                uploadedPhotoMap,
+            });
 
         if (removableHistoricalPhotoIdSet.size !== removedHistoricalPhotoIds.length) {
             return NextResponse.json(
@@ -80,36 +81,6 @@ export async function POST(request, { params }) {
                 },
                 { status: 400 }
             );
-        }
-
-        for (const [fieldId, value] of Object.entries(sanitizedResponses)) {
-            if (fieldMap.get(fieldId)?.type !== "photo") {
-                continue;
-            }
-
-            for (const photoId of Array.isArray(value) ? value : []) {
-                const photo = uploadedPhotoMap.get(photoId);
-
-                if (!photo || photo.fieldId !== fieldId) {
-                    return NextResponse.json(
-                        {
-                            error: "Une photo associée à la checklist est invalide",
-                        },
-                        { status: 400 }
-                    );
-                }
-            }
-        }
-
-        for (const photoId of referencedPhotoIds) {
-            if (!uploadedPhotoMap.has(photoId)) {
-                return NextResponse.json(
-                    {
-                        error: "Une photo associée à la checklist est invalide",
-                    },
-                    { status: 400 }
-                );
-            }
         }
 
         const issues = evaluateChecklistRules({
@@ -150,20 +121,21 @@ export async function POST(request, { params }) {
             }
 
             if (referencedPhotoIds.length > 0) {
-                await tx.checklistPhoto.updateMany({
-                    where: {
-                        id: {
-                            in: referencedPhotoIds,
+                for (const photoId of referencedPhotoIds) {
+                    await tx.checklistPhoto.update({
+                        where: {
+                            id: photoId,
                         },
-                    },
-                    data: {
-                        submissionId: createdSubmission.id,
-                        tempUploadKey: null,
-                        status: CHECKLIST_PHOTO_ACTIVE_STATUS,
-                        deleteRequestedAt: null,
-                        deleteErrorMessage: null,
-                    },
-                });
+                        data: {
+                            comment: normalizedPhotoComments[photoId] || null,
+                            submissionId: createdSubmission.id,
+                            tempUploadKey: null,
+                            status: CHECKLIST_PHOTO_ACTIVE_STATUS,
+                            deleteRequestedAt: null,
+                            deleteErrorMessage: null,
+                        },
+                    });
+                }
             }
 
             if (removedHistoricalPhotoIds.length > 0) {

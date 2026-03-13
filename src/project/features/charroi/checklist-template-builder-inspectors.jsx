@@ -109,6 +109,7 @@ function FieldInspectorForm({
     const t = useTranslations("project.charroi.builder");
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
     const hasOptions = field && (field.type === "single_select" || field.type === "multi_select");
+    const hasPhotoCommentOption = field?.type === "photo";
 
     if (!field) {
         return null;
@@ -168,6 +169,15 @@ function FieldInspectorForm({
                 />
                 <Label>{t("field_required_label")}</Label>
             </div>
+            {hasPhotoCommentOption ? (
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                        checked={field.photoCommentRequired === true}
+                        onCheckedChange={value => onChange("photoCommentRequired", value === true)}
+                    />
+                    <Label>{t("photo_comment_required_label")}</Label>
+                </div>
+            ) : null}
             {hasOptions && (
                 <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between gap-2">

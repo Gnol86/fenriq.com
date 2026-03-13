@@ -10,6 +10,7 @@ export function duplicateField(field) {
     return {
         ...field,
         id: createChecklistField(field.type).id,
+        photoCommentRequired: field.photoCommentRequired === true,
         options: field.options.map(option => ({
             ...option,
             id: createChecklistOption().id,
@@ -54,6 +55,7 @@ export function normalizeFieldForType(field, nextType) {
     const baseField = {
         ...field,
         type: nextType,
+        photoCommentRequired: nextType === "photo" ? field.photoCommentRequired === true : false,
     };
 
     if (nextType === "single_select" || nextType === "multi_select") {

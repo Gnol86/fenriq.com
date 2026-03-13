@@ -14,7 +14,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useServerAction } from "@/hooks/use-server-action";
 
-export function SubscriptionsManager({ categories, subscriptionsByCategoryId }) {
+export function SubscriptionsManager({ categories, emptyMessage, subscriptionsByCategoryId }) {
     const t = useTranslations("project.charroi.subscriptions");
     const { execute, isPending } = useServerAction();
     const [pendingCategoryId, setPendingCategoryId] = useState(null);
@@ -40,7 +40,7 @@ export function SubscriptionsManager({ categories, subscriptionsByCategoryId }) 
     return (
         <div className="flex flex-col gap-3">
             {categories.length === 0 ? (
-                <p className="text-muted-foreground text-sm">{t("empty_state")}</p>
+                <p className="text-muted-foreground text-sm">{emptyMessage ?? t("empty_state")}</p>
             ) : (
                 categories.map(category => {
                     const subscription = subscriptionsByCategoryId[category.id] ?? null;

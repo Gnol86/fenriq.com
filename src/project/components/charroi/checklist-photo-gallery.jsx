@@ -1,5 +1,6 @@
 "use client";
 
+import { getChecklistPhotoDisplayName } from "@project/lib/charroi/checklist-photo-comments";
 import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -23,8 +24,10 @@ export function ChecklistPhotoGallery({
     mutedPhotoNameClassName = "",
     onPhotoAction = null,
     photos = EMPTY_PHOTOS,
+    renderPhotoDetails = null,
 }) {
     const [activePhoto, setActivePhoto] = useState(null);
+    const activePhotoLabel = getChecklistPhotoDisplayName(activePhoto);
 
     if (photos.length === 0) {
         return emptyLabel ? <span>{emptyLabel}</span> : null;
@@ -44,6 +47,10 @@ export function ChecklistPhotoGallery({
                         const resolvedActionLabel = getPhotoActionLabel?.(photo) ?? actionLabel;
                         const resolvedActionVariant =
                             getPhotoActionVariant?.(photo) ?? actionVariant;
+                        const resolvedPhotoName =
+                            isMuted && mutedPhotoName
+                                ? mutedPhotoName
+                                : getChecklistPhotoDisplayName(photo);
 
                         return (
                             <div
@@ -69,17 +76,18 @@ export function ChecklistPhotoGallery({
                                             className="object-cover"
                                         />
                                     </div>
-                                    <span
-                                        className={cn(
-                                            "truncate text-xs",
-                                            isMuted ? mutedPhotoNameClassName : ""
-                                        )}
-                                    >
-                                        {isMuted && mutedPhotoName
-                                            ? mutedPhotoName
-                                            : photo.originalName}
-                                    </span>
+                                    {resolvedPhotoName ? (
+                                        <span
+                                            className={cn(
+                                                "truncate text-xs",
+                                                isMuted ? mutedPhotoNameClassName : ""
+                                            )}
+                                        >
+                                            {resolvedPhotoName}
+                                        </span>
+                                    ) : null}
                                 </button>
+                                {renderPhotoDetails ? renderPhotoDetails(photo) : null}
                                 {onPhotoAction && resolvedActionLabel ? (
                                     <Button
                                         type="button"
@@ -105,7 +113,9 @@ export function ChecklistPhotoGallery({
                 }}
             >
                 <DialogContent className="!grid h-[calc(100dvh-2rem)] !w-[calc(100vw-2rem)] !max-w-[calc(100vw-2rem)] grid-rows-[auto,minmax(0,1fr)] gap-3 !p-3 sm:h-[calc(100dvh-4rem)] sm:!w-[calc(100vw-4rem)] sm:!max-w-[calc(100vw-4rem)]">
-                    <DialogTitle className="pr-10 text-sm">{activePhoto?.originalName}</DialogTitle>
+                    <DialogTitle className={cn(activePhotoLabel ? "pr-10 text-sm" : "sr-only")}>
+                        {activePhotoLabel || activePhoto?.originalName || ""}
+                    </DialogTitle>
                     <div className="bg-muted flex min-h-0 items-center justify-center overflow-hidden rounded-md border p-2">
                         {activePhoto ? (
                             <Image

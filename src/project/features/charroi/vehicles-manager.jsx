@@ -432,6 +432,7 @@ function VehicleAssignmentsDialog({ canManageAssignments, publicBaseUrl, templat
 export function VehiclesManager({
     canManageAssignments,
     canManageVehicles,
+    emptyMessage,
     publicBaseUrl,
     templates,
     vehicles,
@@ -464,7 +465,9 @@ export function VehiclesManager({
             </div>
             <div className="flex flex-col gap-3">
                 {vehicles.length === 0 ? (
-                    <p className="text-muted-foreground text-sm">{t("empty_state")}</p>
+                    <p className="text-muted-foreground text-sm">
+                        {emptyMessage ?? t("empty_state")}
+                    </p>
                 ) : (
                     vehicles.map(vehicle => (
                         <div key={vehicle.id} className="flex flex-col gap-3 rounded-lg border p-4">

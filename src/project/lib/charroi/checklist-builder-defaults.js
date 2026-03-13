@@ -29,6 +29,7 @@ export function createChecklistField(type = "text", overrides = {}) {
         description: "",
         placeholder: "",
         required: false,
+        photoCommentRequired: false,
         options: [],
     };
 

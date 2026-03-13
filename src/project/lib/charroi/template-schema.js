@@ -23,6 +23,7 @@ export const checklistFieldSchema = z
         description: z.string().trim().optional().default(""),
         placeholder: z.string().trim().optional().default(""),
         required: z.boolean().default(false),
+        photoCommentRequired: z.boolean().default(false),
         options: z.array(checklistOptionSchema).default([]),
     })
     .superRefine((field, context) => {
@@ -127,6 +128,7 @@ export const publicChecklistSubmitSchema = z.object({
     rememberSubmitterName: z.boolean().optional().default(false),
     draftUploadKey: z.string().trim().optional().default(""),
     removedHistoricalPhotoIds: z.array(nonEmptyText).optional().default([]),
+    photoComments: z.record(z.string(), z.string()).optional().default({}),
     responses: z.record(z.string(), z.any()),
 });
 

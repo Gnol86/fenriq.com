@@ -229,6 +229,7 @@ model ChecklistPhoto {
     url               String
     storageKey        String
     originalName      String
+    comment           String?
     mimeType          String
     size              Int
     status            ChecklistPhotoStatus       @default(ACTIVE)

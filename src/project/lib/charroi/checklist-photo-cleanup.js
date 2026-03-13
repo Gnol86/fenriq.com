@@ -9,6 +9,7 @@ export const CHECKLIST_PHOTO_DELETE_FAILED_STATUS = "DELETE_FAILED";
 export const CHECKLIST_PHOTO_PUBLIC_SELECT = {
     id: true,
     fieldId: true,
+    comment: true,
     originalName: true,
     url: true,
     createdAt: true,
