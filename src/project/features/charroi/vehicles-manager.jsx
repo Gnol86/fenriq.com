@@ -11,7 +11,7 @@ import {
     updateVehicleAction,
 } from "@project/actions/charroi.action";
 import { checklistVehicleInputSchema } from "@project/lib/charroi/template-schema";
-import { Copy, Link2, Pencil, Plus, RefreshCw, Trash2 } from "lucide-react";
+import { Copy, Download, Link2, Pencil, Plus, QrCode, RefreshCw, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -48,6 +48,31 @@ import {
 } from "@/components/ui/select";
 import { useServerAction } from "@/hooks/use-server-action";
 import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
+
+function buildPublicAssignmentUrl(publicBaseUrl, assignment) {
+    return `${publicBaseUrl}/${assignment.publicToken}`;
+}
+
+function sanitizeQrFileNamePart(value, fallback) {
+    const normalizedValue = String(value ?? "")
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+
+    return normalizedValue || fallback;
+}
+
+function buildQrCodeFileName({ checklistName, plateNumber, publicToken }) {
+    const safePlateNumber = sanitizeQrFileNamePart(plateNumber, "vehicule");
+    const safeChecklistName = sanitizeQrFileNamePart(
+        checklistName,
+        sanitizeQrFileNamePart(publicToken, "checklist")
+    );
+
+    return `${safePlateNumber}-${safeChecklistName}.png`;
+}
 
 function VehicleFormDialog({ canManage, trigger, vehicle = null }) {
     const t = useTranslations("project.charroi.vehicles");
@@ -219,6 +244,7 @@ function VehicleAssignmentsDialog({ canManageAssignments, publicBaseUrl, templat
     const t = useTranslations("project.charroi.vehicles");
     const { execute, isPending } = useServerAction();
     const [open, setOpen] = useState(false);
+    const [downloadingAssignmentId, setDownloadingAssignmentId] = useState(null);
     const [templateId, setTemplateId] = useState("");
     const availableTemplates = useMemo(() => {
         const assignedTemplateIds = new Set(
@@ -273,6 +299,44 @@ function VehicleAssignmentsDialog({ canManageAssignments, publicBaseUrl, templat
         });
     };
 
+    const handleDownloadQrCode = async assignment => {
+        const publicUrl = buildPublicAssignmentUrl(publicBaseUrl, assignment);
+
+        setDownloadingAssignmentId(assignment.id);
+
+        try {
+            const qrCodeModule = await import("qrcode");
+            const QRCode = qrCodeModule.default ?? qrCodeModule;
+            const qrCodeDataUrl = await QRCode.toDataURL(publicUrl, {
+                type: "image/png",
+                errorCorrectionLevel: "H",
+                margin: 2,
+                width: 1024,
+            });
+            const downloadLink = document.createElement("a");
+
+            downloadLink.href = qrCodeDataUrl;
+            downloadLink.download = buildQrCodeFileName({
+                plateNumber: vehicle.plateNumber,
+                checklistName: assignment.checklistName,
+                publicToken: assignment.publicToken,
+            });
+            downloadLink.click();
+
+            toast.success(t("qr_downloaded"));
+        } catch (error) {
+            console.error("[charroi] Unable to download QR code", {
+                assignmentId: assignment.id,
+                errorMessage: error instanceof Error ? error.message : String(error),
+            });
+            toast.error(t("qr_download_error"));
+        }
+
+        setDownloadingAssignmentId(currentAssignmentId =>
+            currentAssignmentId === assignment.id ? null : currentAssignmentId
+        );
+    };
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger nativeButton render={<Button variant="outline" size="sm" />}>
@@ -324,7 +388,12 @@ function VehicleAssignmentsDialog({ canManageAssignments, publicBaseUrl, templat
                             <p className="text-muted-foreground text-sm">{t("no_assignments")}</p>
                         ) : (
                             vehicle.assignments.map(assignment => {
-                                const publicUrl = `${publicBaseUrl}/${assignment.publicToken}`;
+                                const publicUrl = buildPublicAssignmentUrl(
+                                    publicBaseUrl,
+                                    assignment
+                                );
+                                const isDownloadingQrCode =
+                                    downloadingAssignmentId === assignment.id;
 
                                 return (
                                     <div
@@ -402,6 +471,17 @@ function VehicleAssignmentsDialog({ canManageAssignments, publicBaseUrl, templat
                                                     }}
                                                 >
                                                     <Copy className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="icon-sm"
+                                                    title={t("qr_download_button")}
+                                                    aria-label={t("qr_download_button")}
+                                                    disabled={isPending || isDownloadingQrCode}
+                                                    onClick={() => handleDownloadQrCode(assignment)}
+                                                >
+                                                    <QrCode className="h-4 w-4" />
                                                 </Button>
                                                 <Button
                                                     type="button"

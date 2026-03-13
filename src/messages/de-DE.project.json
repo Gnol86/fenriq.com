@@ -363,6 +363,9 @@
             "enable_button": "Enable",
             "disable_button": "Disable",
             "link_copied": "Public link copied.",
+            "qr_download_button": "QR-Code herunterladen",
+            "qr_downloaded": "QR-Code heruntergeladen.",
+            "qr_download_error": "QR-Code konnte nicht heruntergeladen werden.",
             "no_assignments": "No public checklist linked yet.",
             "no_vehicle_details": "No extra details"
         },

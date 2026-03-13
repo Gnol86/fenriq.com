@@ -7,7 +7,7 @@ import {
 import { Copy, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { useServerAction } from "@/hooks/use-server-action";
 import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
@@ -76,10 +76,12 @@ export function TemplatesManager({ canCreate, canManage, emptyMessage, templates
                                 <ButtonGroup>
                                     <Link
                                         href={`/dashboard/project/charroi/checklists/${template.id}/edit`}
+                                        className={buttonVariants({
+                                            variant: "outline",
+                                            size: "icon-sm",
+                                        })}
                                     >
-                                        <Button variant="outline" size="icon-sm">
-                                            <Pencil className="h-4 w-4" />
-                                        </Button>
+                                        <Pencil className="h-4 w-4" />
                                     </Link>
                                     <Button
                                         variant="outline"

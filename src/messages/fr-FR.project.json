@@ -363,6 +363,9 @@
             "enable_button": "Activer",
             "disable_button": "Désactiver",
             "link_copied": "Le lien public a été copié.",
+            "qr_download_button": "Télécharger le QR code",
+            "qr_downloaded": "Le QR code a été téléchargé.",
+            "qr_download_error": "Impossible de télécharger le QR code.",
             "no_assignments": "Aucune checklist publique liée.",
             "no_vehicle_details": "Aucun détail supplémentaire"
         },
