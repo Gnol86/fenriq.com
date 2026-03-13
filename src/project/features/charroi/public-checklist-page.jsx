@@ -1,5 +1,6 @@
 import {
     getHistoricalPublicChecklistPhotos,
+    getHistoricalPublicChecklistTextEntries,
     getLatestPublicChecklistSubmission,
     getPublicChecklistAssignment,
 } from "@project/lib/charroi/public-checklist";
@@ -24,18 +25,24 @@ export default async function PublicChecklistPage({ token }) {
         notFound();
     }
 
-    const [latestSubmission, historicalPhotos] = await Promise.all([
+    const [latestSubmission, historicalPhotos, historicalTextEntries] = await Promise.all([
         getLatestPublicChecklistSubmission(assignment.id),
         getHistoricalPublicChecklistPhotos({
             assignmentId: assignment.id,
             schema: assignment.parsedSchema,
         }),
+        getHistoricalPublicChecklistTextEntries({
+            assignmentId: assignment.id,
+            schema: assignment.parsedSchema,
+        }),
     ]);
-    const { initialResponses, historicalPhotosByFieldId } = buildPublicChecklistPrefill({
-        schema: assignment.parsedSchema,
-        latestSubmission,
-        historicalPhotos,
-    });
+    const { historicalPhotosByFieldId, historicalTextEntriesByFieldId, initialResponses } =
+        buildPublicChecklistPrefill({
+            schema: assignment.parsedSchema,
+            latestSubmission,
+            historicalPhotos,
+            historicalTextEntries,
+        });
     const initialSubmitterName = getRememberedPublicChecklistSubmitterName(cookieStore);
 
     return (
@@ -57,6 +64,7 @@ export default async function PublicChecklistPage({ token }) {
                             parsedSchema: assignment.parsedSchema,
                             initialResponses,
                             historicalPhotosByFieldId,
+                            historicalTextEntriesByFieldId,
                             initialSubmitterName,
                             hasRememberedSubmitterName: initialSubmitterName !== "",
                         }}

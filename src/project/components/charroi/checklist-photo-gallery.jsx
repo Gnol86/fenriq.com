@@ -55,7 +55,7 @@ export function ChecklistPhotoGallery({
                         return (
                             <div
                                 key={photo.id}
-                                className="flex flex-col gap-2 rounded-md border p-2"
+                                className="flex flex-col gap-2 justify-between rounded-md border p-2"
                             >
                                 <button
                                     type="button"

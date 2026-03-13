@@ -20,4 +20,23 @@ describe("checklist field schema", () => {
             options: [],
         });
     });
+
+    test("accepts the text_list field type", () => {
+        expect(
+            checklistFieldSchema.parse({
+                id: "follow-up-notes",
+                type: "text_list",
+                label: "Notes",
+            })
+        ).toEqual({
+            id: "follow-up-notes",
+            type: "text_list",
+            label: "Notes",
+            description: "",
+            placeholder: "",
+            required: false,
+            photoCommentRequired: false,
+            options: [],
+        });
+    });
 });

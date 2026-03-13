@@ -51,6 +51,10 @@ export function createChecklistField(type = "text", overrides = {}) {
         baseField.label = "Photos";
     }
 
+    if (safeType === "text_list") {
+        baseField.label = "Liste de texte";
+    }
+
     return {
         ...baseField,
         ...overrides,
@@ -162,6 +166,16 @@ export const FIELD_PRESETS = [
             createChecklistField("photo", {
                 label: "Photos des dégâts",
                 description: "Ajoutez les photos utiles",
+            }),
+    },
+    {
+        id: "text_list",
+        label: "Liste de texte",
+        description: "Historique persistant de textes libres",
+        factory: () =>
+            createChecklistField("text_list", {
+                label: "Commentaires récurrents",
+                description: "Ajoutez les remarques à conserver entre les checklists",
             }),
     },
 ];

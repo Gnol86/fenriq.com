@@ -17,6 +17,22 @@ function formatSubmittedAt(date) {
     }).format(date);
 }
 
+function buildTextListItems(fieldId, values) {
+    const occurrences = new Map();
+
+    return (Array.isArray(values) ? values : []).map(entry => {
+        const resolvedValue = String(entry);
+        const nextOccurrence = (occurrences.get(resolvedValue) ?? 0) + 1;
+
+        occurrences.set(resolvedValue, nextOccurrence);
+
+        return {
+            key: `${fieldId}-${resolvedValue}-${nextOccurrence}`,
+            value: resolvedValue,
+        };
+    });
+}
+
 function renderFieldValue(field, value, photosByFieldId, t) {
     if (field.type === "checkbox") {
         return value ? t("value_yes") : t("value_no");
@@ -35,6 +51,27 @@ function renderFieldValue(field, value, photosByFieldId, t) {
                 label={t("active_damage_photos_label")}
                 photos={photos}
             />
+        );
+    }
+
+    if (field.type === "text_list") {
+        const items = buildTextListItems(field.id, value);
+
+        return items.length > 0 ? (
+            <div className="flex flex-col gap-2">
+                <span className="text-foreground text-xs font-medium uppercase tracking-wide">
+                    {t("text_list_entries_label")}
+                </span>
+                <ul className="ml-5 flex list-disc flex-col gap-1">
+                    {items.map(item => (
+                        <li key={item.key} className="whitespace-pre-wrap">
+                            {item.value}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        ) : (
+            t("value_empty")
         );
     }
 

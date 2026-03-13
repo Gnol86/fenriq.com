@@ -128,6 +128,8 @@ export const publicChecklistSubmitSchema = z.object({
     rememberSubmitterName: z.boolean().optional().default(false),
     draftUploadKey: z.string().trim().optional().default(""),
     removedHistoricalPhotoIds: z.array(nonEmptyText).optional().default([]),
+    removedHistoricalTextEntryIds: z.array(nonEmptyText).optional().default([]),
+    draftTextEntriesByFieldId: z.record(z.string(), z.array(z.string())).optional().default({}),
     photoComments: z.record(z.string(), z.string()).optional().default({}),
     responses: z.record(z.string(), z.any()),
 });

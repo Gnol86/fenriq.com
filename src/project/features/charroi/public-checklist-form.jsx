@@ -9,6 +9,7 @@ import {
     buildChecklistPhotoCommentsPayload,
     getChecklistPhotoCommentValue,
 } from "@project/lib/charroi/checklist-photo-comments";
+import { buildChecklistTextListResponseValue } from "@project/lib/charroi/checklist-text-entry";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -43,6 +44,23 @@ function validateRequiredPhotoComments({ schema, responses, uploadedPhotosByFiel
     return null;
 }
 
+function createDraftTextEntry() {
+    return {
+        id: crypto.randomUUID(),
+        text: "",
+    };
+}
+
+function buildDraftTextEntriesPayload(draftTextEntriesByFieldId) {
+    return Object.entries(draftTextEntriesByFieldId ?? {}).reduce(
+        (accumulator, [fieldId, entries]) => {
+            accumulator[fieldId] = (entries ?? []).map(entry => entry.text ?? "");
+            return accumulator;
+        },
+        {}
+    );
+}
+
 export function PublicChecklistForm({ assignment }) {
     const t = useTranslations("project.charroi.public");
     const submitAction = useServerAction();
@@ -52,12 +70,29 @@ export function PublicChecklistForm({ assignment }) {
         assignment.hasRememberedSubmitterName
     );
     const [removedHistoricalPhotoIds, setRemovedHistoricalPhotoIds] = useState([]);
+    const [removedHistoricalTextEntryIds, setRemovedHistoricalTextEntryIds] = useState([]);
     const [responses, setResponses] = useState(assignment.initialResponses);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [pendingUploadedPhotoActionIds, setPendingUploadedPhotoActionIds] = useState([]);
+    const [draftTextEntriesByFieldId, setDraftTextEntriesByFieldId] = useState({});
     const [uploadedPhotosByFieldId, setUploadedPhotosByFieldId] = useState({});
     const [draftUploadKey] = useState(() => crypto.randomUUID());
     const isBusy = submitAction.isPending || uploadAction.isPending;
+
+    const syncTextListResponse = ({
+        fieldId,
+        nextDraftTextEntriesByFieldId = draftTextEntriesByFieldId,
+        nextRemovedHistoricalTextEntryIds = removedHistoricalTextEntryIds,
+    }) => {
+        setResponses(current => ({
+            ...current,
+            [fieldId]: buildChecklistTextListResponseValue({
+                historicalTextEntries: assignment.historicalTextEntriesByFieldId[fieldId] ?? [],
+                removedHistoricalTextEntryIds: nextRemovedHistoricalTextEntryIds,
+                draftTextEntries: nextDraftTextEntriesByFieldId[fieldId] ?? [],
+            }),
+        }));
+    };
 
     const handleFileUpload = async (fieldId, fileList) => {
         const files = Array.from(fileList ?? []);
@@ -104,6 +139,7 @@ export function PublicChecklistForm({ assignment }) {
         }
 
         setPendingUploadedPhotoActionIds(current => [...current, photoId]);
+        let caughtError = null;
 
         try {
             await deletePublicChecklistUploadAction({
@@ -123,11 +159,15 @@ export function PublicChecklistForm({ assignment }) {
                 ),
             }));
         } catch (error) {
-            toast.error(error?.message ?? t("cancel_uploaded_photo_error"));
-        } finally {
-            setPendingUploadedPhotoActionIds(current =>
-                current.filter(currentPhotoId => currentPhotoId !== photoId)
-            );
+            caughtError = error;
+        }
+
+        setPendingUploadedPhotoActionIds(current =>
+            current.filter(currentPhotoId => currentPhotoId !== photoId)
+        );
+
+        if (caughtError) {
+            toast.error(caughtError?.message ?? t("cancel_uploaded_photo_error"));
         }
     };
 
@@ -143,6 +183,92 @@ export function PublicChecklistForm({ assignment }) {
                     : photo
             ),
         }));
+    };
+
+    const handleHistoricalTextEntryRemove = (fieldId, textEntryId) => {
+        if (isBusy || removedHistoricalTextEntryIds.includes(textEntryId)) {
+            return;
+        }
+
+        const nextRemovedHistoricalTextEntryIds = [...removedHistoricalTextEntryIds, textEntryId];
+
+        setRemovedHistoricalTextEntryIds(nextRemovedHistoricalTextEntryIds);
+        syncTextListResponse({
+            fieldId,
+            nextRemovedHistoricalTextEntryIds,
+        });
+    };
+
+    const handleHistoricalTextEntryRestore = (fieldId, textEntryId) => {
+        if (isBusy) {
+            return;
+        }
+
+        const nextRemovedHistoricalTextEntryIds = removedHistoricalTextEntryIds.filter(
+            currentTextEntryId => currentTextEntryId !== textEntryId
+        );
+
+        setRemovedHistoricalTextEntryIds(nextRemovedHistoricalTextEntryIds);
+        syncTextListResponse({
+            fieldId,
+            nextRemovedHistoricalTextEntryIds,
+        });
+    };
+
+    const handleDraftTextEntryAdd = fieldId => {
+        if (isBusy) {
+            return;
+        }
+
+        const nextDraftTextEntriesByFieldId = {
+            ...draftTextEntriesByFieldId,
+            [fieldId]: [...(draftTextEntriesByFieldId[fieldId] ?? []), createDraftTextEntry()],
+        };
+
+        setDraftTextEntriesByFieldId(nextDraftTextEntriesByFieldId);
+        syncTextListResponse({
+            fieldId,
+            nextDraftTextEntriesByFieldId,
+        });
+    };
+
+    const handleDraftTextEntryChange = (fieldId, draftEntryId, text) => {
+        const nextDraftTextEntriesByFieldId = {
+            ...draftTextEntriesByFieldId,
+            [fieldId]: (draftTextEntriesByFieldId[fieldId] ?? []).map(entry =>
+                entry.id === draftEntryId
+                    ? {
+                          ...entry,
+                          text,
+                      }
+                    : entry
+            ),
+        };
+
+        setDraftTextEntriesByFieldId(nextDraftTextEntriesByFieldId);
+        syncTextListResponse({
+            fieldId,
+            nextDraftTextEntriesByFieldId,
+        });
+    };
+
+    const handleDraftTextEntryRemove = (fieldId, draftEntryId) => {
+        if (isBusy) {
+            return;
+        }
+
+        const nextDraftTextEntriesByFieldId = {
+            ...draftTextEntriesByFieldId,
+            [fieldId]: (draftTextEntriesByFieldId[fieldId] ?? []).filter(
+                entry => entry.id !== draftEntryId
+            ),
+        };
+
+        setDraftTextEntriesByFieldId(nextDraftTextEntriesByFieldId);
+        syncTextListResponse({
+            fieldId,
+            nextDraftTextEntriesByFieldId,
+        });
     };
 
     const handleSubmit = async event => {
@@ -172,6 +298,9 @@ export function PublicChecklistForm({ assignment }) {
                     rememberSubmitterName,
                     draftUploadKey,
                     removedHistoricalPhotoIds,
+                    removedHistoricalTextEntryIds,
+                    draftTextEntriesByFieldId:
+                        buildDraftTextEntriesPayload(draftTextEntriesByFieldId),
                     photoComments: buildChecklistPhotoCommentsPayload(uploadedPhotosByFieldId),
                     responses,
                 }),
@@ -264,11 +393,27 @@ export function PublicChecklistForm({ assignment }) {
                 }
                 onUploadedPhotoCancel={handleUploadedPhotoCancel}
                 onUploadedPhotoCommentChange={handleUploadedPhotoCommentChange}
+                historicalTextEntriesByFieldId={assignment.historicalTextEntriesByFieldId}
+                removedHistoricalTextEntryIds={removedHistoricalTextEntryIds}
+                onHistoricalTextEntryRemove={handleHistoricalTextEntryRemove}
+                onHistoricalTextEntryRestore={handleHistoricalTextEntryRestore}
+                draftTextEntriesByFieldId={draftTextEntriesByFieldId}
+                onDraftTextEntryAdd={handleDraftTextEntryAdd}
+                onDraftTextEntryChange={handleDraftTextEntryChange}
+                onDraftTextEntryRemove={handleDraftTextEntryRemove}
                 pendingUploadedPhotoActionIds={pendingUploadedPhotoActionIds}
                 historicalPhotosLabel={t("historical_photos_label")}
                 markPhotoForDeletionLabel={t("mark_photo_for_deletion_button")}
                 removedHistoricalPhotoName={t("removed_historical_photo_name")}
                 restoreHistoricalPhotoLabel={t("restore_historical_photo_button")}
+                historicalTextEntriesLabel={t("historical_text_entries_label")}
+                markTextEntryForDeletionLabel={t("mark_text_entry_for_deletion_button")}
+                removedHistoricalTextEntryName={t("removed_historical_text_entry_name")}
+                restoreHistoricalTextEntryLabel={t("restore_historical_text_entry_button")}
+                addTextEntryButtonLabel={t("add_text_entry_button")}
+                draftTextEntriesLabel={t("draft_text_entries_label")}
+                removeDraftTextEntryButtonLabel={t("remove_draft_text_entry_button")}
+                textEntryPlaceholder={t("text_entry_placeholder")}
                 addPhotoButtonLabel={t("add_photo_button")}
                 cancelUploadedPhotoButtonLabel={t("cancel_uploaded_photo_button")}
                 photoCommentLabel={t("photo_comment_label")}

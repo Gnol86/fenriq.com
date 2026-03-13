@@ -3,6 +3,10 @@ import {
     CHECKLIST_PHOTO_PUBLIC_SELECT,
     getActiveChecklistPhotosByAssignment,
 } from "./checklist-photo-cleanup";
+import {
+    CHECKLIST_TEXT_ENTRY_PUBLIC_SELECT,
+    getChecklistTextListFieldIds,
+} from "./checklist-text-entry";
 import { checklistTemplateSchemaJsonSchema } from "./template-schema";
 
 export async function getPublicChecklistAssignment(token) {
@@ -74,5 +78,26 @@ export async function getHistoricalPublicChecklistPhotos({ assignmentId, schema 
         prismaClient: prisma,
         schema,
         select: CHECKLIST_PHOTO_PUBLIC_SELECT,
+    });
+}
+
+export async function getHistoricalPublicChecklistTextEntries({ assignmentId, schema }) {
+    const textListFieldIds = getChecklistTextListFieldIds(schema);
+
+    if (!assignmentId || textListFieldIds.length === 0) {
+        return [];
+    }
+
+    return await prisma.checklistTextEntry.findMany({
+        where: {
+            assignmentId,
+            fieldId: {
+                in: textListFieldIds,
+            },
+        },
+        select: CHECKLIST_TEXT_ENTRY_PUBLIC_SELECT,
+        orderBy: {
+            createdAt: "asc",
+        },
     });
 }

@@ -1,3 +1,4 @@
+import { buildHistoricalChecklistTextEntriesByFieldId } from "./checklist-text-entry";
 export const PUBLIC_CHECKLIST_SUBMITTER_NAME_COOKIE = "charroi_public_submitter_name";
 export const PUBLIC_CHECKLIST_SUBMITTER_NAME_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
@@ -10,6 +11,7 @@ export function createChecklistInitialResponses(schema) {
                     break;
                 case "multi_select":
                 case "photo":
+                case "text_list":
                     accumulator[field.id] = [];
                     break;
                 default:
@@ -62,18 +64,36 @@ function coerceNumberValue(rawValue) {
     return "";
 }
 
-export function buildPublicChecklistPrefill({ schema, latestSubmission, historicalPhotos = [] }) {
+export function buildPublicChecklistPrefill({
+    schema,
+    latestSubmission,
+    historicalPhotos = [],
+    historicalTextEntries = [],
+}) {
     const fieldMap = createFieldMap(schema);
     const initialResponses = createChecklistInitialResponses(schema);
     const historicalPhotosByFieldId = groupHistoricalPhotosByFieldId({
         fieldMap,
         historicalPhotos,
     });
+    const historicalTextEntriesByFieldId = buildHistoricalChecklistTextEntriesByFieldId({
+        schema,
+        textEntries: historicalTextEntries,
+    });
+
+    for (const field of Object.values(fieldMap)) {
+        if (field.type === "text_list") {
+            initialResponses[field.id] = (historicalTextEntriesByFieldId[field.id] ?? []).map(
+                entry => entry.text
+            );
+        }
+    }
 
     if (!latestSubmission) {
         return {
             initialResponses,
             historicalPhotosByFieldId,
+            historicalTextEntriesByFieldId,
         };
     }
 
@@ -109,6 +129,11 @@ export function buildPublicChecklistPrefill({ schema, latestSubmission, historic
             case "photo":
                 initialResponses[field.id] = [];
                 break;
+            case "text_list":
+                initialResponses[field.id] = (historicalTextEntriesByFieldId[field.id] ?? []).map(
+                    entry => entry.text
+                );
+                break;
             default:
                 initialResponses[field.id] = "";
         }
@@ -117,6 +142,7 @@ export function buildPublicChecklistPrefill({ schema, latestSubmission, historic
     return {
         initialResponses,
         historicalPhotosByFieldId,
+        historicalTextEntriesByFieldId,
     };
 }
 

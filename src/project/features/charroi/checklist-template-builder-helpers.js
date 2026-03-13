@@ -46,6 +46,7 @@ export function getFieldTypeLabel(type) {
         multi_select: "Choix multiple",
         checkbox: "Case à cocher",
         photo: "Photo",
+        text_list: "Liste de texte",
     };
 
     return labels[type] ?? type;

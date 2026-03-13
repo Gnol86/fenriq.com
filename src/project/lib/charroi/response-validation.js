@@ -1,3 +1,4 @@
+import { sanitizeChecklistTextEntryArray } from "./checklist-text-entry";
 import { checklistTemplateSchemaJsonSchema } from "./template-schema";
 
 function buildFieldMap(schemaJson) {
@@ -94,6 +95,12 @@ export function validateChecklistResponses({ schemaJson, responses }) {
                 const value = Array.isArray(rawValue)
                     ? rawValue.filter(entry => typeof entry === "string")
                     : [];
+                ensureRequiredField(field, value);
+                sanitizedResponses[fieldId] = value;
+                break;
+            }
+            case "text_list": {
+                const value = sanitizeChecklistTextEntryArray(rawValue);
                 ensureRequiredField(field, value);
                 sanitizedResponses[fieldId] = value;
                 break;

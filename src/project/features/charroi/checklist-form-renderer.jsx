@@ -22,23 +22,39 @@ export const createInitialResponses = createChecklistInitialResponses;
 
 function ChecklistFieldControl({
     disabled,
+    draftTextEntriesByFieldId,
     field,
     historicalPhotosByFieldId,
+    historicalTextEntriesByFieldId,
+    historicalTextEntriesLabel,
     historicalPhotosLabel,
+    markTextEntryForDeletionLabel,
     markPhotoForDeletionLabel,
+    onDraftTextEntryAdd,
+    onDraftTextEntryChange,
+    onDraftTextEntryRemove,
     onFileUpload,
     onHistoricalPhotoRemove,
     onHistoricalPhotoRestore,
+    onHistoricalTextEntryRemove,
+    onHistoricalTextEntryRestore,
     onUploadedPhotoCancel,
     onUploadedPhotoCommentChange,
     pendingUploadedPhotoActionIds,
     photoCommentLabel,
     photoCommentPlaceholder,
+    removedHistoricalTextEntryIds,
+    removedHistoricalTextEntryName,
     removedHistoricalPhotoIds,
     removedHistoricalPhotoName,
+    restoreHistoricalTextEntryLabel,
     restoreHistoricalPhotoLabel,
+    addTextEntryButtonLabel,
     addPhotoButtonLabel,
     cancelUploadedPhotoButtonLabel,
+    draftTextEntriesLabel,
+    removeDraftTextEntryButtonLabel,
+    textEntryPlaceholder,
     onValueChange,
     responses,
     selectPlaceholder,
@@ -228,6 +244,116 @@ function ChecklistFieldControl({
                 </div>
             );
         }
+        case "text_list": {
+            const historicalTextEntries = historicalTextEntriesByFieldId[field.id] ?? [];
+            const draftTextEntries = draftTextEntriesByFieldId[field.id] ?? [];
+
+            return (
+                <div className="flex flex-col gap-3">
+                    {historicalTextEntries.length > 0 ? (
+                        <div className="flex flex-col gap-2">
+                            {historicalTextEntriesLabel ? (
+                                <span className="text-foreground text-xs font-medium uppercase tracking-wide">
+                                    {historicalTextEntriesLabel}
+                                </span>
+                            ) : null}
+                            {historicalTextEntries.map(entry => {
+                                const isRemoved = removedHistoricalTextEntryIds.includes(entry.id);
+
+                                return (
+                                    <div
+                                        key={entry.id}
+                                        className="flex flex-col gap-2 rounded-md border p-3"
+                                    >
+                                        <p
+                                            className={`whitespace-pre-wrap text-sm ${
+                                                isRemoved
+                                                    ? "text-muted-foreground line-through"
+                                                    : ""
+                                            }`}
+                                        >
+                                            {entry.text}
+                                        </p>
+                                        {isRemoved && removedHistoricalTextEntryName ? (
+                                            <span className="text-destructive text-xs font-medium">
+                                                {removedHistoricalTextEntryName}
+                                            </span>
+                                        ) : null}
+                                        <Button
+                                            type="button"
+                                            variant={isRemoved ? "ghost" : "outline"}
+                                            size="xs"
+                                            disabled={disabled}
+                                            onClick={() =>
+                                                isRemoved
+                                                    ? onHistoricalTextEntryRestore(
+                                                          field.id,
+                                                          entry.id
+                                                      )
+                                                    : onHistoricalTextEntryRemove(
+                                                          field.id,
+                                                          entry.id
+                                                      )
+                                            }
+                                        >
+                                            {isRemoved
+                                                ? restoreHistoricalTextEntryLabel
+                                                : markTextEntryForDeletionLabel}
+                                        </Button>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : null}
+                    {draftTextEntries.length > 0 ? (
+                        <div className="flex flex-col gap-2">
+                            {draftTextEntriesLabel ? (
+                                <span className="text-foreground text-xs font-medium uppercase tracking-wide">
+                                    {draftTextEntriesLabel}
+                                </span>
+                            ) : null}
+                            {draftTextEntries.map(entry => (
+                                <div
+                                    key={entry.id}
+                                    className="flex flex-col gap-2 rounded-md border p-3"
+                                >
+                                    <Textarea
+                                        rows={3}
+                                        value={entry.text}
+                                        placeholder={textEntryPlaceholder}
+                                        disabled={disabled}
+                                        onChange={event =>
+                                            onDraftTextEntryChange(
+                                                field.id,
+                                                entry.id,
+                                                event.target.value
+                                            )
+                                        }
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="xs"
+                                        disabled={disabled}
+                                        onClick={() => onDraftTextEntryRemove(field.id, entry.id)}
+                                    >
+                                        {removeDraftTextEntryButtonLabel}
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : null}
+                    <Button
+                        type="button"
+                        variant="outline"
+                        disabled={disabled}
+                        onClick={() => onDraftTextEntryAdd(field.id)}
+                    >
+                        {addTextEntryButtonLabel}
+                    </Button>
+                </div>
+            );
+        }
         default:
             return null;
     }
@@ -236,24 +362,40 @@ function ChecklistFieldControl({
 export function ChecklistFormRenderer({
     className = "",
     disabled = false,
+    draftTextEntriesByFieldId = EMPTY_PHOTOS_BY_FIELD_ID,
     hideFieldMeta = false,
     historicalPhotosByFieldId = EMPTY_PHOTOS_BY_FIELD_ID,
+    historicalTextEntriesByFieldId = EMPTY_PHOTOS_BY_FIELD_ID,
+    historicalTextEntriesLabel = "",
     historicalPhotosLabel = "",
+    markTextEntryForDeletionLabel = "",
     markPhotoForDeletionLabel = "",
+    onDraftTextEntryAdd = () => {},
+    onDraftTextEntryChange = () => {},
+    onDraftTextEntryRemove = () => {},
     onFileUpload = () => {},
     onHistoricalPhotoRemove = () => {},
     onHistoricalPhotoRestore = () => {},
+    onHistoricalTextEntryRemove = () => {},
+    onHistoricalTextEntryRestore = () => {},
     onUploadedPhotoCancel = () => {},
     onUploadedPhotoCommentChange = () => {},
     onValueChange = () => {},
     pendingUploadedPhotoActionIds = EMPTY_REMOVED_HISTORICAL_PHOTO_IDS,
     photoCommentLabel = "",
     photoCommentPlaceholder = "",
+    removedHistoricalTextEntryIds = EMPTY_REMOVED_HISTORICAL_PHOTO_IDS,
+    removedHistoricalTextEntryName = "",
     removedHistoricalPhotoIds = EMPTY_REMOVED_HISTORICAL_PHOTO_IDS,
     removedHistoricalPhotoName = "",
+    restoreHistoricalTextEntryLabel = "",
     restoreHistoricalPhotoLabel = "",
+    addTextEntryButtonLabel = "",
     addPhotoButtonLabel = "",
     cancelUploadedPhotoButtonLabel = "",
+    draftTextEntriesLabel = "",
+    removeDraftTextEntryButtonLabel = "",
+    textEntryPlaceholder = "",
     responses,
     schema,
     selectPlaceholder,
@@ -284,24 +426,40 @@ export function ChecklistFormRenderer({
                             ) : null}
                             <ChecklistFieldControl
                                 disabled={disabled}
+                                draftTextEntriesByFieldId={draftTextEntriesByFieldId}
                                 field={field}
                                 historicalPhotosByFieldId={historicalPhotosByFieldId}
+                                historicalTextEntriesByFieldId={historicalTextEntriesByFieldId}
+                                historicalTextEntriesLabel={historicalTextEntriesLabel}
                                 historicalPhotosLabel={historicalPhotosLabel}
+                                markTextEntryForDeletionLabel={markTextEntryForDeletionLabel}
                                 markPhotoForDeletionLabel={markPhotoForDeletionLabel}
+                                onDraftTextEntryAdd={onDraftTextEntryAdd}
+                                onDraftTextEntryChange={onDraftTextEntryChange}
+                                onDraftTextEntryRemove={onDraftTextEntryRemove}
                                 onFileUpload={onFileUpload}
                                 onHistoricalPhotoRemove={onHistoricalPhotoRemove}
                                 onHistoricalPhotoRestore={onHistoricalPhotoRestore}
+                                onHistoricalTextEntryRemove={onHistoricalTextEntryRemove}
+                                onHistoricalTextEntryRestore={onHistoricalTextEntryRestore}
                                 onUploadedPhotoCancel={onUploadedPhotoCancel}
                                 onUploadedPhotoCommentChange={onUploadedPhotoCommentChange}
                                 onValueChange={onValueChange}
                                 pendingUploadedPhotoActionIds={pendingUploadedPhotoActionIds}
                                 photoCommentLabel={photoCommentLabel}
                                 photoCommentPlaceholder={photoCommentPlaceholder}
+                                removedHistoricalTextEntryIds={removedHistoricalTextEntryIds}
+                                removedHistoricalTextEntryName={removedHistoricalTextEntryName}
                                 removedHistoricalPhotoIds={removedHistoricalPhotoIds}
                                 removedHistoricalPhotoName={removedHistoricalPhotoName}
+                                restoreHistoricalTextEntryLabel={restoreHistoricalTextEntryLabel}
                                 restoreHistoricalPhotoLabel={restoreHistoricalPhotoLabel}
+                                addTextEntryButtonLabel={addTextEntryButtonLabel}
                                 addPhotoButtonLabel={addPhotoButtonLabel}
                                 cancelUploadedPhotoButtonLabel={cancelUploadedPhotoButtonLabel}
+                                draftTextEntriesLabel={draftTextEntriesLabel}
+                                removeDraftTextEntryButtonLabel={removeDraftTextEntryButtonLabel}
+                                textEntryPlaceholder={textEntryPlaceholder}
                                 responses={responses}
                                 selectPlaceholder={selectPlaceholder}
                                 uploadedPhotosLabel={uploadedPhotosLabel}

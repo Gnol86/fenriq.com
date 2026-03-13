@@ -10,6 +10,11 @@ import {
 } from "@project/lib/charroi/checklist-photo-cleanup";
 import { validateChecklistPhotoComments } from "@project/lib/charroi/checklist-photo-comments";
 import {
+    buildChecklistTextListResponseValue,
+    getChecklistTextListFieldIds,
+    normalizeDraftTextEntriesByFieldId,
+} from "@project/lib/charroi/checklist-text-entry";
+import {
     CHECKLIST_MAX_UPLOAD_SIZE,
     CHECKLIST_UPLOAD_ALLOWED_TYPES,
 } from "@project/lib/charroi/constants";
@@ -67,7 +72,9 @@ export async function submitPublicChecklistAction(values) {
             responses: payload.responses,
         });
         const removedHistoricalPhotoIds = [...new Set(payload.removedHistoricalPhotoIds)];
+        const removedHistoricalTextEntryIds = [...new Set(payload.removedHistoricalTextEntryIds)];
         const photoFieldIds = getChecklistPhotoFieldIds(assignment.parsedSchema);
+        const textListFieldIds = getChecklistTextListFieldIds(assignment.parsedSchema);
         const uploadedPhotos =
             payload.draftUploadKey.trim() === ""
                 ? []
@@ -101,15 +108,73 @@ export async function submitPublicChecklistAction(values) {
         const removableHistoricalPhotoIdSet = new Set(
             removableHistoricalPhotos.map(photo => photo.id)
         );
+        const activeTextEntries =
+            textListFieldIds.length === 0
+                ? []
+                : await prisma.checklistTextEntry.findMany({
+                      where: {
+                          assignmentId: assignment.id,
+                          fieldId: {
+                              in: textListFieldIds,
+                          },
+                      },
+                      select: {
+                          id: true,
+                          fieldId: true,
+                          text: true,
+                          createdAt: true,
+                      },
+                      orderBy: {
+                          createdAt: "asc",
+                      },
+                  });
+        const activeTextEntryMap = new Map(activeTextEntries.map(entry => [entry.id, entry]));
+        const activeTextEntriesByFieldId = activeTextEntries.reduce((accumulator, entry) => {
+            if (!accumulator[entry.fieldId]) {
+                accumulator[entry.fieldId] = [];
+            }
+
+            accumulator[entry.fieldId].push(entry);
+            return accumulator;
+        }, {});
         const { normalizedPhotoComments, referencedPhotoIds } = validateChecklistPhotoComments({
             fieldMap,
             photoComments: payload.photoComments,
             sanitizedResponses,
             uploadedPhotoMap,
         });
+        const normalizedDraftTextEntriesByFieldId = normalizeDraftTextEntriesByFieldId({
+            draftTextEntriesByFieldId: payload.draftTextEntriesByFieldId,
+            fieldMap,
+        });
 
         if (removableHistoricalPhotoIdSet.size !== removedHistoricalPhotoIds.length) {
             throw new Error("Une photo historique à supprimer est invalide");
+        }
+
+        if (activeTextEntryMap.size < removedHistoricalTextEntryIds.length) {
+            throw new Error("Une liste de texte à supprimer est invalide");
+        }
+
+        for (const textEntryId of removedHistoricalTextEntryIds) {
+            if (!activeTextEntryMap.has(textEntryId)) {
+                throw new Error("Une liste de texte à supprimer est invalide");
+            }
+        }
+
+        for (const fieldId of textListFieldIds) {
+            const field = fieldMap.get(fieldId);
+            const value = buildChecklistTextListResponseValue({
+                historicalTextEntries: activeTextEntriesByFieldId[fieldId] ?? [],
+                removedHistoricalTextEntryIds,
+                draftTextEntries: normalizedDraftTextEntriesByFieldId[fieldId] ?? [],
+            });
+
+            if (field?.required && value.length === 0) {
+                throw new Error(`Le champ "${field.label}" est requis`);
+            }
+
+            sanitizedResponses[fieldId] = value;
         }
 
         const issues = evaluateChecklistRules({
@@ -179,6 +244,32 @@ export async function submitPublicChecklistAction(values) {
                         deleteRequestedAt: deletionRequestedAt,
                         deleteErrorMessage: null,
                     },
+                });
+            }
+
+            if (removedHistoricalTextEntryIds.length > 0) {
+                await tx.checklistTextEntry.deleteMany({
+                    where: {
+                        id: {
+                            in: removedHistoricalTextEntryIds,
+                        },
+                    },
+                });
+            }
+
+            const createdTextEntries = textListFieldIds.flatMap(fieldId =>
+                (normalizedDraftTextEntriesByFieldId[fieldId] ?? []).map(text => ({
+                    organizationId: assignment.organizationId,
+                    assignmentId: assignment.id,
+                    submissionId: createdSubmission.id,
+                    fieldId,
+                    text,
+                }))
+            );
+
+            if (createdTextEntries.length > 0) {
+                await tx.checklistTextEntry.createMany({
+                    data: createdTextEntries,
                 });
             }
 

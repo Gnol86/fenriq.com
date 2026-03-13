@@ -125,6 +125,7 @@ model VehicleChecklistAssignment {
     isActive           Boolean              @default(true)
     submissions        ChecklistSubmission[]
     photos             ChecklistPhoto[]
+    textEntries        ChecklistTextEntry[]
     createdAt          DateTime             @default(now())
     updatedAt          DateTime             @updatedAt
 
@@ -189,6 +190,7 @@ model ChecklistSubmission {
     checklistVersionSnapshot Int
     issues                   ChecklistIssue[]
     photos                   ChecklistPhoto[]
+    textEntries              ChecklistTextEntry[]
     notifications            ChecklistNotificationDelivery[]
     submittedAt              DateTime                   @default(now())
     createdAt                DateTime                   @default(now())
@@ -242,6 +244,23 @@ model ChecklistPhoto {
     @@index([status, deleteRequestedAt])
     @@index([submissionId, fieldId])
     @@map("checklist_photo")
+}
+
+model ChecklistTextEntry {
+    id            String                      @id @default(cuid())
+    organizationId String
+    assignmentId  String?
+    assignment    VehicleChecklistAssignment? @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+    submissionId  String?
+    submission    ChecklistSubmission?        @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+    fieldId       String
+    text          String
+    createdAt     DateTime                    @default(now())
+
+    @@index([organizationId, fieldId])
+    @@index([assignmentId, fieldId, createdAt])
+    @@index([submissionId, fieldId])
+    @@map("checklist_text_entry")
 }
 
 model ChecklistNotificationDelivery {

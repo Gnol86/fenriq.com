@@ -21,7 +21,7 @@ describe("checklist template builder helpers", () => {
         expect(duplicatedField.photoCommentRequired).toBe(true);
     });
 
-    test("resets photoCommentRequired when switching away from a photo field", () => {
+    test("resets photoCommentRequired when switching from photo to text_list", () => {
         expect(
             normalizeFieldForType(
                 {
@@ -34,10 +34,10 @@ describe("checklist template builder helpers", () => {
                     photoCommentRequired: true,
                     options: [],
                 },
-                "text"
+                "text_list"
             )
         ).toMatchObject({
-            type: "text",
+            type: "text_list",
             photoCommentRequired: false,
             options: [],
         });

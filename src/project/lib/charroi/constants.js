@@ -6,6 +6,7 @@ export const CHECKLIST_FIELD_TYPES = [
     "multi_select",
     "checkbox",
     "photo",
+    "text_list",
 ];
 
 export const CHECKLIST_RULE_OPERATORS = [
