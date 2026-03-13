@@ -22,7 +22,6 @@ export function FieldPresetPicker({ disabled, onPick, title }) {
                         type="button"
                         variant="outline"
                         size="sm"
-                        nativeButton={false}
                         onClick={stopPropagation}
                         onKeyDown={stopPropagation}
                         onPointerDown={stopPropagation}

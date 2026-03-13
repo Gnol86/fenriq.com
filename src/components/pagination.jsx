@@ -49,11 +49,7 @@ export function Pagination({ totalPages, page, searchParams = EMPTY_SEARCH_PARAM
                         <ChevronLeft />
                     </Button>
                     <DropdownMenu>
-                        <DropdownMenuTrigger
-                            render={
-                                <Button variant="secondary" size="icon-sm" nativeButton={false} />
-                            }
-                        >
+                        <DropdownMenuTrigger render={<Button variant="secondary" size="icon-sm" />}>
                             <Hash className="h-4 w-4" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent side="top">

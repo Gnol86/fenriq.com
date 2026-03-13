@@ -21,6 +21,7 @@ export function RulesStructureList({
 
     return (
         <DndContext
+            id="checklist-builder-rules-dnd"
             collisionDetection={closestCenter}
             modifiers={[restrictToVerticalAxis]}
             sensors={sensors}

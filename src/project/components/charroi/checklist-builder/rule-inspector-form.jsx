@@ -111,6 +111,7 @@ export function RuleInspectorForm({
                     </Button>
                 </div>
                 <DndContext
+                    id={`checklist-builder-rule-${rule.id}-conditions-dnd`}
                     collisionDetection={closestCenter}
                     modifiers={[restrictToVerticalAxis]}
                     sensors={sensors}

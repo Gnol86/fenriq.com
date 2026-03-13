@@ -118,6 +118,7 @@ export function FieldInspectorForm({
                         </Button>
                     </div>
                     <DndContext
+                        id={`checklist-builder-field-${field.id}-options-dnd`}
                         collisionDetection={closestCenter}
                         modifiers={[restrictToVerticalAxis]}
                         sensors={sensors}

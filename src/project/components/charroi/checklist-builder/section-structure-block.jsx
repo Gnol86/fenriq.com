@@ -92,6 +92,7 @@ export function SectionStructureBlock({
                         </div>
                     </div>
                     <DndContext
+                        id={`checklist-builder-section-${section.id}-fields-dnd`}
                         collisionDetection={closestCenter}
                         modifiers={[restrictToVerticalAxis]}
                         sensors={sensors}

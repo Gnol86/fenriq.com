@@ -47,6 +47,7 @@ export function StructurePanel({
                 </div>
             ) : (
                 <DndContext
+                    id="checklist-builder-sections-dnd"
                     collisionDetection={closestCenter}
                     modifiers={[restrictToVerticalAxis]}
                     sensors={sectionsSensors}

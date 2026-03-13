@@ -90,7 +90,6 @@ export default function MembersActionMenu({
                             <Button
                                 variant="outline"
                                 size="sm"
-                                nativeButton={false}
                                 aria-label="Actions du membre"
                                 disabled={isPending}
                             />
