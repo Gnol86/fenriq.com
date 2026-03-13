@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import {
+    CHECKLIST_PHOTO_ACTIVE_STATUS,
+    CHECKLIST_PHOTO_PENDING_DELETE_STATUS,
+    getChecklistPhotoFieldIds,
+    runChecklistPhotoDeletionCleanup,
+} from "@project/lib/charroi/checklist-photo-cleanup";
 import { dispatchChecklistSubmissionNotifications } from "@project/lib/charroi/notifications";
 import {
     PUBLIC_CHECKLIST_SUBMITTER_NAME_COOKIE,
@@ -24,16 +30,41 @@ export async function POST(request, { params }) {
             schemaJson: assignment.parsedSchema,
             responses: payload.responses,
         });
+        const removedHistoricalPhotoIds = [...new Set(payload.removedHistoricalPhotoIds)];
+        const photoFieldIds = getChecklistPhotoFieldIds(assignment.parsedSchema);
         const uploadedPhotos =
             payload.draftUploadKey.trim() === ""
                 ? []
                 : await prisma.checklistPhoto.findMany({
                       where: {
                           assignmentId: assignment.id,
+                          status: CHECKLIST_PHOTO_ACTIVE_STATUS,
                           tempUploadKey: payload.draftUploadKey.trim(),
                       },
                   });
+        const removableHistoricalPhotos =
+            removedHistoricalPhotoIds.length === 0
+                ? []
+                : await prisma.checklistPhoto.findMany({
+                      where: {
+                          id: {
+                              in: removedHistoricalPhotoIds,
+                          },
+                          assignmentId: assignment.id,
+                          fieldId: {
+                              in: photoFieldIds,
+                          },
+                          status: CHECKLIST_PHOTO_ACTIVE_STATUS,
+                          tempUploadKey: null,
+                      },
+                      select: {
+                          id: true,
+                      },
+                  });
         const uploadedPhotoMap = new Map(uploadedPhotos.map(photo => [photo.id, photo]));
+        const removableHistoricalPhotoIdSet = new Set(
+            removableHistoricalPhotos.map(photo => photo.id)
+        );
         const referencedPhotoIds = Object.entries(sanitizedResponses).flatMap(([fieldId, value]) => {
             if (fieldMap.get(fieldId)?.type !== "photo") {
                 return [];
@@ -41,6 +72,15 @@ export async function POST(request, { params }) {
 
             return Array.isArray(value) ? value : [];
         });
+
+        if (removableHistoricalPhotoIdSet.size !== removedHistoricalPhotoIds.length) {
+            return NextResponse.json(
+                {
+                    error: "Une photo historique à supprimer est invalide",
+                },
+                { status: 400 }
+            );
+        }
 
         for (const [fieldId, value] of Object.entries(sanitizedResponses)) {
             if (fieldMap.get(fieldId)?.type !== "photo") {
@@ -76,6 +116,7 @@ export async function POST(request, { params }) {
             schemaJson: assignment.parsedSchema,
             responses: sanitizedResponses,
         });
+        const deletionRequestedAt = new Date();
 
         const submission = await prisma.$transaction(async tx => {
             const createdSubmission = await tx.checklistSubmission.create({
@@ -118,11 +159,32 @@ export async function POST(request, { params }) {
                     data: {
                         submissionId: createdSubmission.id,
                         tempUploadKey: null,
+                        status: CHECKLIST_PHOTO_ACTIVE_STATUS,
+                        deleteRequestedAt: null,
+                        deleteErrorMessage: null,
+                    },
+                });
+            }
+
+            if (removedHistoricalPhotoIds.length > 0) {
+                await tx.checklistPhoto.updateMany({
+                    where: {
+                        id: {
+                            in: removedHistoricalPhotoIds,
+                        },
+                    },
+                    data: {
+                        status: CHECKLIST_PHOTO_PENDING_DELETE_STATUS,
+                        deleteRequestedAt: deletionRequestedAt,
+                        deleteErrorMessage: null,
                     },
                 });
             }
 
             return createdSubmission;
+        });
+        const photoCleanup = await runChecklistPhotoDeletionCleanup({
+            photoIds: removedHistoricalPhotoIds,
         });
 
         const notificationResult = await dispatchChecklistSubmissionNotifications({
@@ -132,6 +194,7 @@ export async function POST(request, { params }) {
         const response = NextResponse.json({
             issuesCount: issues.length,
             notifications: notificationResult,
+            photoCleanup,
             submissionId: submission.id,
             success: true,
         });

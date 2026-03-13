@@ -126,5 +126,6 @@ export const publicChecklistSubmitSchema = z.object({
     submitterName: nonEmptyText.max(120),
     rememberSubmitterName: z.boolean().optional().default(false),
     draftUploadKey: z.string().trim().optional().default(""),
+    removedHistoricalPhotoIds: z.array(nonEmptyText).optional().default([]),
     responses: z.record(z.string(), z.any()),
 });

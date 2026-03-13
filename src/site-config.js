@@ -21,7 +21,7 @@
 export const SiteConfig = {
     // ========== SITE INFORMATION ==========
     title: "Fleecheck", // ← TODO: Change to your project name
-    description: "Fleecheck.com", // ← TODO: Change to your project description
+    description: "Prennez soin de votre charroi avec Fleecheck.com", // ← TODO: Change to your project description
     prodUrl: "https://fleecheck.com", // ← TODO: Change to your production URL
     appId: "Fleecheck", // ← TODO: Change to your app identifier (lowercase, no spaces)
     appIcon: "/images/logo.png", // ← TODO: Update with your logo path
@@ -34,7 +34,7 @@ export const SiteConfig = {
 
     // ========== EMAIL CONFIGURATION ==========
     mail: {
-        from: process.env.EMAIL_FROM || "Fleecheck <noreply@fleecheck.com>", // ← Override with EMAIL_FROM env var
+        from: process.env.EMAIL_FROM, // ← Override with EMAIL_FROM env var
         signature: "L'équipe Fleecheck", // ← TODO: Change email signature
     },
 

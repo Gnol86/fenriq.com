@@ -31,22 +31,8 @@ function createFieldMap(schema) {
     }, {});
 }
 
-function coerceNumberValue(rawValue) {
-    if (typeof rawValue === "number" && Number.isFinite(rawValue)) {
-        return rawValue;
-    }
-
-    if (typeof rawValue === "string" && rawValue.trim() !== "") {
-        const parsedValue = Number.parseFloat(rawValue);
-
-        return Number.isNaN(parsedValue) ? "" : parsedValue;
-    }
-
-    return "";
-}
-
-function groupPreviousPhotosByFieldId({ fieldMap, photos }) {
-    return (photos ?? []).reduce((accumulator, photo) => {
+function groupHistoricalPhotosByFieldId({ fieldMap, historicalPhotos }) {
+    return (historicalPhotos ?? []).reduce((accumulator, photo) => {
         const field = fieldMap[photo.fieldId];
 
         if (!field || field.type !== "photo") {
@@ -62,14 +48,32 @@ function groupPreviousPhotosByFieldId({ fieldMap, photos }) {
     }, {});
 }
 
-export function buildPublicChecklistPrefill({ schema, latestSubmission }) {
+function coerceNumberValue(rawValue) {
+    if (typeof rawValue === "number" && Number.isFinite(rawValue)) {
+        return rawValue;
+    }
+
+    if (typeof rawValue === "string" && rawValue.trim() !== "") {
+        const parsedValue = Number.parseFloat(rawValue);
+
+        return Number.isNaN(parsedValue) ? "" : parsedValue;
+    }
+
+    return "";
+}
+
+export function buildPublicChecklistPrefill({ schema, latestSubmission, historicalPhotos = [] }) {
     const fieldMap = createFieldMap(schema);
     const initialResponses = createChecklistInitialResponses(schema);
+    const historicalPhotosByFieldId = groupHistoricalPhotosByFieldId({
+        fieldMap,
+        historicalPhotos,
+    });
 
     if (!latestSubmission) {
         return {
             initialResponses,
-            previousPhotosByFieldId: {},
+            historicalPhotosByFieldId,
         };
     }
 
@@ -112,10 +116,7 @@ export function buildPublicChecklistPrefill({ schema, latestSubmission }) {
 
     return {
         initialResponses,
-        previousPhotosByFieldId: groupPreviousPhotosByFieldId({
-            fieldMap,
-            photos: latestSubmission.photos,
-        }),
+        historicalPhotosByFieldId,
     };
 }
 

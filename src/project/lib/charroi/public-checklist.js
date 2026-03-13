@@ -1,4 +1,8 @@
 import prisma from "@/lib/prisma";
+import {
+    CHECKLIST_PHOTO_PUBLIC_SELECT,
+    getActiveChecklistPhotosByAssignment,
+} from "./checklist-photo-cleanup";
 import { checklistTemplateSchemaJsonSchema } from "./template-schema";
 
 export async function getPublicChecklistAssignment(token) {
@@ -58,18 +62,17 @@ export async function getLatestPublicChecklistSubmission(assignmentId) {
         where: {
             assignmentId,
         },
-        include: {
-            photos: {
-                select: {
-                    id: true,
-                    fieldId: true,
-                    originalName: true,
-                    url: true,
-                },
-            },
-        },
         orderBy: {
             submittedAt: "desc",
         },
+    });
+}
+
+export async function getHistoricalPublicChecklistPhotos({ assignmentId, schema }) {
+    return await getActiveChecklistPhotosByAssignment({
+        assignmentId,
+        prismaClient: prisma,
+        schema,
+        select: CHECKLIST_PHOTO_PUBLIC_SELECT,
     });
 }

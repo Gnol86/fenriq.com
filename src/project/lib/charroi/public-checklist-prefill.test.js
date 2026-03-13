@@ -99,36 +99,50 @@ describe("public checklist prefill", () => {
                 clean: true,
                 "damage-photos": ["photo-1"],
             },
-            photos: [
-                {
-                    id: "photo-1",
-                    fieldId: "damage-photos",
-                    originalName: "damage-1.jpg",
-                    url: "https://example.com/damage-1.jpg",
-                },
-            ],
         };
+        const historicalPhotos = [
+            {
+                id: "photo-1",
+                fieldId: "damage-photos",
+                originalName: "damage-1.jpg",
+                url: "https://example.com/damage-1.jpg",
+            },
+            {
+                id: "photo-2",
+                fieldId: "damage-photos",
+                originalName: "damage-2.jpg",
+                url: "https://example.com/damage-2.jpg",
+            },
+        ];
 
-        expect(buildPublicChecklistPrefill({ schema, latestSubmission })).toEqual({
-            initialResponses: {
-                comment: "All good",
-                mileage: 125000,
-                fuel: "low",
-                equipment: ["gps", "kit"],
-                clean: true,
-                "damage-photos": [],
-            },
-            previousPhotosByFieldId: {
-                "damage-photos": [
-                    {
-                        id: "photo-1",
-                        fieldId: "damage-photos",
-                        originalName: "damage-1.jpg",
-                        url: "https://example.com/damage-1.jpg",
-                    },
-                ],
-            },
-        });
+        expect(buildPublicChecklistPrefill({ schema, latestSubmission, historicalPhotos })).toEqual(
+            {
+                initialResponses: {
+                    comment: "All good",
+                    mileage: 125000,
+                    fuel: "low",
+                    equipment: ["gps", "kit"],
+                    clean: true,
+                    "damage-photos": [],
+                },
+                historicalPhotosByFieldId: {
+                    "damage-photos": [
+                        {
+                            id: "photo-1",
+                            fieldId: "damage-photos",
+                            originalName: "damage-1.jpg",
+                            url: "https://example.com/damage-1.jpg",
+                        },
+                        {
+                            id: "photo-2",
+                            fieldId: "damage-photos",
+                            originalName: "damage-2.jpg",
+                            url: "https://example.com/damage-2.jpg",
+                        },
+                    ],
+                },
+            }
+        );
     });
 
     test("drops unknown fields and invalid option values", () => {
@@ -141,31 +155,46 @@ describe("public checklist prefill", () => {
                 equipment: ["gps", "invalid"],
                 clean: "yes",
             },
-            photos: [
-                {
-                    id: "photo-legacy",
-                    fieldId: "legacy-photo",
-                    originalName: "legacy.jpg",
-                    url: "https://example.com/legacy.jpg",
-                },
-            ],
         };
-
-        expect(buildPublicChecklistPrefill({ schema, latestSubmission })).toEqual({
-            initialResponses: {
-                comment: "Still here",
-                mileage: 150500,
-                fuel: "",
-                equipment: ["gps"],
-                clean: false,
-                "damage-photos": [],
+        const historicalPhotos = [
+            {
+                id: "photo-legacy",
+                fieldId: "legacy-photo",
+                originalName: "legacy.jpg",
+                url: "https://example.com/legacy.jpg",
             },
-            previousPhotosByFieldId: {},
-        });
+        ];
+
+        expect(buildPublicChecklistPrefill({ schema, latestSubmission, historicalPhotos })).toEqual(
+            {
+                initialResponses: {
+                    comment: "Still here",
+                    mileage: 150500,
+                    fuel: "",
+                    equipment: ["gps"],
+                    clean: false,
+                    "damage-photos": [],
+                },
+                historicalPhotosByFieldId: {},
+            }
+        );
     });
 
     test("returns defaults when there is no previous submission", () => {
-        expect(buildPublicChecklistPrefill({ schema, latestSubmission: null })).toEqual({
+        expect(
+            buildPublicChecklistPrefill({
+                schema,
+                latestSubmission: null,
+                historicalPhotos: [
+                    {
+                        id: "photo-1",
+                        fieldId: "damage-photos",
+                        originalName: "damage.jpg",
+                        url: "https://example.com/damage.jpg",
+                    },
+                ],
+            })
+        ).toEqual({
             initialResponses: {
                 comment: "",
                 mileage: "",
@@ -174,7 +203,16 @@ describe("public checklist prefill", () => {
                 clean: false,
                 "damage-photos": [],
             },
-            previousPhotosByFieldId: {},
+            historicalPhotosByFieldId: {
+                "damage-photos": [
+                    {
+                        id: "photo-1",
+                        fieldId: "damage-photos",
+                        originalName: "damage.jpg",
+                        url: "https://example.com/damage.jpg",
+                    },
+                ],
+            },
         });
     });
 });

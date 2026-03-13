@@ -1,4 +1,9 @@
-import Link from "next/link";
+import { ChecklistPhotoGallery } from "@project/components/charroi/checklist-photo-gallery";
+import {
+    buildHistoricalChecklistPhotosByFieldId,
+    CHECKLIST_PHOTO_ACTIVE_STATUS,
+    getActiveChecklistPhotosByAssignment,
+} from "@project/lib/charroi/checklist-photo-cleanup";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,24 +29,12 @@ function renderFieldValue(field, value, photosByFieldId, t) {
     if (field.type === "photo") {
         const photos = photosByFieldId[field.id] ?? [];
 
-        if (photos.length === 0) {
-            return t("value_empty");
-        }
-
         return (
-            <div className="flex flex-col gap-2">
-                {photos.map(photo => (
-                    <Link
-                        key={photo.id}
-                        href={photo.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="underline"
-                    >
-                        {photo.originalName}
-                    </Link>
-                ))}
-            </div>
+            <ChecklistPhotoGallery
+                emptyLabel={t("value_empty")}
+                label={t("active_damage_photos_label")}
+                photos={photos}
+            />
         );
     }
 
@@ -53,10 +46,12 @@ function renderFieldValue(field, value, photosByFieldId, t) {
 }
 
 export default async function CharroiSubmissionDetailPage({ submissionId }) {
-    const t = await getTranslations("project.charroi.submission_detail");
-    const { organization } = await requirePermission({
-        permissions: { checklistSubmission: ["read"] },
-    });
+    const [t, { organization }] = await Promise.all([
+        getTranslations("project.charroi.submission_detail"),
+        requirePermission({
+            permissions: { checklistSubmission: ["read"] },
+        }),
+    ]);
 
     const submission = await prisma.checklistSubmission.findFirst({
         where: {
@@ -69,7 +64,11 @@ export default async function CharroiSubmissionDetailPage({ submissionId }) {
                     category: true,
                 },
             },
-            photos: true,
+            photos: {
+                where: {
+                    status: CHECKLIST_PHOTO_ACTIVE_STATUS,
+                },
+            },
         },
     });
 
@@ -79,14 +78,17 @@ export default async function CharroiSubmissionDetailPage({ submissionId }) {
 
     const schema = submission.schemaSnapshotJson;
     const responses = submission.responseJson;
-    const photosByFieldId = submission.photos.reduce((acc, photo) => {
-        if (!acc[photo.fieldId]) {
-            acc[photo.fieldId] = [];
-        }
-
-        acc[photo.fieldId].push(photo);
-        return acc;
-    }, {});
+    const historicalPhotos = submission.assignmentId
+        ? await getActiveChecklistPhotosByAssignment({
+              assignmentId: submission.assignmentId,
+              prismaClient: prisma,
+              schema,
+          })
+        : submission.photos;
+    const photosByFieldId = buildHistoricalChecklistPhotosByFieldId({
+        schema,
+        photos: historicalPhotos,
+    });
 
     return (
         <div className="flex flex-col gap-6">

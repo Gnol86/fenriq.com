@@ -1,5 +1,6 @@
 "use client";
 
+import { ChecklistPhotoGallery } from "@project/components/charroi/checklist-photo-gallery";
 import { createChecklistInitialResponses } from "@project/lib/charroi/public-checklist-prefill";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -14,19 +15,26 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 const EMPTY_PHOTOS_BY_FIELD_ID = {};
+const EMPTY_REMOVED_HISTORICAL_PHOTO_IDS = [];
 
 export const createInitialResponses = createChecklistInitialResponses;
 
 function ChecklistFieldControl({
     disabled,
     field,
+    historicalPhotosByFieldId,
+    historicalPhotosLabel,
+    markPhotoForDeletionLabel,
     onFileUpload,
-    previousPhotosByFieldId,
-    previousPhotosHelpText,
-    previousPhotosLabel,
+    onHistoricalPhotoRemove,
+    onHistoricalPhotoRestore,
+    removedHistoricalPhotoIds,
+    removedHistoricalPhotoName,
+    restoreHistoricalPhotoLabel,
     onValueChange,
     responses,
     selectPlaceholder,
+    uploadedPhotosLabel,
     uploadedPhotosByFieldId,
 }) {
     const value = responses[field.id];
@@ -130,30 +138,35 @@ function ChecklistFieldControl({
                     </div>
                 </div>
             );
-        case "photo":
+        case "photo": {
+            const historicalPhotos = historicalPhotosByFieldId[field.id] ?? [];
+
             return (
                 <div className="flex flex-col gap-2">
-                    {(previousPhotosByFieldId[field.id] ?? []).length > 0 ? (
-                        <div className="flex flex-col gap-2 rounded-md border p-3">
-                            <span className="text-sm font-medium">{previousPhotosLabel}</span>
-                            <div className="flex flex-col gap-1">
-                                {(previousPhotosByFieldId[field.id] ?? []).map(photo => (
-                                    <a
-                                        key={photo.id}
-                                        href={photo.url}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="text-sm underline"
-                                    >
-                                        {photo.originalName}
-                                    </a>
-                                ))}
-                            </div>
-                            {previousPhotosHelpText ? (
-                                <p className="text-muted-foreground text-xs">
-                                    {previousPhotosHelpText}
-                                </p>
-                            ) : null}
+                    {historicalPhotos.length > 0 ? (
+                        <div className="rounded-md border p-3">
+                            <ChecklistPhotoGallery
+                                label={historicalPhotosLabel}
+                                photos={historicalPhotos}
+                                mutedPhotoIds={removedHistoricalPhotoIds}
+                                mutedPhotoName={removedHistoricalPhotoName}
+                                mutedPhotoNameClassName="text-destructive font-medium"
+                                getPhotoActionLabel={photo =>
+                                    removedHistoricalPhotoIds.includes(photo.id)
+                                        ? restoreHistoricalPhotoLabel
+                                        : markPhotoForDeletionLabel
+                                }
+                                getPhotoActionVariant={photo =>
+                                    removedHistoricalPhotoIds.includes(photo.id)
+                                        ? "ghost"
+                                        : "outline"
+                                }
+                                onPhotoAction={photoId =>
+                                    removedHistoricalPhotoIds.includes(photoId)
+                                        ? onHistoricalPhotoRestore(photoId)
+                                        : onHistoricalPhotoRemove(photoId)
+                                }
+                            />
                         </div>
                     ) : null}
                     <Input
@@ -164,21 +177,17 @@ function ChecklistFieldControl({
                         disabled={disabled}
                         onChange={event => onFileUpload(field.id, event.target.files)}
                     />
-                    <div className="flex flex-col gap-1">
-                        {(uploadedPhotosByFieldId[field.id] ?? []).map(photo => (
-                            <a
-                                key={photo.id}
-                                href={photo.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-sm underline"
-                            >
-                                {photo.originalName}
-                            </a>
-                        ))}
-                    </div>
+                    {(uploadedPhotosByFieldId[field.id] ?? []).length > 0 ? (
+                        <div className="rounded-md border p-3">
+                            <ChecklistPhotoGallery
+                                label={uploadedPhotosLabel}
+                                photos={uploadedPhotosByFieldId[field.id] ?? []}
+                            />
+                        </div>
+                    ) : null}
                 </div>
             );
+        }
         default:
             return null;
     }
@@ -188,14 +197,20 @@ export function ChecklistFormRenderer({
     className = "",
     disabled = false,
     hideFieldMeta = false,
+    historicalPhotosByFieldId = EMPTY_PHOTOS_BY_FIELD_ID,
+    historicalPhotosLabel = "",
+    markPhotoForDeletionLabel = "",
     onFileUpload = () => {},
+    onHistoricalPhotoRemove = () => {},
+    onHistoricalPhotoRestore = () => {},
     onValueChange = () => {},
-    previousPhotosByFieldId = EMPTY_PHOTOS_BY_FIELD_ID,
-    previousPhotosHelpText = "",
-    previousPhotosLabel = "",
+    removedHistoricalPhotoIds = EMPTY_REMOVED_HISTORICAL_PHOTO_IDS,
+    removedHistoricalPhotoName = "",
+    restoreHistoricalPhotoLabel = "",
     responses,
     schema,
     selectPlaceholder,
+    uploadedPhotosLabel = "",
     uploadedPhotosByFieldId = EMPTY_PHOTOS_BY_FIELD_ID,
 }) {
     return (
@@ -223,13 +238,19 @@ export function ChecklistFormRenderer({
                             <ChecklistFieldControl
                                 disabled={disabled}
                                 field={field}
+                                historicalPhotosByFieldId={historicalPhotosByFieldId}
+                                historicalPhotosLabel={historicalPhotosLabel}
+                                markPhotoForDeletionLabel={markPhotoForDeletionLabel}
                                 onFileUpload={onFileUpload}
+                                onHistoricalPhotoRemove={onHistoricalPhotoRemove}
+                                onHistoricalPhotoRestore={onHistoricalPhotoRestore}
                                 onValueChange={onValueChange}
-                                previousPhotosByFieldId={previousPhotosByFieldId}
-                                previousPhotosHelpText={previousPhotosHelpText}
-                                previousPhotosLabel={previousPhotosLabel}
+                                removedHistoricalPhotoIds={removedHistoricalPhotoIds}
+                                removedHistoricalPhotoName={removedHistoricalPhotoName}
+                                restoreHistoricalPhotoLabel={restoreHistoricalPhotoLabel}
                                 responses={responses}
                                 selectPlaceholder={selectPlaceholder}
+                                uploadedPhotosLabel={uploadedPhotosLabel}
                                 uploadedPhotosByFieldId={uploadedPhotosByFieldId}
                             />
                         </div>

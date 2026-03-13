@@ -15,6 +15,7 @@ export function PublicChecklistForm({ assignment }) {
     const [rememberSubmitterName, setRememberSubmitterName] = useState(
         assignment.hasRememberedSubmitterName
     );
+    const [removedHistoricalPhotoIds, setRemovedHistoricalPhotoIds] = useState([]);
     const [responses, setResponses] = useState(assignment.initialResponses);
     const [isPending, setIsPending] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -71,6 +72,7 @@ export function PublicChecklistForm({ assignment }) {
                 submitterName,
                 rememberSubmitterName,
                 draftUploadKey,
+                removedHistoricalPhotoIds,
                 responses,
             }),
         });
@@ -84,6 +86,15 @@ export function PublicChecklistForm({ assignment }) {
         }
 
         toast.success(t("submit_success"));
+
+        if ((payload.photoCleanup?.pendingRetryCount ?? 0) > 0) {
+            toast.error(
+                t("photo_cleanup_pending_warning", {
+                    count: payload.photoCleanup.pendingRetryCount,
+                })
+            );
+        }
+
         setIsSubmitted(true);
     };
 
@@ -136,9 +147,23 @@ export function PublicChecklistForm({ assignment }) {
                     }))
                 }
                 onFileUpload={handleFileUpload}
-                previousPhotosByFieldId={assignment.previousPhotosByFieldId}
-                previousPhotosHelpText={t("previous_photos_hint")}
-                previousPhotosLabel={t("previous_photos_label")}
+                historicalPhotosByFieldId={assignment.historicalPhotosByFieldId}
+                removedHistoricalPhotoIds={removedHistoricalPhotoIds}
+                onHistoricalPhotoRemove={photoId =>
+                    setRemovedHistoricalPhotoIds(current =>
+                        current.includes(photoId) ? current : [...current, photoId]
+                    )
+                }
+                onHistoricalPhotoRestore={photoId =>
+                    setRemovedHistoricalPhotoIds(current =>
+                        current.filter(currentPhotoId => currentPhotoId !== photoId)
+                    )
+                }
+                historicalPhotosLabel={t("historical_photos_label")}
+                markPhotoForDeletionLabel={t("mark_photo_for_deletion_button")}
+                removedHistoricalPhotoName={t("removed_historical_photo_name")}
+                restoreHistoricalPhotoLabel={t("restore_historical_photo_button")}
+                uploadedPhotosLabel={t("uploaded_photos_label")}
                 uploadedPhotosByFieldId={uploadedPhotosByFieldId}
                 selectPlaceholder={t("select_placeholder")}
             />
