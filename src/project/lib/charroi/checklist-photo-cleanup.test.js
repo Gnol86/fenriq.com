@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
     buildHistoricalChecklistPhotosByFieldId,
+    deleteTemporaryChecklistPhoto,
     processChecklistPhotoDeletionBatch,
 } from "@project/lib/charroi/checklist-photo-cleanup";
 
@@ -114,5 +115,89 @@ describe("checklist photo cleanup helpers", () => {
             pendingRetryCount: 1,
         });
         expect(failures).toEqual([["photo-1", "S3 unavailable"]]);
+    });
+
+    test("deletes a temporary uploaded photo from storage and database", async () => {
+        const calls = [];
+        const deletedPhoto = await deleteTemporaryChecklistPhoto({
+            assignmentId: "assignment-1",
+            draftUploadKey: "draft-1",
+            photoId: "photo-1",
+            prismaClient: {
+                checklistPhoto: {
+                    findFirst: async () => ({
+                        id: "photo-1",
+                        storageKey: "drafts/photo-1.jpg",
+                    }),
+                    delete: async ({ where }) => {
+                        calls.push(["db-delete", where.id]);
+                    },
+                },
+            },
+            storageClient: {
+                send: async command => {
+                    calls.push(["storage-delete", command.input.Key]);
+                },
+            },
+        });
+
+        expect(deletedPhoto).toEqual({
+            id: "photo-1",
+            storageKey: "drafts/photo-1.jpg",
+        });
+        expect(calls).toEqual([
+            ["storage-delete", "drafts/photo-1.jpg"],
+            ["db-delete", "photo-1"],
+        ]);
+    });
+
+    test("returns null when the temporary uploaded photo does not belong to the draft", async () => {
+        const deletedPhoto = await deleteTemporaryChecklistPhoto({
+            assignmentId: "assignment-1",
+            draftUploadKey: "draft-1",
+            photoId: "photo-1",
+            prismaClient: {
+                checklistPhoto: {
+                    findFirst: async () => null,
+                },
+            },
+            storageClient: {
+                send: async () => {
+                    throw new Error("should not be called");
+                },
+            },
+        });
+
+        expect(deletedPhoto).toBeNull();
+    });
+
+    test("does not delete the database row when storage deletion fails", async () => {
+        const calls = [];
+
+        await expect(
+            deleteTemporaryChecklistPhoto({
+                assignmentId: "assignment-1",
+                draftUploadKey: "draft-1",
+                photoId: "photo-1",
+                prismaClient: {
+                    checklistPhoto: {
+                        findFirst: async () => ({
+                            id: "photo-1",
+                            storageKey: "drafts/photo-1.jpg",
+                        }),
+                        delete: async () => {
+                            calls.push(["db-delete"]);
+                        },
+                    },
+                },
+                storageClient: {
+                    send: async () => {
+                        throw new Error("S3 unavailable");
+                    },
+                },
+            })
+        ).rejects.toThrow("S3 unavailable");
+
+        expect(calls).toEqual([]);
     });
 });

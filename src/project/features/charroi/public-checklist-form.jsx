@@ -19,6 +19,7 @@ export function PublicChecklistForm({ assignment }) {
     const [responses, setResponses] = useState(assignment.initialResponses);
     const [isPending, setIsPending] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [pendingUploadedPhotoActionIds, setPendingUploadedPhotoActionIds] = useState([]);
     const [uploadedPhotosByFieldId, setUploadedPhotosByFieldId] = useState({});
     const [draftUploadKey] = useState(() => crypto.randomUUID());
 
@@ -57,6 +58,48 @@ export function PublicChecklistForm({ assignment }) {
             [fieldId]: [...(current[fieldId] ?? []), ...payload.photos.map(photo => photo.id)],
         }));
         toast.success(t("upload_success"));
+    };
+
+    const handleUploadedPhotoCancel = async (fieldId, photoId) => {
+        if (pendingUploadedPhotoActionIds.includes(photoId)) {
+            return;
+        }
+
+        setPendingUploadedPhotoActionIds(current => [...current, photoId]);
+
+        const response = await fetch(
+            `/api/public/checklists/${assignment.publicToken}/uploads/${photoId}`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    draftUploadKey,
+                }),
+            }
+        );
+        const payload = await response.json();
+
+        setPendingUploadedPhotoActionIds(current =>
+            current.filter(currentPhotoId => currentPhotoId !== photoId)
+        );
+
+        if (!response.ok) {
+            toast.error(payload.error ?? t("cancel_uploaded_photo_error"));
+            return;
+        }
+
+        setUploadedPhotosByFieldId(current => ({
+            ...current,
+            [fieldId]: (current[fieldId] ?? []).filter(photo => photo.id !== photoId),
+        }));
+        setResponses(current => ({
+            ...current,
+            [fieldId]: (current[fieldId] ?? []).filter(
+                currentPhotoId => currentPhotoId !== photoId
+            ),
+        }));
     };
 
     const handleSubmit = async event => {
@@ -159,10 +202,14 @@ export function PublicChecklistForm({ assignment }) {
                         current.filter(currentPhotoId => currentPhotoId !== photoId)
                     )
                 }
+                onUploadedPhotoCancel={handleUploadedPhotoCancel}
+                pendingUploadedPhotoActionIds={pendingUploadedPhotoActionIds}
                 historicalPhotosLabel={t("historical_photos_label")}
                 markPhotoForDeletionLabel={t("mark_photo_for_deletion_button")}
                 removedHistoricalPhotoName={t("removed_historical_photo_name")}
                 restoreHistoricalPhotoLabel={t("restore_historical_photo_button")}
+                addPhotoButtonLabel={t("add_photo_button")}
+                cancelUploadedPhotoButtonLabel={t("cancel_uploaded_photo_button")}
                 uploadedPhotosLabel={t("uploaded_photos_label")}
                 uploadedPhotosByFieldId={uploadedPhotosByFieldId}
                 selectPlaceholder={t("select_placeholder")}

@@ -2,6 +2,7 @@
 
 import { ChecklistPhotoGallery } from "@project/components/charroi/checklist-photo-gallery";
 import { createChecklistInitialResponses } from "@project/lib/charroi/public-checklist-prefill";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,9 +29,13 @@ function ChecklistFieldControl({
     onFileUpload,
     onHistoricalPhotoRemove,
     onHistoricalPhotoRestore,
+    onUploadedPhotoCancel,
+    pendingUploadedPhotoActionIds,
     removedHistoricalPhotoIds,
     removedHistoricalPhotoName,
     restoreHistoricalPhotoLabel,
+    addPhotoButtonLabel,
+    cancelUploadedPhotoButtonLabel,
     onValueChange,
     responses,
     selectPlaceholder,
@@ -140,51 +145,58 @@ function ChecklistFieldControl({
             );
         case "photo": {
             const historicalPhotos = historicalPhotosByFieldId[field.id] ?? [];
+            const fileInputId = `${field.id}-upload`;
 
             return (
                 <div className="flex flex-col gap-2">
                     {historicalPhotos.length > 0 ? (
-                        <div className="rounded-md border p-3">
-                            <ChecklistPhotoGallery
-                                label={historicalPhotosLabel}
-                                photos={historicalPhotos}
-                                mutedPhotoIds={removedHistoricalPhotoIds}
-                                mutedPhotoName={removedHistoricalPhotoName}
-                                mutedPhotoNameClassName="text-destructive font-medium"
-                                getPhotoActionLabel={photo =>
-                                    removedHistoricalPhotoIds.includes(photo.id)
-                                        ? restoreHistoricalPhotoLabel
-                                        : markPhotoForDeletionLabel
-                                }
-                                getPhotoActionVariant={photo =>
-                                    removedHistoricalPhotoIds.includes(photo.id)
-                                        ? "ghost"
-                                        : "outline"
-                                }
-                                onPhotoAction={photoId =>
-                                    removedHistoricalPhotoIds.includes(photoId)
-                                        ? onHistoricalPhotoRestore(photoId)
-                                        : onHistoricalPhotoRemove(photoId)
-                                }
-                            />
-                        </div>
+                        <ChecklistPhotoGallery
+                            label={historicalPhotosLabel}
+                            photos={historicalPhotos}
+                            mutedPhotoIds={removedHistoricalPhotoIds}
+                            mutedPhotoName={removedHistoricalPhotoName}
+                            mutedPhotoNameClassName="text-destructive font-medium"
+                            getPhotoActionLabel={photo =>
+                                removedHistoricalPhotoIds.includes(photo.id)
+                                    ? restoreHistoricalPhotoLabel
+                                    : markPhotoForDeletionLabel
+                            }
+                            getPhotoActionVariant={photo =>
+                                removedHistoricalPhotoIds.includes(photo.id) ? "ghost" : "outline"
+                            }
+                            onPhotoAction={photoId =>
+                                removedHistoricalPhotoIds.includes(photoId)
+                                    ? onHistoricalPhotoRestore(photoId)
+                                    : onHistoricalPhotoRemove(photoId)
+                            }
+                        />
                     ) : null}
                     <Input
-                        id={field.id}
+                        id={fileInputId}
                         type="file"
+                        className="hidden"
                         accept="image/*"
                         multiple
                         disabled={disabled}
                         onChange={event => onFileUpload(field.id, event.target.files)}
                     />
                     {(uploadedPhotosByFieldId[field.id] ?? []).length > 0 ? (
-                        <div className="rounded-md border p-3">
-                            <ChecklistPhotoGallery
-                                label={uploadedPhotosLabel}
-                                photos={uploadedPhotosByFieldId[field.id] ?? []}
-                            />
-                        </div>
+                        <ChecklistPhotoGallery
+                            label={uploadedPhotosLabel}
+                            actionLabel={cancelUploadedPhotoButtonLabel}
+                            disabledPhotoActionIds={pendingUploadedPhotoActionIds}
+                            onPhotoAction={photoId => onUploadedPhotoCancel(field.id, photoId)}
+                            photos={uploadedPhotosByFieldId[field.id] ?? []}
+                        />
                     ) : null}
+                    <Button
+                        type="button"
+                        variant="outline"
+                        disabled={disabled}
+                        onClick={() => document.getElementById(fileInputId)?.click()}
+                    >
+                        {addPhotoButtonLabel}
+                    </Button>
                 </div>
             );
         }
@@ -203,10 +215,14 @@ export function ChecklistFormRenderer({
     onFileUpload = () => {},
     onHistoricalPhotoRemove = () => {},
     onHistoricalPhotoRestore = () => {},
+    onUploadedPhotoCancel = () => {},
     onValueChange = () => {},
+    pendingUploadedPhotoActionIds = EMPTY_REMOVED_HISTORICAL_PHOTO_IDS,
     removedHistoricalPhotoIds = EMPTY_REMOVED_HISTORICAL_PHOTO_IDS,
     removedHistoricalPhotoName = "",
     restoreHistoricalPhotoLabel = "",
+    addPhotoButtonLabel = "",
+    cancelUploadedPhotoButtonLabel = "",
     responses,
     schema,
     selectPlaceholder,
@@ -244,10 +260,14 @@ export function ChecklistFormRenderer({
                                 onFileUpload={onFileUpload}
                                 onHistoricalPhotoRemove={onHistoricalPhotoRemove}
                                 onHistoricalPhotoRestore={onHistoricalPhotoRestore}
+                                onUploadedPhotoCancel={onUploadedPhotoCancel}
                                 onValueChange={onValueChange}
+                                pendingUploadedPhotoActionIds={pendingUploadedPhotoActionIds}
                                 removedHistoricalPhotoIds={removedHistoricalPhotoIds}
                                 removedHistoricalPhotoName={removedHistoricalPhotoName}
                                 restoreHistoricalPhotoLabel={restoreHistoricalPhotoLabel}
+                                addPhotoButtonLabel={addPhotoButtonLabel}
+                                cancelUploadedPhotoButtonLabel={cancelUploadedPhotoButtonLabel}
                                 responses={responses}
                                 selectPlaceholder={selectPlaceholder}
                                 uploadedPhotosLabel={uploadedPhotosLabel}

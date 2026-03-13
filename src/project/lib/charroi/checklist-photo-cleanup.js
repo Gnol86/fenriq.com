@@ -71,6 +71,51 @@ export async function getActiveChecklistPhotosByAssignment({
     });
 }
 
+export async function deleteTemporaryChecklistPhoto({
+    assignmentId,
+    draftUploadKey,
+    photoId,
+    prismaClient = prisma,
+    storageClient = s3Client,
+}) {
+    if (!assignmentId || !draftUploadKey || !photoId) {
+        return null;
+    }
+
+    const photo = await prismaClient.checklistPhoto.findFirst({
+        where: {
+            id: photoId,
+            assignmentId,
+            tempUploadKey: draftUploadKey,
+            submissionId: null,
+            status: CHECKLIST_PHOTO_ACTIVE_STATUS,
+        },
+        select: {
+            id: true,
+            storageKey: true,
+        },
+    });
+
+    if (!photo) {
+        return null;
+    }
+
+    await storageClient.send(
+        new DeleteObjectCommand({
+            Bucket: process.env.AWS_S3_BUCKET,
+            Key: photo.storageKey,
+        })
+    );
+
+    await prismaClient.checklistPhoto.delete({
+        where: {
+            id: photo.id,
+        },
+    });
+
+    return photo;
+}
+
 export async function processChecklistPhotoDeletionBatch({
     photos,
     deleteFromStorage,

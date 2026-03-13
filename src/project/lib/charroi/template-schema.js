@@ -129,3 +129,7 @@ export const publicChecklistSubmitSchema = z.object({
     removedHistoricalPhotoIds: z.array(nonEmptyText).optional().default([]),
     responses: z.record(z.string(), z.any()),
 });
+
+export const publicChecklistDeleteUploadSchema = z.object({
+    draftUploadKey: nonEmptyText,
+});

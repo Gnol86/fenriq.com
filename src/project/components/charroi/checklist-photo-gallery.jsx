@@ -7,12 +7,14 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 const EMPTY_PHOTOS = [];
+const EMPTY_DISABLED_PHOTO_ACTION_IDS = [];
 const EMPTY_MUTED_PHOTO_IDS = [];
 
 export function ChecklistPhotoGallery({
     actionLabel = "",
     actionVariant = "outline",
     emptyLabel = "",
+    disabledPhotoActionIds = EMPTY_DISABLED_PHOTO_ACTION_IDS,
     getPhotoActionLabel = null,
     getPhotoActionVariant = null,
     label = "",
@@ -83,6 +85,7 @@ export function ChecklistPhotoGallery({
                                         type="button"
                                         variant={resolvedActionVariant}
                                         size="xs"
+                                        disabled={disabledPhotoActionIds.includes(photo.id)}
                                         onClick={() => onPhotoAction(photo.id)}
                                     >
                                         {resolvedActionLabel}
