@@ -9,6 +9,48 @@ function createId(prefix) {
     return `${prefix}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
+function normalizeChecklistOptionValue(value) {
+    return String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/['’]/g, " ")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 80);
+}
+
+export function buildChecklistOptionValueFromLabel({
+    label,
+    options = [],
+    optionId,
+    fallbackValue = "option",
+}) {
+    const baseValue =
+        normalizeChecklistOptionValue(label) ||
+        normalizeChecklistOptionValue(fallbackValue) ||
+        "option";
+    const usedValues = new Set(
+        options
+            .filter(option => option.id !== optionId)
+            .map(option => option.value)
+            .filter(Boolean)
+    );
+
+    if (!usedValues.has(baseValue)) {
+        return baseValue;
+    }
+
+    let suffix = 2;
+
+    while (usedValues.has(`${baseValue}-${suffix}`)) {
+        suffix += 1;
+    }
+
+    return `${baseValue}-${suffix}`;
+}
+
 export function createChecklistOption(overrides = {}) {
     const id = createId("option");
 

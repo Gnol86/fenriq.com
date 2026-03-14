@@ -3,7 +3,10 @@
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { createChecklistOption } from "@project/lib/charroi/checklist-builder-defaults";
+import {
+    buildChecklistOptionValueFromLabel,
+    createChecklistOption,
+} from "@project/lib/charroi/checklist-builder-defaults";
 import { reorderItems } from "@project/lib/charroi/checklist-builder-utils";
 import { CHECKLIST_FIELD_TYPES } from "@project/lib/charroi/constants";
 import { useTranslations } from "next-intl";
@@ -148,24 +151,42 @@ export function FieldInspectorForm({
                                                     />
                                                     <Input
                                                         value={option.label}
-                                                        onChange={event =>
+                                                        onChange={event => {
+                                                            const nextLabel = event.target.value;
+
                                                             onOptionsChange(
                                                                 field.options.map(currentOption =>
                                                                     currentOption.id === option.id
                                                                         ? {
                                                                               ...currentOption,
-                                                                              label: event.target
-                                                                                  .value,
+                                                                              label: nextLabel,
+                                                                              value:
+                                                                                  field.type ===
+                                                                                  "single_select"
+                                                                                      ? buildChecklistOptionValueFromLabel(
+                                                                                            {
+                                                                                                label: nextLabel,
+                                                                                                options:
+                                                                                                    field.options,
+                                                                                                optionId:
+                                                                                                    option.id,
+                                                                                                fallbackValue:
+                                                                                                    currentOption.value ||
+                                                                                                    currentOption.id,
+                                                                                            }
+                                                                                        )
+                                                                                      : currentOption.value,
                                                                           }
                                                                         : currentOption
                                                                 )
-                                                            )
-                                                        }
+                                                            );
+                                                        }}
                                                     />
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-10" />
                                                     <Input
+                                                        disabled
                                                         value={option.value}
                                                         onChange={event =>
                                                             onOptionsChange(
