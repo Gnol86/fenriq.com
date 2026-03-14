@@ -212,6 +212,7 @@ model ChecklistIssue {
     ruleTitle            String
     description          String?
     triggeredFieldIdsJson Json?
+    notificationTriggered Boolean            @default(false)
     createdAt            DateTime            @default(now())
 
     @@index([organizationId, categoryId])

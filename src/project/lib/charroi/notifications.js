@@ -131,6 +131,7 @@ export async function dispatchChecklistSubmissionNotifications({ submissionId })
                     categoryId: {
                         not: null,
                     },
+                    notificationTriggered: true,
                 },
                 include: {
                     category: true,
@@ -319,6 +320,7 @@ export async function runChecklistDigestDispatch({ now = new Date() } = {}) {
                         issues: {
                             where: {
                                 categoryId: category.id,
+                                notificationTriggered: true,
                             },
                         },
                     },

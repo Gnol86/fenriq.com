@@ -3,9 +3,9 @@ import {
     CHECKLIST_DELIVERY_MODES,
     CHECKLIST_FIELD_TYPES,
     CHECKLIST_RULE_COMBINATORS,
-    CHECKLIST_RULE_OPERATORS,
 } from "./constants";
 import { isValidCronExpression } from "./cron";
+import { CHECKLIST_RULE_OPERATORS, validateChecklistRuleConditionShape } from "./rule-operators";
 
 const nonEmptyText = z.string().trim().min(1);
 
@@ -46,10 +46,12 @@ export const checklistSectionSchema = z.object({
 });
 
 export const checklistRuleConditionSchema = z.object({
+    id: nonEmptyText,
     fieldId: nonEmptyText,
     operator: z.enum(CHECKLIST_RULE_OPERATORS),
     value: z.any().optional(),
     secondValue: z.any().optional(),
+    repeatOnTrueChange: z.boolean().optional().default(false),
 });
 
 export const checklistRuleSchema = z.object({
@@ -61,10 +63,48 @@ export const checklistRuleSchema = z.object({
     conditions: z.array(checklistRuleConditionSchema).min(1),
 });
 
-export const checklistTemplateSchemaJsonSchema = z.object({
-    sections: z.array(checklistSectionSchema).min(1),
-    rules: z.array(checklistRuleSchema).default([]),
-});
+export const checklistTemplateSchemaJsonSchema = z
+    .object({
+        sections: z.array(checklistSectionSchema).min(1),
+        rules: z.array(checklistRuleSchema).default([]),
+    })
+    .superRefine((schema, context) => {
+        const fieldMap = schema.sections.reduce((accumulator, section) => {
+            for (const field of section.fields) {
+                accumulator.set(field.id, field);
+            }
+
+            return accumulator;
+        }, new Map());
+
+        schema.rules.forEach((rule, ruleIndex) => {
+            rule.conditions.forEach((condition, conditionIndex) => {
+                const field = fieldMap.get(condition.fieldId);
+
+                if (!field) {
+                    context.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: "The referenced field does not exist",
+                        path: ["rules", ruleIndex, "conditions", conditionIndex, "fieldId"],
+                    });
+                    return;
+                }
+
+                const result = validateChecklistRuleConditionShape({
+                    condition,
+                    field,
+                });
+
+                if (!result.isValid) {
+                    context.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: result.message,
+                        path: ["rules", ruleIndex, "conditions", conditionIndex, "operator"],
+                    });
+                }
+            });
+        });
+    });
 
 export const checklistTemplateInputSchema = z.object({
     name: nonEmptyText.max(120),

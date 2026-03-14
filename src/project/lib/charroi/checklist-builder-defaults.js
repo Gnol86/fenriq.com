@@ -1,4 +1,5 @@
-import { CHECKLIST_FIELD_TYPES, CHECKLIST_RULE_OPERATORS } from "./constants";
+import { CHECKLIST_FIELD_TYPES } from "./constants";
+import { CHECKLIST_RULE_OPERATORS } from "./rule-operators";
 
 function createId(prefix) {
     if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
@@ -78,6 +79,7 @@ export function createChecklistRuleCondition(overrides = {}) {
         operator: CHECKLIST_RULE_OPERATORS[0],
         value: "",
         secondValue: "",
+        repeatOnTrueChange: false,
         ...overrides,
     };
 }

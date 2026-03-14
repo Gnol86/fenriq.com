@@ -20,6 +20,7 @@ const schema = {
                     description: "",
                     placeholder: "",
                     required: false,
+                    photoCommentRequired: false,
                     options: [],
                 },
             ],

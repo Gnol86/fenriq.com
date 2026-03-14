@@ -5,9 +5,21 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { createChecklistRuleCondition } from "@project/lib/charroi/checklist-builder-defaults";
 import { reorderItems } from "@project/lib/charroi/checklist-builder-utils";
-import { CHECKLIST_RULE_OPERATORS } from "@project/lib/charroi/constants";
+import {
+    getChecklistBuilderFieldOption,
+    normalizeRuleConditionForField,
+    normalizeRuleConditionForOperator,
+} from "@project/lib/charroi/checklist-template-builder-helpers";
+import {
+    getChecklistRuleConditionValueInput,
+    getChecklistRuleOperatorDefinition,
+    getChecklistRuleOperatorsForFieldType,
+    isChecklistRuleLegacyOperator,
+    isChecklistRuleOperatorCompatibleWithFieldType,
+} from "@project/lib/charroi/rule-operators";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -21,6 +33,43 @@ import { Textarea } from "@/components/ui/textarea";
 import { RuleCategoryCombobox } from "./rule-category-combobox";
 import { SortableBlock } from "./sortable-block";
 import { SortableHandle } from "./sortable-handle";
+
+function getOperatorLabel(operator, t) {
+    const definition = getChecklistRuleOperatorDefinition(operator);
+
+    if (!definition) {
+        return operator;
+    }
+
+    return t(definition.labelKey);
+}
+
+function getConditionOperatorOptions(condition, selectedFieldOption) {
+    if (!selectedFieldOption) {
+        return condition.operator ? [condition.operator] : [];
+    }
+
+    const operators = getChecklistRuleOperatorsForFieldType(selectedFieldOption.type);
+
+    if (
+        condition.operator &&
+        isChecklistRuleLegacyOperator(condition.operator) &&
+        isChecklistRuleOperatorCompatibleWithFieldType({
+            fieldType: selectedFieldOption.type,
+            operator: condition.operator,
+        })
+    ) {
+        operators.push(condition.operator);
+    }
+
+    return [...new Set(operators)];
+}
+
+function updateConditionList(conditions, conditionId, updater) {
+    return conditions.map(condition =>
+        condition.id === conditionId ? updater(condition) : condition
+    );
+}
 
 export function RuleInspectorForm({
     categories,
@@ -103,9 +152,23 @@ export function RuleInspectorForm({
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() =>
-                            onConditionsChange([...rule.conditions, createChecklistRuleCondition()])
-                        }
+                        onClick={() => {
+                            const nextCondition = createChecklistRuleCondition();
+                            const firstFieldOption = fieldOptions[0] ?? null;
+
+                            onConditionsChange([
+                                ...rule.conditions,
+                                firstFieldOption
+                                    ? normalizeRuleConditionForField({
+                                          condition: {
+                                              ...nextCondition,
+                                              fieldId: firstFieldOption.id,
+                                          },
+                                          fieldOption: firstFieldOption,
+                                      })
+                                    : nextCondition,
+                            ]);
+                        }}
                     >
                         {t("add_condition")}
                     </Button>
@@ -131,16 +194,25 @@ export function RuleInspectorForm({
                     >
                         <div className="flex flex-col gap-2">
                             {rule.conditions.map(condition => {
-                                const selectedFieldOption = fieldOptions.find(
-                                    option => option.id === condition.fieldId
+                                const selectedFieldOption = getChecklistBuilderFieldOption(
+                                    fieldOptions,
+                                    condition.fieldId
                                 );
-                                const selectedFieldType = selectedFieldOption?.type;
-                                const needsSecondValue = condition.operator === "between";
-                                const shouldHideValue = [
-                                    "checked",
-                                    "unchecked",
-                                    "notEmpty",
-                                ].includes(condition.operator);
+                                const operatorOptions = getConditionOperatorOptions(
+                                    condition,
+                                    selectedFieldOption
+                                );
+                                const operatorDefinition = getChecklistRuleOperatorDefinition(
+                                    condition.operator
+                                );
+                                const valueInput = getChecklistRuleConditionValueInput(
+                                    condition.operator,
+                                    selectedFieldOption?.type
+                                );
+                                const shouldRenderValue =
+                                    valueInput !== "none" || condition.operator === "between";
+                                const supportsRepeatOnTrueChange =
+                                    operatorDefinition?.supportsRepeatOnTrueChange === true;
 
                                 return (
                                     <SortableBlock key={condition.id} id={condition.id}>
@@ -184,21 +256,32 @@ export function RuleInspectorForm({
                                                         <Label>{t("condition_field_label")}</Label>
                                                         <Select
                                                             value={condition.fieldId}
-                                                            onValueChange={value =>
+                                                            onValueChange={value => {
+                                                                const nextFieldOption =
+                                                                    getChecklistBuilderFieldOption(
+                                                                        fieldOptions,
+                                                                        value
+                                                                    );
+
                                                                 onConditionsChange(
-                                                                    rule.conditions.map(
+                                                                    updateConditionList(
+                                                                        rule.conditions,
+                                                                        condition.id,
                                                                         currentCondition =>
-                                                                            currentCondition.id ===
-                                                                            condition.id
-                                                                                ? {
-                                                                                      ...currentCondition,
-                                                                                      fieldId:
-                                                                                          value,
-                                                                                  }
-                                                                                : currentCondition
+                                                                            normalizeRuleConditionForField(
+                                                                                {
+                                                                                    condition: {
+                                                                                        ...currentCondition,
+                                                                                        fieldId:
+                                                                                            value,
+                                                                                    },
+                                                                                    fieldOption:
+                                                                                        nextFieldOption,
+                                                                                }
+                                                                            )
                                                                     )
-                                                                )
-                                                            }
+                                                                );
+                                                            }}
                                                         >
                                                             <SelectTrigger>
                                                                 <SelectValue
@@ -230,81 +313,244 @@ export function RuleInspectorForm({
                                                         </Label>
                                                         <Select
                                                             value={condition.operator}
+                                                            disabled={!selectedFieldOption}
                                                             onValueChange={value =>
                                                                 onConditionsChange(
-                                                                    rule.conditions.map(
+                                                                    updateConditionList(
+                                                                        rule.conditions,
+                                                                        condition.id,
                                                                         currentCondition =>
-                                                                            currentCondition.id ===
-                                                                            condition.id
-                                                                                ? {
-                                                                                      ...currentCondition,
-                                                                                      operator:
-                                                                                          value,
-                                                                                  }
-                                                                                : currentCondition
+                                                                            normalizeRuleConditionForOperator(
+                                                                                {
+                                                                                    condition:
+                                                                                        currentCondition,
+                                                                                    fieldOption:
+                                                                                        selectedFieldOption,
+                                                                                    operator: value,
+                                                                                }
+                                                                            )
                                                                     )
                                                                 )
                                                             }
                                                         >
                                                             <SelectTrigger>
                                                                 <SelectValue>
-                                                                    {condition.operator}
+                                                                    {getOperatorLabel(
+                                                                        condition.operator,
+                                                                        t
+                                                                    )}
                                                                 </SelectValue>
                                                             </SelectTrigger>
                                                             <SelectContent>
-                                                                {CHECKLIST_RULE_OPERATORS.map(
-                                                                    operator => (
-                                                                        <SelectItem
-                                                                            key={operator}
-                                                                            value={operator}
-                                                                        >
-                                                                            {operator}
-                                                                        </SelectItem>
-                                                                    )
-                                                                )}
+                                                                {operatorOptions.map(operator => (
+                                                                    <SelectItem
+                                                                        key={operator}
+                                                                        value={operator}
+                                                                    >
+                                                                        {getOperatorLabel(
+                                                                            operator,
+                                                                            t
+                                                                        )}
+                                                                    </SelectItem>
+                                                                ))}
                                                             </SelectContent>
                                                         </Select>
                                                     </div>
                                                 </div>
-                                                {!shouldHideValue ? (
+                                                {shouldRenderValue ? (
                                                     <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
                                                         <div className="flex flex-col gap-2">
                                                             <Label>
                                                                 {t("condition_value_label")}
                                                             </Label>
-                                                            <Input
-                                                                value={condition.value ?? ""}
-                                                                placeholder={
-                                                                    selectedFieldType ===
-                                                                        "multi_select" ||
-                                                                    selectedFieldType ===
-                                                                        "single_select"
-                                                                        ? t(
-                                                                              "condition_value_option_hint"
-                                                                          )
-                                                                        : t(
-                                                                              "condition_value_placeholder"
-                                                                          )
-                                                                }
-                                                                onChange={event =>
-                                                                    onConditionsChange(
-                                                                        rule.conditions.map(
-                                                                            currentCondition =>
-                                                                                currentCondition.id ===
-                                                                                condition.id
-                                                                                    ? {
-                                                                                          ...currentCondition,
-                                                                                          value: event
-                                                                                              .target
-                                                                                              .value,
-                                                                                      }
-                                                                                    : currentCondition
+                                                            {valueInput === "number" ? (
+                                                                <Input
+                                                                    type="number"
+                                                                    value={condition.value ?? ""}
+                                                                    placeholder={t(
+                                                                        "condition_value_placeholder"
+                                                                    )}
+                                                                    onChange={event =>
+                                                                        onConditionsChange(
+                                                                            updateConditionList(
+                                                                                rule.conditions,
+                                                                                condition.id,
+                                                                                currentCondition => ({
+                                                                                    ...currentCondition,
+                                                                                    value: event
+                                                                                        .target
+                                                                                        .value,
+                                                                                })
+                                                                            )
                                                                         )
-                                                                    )
-                                                                }
-                                                            />
+                                                                    }
+                                                                />
+                                                            ) : null}
+                                                            {valueInput === "text" ? (
+                                                                <Input
+                                                                    value={condition.value ?? ""}
+                                                                    placeholder={t(
+                                                                        "condition_value_placeholder"
+                                                                    )}
+                                                                    onChange={event =>
+                                                                        onConditionsChange(
+                                                                            updateConditionList(
+                                                                                rule.conditions,
+                                                                                condition.id,
+                                                                                currentCondition => ({
+                                                                                    ...currentCondition,
+                                                                                    value: event
+                                                                                        .target
+                                                                                        .value,
+                                                                                })
+                                                                            )
+                                                                        )
+                                                                    }
+                                                                />
+                                                            ) : null}
+                                                            {valueInput === "single_select" ? (
+                                                                selectedFieldOption?.type ===
+                                                                    "single_select" &&
+                                                                selectedFieldOption.options.length >
+                                                                    0 ? (
+                                                                    <Select
+                                                                        value={
+                                                                            condition.value ?? ""
+                                                                        }
+                                                                        onValueChange={value =>
+                                                                            onConditionsChange(
+                                                                                updateConditionList(
+                                                                                    rule.conditions,
+                                                                                    condition.id,
+                                                                                    currentCondition => ({
+                                                                                        ...currentCondition,
+                                                                                        value,
+                                                                                    })
+                                                                                )
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <SelectTrigger>
+                                                                            <SelectValue
+                                                                                placeholder={t(
+                                                                                    "select_placeholder"
+                                                                                )}
+                                                                            >
+                                                                                {selectedFieldOption.options.find(
+                                                                                    option =>
+                                                                                        option.value ===
+                                                                                        condition.value
+                                                                                )?.label ?? null}
+                                                                            </SelectValue>
+                                                                        </SelectTrigger>
+                                                                        <SelectContent>
+                                                                            {selectedFieldOption.options.map(
+                                                                                option => (
+                                                                                    <SelectItem
+                                                                                        key={
+                                                                                            option.id
+                                                                                        }
+                                                                                        value={
+                                                                                            option.value
+                                                                                        }
+                                                                                    >
+                                                                                        {
+                                                                                            option.label
+                                                                                        }
+                                                                                    </SelectItem>
+                                                                                )
+                                                                            )}
+                                                                        </SelectContent>
+                                                                    </Select>
+                                                                ) : (
+                                                                    <Input
+                                                                        value={
+                                                                            condition.value ?? ""
+                                                                        }
+                                                                        placeholder={t(
+                                                                            "condition_value_placeholder"
+                                                                        )}
+                                                                        onChange={event =>
+                                                                            onConditionsChange(
+                                                                                updateConditionList(
+                                                                                    rule.conditions,
+                                                                                    condition.id,
+                                                                                    currentCondition => ({
+                                                                                        ...currentCondition,
+                                                                                        value: event
+                                                                                            .target
+                                                                                            .value,
+                                                                                    })
+                                                                                )
+                                                                            )
+                                                                        }
+                                                                    />
+                                                                )
+                                                            ) : null}
+                                                            {valueInput === "multi_select" ? (
+                                                                <div className="flex flex-col gap-2 rounded-md border p-3">
+                                                                    {selectedFieldOption?.options.map(
+                                                                        option => {
+                                                                            const values =
+                                                                                Array.isArray(
+                                                                                    condition.value
+                                                                                )
+                                                                                    ? condition.value
+                                                                                    : [];
+                                                                            const checked =
+                                                                                values.includes(
+                                                                                    option.value
+                                                                                );
+
+                                                                            return (
+                                                                                <div
+                                                                                    key={option.id}
+                                                                                    className="flex items-center gap-2 text-sm"
+                                                                                >
+                                                                                    <Checkbox
+                                                                                        checked={
+                                                                                            checked
+                                                                                        }
+                                                                                        onCheckedChange={nextChecked =>
+                                                                                            onConditionsChange(
+                                                                                                updateConditionList(
+                                                                                                    rule.conditions,
+                                                                                                    condition.id,
+                                                                                                    currentCondition => {
+                                                                                                        const currentValues =
+                                                                                                            Array.isArray(
+                                                                                                                currentCondition.value
+                                                                                                            )
+                                                                                                                ? currentCondition.value
+                                                                                                                : [];
+
+                                                                                                        return {
+                                                                                                            ...currentCondition,
+                                                                                                            value: nextChecked
+                                                                                                                ? [
+                                                                                                                      ...currentValues,
+                                                                                                                      option.value,
+                                                                                                                  ]
+                                                                                                                : currentValues.filter(
+                                                                                                                      value =>
+                                                                                                                          value !==
+                                                                                                                          option.value
+                                                                                                                  ),
+                                                                                                        };
+                                                                                                    }
+                                                                                                )
+                                                                                            )
+                                                                                        }
+                                                                                    />
+                                                                                    {option.label}
+                                                                                </div>
+                                                                            );
+                                                                        }
+                                                                    )}
+                                                                </div>
+                                                            ) : null}
                                                         </div>
-                                                        {needsSecondValue ? (
+                                                        {condition.operator === "between" ? (
                                                             <div className="flex flex-col gap-2">
                                                                 <Label>
                                                                     {t(
@@ -312,29 +558,51 @@ export function RuleInspectorForm({
                                                                     )}
                                                                 </Label>
                                                                 <Input
+                                                                    type="number"
                                                                     value={
                                                                         condition.secondValue ?? ""
                                                                     }
                                                                     onChange={event =>
                                                                         onConditionsChange(
-                                                                            rule.conditions.map(
-                                                                                currentCondition =>
-                                                                                    currentCondition.id ===
-                                                                                    condition.id
-                                                                                        ? {
-                                                                                              ...currentCondition,
-                                                                                              secondValue:
-                                                                                                  event
-                                                                                                      .target
-                                                                                                      .value,
-                                                                                          }
-                                                                                        : currentCondition
+                                                                            updateConditionList(
+                                                                                rule.conditions,
+                                                                                condition.id,
+                                                                                currentCondition => ({
+                                                                                    ...currentCondition,
+                                                                                    secondValue:
+                                                                                        event.target
+                                                                                            .value,
+                                                                                })
                                                                             )
                                                                         )
                                                                     }
                                                                 />
                                                             </div>
                                                         ) : null}
+                                                    </div>
+                                                ) : null}
+                                                {supportsRepeatOnTrueChange ? (
+                                                    <div className="flex items-center gap-2 text-sm">
+                                                        <Checkbox
+                                                            checked={
+                                                                condition.repeatOnTrueChange ===
+                                                                true
+                                                            }
+                                                            onCheckedChange={checked =>
+                                                                onConditionsChange(
+                                                                    updateConditionList(
+                                                                        rule.conditions,
+                                                                        condition.id,
+                                                                        currentCondition => ({
+                                                                            ...currentCondition,
+                                                                            repeatOnTrueChange:
+                                                                                checked === true,
+                                                                        })
+                                                                    )
+                                                                )
+                                                            }
+                                                        />
+                                                        {t("condition_repeat_on_true_change_label")}
                                                     </div>
                                                 ) : null}
                                             </div>

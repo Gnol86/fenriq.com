@@ -25,15 +25,17 @@ import {
     serializeSchema,
 } from "@project/lib/charroi/checklist-builder-utils";
 import {
+    buildChecklistBuilderFieldOptions,
     duplicateField,
     duplicateRule,
     duplicateSection,
     getFieldTypeLabel,
     normalizeFieldForType,
+    sanitizeRulesForFieldOptions,
 } from "@project/lib/charroi/checklist-template-builder-helpers";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -131,16 +133,7 @@ export function ChecklistTemplateBuilder({ categories, template }) {
     const currentSchema = useMemo(() => safelyBuildSchema({ sections, rules }), [rules, sections]);
     const serializedSchema = useMemo(() => serializeSchema(currentSchema), [currentSchema]);
     const fieldOptions = useMemo(
-        () =>
-            currentSchema.sections.flatMap(section =>
-                section.fields.map(field => ({
-                    id: field.id,
-                    label: field.label,
-                    sectionId: section.id,
-                    sectionTitle: section.title,
-                    type: field.type,
-                }))
-            ),
+        () => buildChecklistBuilderFieldOptions(currentSchema),
         [currentSchema]
     );
     const selectedSection =
@@ -202,6 +195,20 @@ export function ChecklistTemplateBuilder({ categories, template }) {
             }
         );
     };
+
+    useEffect(() => {
+        const nextRules = sanitizeRulesForFieldOptions({
+            fieldOptions,
+            rules,
+        });
+
+        if (JSON.stringify(nextRules) !== JSON.stringify(rules)) {
+            rulesArray.replace(nextRules);
+            form.setValue("rules", nextRules, {
+                shouldDirty: true,
+            });
+        }
+    }, [fieldOptions, form, rules, rulesArray]);
 
     const updateRules = updater => {
         const nextRules = updater(rules);

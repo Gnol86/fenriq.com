@@ -19,7 +19,10 @@ import {
     CHECKLIST_UPLOAD_ALLOWED_TYPES,
 } from "@project/lib/charroi/constants";
 import { dispatchChecklistSubmissionNotifications } from "@project/lib/charroi/notifications";
-import { getPublicChecklistAssignment } from "@project/lib/charroi/public-checklist";
+import {
+    getLatestPublicChecklistSubmission,
+    getPublicChecklistAssignment,
+} from "@project/lib/charroi/public-checklist";
 import {
     PUBLIC_CHECKLIST_SUBMITTER_NAME_COOKIE,
     PUBLIC_CHECKLIST_SUBMITTER_NAME_COOKIE_MAX_AGE,
@@ -75,6 +78,7 @@ export async function submitPublicChecklistAction(values) {
         const removedHistoricalTextEntryIds = [...new Set(payload.removedHistoricalTextEntryIds)];
         const photoFieldIds = getChecklistPhotoFieldIds(assignment.parsedSchema);
         const textListFieldIds = getChecklistTextListFieldIds(assignment.parsedSchema);
+        const latestSubmission = await getLatestPublicChecklistSubmission(assignment.id);
         const uploadedPhotos =
             payload.draftUploadKey.trim() === ""
                 ? []
@@ -83,6 +87,26 @@ export async function submitPublicChecklistAction(values) {
                           assignmentId: assignment.id,
                           status: CHECKLIST_PHOTO_ACTIVE_STATUS,
                           tempUploadKey: payload.draftUploadKey.trim(),
+                      },
+                  });
+        const activeHistoricalPhotos =
+            photoFieldIds.length === 0
+                ? []
+                : await prisma.checklistPhoto.findMany({
+                      where: {
+                          assignmentId: assignment.id,
+                          fieldId: {
+                              in: photoFieldIds,
+                          },
+                          status: CHECKLIST_PHOTO_ACTIVE_STATUS,
+                          tempUploadKey: null,
+                      },
+                      select: {
+                          id: true,
+                          fieldId: true,
+                      },
+                      orderBy: {
+                          createdAt: "asc",
                       },
                   });
         const removableHistoricalPhotos =
@@ -105,6 +129,17 @@ export async function submitPublicChecklistAction(values) {
                       },
                   });
         const uploadedPhotoMap = new Map(uploadedPhotos.map(photo => [photo.id, photo]));
+        const activeHistoricalPhotosByFieldId = activeHistoricalPhotos.reduce(
+            (accumulator, photo) => {
+                if (!accumulator[photo.fieldId]) {
+                    accumulator[photo.fieldId] = [];
+                }
+
+                accumulator[photo.fieldId].push(photo);
+                return accumulator;
+            },
+            {}
+        );
         const removableHistoricalPhotoIdSet = new Set(
             removableHistoricalPhotos.map(photo => photo.id)
         );
@@ -178,6 +213,37 @@ export async function submitPublicChecklistAction(values) {
         }
 
         const issues = evaluateChecklistRules({
+            currentFieldValuesByFieldId: {
+                ...Object.fromEntries(
+                    photoFieldIds.map(fieldId => [
+                        fieldId,
+                        [
+                            ...(activeHistoricalPhotosByFieldId[fieldId] ?? [])
+                                .filter(photo => !removableHistoricalPhotoIdSet.has(photo.id))
+                                .map(photo => photo.id),
+                            ...(sanitizedResponses[fieldId] ?? []),
+                        ],
+                    ])
+                ),
+                ...Object.fromEntries(
+                    textListFieldIds.map(fieldId => [fieldId, sanitizedResponses[fieldId] ?? []])
+                ),
+            },
+            previousFieldValuesByFieldId: {
+                ...Object.fromEntries(
+                    photoFieldIds.map(fieldId => [
+                        fieldId,
+                        (activeHistoricalPhotosByFieldId[fieldId] ?? []).map(photo => photo.id),
+                    ])
+                ),
+                ...Object.fromEntries(
+                    textListFieldIds.map(fieldId => [
+                        fieldId,
+                        (activeTextEntriesByFieldId[fieldId] ?? []).map(entry => entry.text),
+                    ])
+                ),
+            },
+            previousResponses: latestSubmission?.responseJson ?? {},
             schemaJson: assignment.parsedSchema,
             responses: sanitizedResponses,
         });
@@ -209,6 +275,7 @@ export async function submitPublicChecklistAction(values) {
                         ruleId: issue.ruleId,
                         ruleTitle: issue.ruleTitle,
                         description: issue.description,
+                        notificationTriggered: issue.notificationTriggered === true,
                         triggeredFieldIdsJson: issue.triggeredFieldIds,
                     })),
                 });
