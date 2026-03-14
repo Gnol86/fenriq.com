@@ -1,7 +1,8 @@
+import { LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
     Card,
     CardAction,
@@ -21,8 +22,9 @@ function getVehicleDetails(vehicle, fallbackLabel) {
 }
 
 export default async function AppPage() {
-    const [t, { organization }] = await Promise.all([
+    const [t, tDashboard, { organization }] = await Promise.all([
         getTranslations("project.charroi.vehicles"),
+        getTranslations("sidebar.dashboard"),
         requirePermission({
             permissions: { vehicle: ["read"] },
         }),
@@ -64,6 +66,17 @@ export default async function AppPage() {
             <CardHeader>
                 <CardTitle>{t("page_title")}</CardTitle>
                 <CardDescription>{t("page_description")}</CardDescription>
+                <CardAction>
+                    <Button
+                        nativeButton={false}
+                        render={<Link href="/dashboard" />}
+                        size="sm"
+                        variant="outline"
+                    >
+                        <LayoutDashboard />
+                        {tDashboard("dashboard")}
+                    </Button>
+                </CardAction>
             </CardHeader>
             <CardContent>
                 {vehicles.length === 0 ? (

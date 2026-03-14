@@ -74,15 +74,18 @@ export function TemplatesManager({ canCreate, canManage, emptyMessage, templates
                             </div>
                             {canManage && (
                                 <ButtonGroup>
-                                    <Link
-                                        href={`/dashboard/project/charroi/checklists/${template.id}/edit`}
-                                        className={buttonVariants({
-                                            variant: "outline",
-                                            size: "icon-sm",
-                                        })}
+                                    <Button
+                                        nativeButton={false}
+                                        render={
+                                            <Link
+                                                href={`/dashboard/project/charroi/checklists/${template.id}/edit`}
+                                            />
+                                        }
+                                        size="icon-sm"
+                                        variant="outline"
                                     >
                                         <Pencil className="h-4 w-4" />
-                                    </Link>
+                                    </Button>
                                     <Button
                                         variant="outline"
                                         size="icon-sm"
