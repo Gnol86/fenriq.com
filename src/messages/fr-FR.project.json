@@ -8,6 +8,105 @@
         "success": "Action terminée avec succès !",
         "error": "Une erreur s'est produite"
     },
+    "landing": {
+        "hero": {
+            "eyebrow": "Checklists de flotte pour equipes terrain",
+            "title": "Gardez votre parc controle, documente et pret a rouler",
+            "description": "Fleecheck aide les PME a centraliser les controles vehicules, les preuves photo et les actions de suivi dans un flux simple a partager avec le terrain.",
+            "card_title": "Pense pour les controles du quotidien",
+            "card_description": "Des checklists lisibles, rapides a completer et faciles a relire.",
+            "panel_points": [
+                "Des controles homogenes pour chaque vehicule",
+                "Des preuves photo rattachees a chaque point verifie",
+                "Un historique clair pour agir avant qu'un oubli ne coute du temps"
+            ]
+        },
+        "proofs_title": "Ce que vos equipes gagnent",
+        "proofs": [
+            {
+                "id": "speed",
+                "label": "Controles plus rapides a executer"
+            },
+            {
+                "id": "evidence",
+                "label": "Photos et remarques au meme endroit"
+            },
+            {
+                "id": "history",
+                "label": "Historique simple a retrouver"
+            }
+        ],
+        "benefits_title": "Un cadre simple pour mieux suivre le terrain",
+        "benefits_description": "Fleecheck ne remplace pas vos operations. Il les rend visibles, coherentes et exploitables.",
+        "benefits": [
+            {
+                "id": "standardize",
+                "title": "Standardiser les controles",
+                "description": "Chaque vehicule suit la meme trame pour eviter les oublis et garder un niveau de qualite constant."
+            },
+            {
+                "id": "document",
+                "title": "Documenter avec des preuves",
+                "description": "Photos, remarques et reponses restent attachees a la checklist pour revoir rapidement l'etat reel du vehicule."
+            },
+            {
+                "id": "secure",
+                "title": "Securiser le suivi",
+                "description": "L'historique des passages aide l'equipe a prioriser les actions avant qu'un point bloquant n'apparaisse sur le terrain."
+            }
+        ],
+        "steps_title": "Un fonctionnement lisible pour l'equipe",
+        "steps_description": "Creez vos checklists, affectez-les au parc et suivez les remontees sans tableur parallele.",
+        "steps": [
+            {
+                "id": "prepare",
+                "title": "Preparer les modeles",
+                "description": "Definissez les points de controle adaptes a vos vehicules et a vos routines terrain."
+            },
+            {
+                "id": "inspect",
+                "title": "Faire passer les controles",
+                "description": "Le terrain remplit la checklist, ajoute des photos et remonte les remarques au bon moment."
+            },
+            {
+                "id": "follow_up",
+                "title": "Piloter les suites",
+                "description": "Retrouvez l'historique, identifiez les points recurrents et organisez les prochaines actions."
+            }
+        ],
+        "features_title": "Les bases produit mises en avant sur la landing",
+        "features_description": "La landing presente clairement le perimetre deja visible dans le produit, sans promesse hors scope.",
+        "features": [
+            {
+                "id": "templates",
+                "title": "Modeles de checklist",
+                "description": "Creez des controles reproductibles par type de vehicule ou de routine."
+            },
+            {
+                "id": "photos",
+                "title": "Preuves photo et remarques",
+                "description": "Capturez le contexte utile des l'inspection pour eviter les echanges flous apres coup."
+            },
+            {
+                "id": "history",
+                "title": "Historique d'execution",
+                "description": "Conservez une lecture simple des controles deja realises et des elements a surveiller."
+            },
+            {
+                "id": "sharing",
+                "title": "Partage clair avec l'equipe",
+                "description": "Donnez un cadre commun aux personnes qui executent, relisent et suivent les checklists."
+            }
+        ],
+        "cta": {
+            "title": "Passez d'un suivi disperse a une checklist exploitable",
+            "description": "Creez votre espace, organisez votre parc et demarrez vos premiers controles avec une base claire."
+        },
+        "footer": {
+            "description": "Fleecheck aide les equipes a garder un parc controle, documente et pret a rouler.",
+            "note": "Disponible dans les quatre langues deja gerees par l'application."
+        }
+    },
     "app": {
         "index": {
             "page_title": "Documentation du boilerplate",

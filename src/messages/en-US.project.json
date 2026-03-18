@@ -8,6 +8,105 @@
         "success": "Action completed successfully!",
         "error": "An error occurred"
     },
+    "landing": {
+        "hero": {
+            "eyebrow": "Fleet checklists for field teams",
+            "title": "Keep your fleet checked, documented and ready to roll",
+            "description": "Fleecheck helps SMB teams centralize vehicle inspections, photo evidence and follow-up actions in one simple workflow shared with the field.",
+            "card_title": "Built for everyday inspections",
+            "card_description": "Readable checklists that are fast to complete and easy to review.",
+            "panel_points": [
+                "Consistent inspections for every vehicle",
+                "Photo evidence attached to each checked point",
+                "A clear history so teams can act before small issues waste time"
+            ]
+        },
+        "proofs_title": "What your teams gain",
+        "proofs": [
+            {
+                "id": "speed",
+                "label": "Faster inspections in the field"
+            },
+            {
+                "id": "evidence",
+                "label": "Photos and notes in one place"
+            },
+            {
+                "id": "history",
+                "label": "Inspection history that stays easy to find"
+            }
+        ],
+        "benefits_title": "A simple structure for better field follow-up",
+        "benefits_description": "Fleecheck does not replace your operations. It makes them visible, consistent and usable.",
+        "benefits": [
+            {
+                "id": "standardize",
+                "title": "Standardize inspections",
+                "description": "Every vehicle follows the same checklist so teams miss less and keep a consistent quality bar."
+            },
+            {
+                "id": "document",
+                "title": "Document with evidence",
+                "description": "Photos, notes and answers stay attached to the checklist so the real state of the vehicle is easy to review."
+            },
+            {
+                "id": "secure",
+                "title": "Keep follow-up under control",
+                "description": "Inspection history helps the team prioritize actions before a blocking issue appears in the field."
+            }
+        ],
+        "steps_title": "A workflow the whole team can read",
+        "steps_description": "Create your checklists, assign them to the fleet and track feedback without a parallel spreadsheet.",
+        "steps": [
+            {
+                "id": "prepare",
+                "title": "Prepare templates",
+                "description": "Define the control points that match your vehicles and your field routines."
+            },
+            {
+                "id": "inspect",
+                "title": "Run inspections",
+                "description": "Field teams complete the checklist, add photos and report remarks at the right moment."
+            },
+            {
+                "id": "follow_up",
+                "title": "Drive follow-up",
+                "description": "Review history, spot recurring issues and organize the next actions with more clarity."
+            }
+        ],
+        "features_title": "Product foundations highlighted on the landing page",
+        "features_description": "The landing page presents the scope already visible in the product, without promising more than what exists.",
+        "features": [
+            {
+                "id": "templates",
+                "title": "Checklist templates",
+                "description": "Create repeatable inspections by vehicle type or operating routine."
+            },
+            {
+                "id": "photos",
+                "title": "Photo evidence and remarks",
+                "description": "Capture the right context during inspection so follow-up conversations stay concrete."
+            },
+            {
+                "id": "history",
+                "title": "Execution history",
+                "description": "Keep a simple view of past inspections and the points that still need attention."
+            },
+            {
+                "id": "sharing",
+                "title": "Clear sharing across the team",
+                "description": "Give the same frame to the people who execute, review and monitor vehicle checklists."
+            }
+        ],
+        "cta": {
+            "title": "Move from scattered follow-up to an actionable checklist flow",
+            "description": "Create your workspace, organize your fleet and start your first inspections with a clear baseline."
+        },
+        "footer": {
+            "description": "Fleecheck helps teams keep a fleet checked, documented and ready to move.",
+            "note": "Available in the four languages already handled by the application."
+        }
+    },
     "app": {
         "index": {
             "page_title": "Boilerplate documentation",

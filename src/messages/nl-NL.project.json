@@ -8,6 +8,105 @@
         "success": "Actie succesvol voltooid!",
         "error": "Er is een fout opgetreden"
     },
+    "landing": {
+        "hero": {
+            "eyebrow": "Fleetchecklists voor teams op het terrein",
+            "title": "Houd je wagenpark gecontroleerd, gedocumenteerd en klaar om te rijden",
+            "description": "Fleecheck helpt kmo-teams om voertuigcontroles, fotobewijs en opvolgacties te centraliseren in een eenvoudige workflow die met het terrein gedeeld wordt.",
+            "card_title": "Gebouwd voor dagelijkse controles",
+            "card_description": "Overzichtelijke checklists die snel ingevuld en makkelijk herlezen worden.",
+            "panel_points": [
+                "Consistente controles voor elk voertuig",
+                "Fotobewijs gekoppeld aan elk gecontroleerd punt",
+                "Een duidelijke historiek zodat teams kunnen handelen voor kleine problemen tijd kosten"
+            ]
+        },
+        "proofs_title": "Wat je teams winnen",
+        "proofs": [
+            {
+                "id": "speed",
+                "label": "Snellere controles op het terrein"
+            },
+            {
+                "id": "evidence",
+                "label": "Foto's en opmerkingen op een plek"
+            },
+            {
+                "id": "history",
+                "label": "Historiek die makkelijk terug te vinden blijft"
+            }
+        ],
+        "benefits_title": "Een eenvoudige structuur voor betere opvolging op het terrein",
+        "benefits_description": "Fleecheck vervangt je werking niet. Het maakt ze zichtbaar, consistent en bruikbaar.",
+        "benefits": [
+            {
+                "id": "standardize",
+                "title": "Controles standaardiseren",
+                "description": "Elk voertuig volgt dezelfde structuur zodat er minder vergeten wordt en de kwaliteitslat gelijk blijft."
+            },
+            {
+                "id": "document",
+                "title": "Documenteren met bewijzen",
+                "description": "Foto's, opmerkingen en antwoorden blijven aan de checklist gekoppeld zodat de echte staat van het voertuig snel herbekeken kan worden."
+            },
+            {
+                "id": "secure",
+                "title": "Opvolging onder controle houden",
+                "description": "De historiek helpt het team om acties te prioriteren voor een blokkerend probleem op het terrein verschijnt."
+            }
+        ],
+        "steps_title": "Een workflow die het hele team kan lezen",
+        "steps_description": "Maak je checklists, wijs ze toe aan het wagenpark en volg feedback op zonder parallel spreadsheet.",
+        "steps": [
+            {
+                "id": "prepare",
+                "title": "Sjablonen voorbereiden",
+                "description": "Bepaal de controlepunten die passen bij je voertuigen en je routines op het terrein."
+            },
+            {
+                "id": "inspect",
+                "title": "Controles uitvoeren",
+                "description": "Het terreinteam vult de checklist in, voegt foto's toe en meldt opmerkingen op het juiste moment."
+            },
+            {
+                "id": "follow_up",
+                "title": "Opvolging sturen",
+                "description": "Bekijk de historiek, herken terugkerende punten en organiseer de volgende acties met meer duidelijkheid."
+            }
+        ],
+        "features_title": "Productfundamenten die op de landing getoond worden",
+        "features_description": "De landing legt helder uit wat vandaag al zichtbaar is in het product, zonder beloften buiten scope.",
+        "features": [
+            {
+                "id": "templates",
+                "title": "Checklistsjablonen",
+                "description": "Maak herhaalbare controles per voertuigtype of werkritme."
+            },
+            {
+                "id": "photos",
+                "title": "Fotobewijs en opmerkingen",
+                "description": "Leg de juiste context vast tijdens de controle zodat opvolging concreet blijft."
+            },
+            {
+                "id": "history",
+                "title": "Uitvoeringshistoriek",
+                "description": "Bewaar een eenvoudig overzicht van uitgevoerde controles en punten die nog aandacht vragen."
+            },
+            {
+                "id": "sharing",
+                "title": "Duidelijke afstemming met het team",
+                "description": "Geef dezelfde structuur aan de mensen die checklists uitvoeren, nalezen en opvolgen."
+            }
+        ],
+        "cta": {
+            "title": "Ga van versnipperde opvolging naar een bruikbare checklistflow",
+            "description": "Maak je workspace aan, organiseer je wagenpark en start je eerste controles met een duidelijke basis."
+        },
+        "footer": {
+            "description": "Fleecheck helpt teams om een wagenpark gecontroleerd, gedocumenteerd en rijklaar te houden.",
+            "note": "Beschikbaar in de vier talen die de applicatie vandaag al ondersteunt."
+        }
+    },
     "app": {
         "index": {
             "page_title": "Boilerplate-documentatie",

@@ -8,6 +8,105 @@
         "success": "Aktion erfolgreich abgeschlossen!",
         "error": "Ein Fehler ist aufgetreten"
     },
+    "landing": {
+        "hero": {
+            "eyebrow": "Fuhrpark-Checklisten fur Teams im Einsatz",
+            "title": "Halten Sie Ihren Fuhrpark gepruft, dokumentiert und einsatzbereit",
+            "description": "Fleecheck hilft KMU dabei, Fahrzeugkontrollen, Fotobelege und Folgemassnahmen in einem einfachen Ablauf fur das Team vor Ort zu bundeln.",
+            "card_title": "Fur alltagliche Kontrollen gebaut",
+            "card_description": "Ubersichtliche Checklisten, die schnell ausgefullt und leicht nachgelesen werden konnen.",
+            "panel_points": [
+                "Einheitliche Kontrollen fur jedes Fahrzeug",
+                "Fotobelege direkt an jedem gepruften Punkt",
+                "Eine klare Historie, damit Teams handeln konnen, bevor kleine Probleme Zeit kosten"
+            ]
+        },
+        "proofs_title": "Was Ihre Teams gewinnen",
+        "proofs": [
+            {
+                "id": "speed",
+                "label": "Schnellere Kontrollen im Einsatz"
+            },
+            {
+                "id": "evidence",
+                "label": "Fotos und Hinweise an einem Ort"
+            },
+            {
+                "id": "history",
+                "label": "Leicht auffindbare Kontrollhistorie"
+            }
+        ],
+        "benefits_title": "Ein einfacher Rahmen fur bessere Nachverfolgung im Feld",
+        "benefits_description": "Fleecheck ersetzt Ihre Ablaufe nicht. Es macht sie sichtbar, konsistent und nutzbar.",
+        "benefits": [
+            {
+                "id": "standardize",
+                "title": "Kontrollen standardisieren",
+                "description": "Jedes Fahrzeug folgt derselben Struktur, damit weniger vergessen wird und die Qualitat konstant bleibt."
+            },
+            {
+                "id": "document",
+                "title": "Mit Belegen dokumentieren",
+                "description": "Fotos, Hinweise und Antworten bleiben an der Checkliste, damit der reale Zustand eines Fahrzeugs schnell nachvollziehbar bleibt."
+            },
+            {
+                "id": "secure",
+                "title": "Nachverfolgung absichern",
+                "description": "Die Historie hilft dem Team, Massnahmen zu priorisieren, bevor ein blockierendes Problem im Einsatz auftaucht."
+            }
+        ],
+        "steps_title": "Ein Ablauf, den das ganze Team versteht",
+        "steps_description": "Erstellen Sie Ihre Checklisten, ordnen Sie sie dem Fuhrpark zu und verfolgen Sie Ruckmeldungen ohne parallele Tabellen.",
+        "steps": [
+            {
+                "id": "prepare",
+                "title": "Vorlagen vorbereiten",
+                "description": "Definieren Sie die Kontrollpunkte passend zu Ihren Fahrzeugen und Ihren Routinen im Einsatz."
+            },
+            {
+                "id": "inspect",
+                "title": "Kontrollen durchfuhren",
+                "description": "Das Team vor Ort fullt die Checkliste aus, fugt Fotos hinzu und meldet Hinweise zum richtigen Zeitpunkt."
+            },
+            {
+                "id": "follow_up",
+                "title": "Folgemassnahmen steuern",
+                "description": "Lesen Sie die Historie, erkennen Sie wiederkehrende Punkte und organisieren Sie die nachsten Aktionen klarer."
+            }
+        ],
+        "features_title": "Produktgrundlagen, die auf der Landing hervorgehoben werden",
+        "features_description": "Die Landing Page zeigt den bereits sichtbaren Produktumfang, ohne mehr zu versprechen als heute vorhanden ist.",
+        "features": [
+            {
+                "id": "templates",
+                "title": "Checklisten-Vorlagen",
+                "description": "Erstellen Sie wiederverwendbare Kontrollen nach Fahrzeugtyp oder Einsatzroutine."
+            },
+            {
+                "id": "photos",
+                "title": "Fotobelege und Hinweise",
+                "description": "Erfassen Sie den relevanten Kontext direkt bei der Kontrolle, damit die Nachverfolgung konkret bleibt."
+            },
+            {
+                "id": "history",
+                "title": "Ausfuhrungshistorie",
+                "description": "Behalten Sie vergangene Kontrollen und offene Punkte in einer einfachen Ubersicht."
+            },
+            {
+                "id": "sharing",
+                "title": "Klare Abstimmung im Team",
+                "description": "Geben Sie allen Beteiligten denselben Rahmen fur Durchfuhrung, Review und Nachverfolgung."
+            }
+        ],
+        "cta": {
+            "title": "Wechseln Sie von verstreuter Nachverfolgung zu einem nutzbaren Checklisten-Ablauf",
+            "description": "Erstellen Sie Ihren Bereich, organisieren Sie Ihren Fuhrpark und starten Sie die ersten Kontrollen auf einer klaren Basis."
+        },
+        "footer": {
+            "description": "Fleecheck hilft Teams dabei, einen Fuhrpark gepruft, dokumentiert und einsatzbereit zu halten.",
+            "note": "Verfugbar in den vier Sprachen, die die Anwendung bereits unterstutzt."
+        }
+    },
     "app": {
         "index": {
             "page_title": "Boilerplate-Dokumentation",
