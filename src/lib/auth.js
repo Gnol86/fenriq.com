@@ -12,6 +12,7 @@ import { deleteFile } from "@/actions/file.action";
 import { SiteConfig } from "@/site-config";
 import translations from "../messages/better-auth.json";
 import { checkPermission } from "./access-control";
+import { authorizeSubscriptionReference } from "./auth.subscription-authorization.js";
 import { defaultLocale } from "./i18n/config.js";
 import {
     ac,
@@ -255,22 +256,11 @@ export const auth = betterAuth({
                         freeTrial: JSON.parse(plan.freeTrial),
                     }));
                 },
-                authorizeReference: async ({ action }) => {
-                    // Vérifier si l'action nécessite des permissions de gestion
-                    if (
-                        action === "upgrade-subscription" ||
-                        action === "list-subscription" ||
-                        action === "cancel-subscription" ||
-                        action === "restore-subscription" ||
-                        action === "billing-portal"
-                    ) {
-                        const ok = await checkPermission({
-                            permissions: { billing: ["manage"] },
-                        });
-                        return ok;
-                    }
-                    return true;
-                },
+                authorizeReference: async ({ action }) =>
+                    await authorizeSubscriptionReference(
+                        { action },
+                        { checkPermissionFn: checkPermission }
+                    ),
                 getCheckoutSessionParams: async (
                     { _user, _session, _plan, _subscription },
                     _request
