@@ -3,6 +3,9 @@
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+
+const ACTIVE_SUBSCRIPTION_STATUSES = ["active", "trialing"];
 
 /**
  * Récupère la session de l'utilisateur
@@ -64,6 +67,25 @@ const getOrganizations = async () => {
 };
 
 /**
+ * Récupère l'abonnement actif de l'organisation
+ * @param {string} organizationId
+ * @returns {Promise<Object|null>}
+ */
+const getOrganizationActiveSubscription = async organizationId => {
+    return await prisma.subscription.findFirst({
+        where: {
+            referenceId: organizationId,
+            status: {
+                in: ACTIVE_SUBSCRIPTION_STATUSES,
+            },
+        },
+        orderBy: {
+            periodStart: "desc",
+        },
+    });
+};
+
+/**
  * Récupère l'organisation active de l'utilisateur
  * @returns {Promise<{session: Object, user: Object, organization: Object}>}
  * @throws {Error} notFound() si pas d'organisation active
@@ -116,6 +138,53 @@ export const getActiveOrganization = async () => {
         session,
         user,
         organization,
+    };
+};
+
+/**
+ * Récupère l'abonnement actif de l'organisation active
+ * @returns {Promise<{session: Object|null, user: Object|null, organization: Object|null, subscription: Object|null}>}
+ */
+export const getActiveSubscription = async () => {
+    const { session, user, organization } = await getActiveOrganization();
+
+    if (!session || !user || !organization) {
+        return {
+            session,
+            user,
+            organization,
+            subscription: null,
+        };
+    }
+
+    const subscription = await getOrganizationActiveSubscription(organization.id);
+
+    return {
+        session,
+        user,
+        organization,
+        subscription: subscription ?? null,
+    };
+};
+
+/**
+ * Récupère et vérifie l'abonnement actif de l'organisation active
+ * @returns {Promise<{session: Object, user: Object, organization: Object, subscription: Object}>}
+ * @throws {Error} notFound() si aucun abonnement actif n'est trouvé
+ */
+export const requireActiveSubscription = async () => {
+    const { session, user, organization } = await requireActiveOrganization();
+    const subscription = await getOrganizationActiveSubscription(organization.id);
+
+    if (!subscription) {
+        notFound();
+    }
+
+    return {
+        session,
+        user,
+        organization,
+        subscription,
     };
 };
 
@@ -192,6 +261,20 @@ export async function checkPermission({ permissions }) {
         const response = await checkPermissionApi(permissions);
 
         return response.success;
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Vérifie si l'organisation active a un abonnement actif sans lever d'erreur
+ * @returns {Promise<boolean>}
+ */
+export async function checkActiveSubscription() {
+    try {
+        const { subscription } = await getActiveSubscription();
+
+        return !!subscription;
     } catch {
         return false;
     }

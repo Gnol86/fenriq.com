@@ -259,8 +259,10 @@ export const auth = betterAuth({
                     // Vérifier si l'action nécessite des permissions de gestion
                     if (
                         action === "upgrade-subscription" ||
+                        action === "list-subscription" ||
                         action === "cancel-subscription" ||
-                        action === "restore-subscription"
+                        action === "restore-subscription" ||
+                        action === "billing-portal"
                     ) {
                         const ok = await checkPermission({
                             permissions: { billing: ["manage"] },
