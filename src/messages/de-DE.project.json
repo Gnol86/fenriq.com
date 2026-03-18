@@ -321,6 +321,15 @@
             "assignment_entity_not_found": "The selected vehicle or checklist could not be found.",
             "assignment_exists": "This checklist is already linked to this vehicle."
         },
+        "quota": {
+            "at_limit_title": "Fahrzeugkontingent erreicht",
+            "at_limit_description": "Die Organisation nutzt bereits {used} Fahrzeug(e) für {limit} Lizenz(en). Bestehende Fahrzeuge können weiterhin verwaltet werden, aber es kann kein neues Fahrzeug hinzugefügt werden, bis das Abonnement angepasst wurde.",
+            "over_limit_title": "Fahrzeugkontingent überschritten",
+            "over_limit_description": "Die Organisation nutzt {used} Fahrzeug(e) für {limit} Lizenz(en). Änderungen im Charroi-Dashboard für Fahrzeuge, öffentliche Links und Checklisten sind gesperrt, bis das Abonnement wieder passt. Öffentliche Checklisten bleiben verfügbar.",
+            "manage_subscription_cta": "Abonnement verwalten",
+            "vehicle_quota_reached_error": "Das Fahrzeugkontingent ist erreicht ({used}/{limit}). Erhöhen Sie die Anzahl der Lizenzen, bevor Sie ein neues Fahrzeug hinzufügen.",
+            "dashboard_locked_error": "Das Fahrzeugkontingent ist überschritten ({used}/{limit}). Das Charroi-Dashboard ist gesperrt, bis das Abonnement wieder passt."
+        },
         "vehicles": {
             "page_title": "Vehicles",
             "page_description": "Manage the fleet and the public checklist links.",

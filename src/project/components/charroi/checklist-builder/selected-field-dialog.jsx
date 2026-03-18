@@ -12,6 +12,7 @@ export function SelectedFieldDialog({
     onDelete,
     onDuplicate,
     onOptionsChange,
+    readOnly = false,
 }) {
     const t = useTranslations("project.charroi.builder");
 
@@ -30,6 +31,7 @@ export function SelectedFieldDialog({
                 onDelete={onDelete}
                 onDuplicate={onDuplicate}
                 onOptionsChange={onOptionsChange}
+                readOnly={readOnly}
             />
         </BuilderSelectionDialog>
     );

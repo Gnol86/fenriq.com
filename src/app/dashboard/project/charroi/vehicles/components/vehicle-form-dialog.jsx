@@ -30,7 +30,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useServerAction } from "@/hooks/use-server-action";
 
-export function VehicleFormDialog({ canManage, trigger, vehicle = null }) {
+export function VehicleFormDialog({ canManage, disabled = false, trigger, vehicle = null }) {
     const t = useTranslations("project.charroi.vehicles");
     const formSchema = checklistVehicleInputSchema.extend({
         plateNumber: z.string().trim().min(1, t("validation_plate_required")),
@@ -86,6 +86,10 @@ export function VehicleFormDialog({ canManage, trigger, vehicle = null }) {
         <Dialog
             open={open}
             onOpenChange={nextOpen => {
+                if (disabled && nextOpen) {
+                    return;
+                }
+
                 setOpen(nextOpen);
                 if (nextOpen) {
                     form.reset({
@@ -101,7 +105,7 @@ export function VehicleFormDialog({ canManage, trigger, vehicle = null }) {
             {trigger ? (
                 <DialogTrigger render={trigger} />
             ) : (
-                <DialogTrigger nativeButton render={<Button size="sm" />}>
+                <DialogTrigger nativeButton render={<Button size="sm" disabled={disabled} />}>
                     <Plus className="mr-2 h-4 w-4" />
                     {t("create_button")}
                 </DialogTrigger>
@@ -122,7 +126,7 @@ export function VehicleFormDialog({ canManage, trigger, vehicle = null }) {
                                 <FormItem>
                                     <FormLabel>{t("plate_label")}</FormLabel>
                                     <FormControl>
-                                        <Input {...field} disabled={isPending} />
+                                        <Input {...field} disabled={isPending || disabled} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -135,7 +139,7 @@ export function VehicleFormDialog({ canManage, trigger, vehicle = null }) {
                                 <FormItem>
                                     <FormLabel>{t("name_label")}</FormLabel>
                                     <FormControl>
-                                        <Input {...field} disabled={isPending} />
+                                        <Input {...field} disabled={isPending || disabled} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -148,7 +152,20 @@ export function VehicleFormDialog({ canManage, trigger, vehicle = null }) {
                                 <FormItem>
                                     <FormLabel>{t("brand_label")}</FormLabel>
                                     <FormControl>
-                                        <Input {...field} disabled={isPending} />
+                                        <Input {...field} disabled={isPending || disabled} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="model"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t("model_label")}</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} disabled={isPending || disabled} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -163,6 +180,7 @@ export function VehicleFormDialog({ canManage, trigger, vehicle = null }) {
                                         <Checkbox
                                             checked={field.value}
                                             onCheckedChange={field.onChange}
+                                            disabled={isPending || disabled}
                                         />
                                     </FormControl>
                                     <div className="flex flex-col gap-1">
@@ -171,21 +189,9 @@ export function VehicleFormDialog({ canManage, trigger, vehicle = null }) {
                                 </FormItem>
                             )}
                         />
-                        <FormField
-                            control={form.control}
-                            name="model"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t("model_label")}</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} disabled={isPending} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+
                         <DialogFooter>
-                            <Button type="submit" disabled={isPending}>
+                            <Button type="submit" disabled={isPending || disabled}>
                                 {vehicle ? t("save_button") : t("create_button")}
                             </Button>
                         </DialogFooter>

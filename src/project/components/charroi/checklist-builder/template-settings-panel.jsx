@@ -6,7 +6,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-export function TemplateSettingsPanel({ form }) {
+export function TemplateSettingsPanel({ form, readOnly = false }) {
     const t = useTranslations("project.charroi.builder");
 
     return (
@@ -22,7 +22,7 @@ export function TemplateSettingsPanel({ form }) {
                     <FormItem>
                         <FormLabel>{t("name_label")}</FormLabel>
                         <FormControl>
-                            <Input {...field} />
+                            <Input {...field} disabled={readOnly} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -35,7 +35,7 @@ export function TemplateSettingsPanel({ form }) {
                     <FormItem>
                         <FormLabel>{t("description_label")}</FormLabel>
                         <FormControl>
-                            <Textarea {...field} rows={3} />
+                            <Textarea {...field} disabled={readOnly} rows={3} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -47,7 +47,11 @@ export function TemplateSettingsPanel({ form }) {
                 render={({ field }) => (
                     <FormItem className="flex flex-row items-start gap-3">
                         <FormControl>
-                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                            <Checkbox
+                                checked={field.value}
+                                disabled={readOnly}
+                                onCheckedChange={field.onChange}
+                            />
                         </FormControl>
                         <div className="flex flex-col gap-1">
                             <FormLabel>{t("active_label")}</FormLabel>

@@ -10,6 +10,7 @@ export function RulesPanel({
     onDuplicateRule,
     onRuleMove,
     onRuleSelect,
+    readOnly = false,
     rules,
     selectedRuleId,
 }) {
@@ -22,7 +23,13 @@ export function RulesPanel({
                     <h2 className="font-medium">{t("rules_title")}</h2>
                     <p className="text-muted-foreground text-sm">{t("rules_description")}</p>
                 </div>
-                <Button type="button" variant="outline" size="sm" onClick={onAddRule}>
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={readOnly}
+                    onClick={onAddRule}
+                >
                     {t("add_rule_button")}
                 </Button>
             </div>
@@ -33,6 +40,7 @@ export function RulesPanel({
                 </div>
             ) : (
                 <RulesStructureList
+                    readOnly={readOnly}
                     rules={rules}
                     selectedRuleId={selectedRuleId}
                     onDuplicateRule={onDuplicateRule}

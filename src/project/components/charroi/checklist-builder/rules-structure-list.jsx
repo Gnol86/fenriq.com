@@ -13,6 +13,7 @@ export function RulesStructureList({
     onRuleDelete,
     onRuleMove,
     onRuleSelect,
+    readOnly = false,
     rules,
     selectedRuleId,
 }) {
@@ -26,6 +27,10 @@ export function RulesStructureList({
             modifiers={[restrictToVerticalAxis]}
             sensors={sensors}
             onDragEnd={event => {
+                if (readOnly) {
+                    return;
+                }
+
                 if (!event.over || event.active.id === event.over.id) {
                     return;
                 }
@@ -50,6 +55,7 @@ export function RulesStructureList({
                                     <div className="flex items-center gap-2">
                                         <SortableHandle
                                             attributes={attributes}
+                                            disabled={readOnly}
                                             listeners={listeners}
                                         />
                                         <div className="flex flex-col gap-0.5">
@@ -66,6 +72,7 @@ export function RulesStructureList({
                                             type="button"
                                             variant="outline"
                                             size="icon-sm"
+                                            disabled={readOnly}
                                             onClick={event => {
                                                 event.stopPropagation();
                                                 onDuplicateRule(rule.id);
@@ -86,6 +93,7 @@ export function RulesStructureList({
                                             type="button"
                                             variant="destructive"
                                             size="icon-sm"
+                                            disabled={readOnly}
                                             onClick={event => {
                                                 event.stopPropagation();
                                                 onRuleDelete(rule.id);

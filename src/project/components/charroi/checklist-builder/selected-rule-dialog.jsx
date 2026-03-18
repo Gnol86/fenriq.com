@@ -12,6 +12,7 @@ export function SelectedRuleDialog({
     onConditionsChange,
     onDeleteRule,
     onDuplicateRule,
+    readOnly = false,
     selectedRule,
 }) {
     const t = useTranslations("project.charroi.builder");
@@ -33,6 +34,7 @@ export function SelectedRuleDialog({
                     onConditionsChange={onConditionsChange}
                     onDelete={() => onDeleteRule(selectedRule.id)}
                     onDuplicate={() => onDuplicateRule(selectedRule.id)}
+                    readOnly={readOnly}
                 />
             ) : null}
         </BuilderSelectionDialog>

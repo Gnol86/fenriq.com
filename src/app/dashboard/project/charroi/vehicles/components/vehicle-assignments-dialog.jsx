@@ -57,7 +57,10 @@ function buildQrCodeFileName({ checklistName, plateNumber, publicToken }) {
 }
 
 export function VehicleAssignmentsDialog({
-    canManageAssignments,
+    canCreateAssignments,
+    canDeleteAssignments,
+    canUpdateAssignments,
+    canViewAssignments,
     publicBaseUrl,
     templates,
     vehicle,
@@ -75,7 +78,7 @@ export function VehicleAssignmentsDialog({
         return templates.filter(template => !assignedTemplateIds.has(template.id));
     }, [templates, vehicle.assignments]);
 
-    if (!canManageAssignments) {
+    if (!canViewAssignments) {
         return null;
     }
 
@@ -177,7 +180,7 @@ export function VehicleAssignmentsDialog({
                         <Select
                             value={templateId}
                             onValueChange={setTemplateId}
-                            disabled={isPending}
+                            disabled={isPending || !canCreateAssignments}
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder={t("assignment_template_placeholder")}>
@@ -199,7 +202,7 @@ export function VehicleAssignmentsDialog({
                         <Button
                             type="button"
                             onClick={handleCreateAssignment}
-                            disabled={isPending || !templateId}
+                            disabled={isPending || !templateId || !canCreateAssignments}
                         >
                             {t("assignment_add_button")}
                         </Button>
@@ -237,7 +240,7 @@ export function VehicleAssignmentsDialog({
                                                     type="button"
                                                     variant="outline"
                                                     size="sm"
-                                                    disabled={isPending}
+                                                    disabled={isPending || !canUpdateAssignments}
                                                     onClick={() =>
                                                         execute(
                                                             () =>
@@ -261,7 +264,7 @@ export function VehicleAssignmentsDialog({
                                                     type="button"
                                                     variant="outline"
                                                     size="icon-sm"
-                                                    disabled={isPending}
+                                                    disabled={isPending || !canUpdateAssignments}
                                                     onClick={() =>
                                                         execute(
                                                             () =>
@@ -308,6 +311,7 @@ export function VehicleAssignmentsDialog({
                                                     type="button"
                                                     variant="destructive"
                                                     size="icon-sm"
+                                                    disabled={!canDeleteAssignments}
                                                     onClick={() =>
                                                         handleDeleteAssignment(assignment)
                                                     }

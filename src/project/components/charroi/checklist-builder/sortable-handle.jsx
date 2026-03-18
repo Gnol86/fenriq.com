@@ -2,15 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 
-export function SortableHandle({ attributes, listeners }) {
+export function SortableHandle({ attributes, disabled = false, listeners }) {
     return (
         <Button
             type="button"
             variant="outline"
             size="icon-sm"
             className="cursor-grab active:cursor-grabbing"
-            {...attributes}
-            {...listeners}
+            disabled={disabled}
+            {...(disabled ? {} : attributes)}
+            {...(disabled ? {} : listeners)}
         >
             <span className="sr-only">Réordonner</span>
             <svg

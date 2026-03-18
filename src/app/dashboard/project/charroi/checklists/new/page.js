@@ -1,4 +1,6 @@
+import { CharroiQuotaAlert } from "@project/components/charroi/charroi-quota-alert";
 import { ChecklistTemplateBuilder } from "@project/components/charroi/checklist-builder/checklist-template-builder";
+import { getCharroiQuotaStatus } from "@project/lib/charroi/quota";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { requirePermission } from "@/lib/access-control";
@@ -10,23 +12,28 @@ export default async function Page() {
         permissions: { checklist: ["create"] },
     });
 
-    const categories = await prisma.checklistCategory.findMany({
-        where: {
+    const [categories, quotaStatus] = await Promise.all([
+        prisma.checklistCategory.findMany({
+            where: {
+                organizationId: organization.id,
+                isActive: true,
+            },
+            orderBy: {
+                name: "asc",
+            },
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                defaultDeliveryMode: true,
+                defaultDigestCron: true,
+                isActive: true,
+            },
+        }),
+        getCharroiQuotaStatus({
             organizationId: organization.id,
-            isActive: true,
-        },
-        orderBy: {
-            name: "asc",
-        },
-        select: {
-            id: true,
-            name: true,
-            description: true,
-            defaultDeliveryMode: true,
-            defaultDigestCron: true,
-            isActive: true,
-        },
-    });
+        }),
+    ]);
 
     return (
         <Card>
@@ -34,8 +41,13 @@ export default async function Page() {
                 <CardTitle>{t("create_page_title")}</CardTitle>
                 <CardDescription>{t("create_page_description")}</CardDescription>
             </CardHeader>
-            <CardContent>
-                <ChecklistTemplateBuilder categories={categories} template={null} />
+            <CardContent className="flex flex-col gap-4">
+                {quotaStatus.isOverQuota ? <CharroiQuotaAlert quotaStatus={quotaStatus} /> : null}
+                <ChecklistTemplateBuilder
+                    categories={categories}
+                    readOnly={quotaStatus.isOverQuota}
+                    template={null}
+                />
             </CardContent>
         </Card>
     );

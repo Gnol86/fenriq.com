@@ -78,6 +78,7 @@ export function RuleInspectorForm({
     onConditionsChange,
     onDelete,
     onDuplicate,
+    readOnly = false,
     rule,
 }) {
     const t = useTranslations("project.charroi.builder");
@@ -95,10 +96,22 @@ export function RuleInspectorForm({
                     <p className="text-muted-foreground text-sm">{t("rule_panel_description")}</p>
                 </div>
                 <div className="flex flex-wrap justify-end gap-2">
-                    <Button type="button" variant="outline" size="sm" onClick={onDuplicate}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={readOnly}
+                        onClick={onDuplicate}
+                    >
                         {t("duplicate_rule")}
                     </Button>
-                    <Button type="button" variant="destructive" size="sm" onClick={onDelete}>
+                    <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        disabled={readOnly}
+                        onClick={onDelete}
+                    >
                         {t("delete_rule")}
                     </Button>
                 </div>
@@ -106,6 +119,7 @@ export function RuleInspectorForm({
             <div className="flex flex-col gap-2">
                 <Label>{t("rule_title_label")}</Label>
                 <Input
+                    disabled={readOnly}
                     value={rule.title}
                     onChange={event => onChange("title", event.target.value)}
                 />
@@ -114,6 +128,7 @@ export function RuleInspectorForm({
                 <Label>{t("rule_description_label")}</Label>
                 <Textarea
                     rows={3}
+                    disabled={readOnly}
                     value={rule.description}
                     onChange={event => onChange("description", event.target.value)}
                 />
@@ -122,6 +137,7 @@ export function RuleInspectorForm({
                 <Label>{t("rule_combinator_label")}</Label>
                 <Select
                     value={rule.combinator}
+                    disabled={readOnly}
                     onValueChange={value => onChange("combinator", value)}
                 >
                     <SelectTrigger>
@@ -141,6 +157,7 @@ export function RuleInspectorForm({
                 <Label>{t("rule_category_label")}</Label>
                 <RuleCategoryCombobox
                     categories={categories}
+                    disabled={readOnly}
                     value={rule.categoryId}
                     onChange={value => onChange("categoryId", value)}
                 />
@@ -152,6 +169,7 @@ export function RuleInspectorForm({
                         type="button"
                         variant="outline"
                         size="sm"
+                        disabled={readOnly}
                         onClick={() => {
                             const nextCondition = createChecklistRuleCondition();
                             const firstFieldOption = fieldOptions[0] ?? null;
@@ -179,6 +197,10 @@ export function RuleInspectorForm({
                     modifiers={[restrictToVerticalAxis]}
                     sensors={sensors}
                     onDragEnd={event => {
+                        if (readOnly) {
+                            return;
+                        }
+
                         if (!event.over || event.active.id === event.over.id) {
                             return;
                         }
@@ -221,12 +243,14 @@ export function RuleInspectorForm({
                                                 <div className="flex items-start justify-between gap-2">
                                                     <SortableHandle
                                                         attributes={attributes}
+                                                        disabled={readOnly}
                                                         listeners={listeners}
                                                     />
                                                     <Button
                                                         type="button"
                                                         variant="destructive"
                                                         size="icon-sm"
+                                                        disabled={readOnly}
                                                         onClick={() =>
                                                             onConditionsChange(
                                                                 rule.conditions.filter(
@@ -256,6 +280,7 @@ export function RuleInspectorForm({
                                                         <Label>{t("condition_field_label")}</Label>
                                                         <Select
                                                             value={condition.fieldId}
+                                                            disabled={readOnly}
                                                             onValueChange={value => {
                                                                 const nextFieldOption =
                                                                     getChecklistBuilderFieldOption(
@@ -313,7 +338,9 @@ export function RuleInspectorForm({
                                                         </Label>
                                                         <Select
                                                             value={condition.operator}
-                                                            disabled={!selectedFieldOption}
+                                                            disabled={
+                                                                readOnly || !selectedFieldOption
+                                                            }
                                                             onValueChange={value =>
                                                                 onConditionsChange(
                                                                     updateConditionList(
@@ -366,6 +393,7 @@ export function RuleInspectorForm({
                                                             {valueInput === "number" ? (
                                                                 <Input
                                                                     type="number"
+                                                                    disabled={readOnly}
                                                                     value={condition.value ?? ""}
                                                                     placeholder={t(
                                                                         "condition_value_placeholder"
@@ -388,6 +416,7 @@ export function RuleInspectorForm({
                                                             ) : null}
                                                             {valueInput === "text" ? (
                                                                 <Input
+                                                                    disabled={readOnly}
                                                                     value={condition.value ?? ""}
                                                                     placeholder={t(
                                                                         "condition_value_placeholder"
@@ -417,6 +446,7 @@ export function RuleInspectorForm({
                                                                         value={
                                                                             condition.value ?? ""
                                                                         }
+                                                                        disabled={readOnly}
                                                                         onValueChange={value =>
                                                                             onConditionsChange(
                                                                                 updateConditionList(
@@ -464,6 +494,7 @@ export function RuleInspectorForm({
                                                                     </Select>
                                                                 ) : (
                                                                     <Input
+                                                                        disabled={readOnly}
                                                                         value={
                                                                             condition.value ?? ""
                                                                         }
@@ -510,6 +541,9 @@ export function RuleInspectorForm({
                                                                                     <Checkbox
                                                                                         checked={
                                                                                             checked
+                                                                                        }
+                                                                                        disabled={
+                                                                                            readOnly
                                                                                         }
                                                                                         onCheckedChange={nextChecked =>
                                                                                             onConditionsChange(
@@ -559,6 +593,7 @@ export function RuleInspectorForm({
                                                                 </Label>
                                                                 <Input
                                                                     type="number"
+                                                                    disabled={readOnly}
                                                                     value={
                                                                         condition.secondValue ?? ""
                                                                     }
@@ -588,6 +623,7 @@ export function RuleInspectorForm({
                                                                 condition.repeatOnTrueChange ===
                                                                 true
                                                             }
+                                                            disabled={readOnly}
                                                             onCheckedChange={checked =>
                                                                 onConditionsChange(
                                                                     updateConditionList(

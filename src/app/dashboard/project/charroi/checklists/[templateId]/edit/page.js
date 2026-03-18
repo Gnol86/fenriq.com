@@ -1,4 +1,6 @@
+import { CharroiQuotaAlert } from "@project/components/charroi/charroi-quota-alert";
 import { ChecklistTemplateBuilder } from "@project/components/charroi/checklist-builder/checklist-template-builder";
+import { getCharroiQuotaStatus } from "@project/lib/charroi/quota";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +14,7 @@ export default async function Page({ params }) {
         permissions: { checklist: ["update"] },
     });
 
-    const [categories, template] = await Promise.all([
+    const [categories, template, quotaStatus] = await Promise.all([
         prisma.checklistCategory.findMany({
             where: {
                 organizationId: organization.id,
@@ -44,6 +46,9 @@ export default async function Page({ params }) {
                 schemaJson: true,
             },
         }),
+        getCharroiQuotaStatus({
+            organizationId: organization.id,
+        }),
     ]);
 
     if (!template) {
@@ -56,8 +61,13 @@ export default async function Page({ params }) {
                 <CardTitle>{t("edit_page_title", { name: template.name })}</CardTitle>
                 <CardDescription>{t("edit_page_description")}</CardDescription>
             </CardHeader>
-            <CardContent>
-                <ChecklistTemplateBuilder categories={categories} template={template} />
+            <CardContent className="flex flex-col gap-4">
+                {quotaStatus.isOverQuota ? <CharroiQuotaAlert quotaStatus={quotaStatus} /> : null}
+                <ChecklistTemplateBuilder
+                    categories={categories}
+                    readOnly={quotaStatus.isOverQuota}
+                    template={template}
+                />
             </CardContent>
         </Card>
     );

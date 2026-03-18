@@ -7,12 +7,21 @@ import {
 import { Copy, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { useServerAction } from "@/hooks/use-server-action";
 import { dialogManager } from "@/lib/dialog-manager/dialog-manager";
 
-export function TemplatesManager({ canCreate, canManage, emptyMessage, templates }) {
+export function TemplatesManager({
+    canCreate,
+    canDelete,
+    canDuplicate,
+    canEdit,
+    createDisabled = false,
+    emptyMessage,
+    mutationsDisabled = false,
+    templates,
+}) {
     const t = useTranslations("project.charroi.checklists");
     const { execute } = useServerAction();
 
@@ -39,8 +48,15 @@ export function TemplatesManager({ canCreate, canManage, emptyMessage, templates
         <div className="flex flex-col gap-4">
             {canCreate && (
                 <div className="flex items-center justify-end">
-                    <Link href="/dashboard/project/charroi/checklists/new">
-                        <Button size="sm">
+                    <Link
+                        href={createDisabled ? "#" : "/dashboard/project/charroi/checklists/new"}
+                        onClick={event => {
+                            if (createDisabled) {
+                                event.preventDefault();
+                            }
+                        }}
+                    >
+                        <Button size="sm" disabled={createDisabled}>
                             <Plus className="mr-2 h-4 w-4" />
                             {t("create_button")}
                         </Button>
@@ -72,44 +88,58 @@ export function TemplatesManager({ canCreate, canManage, emptyMessage, templates
                                     })}
                                 </span>
                             </div>
-                            {canManage && (
+                            {(canEdit || canDuplicate || canDelete) && (
                                 <ButtonGroup>
-                                    <Button
-                                        nativeButton={false}
-                                        render={
-                                            <Link
-                                                href={`/dashboard/project/charroi/checklists/${template.id}/edit`}
-                                            />
-                                        }
-                                        size="icon-sm"
-                                        variant="outline"
-                                    >
-                                        <Pencil className="h-4 w-4" />
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="icon-sm"
-                                        onClick={() =>
-                                            execute(
-                                                () =>
-                                                    duplicateChecklistTemplateAction({
-                                                        templateId: template.id,
-                                                    }),
-                                                {
-                                                    successMessage: t("template_duplicated"),
+                                    {canEdit ? (
+                                        mutationsDisabled ? (
+                                            <Button size="icon-sm" variant="outline" disabled>
+                                                <Pencil className="h-4 w-4" />
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                nativeButton={false}
+                                                render={
+                                                    <Link
+                                                        href={`/dashboard/project/charroi/checklists/${template.id}/edit`}
+                                                    />
                                                 }
-                                            )
-                                        }
-                                    >
-                                        <Copy className="h-4 w-4" />
-                                    </Button>
-                                    <Button
-                                        variant="destructive"
-                                        size="icon-sm"
-                                        onClick={() => handleDelete(template)}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
+                                                size="icon-sm"
+                                                variant="outline"
+                                            >
+                                                <Pencil className="h-4 w-4" />
+                                            </Button>
+                                        )
+                                    ) : null}
+                                    {canDuplicate ? (
+                                        <Button
+                                            variant="outline"
+                                            size="icon-sm"
+                                            disabled={mutationsDisabled}
+                                            onClick={() =>
+                                                execute(
+                                                    () =>
+                                                        duplicateChecklistTemplateAction({
+                                                            templateId: template.id,
+                                                        }),
+                                                    {
+                                                        successMessage: t("template_duplicated"),
+                                                    }
+                                                )
+                                            }
+                                        >
+                                            <Copy className="h-4 w-4" />
+                                        </Button>
+                                    ) : null}
+                                    {canDelete ? (
+                                        <Button
+                                            variant="destructive"
+                                            size="icon-sm"
+                                            disabled={mutationsDisabled}
+                                            onClick={() => handleDelete(template)}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    ) : null}
                                 </ButtonGroup>
                             )}
                         </div>

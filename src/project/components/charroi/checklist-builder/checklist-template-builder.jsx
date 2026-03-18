@@ -92,7 +92,7 @@ function resolveSelection(selection, selectedSection, selectedField, selectedRul
     return { kind: "template" };
 }
 
-export function ChecklistTemplateBuilder({ categories, template }) {
+export function ChecklistTemplateBuilder({ categories, readOnly = false, template }) {
     const t = useTranslations("project.charroi.builder");
     const { execute, isPending } = useServerAction();
     const router = useRouter();
@@ -369,6 +369,10 @@ export function ChecklistTemplateBuilder({ categories, template }) {
     };
 
     const onJsonChange = value => {
+        if (readOnly) {
+            return;
+        }
+
         setJsonDraft(value);
 
         try {
@@ -382,6 +386,10 @@ export function ChecklistTemplateBuilder({ categories, template }) {
     };
 
     const onSave = async values => {
+        if (readOnly) {
+            return;
+        }
+
         let schemaJson;
 
         try {
@@ -477,7 +485,10 @@ export function ChecklistTemplateBuilder({ categories, template }) {
                         >
                             {t("back_button")}
                         </Button>
-                        <Button type="submit" disabled={isPending || Boolean(jsonError)}>
+                        <Button
+                            type="submit"
+                            disabled={readOnly || isPending || Boolean(jsonError)}
+                        >
                             {isPending ? t("saving") : t("save_button")}
                         </Button>
                     </div>
@@ -488,10 +499,11 @@ export function ChecklistTemplateBuilder({ categories, template }) {
 
                     {activeTab === "visual" ? (
                         <div className="flex flex-col gap-4">
-                            <TemplateSettingsPanel form={form} />
+                            <TemplateSettingsPanel form={form} readOnly={readOnly} />
 
                             <StructurePanel
                                 getFieldTypeLabel={getFieldTypeLabel}
+                                readOnly={readOnly}
                                 sections={sections}
                                 selectedFieldId={selectedFieldId}
                                 selectedSectionId={selectedSectionId}
@@ -529,6 +541,7 @@ export function ChecklistTemplateBuilder({ categories, template }) {
                             />
 
                             <RulesPanel
+                                readOnly={readOnly}
                                 rules={rules}
                                 selectedRuleId={selectedRuleId}
                                 onAddRule={addRule}
@@ -554,6 +567,7 @@ export function ChecklistTemplateBuilder({ categories, template }) {
                             <SelectedRuleDialog
                                 categories={categories}
                                 fieldOptions={fieldOptions}
+                                readOnly={readOnly}
                                 selectedRule={selectedRuleId ? selectedRule : null}
                                 onChangeRule={updateSelectedRule}
                                 onClose={clearSelection}
@@ -566,6 +580,7 @@ export function ChecklistTemplateBuilder({ categories, template }) {
                             />
 
                             <SelectedSectionDialog
+                                readOnly={readOnly}
                                 section={selectedSectionId ? selectedSection : null}
                                 onChange={(key, value) =>
                                     updateSection(selectedSection.id, currentSection => ({
@@ -584,6 +599,7 @@ export function ChecklistTemplateBuilder({ categories, template }) {
                             <SelectedFieldDialog
                                 field={selectedFieldId ? selectedField : null}
                                 getFieldTypeLabel={getFieldTypeLabel}
+                                readOnly={readOnly}
                                 onChange={(key, value) =>
                                     updateField(selectedField.id, field => {
                                         if (key === "type") {
@@ -648,6 +664,7 @@ export function ChecklistTemplateBuilder({ categories, template }) {
                         <JsonEditorTab
                             value={jsonEditorValue}
                             errorMessage={jsonError}
+                            readOnly={readOnly}
                             onChange={onJsonChange}
                         />
                     ) : null}

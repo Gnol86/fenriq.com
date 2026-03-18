@@ -1,3 +1,5 @@
+import { CharroiQuotaAlert } from "@project/components/charroi/charroi-quota-alert";
+import { getCharroiQuotaStatus } from "@project/lib/charroi/quota";
 import { normalizePlateNumber } from "@project/lib/charroi/utils";
 import { getTranslations } from "next-intl/server";
 import { Pagination } from "@/components/pagination";
@@ -70,12 +72,41 @@ export default async function Page({ searchParams }) {
             : {}),
     };
 
-    const [canManageVehicles, canManageAssignments, totalVehicles, templates] = await Promise.all([
+    const [
+        quotaStatus,
+        canCreateVehicle,
+        canUpdateVehicle,
+        canDeleteVehicle,
+        canViewAssignments,
+        canCreateAssignments,
+        canUpdateAssignments,
+        canDeleteAssignments,
+        totalVehicles,
+        templates,
+    ] = await Promise.all([
+        getCharroiQuotaStatus({
+            organizationId: organization.id,
+        }),
+        checkPermission({
+            permissions: { vehicle: ["create"] },
+        }),
         checkPermission({
             permissions: { vehicle: ["update"] },
         }),
         checkPermission({
+            permissions: { vehicle: ["delete"] },
+        }),
+        checkPermission({
+            permissions: { checklistAssignment: ["read"] },
+        }),
+        checkPermission({
+            permissions: { checklistAssignment: ["create"] },
+        }),
+        checkPermission({
             permissions: { checklistAssignment: ["update"] },
+        }),
+        checkPermission({
+            permissions: { checklistAssignment: ["delete"] },
         }),
         prisma.vehicle.count({
             where: whereClause,
@@ -141,12 +172,20 @@ export default async function Page({ searchParams }) {
                     initialValue={searchValue}
                     searchParams={resolvedSearchParams}
                 />
+                <CharroiQuotaAlert quotaStatus={quotaStatus} />
                 <VehiclesManager
-                    canManageAssignments={canManageAssignments}
-                    canManageVehicles={canManageVehicles}
+                    canCreateAssignments={canCreateAssignments}
+                    canCreateVehicle={canCreateVehicle}
+                    canDeleteAssignments={canDeleteAssignments}
+                    canDeleteVehicle={canDeleteVehicle}
+                    canUpdateAssignments={canUpdateAssignments}
+                    canUpdateVehicle={canUpdateVehicle}
+                    canViewAssignments={canViewAssignments}
+                    createVehicleDisabled={!quotaStatus.canCreateVehicle}
                     emptyMessage={searchValue ? t("no_search_results") : t("empty_state")}
                     publicBaseUrl={`${getServerUrl()}/app/checklist`}
                     templates={templates}
+                    updateVehicleDisabled={quotaStatus.isOverQuota}
                     vehicles={vehicles.map(vehicle => ({
                         id: vehicle.id,
                         plateNumber: vehicle.plateNumber,

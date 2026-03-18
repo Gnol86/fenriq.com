@@ -4,7 +4,14 @@ import { useTranslations } from "next-intl";
 import { BuilderSelectionDialog } from "./builder-selection-dialog";
 import { SectionInspectorForm } from "./section-inspector-form";
 
-export function SelectedSectionDialog({ onChange, onClose, onDelete, onDuplicate, section }) {
+export function SelectedSectionDialog({
+    onChange,
+    onClose,
+    onDelete,
+    onDuplicate,
+    readOnly = false,
+    section,
+}) {
     const t = useTranslations("project.charroi.builder");
 
     return (
@@ -19,6 +26,7 @@ export function SelectedSectionDialog({ onChange, onClose, onDelete, onDuplicate
                 onChange={onChange}
                 onDelete={onDelete}
                 onDuplicate={onDuplicate}
+                readOnly={readOnly}
             />
         </BuilderSelectionDialog>
     );

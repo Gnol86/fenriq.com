@@ -10,11 +10,18 @@ import { VehicleAssignmentsDialog } from "./vehicle-assignments-dialog";
 import { VehicleFormDialog } from "./vehicle-form-dialog";
 
 export function VehiclesManager({
-    canManageAssignments,
-    canManageVehicles,
+    canCreateAssignments,
+    canCreateVehicle,
+    canDeleteAssignments,
+    canDeleteVehicle,
+    canUpdateAssignments,
+    canUpdateVehicle,
+    canViewAssignments,
+    createVehicleDisabled,
     emptyMessage,
     publicBaseUrl,
     templates,
+    updateVehicleDisabled,
     vehicles,
 }) {
     const t = useTranslations("project.charroi.vehicles");
@@ -41,7 +48,7 @@ export function VehiclesManager({
     return (
         <div className="flex flex-col gap-4">
             <div className="flex items-center justify-end">
-                <VehicleFormDialog canManage={canManageVehicles} />
+                <VehicleFormDialog canManage={canCreateVehicle} disabled={createVehicleDisabled} />
             </div>
             <div className="flex flex-col gap-3">
                 {vehicles.length === 0 ? (
@@ -67,21 +74,35 @@ export function VehiclesManager({
                                 </div>
                                 <ButtonGroup>
                                     <VehicleAssignmentsDialog
-                                        canManageAssignments={canManageAssignments}
+                                        canCreateAssignments={
+                                            canCreateAssignments && !updateVehicleDisabled
+                                        }
+                                        canDeleteAssignments={
+                                            canDeleteAssignments && !updateVehicleDisabled
+                                        }
+                                        canUpdateAssignments={
+                                            canUpdateAssignments && !updateVehicleDisabled
+                                        }
+                                        canViewAssignments={canViewAssignments}
                                         publicBaseUrl={publicBaseUrl}
                                         templates={templates}
                                         vehicle={vehicle}
                                     />
                                     <VehicleFormDialog
-                                        canManage={canManageVehicles}
+                                        canManage={canUpdateVehicle}
+                                        disabled={updateVehicleDisabled}
                                         vehicle={vehicle}
                                         trigger={
-                                            <Button variant="outline" size="icon-sm">
+                                            <Button
+                                                variant="outline"
+                                                size="icon-sm"
+                                                disabled={updateVehicleDisabled}
+                                            >
                                                 <Pencil className="h-4 w-4" />
                                             </Button>
                                         }
                                     />
-                                    {canManageVehicles && (
+                                    {canDeleteVehicle && (
                                         <Button
                                             variant="destructive"
                                             size="icon-sm"

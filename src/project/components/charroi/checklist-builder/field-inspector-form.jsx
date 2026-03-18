@@ -32,6 +32,7 @@ export function FieldInspectorForm({
     onDelete,
     onDuplicate,
     onOptionsChange,
+    readOnly = false,
 }) {
     const t = useTranslations("project.charroi.builder");
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
@@ -45,16 +46,32 @@ export function FieldInspectorForm({
     return (
         <div className="flex flex-col gap-4">
             <div className="flex flex-wrap justify-end gap-2">
-                <Button type="button" variant="outline" size="sm" onClick={onDuplicate}>
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={readOnly}
+                    onClick={onDuplicate}
+                >
                     {t("duplicate_field")}
                 </Button>
-                <Button type="button" variant="destructive" size="sm" onClick={onDelete}>
+                <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    disabled={readOnly}
+                    onClick={onDelete}
+                >
                     {t("delete_field")}
                 </Button>
             </div>
             <div className="flex flex-col gap-2">
                 <Label>{t("field_type_label")}</Label>
-                <Select value={field.type} onValueChange={value => onChange("type", value)}>
+                <Select
+                    value={field.type}
+                    disabled={readOnly}
+                    onValueChange={value => onChange("type", value)}
+                >
                     <SelectTrigger>
                         <SelectValue>{getFieldTypeLabel(field.type)}</SelectValue>
                     </SelectTrigger>
@@ -70,6 +87,7 @@ export function FieldInspectorForm({
             <div className="flex flex-col gap-2">
                 <Label>{t("field_label_label")}</Label>
                 <Input
+                    disabled={readOnly}
                     value={field.label}
                     onChange={event => onChange("label", event.target.value)}
                 />
@@ -78,6 +96,7 @@ export function FieldInspectorForm({
                 <Label>{t("field_description_label")}</Label>
                 <Textarea
                     rows={3}
+                    disabled={readOnly}
                     value={field.description}
                     onChange={event => onChange("description", event.target.value)}
                 />
@@ -85,6 +104,7 @@ export function FieldInspectorForm({
             <div className="flex flex-col gap-2">
                 <Label>{t("field_placeholder_label")}</Label>
                 <Input
+                    disabled={readOnly}
                     value={field.placeholder}
                     onChange={event => onChange("placeholder", event.target.value)}
                 />
@@ -92,6 +112,7 @@ export function FieldInspectorForm({
             <div className="flex items-center gap-2">
                 <Checkbox
                     checked={field.required}
+                    disabled={readOnly}
                     onCheckedChange={value => onChange("required", value === true)}
                 />
                 <Label>{t("field_required_label")}</Label>
@@ -100,6 +121,7 @@ export function FieldInspectorForm({
                 <div className="flex items-center gap-2">
                     <Checkbox
                         checked={field.photoCommentRequired === true}
+                        disabled={readOnly}
                         onCheckedChange={value => onChange("photoCommentRequired", value === true)}
                     />
                     <Label>{t("photo_comment_required_label")}</Label>
@@ -113,6 +135,7 @@ export function FieldInspectorForm({
                             type="button"
                             variant="outline"
                             size="sm"
+                            disabled={readOnly}
                             onClick={() =>
                                 onOptionsChange([...field.options, createChecklistOption()])
                             }
@@ -126,6 +149,10 @@ export function FieldInspectorForm({
                         modifiers={[restrictToVerticalAxis]}
                         sensors={sensors}
                         onDragEnd={event => {
+                            if (readOnly) {
+                                return;
+                            }
+
                             if (!event.over || event.active.id === event.over.id) {
                                 return;
                             }
@@ -147,9 +174,11 @@ export function FieldInspectorForm({
                                                 <div className="flex items-center gap-2">
                                                     <SortableHandle
                                                         attributes={attributes}
+                                                        disabled={readOnly}
                                                         listeners={listeners}
                                                     />
                                                     <Input
+                                                        disabled={readOnly}
                                                         value={option.label}
                                                         onChange={event => {
                                                             const nextLabel = event.target.value;
@@ -206,6 +235,7 @@ export function FieldInspectorForm({
                                                         type="button"
                                                         variant="destructive"
                                                         size="icon-sm"
+                                                        disabled={readOnly}
                                                         onClick={() =>
                                                             onOptionsChange(
                                                                 field.options.filter(

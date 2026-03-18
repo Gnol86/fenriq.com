@@ -1,6 +1,10 @@
 "use server";
 
 import {
+    assertCanCreateVehicle,
+    assertCharroiDashboardMutationAllowed,
+} from "@project/lib/charroi/quota";
+import {
     checklistAssignmentInputSchema,
     checklistCategoryInputSchema,
     checklistSubscriptionInputSchema,
@@ -165,8 +169,16 @@ export async function createVehicleAction(values) {
     const { organization } = await requirePermission({
         permissions: { vehicle: ["create"] },
     });
-    const t = await getTranslations("project.charroi.actions");
+    const [t, tQuota] = await Promise.all([
+        getTranslations("project.charroi.actions"),
+        getTranslations("project.charroi.quota"),
+    ]);
     const payload = checklistVehicleInputSchema.parse(values);
+
+    await assertCanCreateVehicle({
+        organizationId: organization.id,
+        t: tQuota,
+    });
 
     try {
         const vehicle = await prisma.vehicle.create({
@@ -195,8 +207,15 @@ export async function updateVehicleAction({ vehicleId, ...values }) {
     const { organization } = await requirePermission({
         permissions: { vehicle: ["update"] },
     });
-    const t = await getTranslations("project.charroi.actions");
+    const [t, tQuota] = await Promise.all([
+        getTranslations("project.charroi.actions"),
+        getTranslations("project.charroi.quota"),
+    ]);
     const payload = checklistVehicleInputSchema.parse(values);
+    await assertCharroiDashboardMutationAllowed({
+        organizationId: organization.id,
+        t: tQuota,
+    });
     await ensureOrganizationVehicle(vehicleId, organization.id);
 
     try {
@@ -244,8 +263,16 @@ export async function createChecklistTemplateAction(values) {
     const { organization } = await requirePermission({
         permissions: { checklist: ["create"] },
     });
-    const t = await getTranslations("project.charroi.actions");
+    const [t, tQuota] = await Promise.all([
+        getTranslations("project.charroi.actions"),
+        getTranslations("project.charroi.quota"),
+    ]);
     const payload = checklistTemplateInputSchema.parse(values);
+
+    await assertCharroiDashboardMutationAllowed({
+        organizationId: organization.id,
+        t: tQuota,
+    });
 
     try {
         const template = await prisma.checklistTemplate.create({
@@ -272,8 +299,15 @@ export async function updateChecklistTemplateAction({ templateId, ...values }) {
     const { organization } = await requirePermission({
         permissions: { checklist: ["update"] },
     });
-    const t = await getTranslations("project.charroi.actions");
+    const [t, tQuota] = await Promise.all([
+        getTranslations("project.charroi.actions"),
+        getTranslations("project.charroi.quota"),
+    ]);
     const payload = checklistTemplateInputSchema.parse(values);
+    await assertCharroiDashboardMutationAllowed({
+        organizationId: organization.id,
+        t: tQuota,
+    });
     await ensureOrganizationTemplate(templateId, organization.id);
 
     try {
@@ -306,6 +340,11 @@ export async function duplicateChecklistTemplateAction({ templateId }) {
     const { organization } = await requirePermission({
         permissions: { checklist: ["create"] },
     });
+    const tQuota = await getTranslations("project.charroi.quota");
+    await assertCharroiDashboardMutationAllowed({
+        organizationId: organization.id,
+        t: tQuota,
+    });
     const template = await ensureOrganizationTemplate(templateId, organization.id);
 
     const duplicate = await prisma.checklistTemplate.create({
@@ -329,6 +368,11 @@ export async function duplicateChecklistTemplateAction({ templateId }) {
 export async function deleteChecklistTemplateAction({ templateId }) {
     const { organization } = await requirePermission({
         permissions: { checklist: ["delete"] },
+    });
+    const tQuota = await getTranslations("project.charroi.quota");
+    await assertCharroiDashboardMutationAllowed({
+        organizationId: organization.id,
+        t: tQuota,
     });
     await ensureOrganizationTemplate(templateId, organization.id);
 
@@ -431,8 +475,16 @@ export async function createChecklistAssignmentAction(values) {
     const { organization } = await requirePermission({
         permissions: { checklistAssignment: ["create"] },
     });
-    const t = await getTranslations("project.charroi.actions");
+    const [t, tQuota] = await Promise.all([
+        getTranslations("project.charroi.actions"),
+        getTranslations("project.charroi.quota"),
+    ]);
     const payload = checklistAssignmentInputSchema.parse(values);
+
+    await assertCharroiDashboardMutationAllowed({
+        organizationId: organization.id,
+        t: tQuota,
+    });
 
     const [vehicle, template] = await Promise.all([
         prisma.vehicle.findFirst({
@@ -483,6 +535,11 @@ export async function updateChecklistAssignmentAction({ assignmentId, isActive }
     const { organization } = await requirePermission({
         permissions: { checklistAssignment: ["update"] },
     });
+    const tQuota = await getTranslations("project.charroi.quota");
+    await assertCharroiDashboardMutationAllowed({
+        organizationId: organization.id,
+        t: tQuota,
+    });
     await ensureOrganizationAssignment(assignmentId, organization.id);
 
     const assignment = await prisma.vehicleChecklistAssignment.update({
@@ -502,6 +559,11 @@ export async function regenerateChecklistAssignmentTokenAction({ assignmentId })
     const { organization } = await requirePermission({
         permissions: { checklistAssignment: ["update"] },
     });
+    const tQuota = await getTranslations("project.charroi.quota");
+    await assertCharroiDashboardMutationAllowed({
+        organizationId: organization.id,
+        t: tQuota,
+    });
     await ensureOrganizationAssignment(assignmentId, organization.id);
 
     const assignment = await prisma.vehicleChecklistAssignment.update({
@@ -520,6 +582,11 @@ export async function regenerateChecklistAssignmentTokenAction({ assignmentId })
 export async function deleteChecklistAssignmentAction({ assignmentId }) {
     const { organization } = await requirePermission({
         permissions: { checklistAssignment: ["delete"] },
+    });
+    const tQuota = await getTranslations("project.charroi.quota");
+    await assertCharroiDashboardMutationAllowed({
+        organizationId: organization.id,
+        t: tQuota,
     });
     await ensureOrganizationAssignment(assignmentId, organization.id);
 

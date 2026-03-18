@@ -1,3 +1,5 @@
+import { CharroiQuotaAlert } from "@project/components/charroi/charroi-quota-alert";
+import { getCharroiQuotaStatus } from "@project/lib/charroi/quota";
 import { getTranslations } from "next-intl/server";
 import { Pagination } from "@/components/pagination";
 import SearchInput from "@/components/search-input";
@@ -45,12 +47,18 @@ export default async function Page({ searchParams }) {
             : {}),
     };
 
-    const [canCreate, canManage, totalTemplates] = await Promise.all([
+    const [quotaStatus, canCreate, canEdit, canDelete, totalTemplates] = await Promise.all([
+        getCharroiQuotaStatus({
+            organizationId: organization.id,
+        }),
         checkPermission({
             permissions: { checklist: ["create"] },
         }),
         checkPermission({
             permissions: { checklist: ["update"] },
+        }),
+        checkPermission({
+            permissions: { checklist: ["delete"] },
         }),
         prisma.checklistTemplate.count({
             where: whereClause,
@@ -93,10 +101,15 @@ export default async function Page({ searchParams }) {
                     initialValue={searchValue}
                     searchParams={resolvedSearchParams}
                 />
+                {quotaStatus.isOverQuota ? <CharroiQuotaAlert quotaStatus={quotaStatus} /> : null}
                 <TemplatesManager
                     canCreate={canCreate}
-                    canManage={canManage}
+                    canDelete={canDelete}
+                    canDuplicate={canCreate}
+                    canEdit={canEdit}
+                    createDisabled={quotaStatus.isOverQuota}
                     emptyMessage={searchValue ? t("no_search_results") : t("empty_state")}
+                    mutationsDisabled={quotaStatus.isOverQuota}
                     templates={templates.map(template => ({
                         id: template.id,
                         name: template.name,

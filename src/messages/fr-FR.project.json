@@ -321,6 +321,15 @@
             "assignment_entity_not_found": "Le véhicule ou la checklist sélectionnée est introuvable.",
             "assignment_exists": "Cette checklist est déjà liée à ce véhicule."
         },
+        "quota": {
+            "at_limit_title": "Quota de véhicules atteint",
+            "at_limit_description": "L'organisation utilise déjà {used} véhicule(s) pour {limit} licence(s). Vous pouvez encore gérer les véhicules existants, mais vous ne pouvez plus en ajouter tant que l'abonnement n'est pas ajusté.",
+            "over_limit_title": "Quota de véhicules dépassé",
+            "over_limit_description": "L'organisation utilise {used} véhicule(s) pour {limit} licence(s). Les mutations du dashboard Charroi sur les véhicules, les liens publics et les checklists sont verrouillées jusqu'à régularisation. Les checklists publiques restent disponibles.",
+            "manage_subscription_cta": "Gérer l'abonnement",
+            "vehicle_quota_reached_error": "Le quota de véhicules est atteint ({used}/{limit}). Augmentez le nombre de licences avant d'ajouter un nouveau véhicule.",
+            "dashboard_locked_error": "Le quota de véhicules est dépassé ({used}/{limit}). Le dashboard Charroi est verrouillé jusqu'à régularisation de l'abonnement."
+        },
         "vehicles": {
             "page_title": "Véhicules",
             "page_description": "Gérez le parc de véhicules et les liens publics vers les checklists.",

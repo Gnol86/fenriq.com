@@ -19,6 +19,7 @@ export function SectionStructureBlock({
     onSectionDuplicate,
     onSelectField,
     onSelectSection,
+    readOnly = false,
     section,
     selectedFieldId,
     selectedSectionId,
@@ -36,7 +37,11 @@ export function SectionStructureBlock({
                 <div className="flex flex-col gap-3 p-3">
                     <div className="flex items-start justify-between gap-2">
                         <div className="flex items-start gap-2">
-                            <SortableHandle attributes={attributes} listeners={listeners} />
+                            <SortableHandle
+                                attributes={attributes}
+                                disabled={readOnly}
+                                listeners={listeners}
+                            />
                             <div className="flex flex-col gap-1">
                                 <span className="font-medium">{section.title}</span>
                                 <span className="text-muted-foreground text-xs">
@@ -46,6 +51,7 @@ export function SectionStructureBlock({
                         </div>
                         <div className="flex items-center gap-2">
                             <FieldPresetPicker
+                                disabled={readOnly}
                                 title={t("add_field_button")}
                                 onPick={field => onAddField(section.id, field)}
                             />
@@ -53,6 +59,7 @@ export function SectionStructureBlock({
                                 type="button"
                                 variant="outline"
                                 size="icon-sm"
+                                disabled={readOnly}
                                 onClick={event => {
                                     event.stopPropagation();
                                     onSectionDuplicate(section.id);
@@ -73,6 +80,7 @@ export function SectionStructureBlock({
                                 type="button"
                                 variant="destructive"
                                 size="icon-sm"
+                                disabled={readOnly}
                                 onClick={event => {
                                     event.stopPropagation();
                                     onSectionDelete(section.id);
@@ -97,6 +105,10 @@ export function SectionStructureBlock({
                         modifiers={[restrictToVerticalAxis]}
                         sensors={sensors}
                         onDragEnd={event => {
+                            if (readOnly) {
+                                return;
+                            }
+
                             if (!event.over || event.active.id === event.over.id) {
                                 return;
                             }
@@ -124,6 +136,7 @@ export function SectionStructureBlock({
                                                 <div className="flex items-center gap-2">
                                                     <SortableHandle
                                                         attributes={attributes}
+                                                        disabled={readOnly}
                                                         listeners={listeners}
                                                     />
                                                     <div className="flex flex-col gap-0.5">
@@ -140,6 +153,7 @@ export function SectionStructureBlock({
                                                         type="button"
                                                         variant="outline"
                                                         size="icon-sm"
+                                                        disabled={readOnly}
                                                         onClick={event => {
                                                             event.stopPropagation();
                                                             onDuplicateField(section.id, field.id);
@@ -162,6 +176,7 @@ export function SectionStructureBlock({
                                                         type="button"
                                                         variant="destructive"
                                                         size="icon-sm"
+                                                        disabled={readOnly}
                                                         onClick={event => {
                                                             event.stopPropagation();
                                                             onFieldDelete(section.id, field.id);

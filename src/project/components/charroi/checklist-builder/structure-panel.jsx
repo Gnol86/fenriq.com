@@ -19,6 +19,7 @@ export function StructurePanel({
     onSectionsReorder,
     onSelectField,
     onSelectSection,
+    readOnly = false,
     sections,
     selectedFieldId,
     selectedSectionId,
@@ -37,7 +38,13 @@ export function StructurePanel({
                     <h2 className="font-medium">{t("structure_title")}</h2>
                     <p className="text-muted-foreground text-sm">{t("structure_description")}</p>
                 </div>
-                <Button type="button" variant="outline" size="sm" onClick={onAddSection}>
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={readOnly}
+                    onClick={onAddSection}
+                >
                     {t("add_section_button")}
                 </Button>
             </div>
@@ -52,6 +59,10 @@ export function StructurePanel({
                     modifiers={[restrictToVerticalAxis]}
                     sensors={sectionsSensors}
                     onDragEnd={event => {
+                        if (readOnly) {
+                            return;
+                        }
+
                         if (!event.over || event.active.id === event.over.id) {
                             return;
                         }
@@ -71,6 +82,7 @@ export function StructurePanel({
                                     section={section}
                                     selectedFieldId={selectedFieldId}
                                     selectedSectionId={selectedSectionId}
+                                    readOnly={readOnly}
                                     onAddField={onAddField}
                                     onDuplicateField={onDuplicateField}
                                     onFieldDelete={onFieldDelete}

@@ -10,7 +10,7 @@ import {
     ComboboxList,
 } from "@/components/ui/combobox";
 
-export function RuleCategoryCombobox({ categories, onChange, value }) {
+export function RuleCategoryCombobox({ categories, disabled = false, onChange, value }) {
     const t = useTranslations("project.charroi.builder");
 
     return (
@@ -19,10 +19,15 @@ export function RuleCategoryCombobox({ categories, onChange, value }) {
                 categories.find(category => category.id === categoryId)?.name ?? ""
             }
             itemToStringValue={categoryId => categoryId ?? ""}
-            onValueChange={nextValue => onChange(nextValue)}
+            onValueChange={nextValue => {
+                if (!disabled) {
+                    onChange(nextValue);
+                }
+            }}
             value={value ?? null}
         >
             <ComboboxInput
+                disabled={disabled}
                 placeholder={t("category_placeholder")}
                 showClear
                 onChange={event => event.stopPropagation()}
@@ -31,7 +36,7 @@ export function RuleCategoryCombobox({ categories, onChange, value }) {
                 <ComboboxEmpty>{t("category_empty")}</ComboboxEmpty>
                 <ComboboxList>
                     {categories.map(category => (
-                        <ComboboxItem key={category.id} value={category.id}>
+                        <ComboboxItem key={category.id} disabled={disabled} value={category.id}>
                             <div className="flex flex-col gap-0.5">
                                 <span>{category.name}</span>
                                 <span className="text-muted-foreground text-xs">
