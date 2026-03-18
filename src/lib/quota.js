@@ -1,4 +1,8 @@
+import { requireActiveOrganization } from "@/lib/access-control";
 import prisma from "@/lib/prisma";
+import { SiteConfig } from "@/site-config";
+
+const ACTIVE_SUBSCRIPTION_STATUSES = ["active", "trialing"];
 
 function normalizeQuantity(quantity) {
     if (typeof quantity === "string") {
@@ -37,22 +41,45 @@ export function validateQuotaQuantity(quantity, { minimum = 1, step = 1 } = {}) 
 }
 
 /**
- * Calcule le quota d'une organisation basé sur subscription.seats.
+ * Récupère l'abonnement actif d'une organisation basé sur subscription.seats.
  *
  * @param {string} organizationId
- * @param {function} usageCountFn - async (orgId) => number
- * @returns {Promise<{limit: number, used: number, remaining: number, canAdd: boolean, percentage: number}>}
+ * @returns {Promise<Object|null>}
  */
-export async function getOrganizationQuota(organizationId, usageCountFn) {
-    const subscription = await prisma.subscription.findFirst({
+async function getOrganizationActiveSubscription(organizationId) {
+    return await prisma.subscription.findFirst({
         where: {
             referenceId: organizationId,
-            status: { in: ["active", "trialing"] },
+            status: {
+                in: ACTIVE_SUBSCRIPTION_STATUSES,
+            },
+        },
+        orderBy: {
+            periodStart: "desc",
         },
     });
+}
 
-    const limit = subscription?.seats ?? 0;
-    const used = await usageCountFn(organizationId);
+/**
+ * Calcule le quota d'une organisation basé sur subscription.seats.
+ *
+ * @param {Object} params
+ * @param {string} [params.organizationId]
+ * @param {function} params.usageCountFn - async (orgId) => number
+ * @param {number} [params.inactiveLimit]
+ * @returns {Promise<{limit: number, used: number, remaining: number, canAdd: boolean, ok: boolean, hasActiveSubscription: boolean, isFallback: boolean}>}
+ */
+export async function getQuota({ organizationId, usageCountFn, inactiveLimit } = {}) {
+    if (typeof usageCountFn !== "function") {
+        throw new Error("usageCountFn doit être une fonction");
+    }
+
+    const resolvedOrganizationId =
+        organizationId ?? (await requireActiveOrganization()).organization.id;
+    const subscription = await getOrganizationActiveSubscription(resolvedOrganizationId);
+    const resolvedInactiveLimit = inactiveLimit ?? SiteConfig.quota?.inactiveLimit ?? 1;
+    const limit = subscription?.seats ?? resolvedInactiveLimit;
+    const used = await usageCountFn(resolvedOrganizationId);
     const remaining = Math.max(0, limit - used);
 
     return {
@@ -60,6 +87,25 @@ export async function getOrganizationQuota(organizationId, usageCountFn) {
         used,
         remaining,
         canAdd: used < limit,
-        percentage: limit > 0 ? Math.round((used / limit) * 100) : 0,
+        ok: used <= limit,
+        hasActiveSubscription: !!subscription,
+        isFallback: !subscription,
     };
+}
+
+/**
+ * Wrapper de compatibilité pour les usages qui fournissent directement organizationId.
+ *
+ * @param {string} organizationId
+ * @param {function} usageCountFn - async (orgId) => number
+ * @param {Object} [options]
+ * @param {number} [options.inactiveLimit]
+ * @returns {Promise<{limit: number, used: number, remaining: number, canAdd: boolean, ok: boolean, hasActiveSubscription: boolean, isFallback: boolean}>}
+ */
+export async function getOrganizationQuota(organizationId, usageCountFn, options = {}) {
+    return await getQuota({
+        organizationId,
+        usageCountFn,
+        inactiveLimit: options.inactiveLimit,
+    });
 }
