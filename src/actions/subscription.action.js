@@ -198,6 +198,8 @@ export async function createCheckoutSession({ planId, annual = false, seats }) {
 
 /**
  * Crée une session du portail de facturation Stripe pour gérer l'abonnement
+ * Le Billing Portal Stripe n'accepte pas `branding_settings` par session.
+ * Son branding doit rester configuré globalement dans le dashboard Stripe.
  */
 export async function createBillingPortalSession() {
     const { organization } = await requirePermission({
@@ -310,6 +312,7 @@ export async function getSubscriptionDetails(subscriptionId) {
 
 /**
  * Crée une session du portail Stripe pour gérer l'abonnement
+ * Le Billing Portal Stripe n'accepte pas `branding_settings` par session.
  */
 export async function createStripePortalSession(formData) {
     const referenceId = formData.get("referenceId");

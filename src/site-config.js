@@ -41,6 +41,10 @@ export const SiteConfig = {
     // ========== BRAND STYLING ==========
     brand: {
         primary: "#000000", // ← TODO: Change to your primary brand color
+        stripeBackgroundColor: "#ffffff", // ← Background color used by Stripe Checkout
+        stripeIconPath: "/images/icon.png", // ← Public path used for Stripe Checkout icon
+        stripeLogoPath: "/images/logo.png", // ← Optional logo path used when stripeHeaderStyle is "logo"
+        stripeHeaderStyle: "display_name", // ← "display_name" shows icon + title, "logo" prioritizes the logo
     },
 
     // ========== ORGANIZATION SETTINGS ==========

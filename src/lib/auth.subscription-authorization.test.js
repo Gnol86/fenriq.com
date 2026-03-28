@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test";
 
 const checkPermissionMock = mock();
+const getStripeCheckoutBrandingSettingsMock = mock();
 const betterAuthMock = mock(config => config);
 const stripePluginMock = mock(options => ({
     id: "stripe",
@@ -57,9 +58,22 @@ mock.module("@/actions/file.action", () => ({
     deleteFile: mock(async () => {}),
 }));
 
+mock.module("@/lib/stripe-branding", () => ({
+    getStripeCheckoutBrandingSettings: getStripeCheckoutBrandingSettingsMock,
+}));
+
 mock.module("@/site-config", () => ({
     SiteConfig: {
         appId: "test-app",
+        title: "Test App",
+        prodUrl: "https://example.com",
+        brand: {
+            primary: "#123456",
+            stripeBackgroundColor: "#f5f5f5",
+            stripeIconPath: "/images/icon.png",
+            stripeLogoPath: "/images/logo.png",
+            stripeHeaderStyle: "display_name",
+        },
         options: {
             organization: {
                 allowUserToCreateOrganization: true,
@@ -117,6 +131,16 @@ describe("auth subscription authorizeReference", () => {
     beforeEach(() => {
         checkPermissionMock.mockReset();
         checkPermissionMock.mockResolvedValue(true);
+        getStripeCheckoutBrandingSettingsMock.mockReset();
+        getStripeCheckoutBrandingSettingsMock.mockReturnValue({
+            display_name: "Test App",
+            button_color: "#123456",
+            background_color: "#f5f5f5",
+            icon: {
+                type: "url",
+                url: "https://example.com/images/icon.png",
+            },
+        });
     });
 
     test("protège list-subscription avec billing.manage", async () => {
@@ -147,5 +171,53 @@ describe("auth subscription authorizeReference", () => {
 
         await expect(authorizeReference({ action: "other-action" })).resolves.toBe(true);
         expect(checkPermissionMock).not.toHaveBeenCalled();
+    });
+
+    test("ajoute le branding Stripe sans perdre les paramètres Checkout existants", async () => {
+        const { auth } = await authModulePromise;
+        const getCheckoutSessionParams =
+            auth.plugins[0].options.subscription.getCheckoutSessionParams;
+
+        const result = await getCheckoutSessionParams(
+            {
+                user: {
+                    id: "user-1",
+                },
+                session: {
+                    id: "session-1",
+                },
+                plan: {
+                    name: "pro",
+                },
+                subscription: {
+                    id: "sub-1",
+                },
+            },
+            {},
+            {}
+        );
+
+        expect(getStripeCheckoutBrandingSettingsMock).toHaveBeenCalledTimes(1);
+        expect(result).toEqual({
+            params: {
+                allow_promotion_codes: true,
+                automatic_tax: {
+                    enabled: true,
+                },
+                tax_id_collection: {
+                    enabled: true,
+                },
+                billing_address_collection: "required",
+                branding_settings: {
+                    display_name: "Test App",
+                    button_color: "#123456",
+                    background_color: "#f5f5f5",
+                    icon: {
+                        type: "url",
+                        url: "https://example.com/images/icon.png",
+                    },
+                },
+            },
+        });
     });
 });
