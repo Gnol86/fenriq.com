@@ -9,10 +9,10 @@ import { localization } from "better-auth-localization";
 import { cookies } from "next/headers";
 import Stripe from "stripe";
 import { deleteFile } from "@/actions/file.action";
+import { checkPermission } from "@/lib/access-control";
 import { getStripeCheckoutBrandingSettings } from "@/lib/stripe-branding";
 import { SiteConfig } from "@/site-config";
 import translations from "../messages/better-auth.json";
-import { checkPermission } from "./access-control";
 import { defaultLocale } from "./i18n/config.js";
 import {
     ac,

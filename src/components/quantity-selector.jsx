@@ -116,7 +116,7 @@ export default function QuantitySelector({
         );
 
         if (result.success && result.data?.url) {
-            window.location.href = result.data.url;
+            window.location.assign(result.data.url);
             return;
         }
 
@@ -209,7 +209,7 @@ export default function QuantitySelector({
                           : t("subscribe_to_plan")}
                 </Button>
             )}
-            {!isSubscribeMode && hasChanged && (
+            {!isSubscribeMode && hasChanged && isValidQuantity && (
                 <Button
                     onClick={handleUpdate}
                     disabled={isPending || !isValidQuantity}

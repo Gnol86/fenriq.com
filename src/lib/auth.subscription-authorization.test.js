@@ -89,7 +89,7 @@ mock.module("@/site-config", () => ({
     },
 }));
 
-mock.module("./access-control", () => ({
+mock.module("@/lib/access-control", () => ({
     checkPermission: checkPermissionMock,
 }));
 
