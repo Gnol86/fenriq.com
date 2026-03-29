@@ -1,8 +1,9 @@
+import SubscriptionManagementPanel from "@project/features/subscription/subscription-management-panel";
 import { Download } from "lucide-react";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Fragment } from "react";
-import { getSubscriptionDetails } from "@/actions/subscription.action";
+import { getPlansWithStripeData, getSubscriptionDetails } from "@/actions/subscription.action";
 import QuantitySelector from "@/components/quantity-selector";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,10 +26,11 @@ export default async function ManagePlan({ activeSubscription }) {
         permissions: { billing: ["manage"] },
     });
 
-    const [t, locale, stripeData] = await Promise.all([
+    const [t, locale, stripeData, plans] = await Promise.all([
         getTranslations("organization.subscription"),
         getLocale(),
         getSubscriptionDetails(activeSubscription.stripeSubscriptionId),
+        getPlansWithStripeData(),
     ]);
     const isTeamPlan = activeSubscription.plan.toLowerCase() === "team";
 
@@ -122,33 +124,46 @@ export default async function ManagePlan({ activeSubscription }) {
                 </CardContent>
             </Card>
 
-            {SiteConfig.quota?.enabled && !isTeamPlan && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>{t("quota_title")}</CardTitle>
-                        <CardDescription>{t("quota_description")}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex flex-col gap-4">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">
-                                    {t("quota_current", { count: activeSubscription.seats || 1 })}
-                                </span>
+            <SubscriptionManagementPanel
+                currentPlanName={activeSubscription.plan}
+                currentInterval={price.recurring.interval}
+                subscriptionStatus={subscription.status}
+                cancelAtPeriodEnd={subscription.cancel_at_period_end}
+                plans={plans}
+                locale={locale}
+            />
+
+            {SiteConfig.quota?.enabled &&
+                !isTeamPlan &&
+                (subscription.status === "active" || subscription.status === "trialing") && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>{t("quota_title")}</CardTitle>
+                            <CardDescription>{t("quota_description")}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex flex-col gap-4">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-medium">
+                                        {t("quota_current", {
+                                            count: activeSubscription.seats || 1,
+                                        })}
+                                    </span>
+                                </div>
+                                <QuantitySelector
+                                    currentSeats={activeSubscription.seats || 1}
+                                    unitPrice={isTiered ? null : price.unit_amount}
+                                    tiers={isTiered ? price.tiers : null}
+                                    tiersMode={isTiered ? price.tiersMode : null}
+                                    currency={price.currency}
+                                    locale={locale}
+                                    minimum={SiteConfig.quota.minimum}
+                                    step={SiteConfig.quota.step}
+                                />
                             </div>
-                            <QuantitySelector
-                                currentSeats={activeSubscription.seats || 1}
-                                unitPrice={isTiered ? null : price.unit_amount}
-                                tiers={isTiered ? price.tiers : null}
-                                tiersMode={isTiered ? price.tiersMode : null}
-                                currency={price.currency}
-                                locale={locale}
-                                minimum={SiteConfig.quota.minimum}
-                                step={SiteConfig.quota.step}
-                            />
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
+                        </CardContent>
+                    </Card>
+                )}
 
             <Card>
                 <CardHeader>
@@ -196,24 +211,6 @@ export default async function ManagePlan({ activeSubscription }) {
                             <p className="text-sm">{t("trial_notice")}</p>
                         </div>
                     )}
-
-                    <form
-                        action={async () => {
-                            "use server";
-                            const session =
-                                await require("@/lib/stripe").default.billingPortal.sessions.create(
-                                    {
-                                        customer: subscription.customer,
-                                        return_url: `${require("@/lib/server-url").getServerUrl()}/dashboard/org/subscription`,
-                                    }
-                                );
-                            require("next/navigation").redirect(session.url);
-                        }}
-                    >
-                        <Button type="submit" className="w-full">
-                            {t("manage_button")}
-                        </Button>
-                    </form>
                 </CardContent>
             </Card>
 

@@ -1,6 +1,5 @@
+import { getOrganizationManagedSubscription } from "@project/lib/subscription-management";
 import StripeLoader from "@root/src/components/stripe-loader";
-import { auth } from "@root/src/lib/auth";
-import { headers } from "next/headers";
 import { Suspense } from "react";
 import { requirePermission } from "@/lib/access-control";
 import ManagePlan from "./components/manage-plan";
@@ -12,20 +11,9 @@ export default async function OrganizationSubscriptionPage() {
         permissions: { billing: ["manage"] },
     });
 
-    const subscriptions = await auth.api.listActiveSubscriptions({
-        query: {
-            referenceId: organization.id,
-        },
-        // This endpoint requires session cookies.
-        headers: await headers(),
-    });
+    const activeSubscription = await getOrganizationManagedSubscription(organization.id);
 
-    // get the active subscription
-    const activeSubscription = subscriptions.find(
-        sub => sub.status === "active" || sub.status === "trialing"
-    );
-
-    // Show subscription management if subscription exists and is active
+    // Show subscription management if a manageable subscription exists
     if (activeSubscription) {
         return (
             <Suspense fallback={<StripeLoader />}>

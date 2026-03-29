@@ -24,7 +24,7 @@ export default function SubscriptionButton({
         });
 
         if (result.success && result.data?.url) {
-            window.location.href = result.data.url;
+            window.location.assign(result.data.url);
             return;
         }
 

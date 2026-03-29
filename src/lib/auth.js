@@ -9,9 +9,10 @@ import { localization } from "better-auth-localization";
 import { cookies } from "next/headers";
 import Stripe from "stripe";
 import { deleteFile } from "@/actions/file.action";
+import { checkPermission } from "@/lib/access-control";
+import { getStripeCheckoutBrandingSettings } from "@/lib/stripe-branding";
 import { SiteConfig } from "@/site-config";
 import translations from "../messages/better-auth.json";
-import { checkPermission } from "./access-control";
 import { authorizeSubscriptionReference } from "./auth.subscription-authorization.js";
 import { defaultLocale } from "./i18n/config.js";
 import {
@@ -265,6 +266,8 @@ export const auth = betterAuth({
                     { _user, _session, _plan, _subscription },
                     _request
                 ) => {
+                    const brandingSettings = getStripeCheckoutBrandingSettings();
+
                     return {
                         params: {
                             allow_promotion_codes: true,
@@ -275,6 +278,11 @@ export const auth = betterAuth({
                                 enabled: true,
                             },
                             billing_address_collection: "required",
+                            ...(brandingSettings
+                                ? {
+                                      branding_settings: brandingSettings,
+                                  }
+                                : {}),
                         },
                     };
                 },
